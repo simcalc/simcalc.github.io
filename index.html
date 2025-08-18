@@ -1,0 +1,1213 @@
+<!-- file: a8-simulator-revised.html -->
+
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="description" content="Building a brighter future for the nation! Innovates Vibration Exposure Simulation based on literature standard to drive the enlightenment and intellectual development of future generations sustainably.">
+    <title>Vibration Exposure Simulation A(8) - Decision Support Tool</title>
+    
+    <link rel="icon" href="https://raw.githubusercontent.com/jktchecklist/jktchecklist.github.io/main/assets/images/logos/favicon.ico" type="image/x-icon">
+    <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/jktchecklist/jktchecklist.github.io/main/assets/images/logos/favicon.png">
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.0.1/dist/chartjs-plugin-annotation.min.js"></script>
+    <!-- Gemini Feature: Simple Markdown Parser (kept for potential future use, but not used for current paragraph format) -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+<style>
+  /* --- REVISI: CSS dipindahkan ke dalam satu blok style untuk kerapian --- */
+  :root{
+    --sp-1:8px; --sp-2:12px; --sp-3:16px; --sp-4:20px; --br:16px;
+    --bg1:#f8fafc; --bg2:#f8fafc; --card:#ffffff;
+    --ink:#0b1220; --muted:#4b5563; --line:#e5e7eb;
+    --accent:#0369a1; --ok:#15803d; --warn:#ca8a04; --bad:#b91c1c;
+    --focus: rgba(3,105,161,.25);
+    --breakGreen:#bff2cf;
+    --rr-ok:#d9fbe2; --rr-warn:#fff4c2; --rr-bad:#ffd6d6;
+  }
+  [data-theme="dark"]{
+    --bg1:#0f172a; --bg2:#111827; --card:#0f162b;
+    --ink:#e5e7eb; --muted:#b6c1d6; --line:#24324d;
+    --accent:#7dd3fc; --ok:#86efac; --warn:#facc15; --bad:#fb7185;
+    --focus: rgba(125,211,252,.45);
+    --breakGreen:#bff2cf;
+    --rr-ok:#163a23; --rr-warn:#3a2f13; --rr-bad:#3a1515;
+  }
+  *{box-sizing:border-box}
+  html{font-size: 15px;}
+  body{margin:0;font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:var(--ink);background:linear-gradient(180deg,var(--bg1),var(--bg2));line-height:1.5}
+  header{padding:24px 16px 6px;text-align:center}
+  header h1 { margin: 0 0 6px; font-weight: 700; letter-spacing: .2px; font-size: clamp(1.2rem, 4.5vw, 2.2rem); }
+  header p{margin:0;color:var(--muted)}
+  .brandbar{display:flex;justify-content:center;margin:8px 0 4px}
+  .brandbar img{max-height:42px; width:auto; object-fit:contain}
+  main{ overflow-x: hidden; } /* REVISI: Wrapper <main> untuk konten utama */
+  .wrap{max-width:1100px;margin:16px auto 42px;padding:0 16px;}
+  .toolbar{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:8px 0 16px}
+  .btn{cursor:pointer;padding:8px 12px;border-radius:10px;border:1px solid color-mix(in oklab, var(--ink) 15%, transparent);background:color-mix(in oklab, var(--card) 92%, black 8%);color:var(--ink); min-height:40px; font-size: 0.9rem;}
+  .btn:hover{border-color:var(--accent)}
+  .btn:focus-visible{outline:none; box-shadow:0 0 0 3px var(--focus)}
+  .btn.secondary{background:transparent}
+  .btn.icon{display:inline-flex;align-items:center;gap:8px}
+  .btn.small{padding:5px 9px; min-height:32px; font-size: 0.85rem;}
+  .langbtns{display:flex;gap:8px;align-items:center}
+  .langbtn{
+    border:1px solid color-mix(in oklab, var(--ink) 15%, transparent);
+    background:var(--card); border-radius:999px; padding:4px 8px;
+    display:inline-flex; align-items:center; gap:8px; cursor:pointer; min-height:40px
+  }
+  .langbtn img{width:26px;height:18px;object-fit:cover;border-radius:3px}
+  .langbtn.active{outline:2px solid var(--accent); outline-offset:2px}
+  [data-theme="dark"] .langbtn span { color: var(--ink); }
+  .card{background:linear-gradient(180deg,var(--card),color-mix(in oklab, var(--card) 90%, black 10%));border:1px solid color-mix(in oklab, var(--ink) 10%, transparent);border-radius:var(--br); padding:16px;box-shadow:0 8px 24px rgba(0,0,0,.12); margin-bottom:14px}
+  .grid{display:grid;gap:14px}
+  @media(min-width:980px){ .grid{grid-template-columns:1.05fr 1.15fr}}
+  label{display:block;font-size:14px;color:var(--muted);margin-bottom:6px}
+  input[type=number]{width:100%;padding:10px 12px;background:var(--card);border:1px solid color-mix(in oklab, var(--ink) 18%, transparent);color:var(--ink);border-radius:12px;outline:none}
+  input[type=number]:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--focus)}
+  .row{display:grid;gap:12px;grid-template-columns:repeat(auto-fit, minmax(120px, 1fr));}
+  @media(max-width:720px){ .row{grid-template-columns:1fr}}
+  .hint{font-size:12px;color:var(--muted)}
+  .stat{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:color-mix(in oklab, var(--card) 92%, black 8%);border:1px solid var(--line);border-radius:12px;margin:8px 0}
+  .stat b{font-size:18px}
+  .pill{padding:4px 8px;border-radius:999px;font-size:12px;border:1px solid var(--line);color:var(--muted);background:transparent}
+  .ok{color:var(--ok);border-color:color-mix(in oklab, var(--ok) 40%, transparent)}
+  .warn{color:var(--warn);border-color:color-mix(in oklab, var(--warn) 40%, transparent)}
+  .bad{color:var(--bad);border-color:color-mix(in oklab, var(--bad) 40%, transparent)}
+  h2{margin:10px 0 8px}
+  h3{margin:8px 0 6px}
+  ul{margin:8px 0 0 18px}
+  .table-responsive { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  table{width:100%;border-collapse:separate;border-spacing:0;overflow:hidden;border-radius:12px;margin-top:8px}
+  th,td{padding:8px 10px;text-align:left;border-bottom:1px solid var(--line); font-size: 0.85rem;}
+  th{font-weight:600;color:var(--muted);background:color-mix(in oklab, var(--card) 85%, black 15%);position:sticky;top:0}
+  tr:last-child td{border-bottom:none}
+  #schedTable tbody tr{cursor:pointer}
+  #schedTable tbody tr:hover{background:color-mix(in oklab, var(--accent) 12%, transparent)}
+  #schedTable tbody tr.active{outline:2px solid var(--accent); outline-offset:-2px}
+  .small{font-size:12px;color:var(--muted)}
+  .chartbox{position:relative;width:100%;height:clamp(260px,36vw,360px)}
+  canvas{width:100%!important;height:100%!important;background:color-mix(in oklab, var(--card) 85%, black 15%);border-radius:12px;padding:8px}
+  .controls-inline{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:.5rem 0}
+  .vsep{width:1px;height:24px;background:var(--line);display:inline-block}
+  .num-sm{max-width:90px}
+  .ready-wrap{overflow:auto;border:1px solid var(--line);border-radius:12px}
+  .ready{
+    border-collapse:separate;border-spacing:0;width:max-content;min-width:100%;
+    font-size:clamp(9px,2.4vw,12px);
+  }
+  .ready th, .ready td{padding:6px 8px;border-bottom:1px solid var(--line);border-right:1px solid var(--line);white-space:nowrap}
+  .ready tr:last-child td{border-bottom:none}
+  .ready th:first-child, .ready td:first-child{position:sticky;left:0;background:color-mix(in oklab, var(--card) 92%, black 8%);z-index:2}
+  .ready thead th{position:sticky;top:0;z-index:3}
+  .ready .pv-ok{background:var(--rr-ok)}
+  .ready .pv-warn{background:var(--rr-warn)}
+  .ready .pv-bad{background:var(--rr-bad)}
+  .ready td.sel{outline:2px solid var(--accent); outline-offset:-2px}
+  .ready caption{caption-side:top;text-align:left;font-weight:600;color:var(--muted);padding:8px 4px;font-size:clamp(10px,2.6vw,13px)}
+  footer{max-width:1100px;margin:20px auto 60px;color:var(--muted);text-align:center;padding:0 16px}
+  footer a{color:var(--accent);text-decoration:none}
+  footer a:hover{text-decoration:underline}
+  #ahv-validation-msg {
+    color: var(--bad);
+    font-size: 12px;
+    margin-top: 4px;
+    display: none;
+  }
+  .vt-supplement{max-width:1100px;margin:0 auto 40px;padding:0 16px}
+  .vt-supplement .table-container{overflow-x:auto;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.12);background:#fff}
+  .vt-supplement #vibrationTable{width:100%;border-collapse:collapse;background-color:#fff}
+  .vt-supplement #vibrationTable caption{font-size:1.1rem;font-weight:700;padding:14px;color:#2c3e50;text-align:left}
+  .vt-supplement #vibrationTable thead th{background-color:#008080;color:#fff;font-weight:700;padding:10px 12px;text-align:left;vertical-align:middle}
+  .vt-supplement #vibrationTable td,.vt-supplement #vibrationTable th{border:1px solid #ddd;padding:10px 12px}
+  .vt-supplement #vibrationTable tbody tr.even-group{background:#f9f9f9}
+  .vt-supplement #vibrationTable tbody tr:hover{background:#e8f4f4}
+  .vt-supplement #vibrationTable td[rowspan]{vertical-align:middle;font-weight:500}
+  .vt-supplement #vibrationTable .sortable{cursor:pointer;position:relative}
+  .vt-supplement #vibrationTable .sortable::after{content:' \\2195';opacity:.5;position:absolute;right:12px}
+  .vt-supplement #vibrationTable .sortable.asc::after{content:' \\25B2';opacity:1}
+  .vt-supplement #vibrationTable .sortable.desc::after{content:' \\25BC';opacity:1}
+  .vt-supplement .literature-section{margin-top:18px;padding:16px;border-radius:12px;background:#fff;box-shadow:0 8px 24px rgba(0,0,0,.12)}
+  .vt-supplement .literature-section h3{margin:0 0 10px;color:#2c3e50}
+  .vt-supplement .literature-section ol{padding-left:20px;line-height:1.6;margin:0}
+  .vt-supplement .literature-section li{overflow-wrap:break-word;word-wrap:break-word}
+  .vt-supplement .literature-section a{color:#008080;text-decoration:none}
+  .vt-supplement .literature-section a:hover{text-decoration:underline}
+  
+  /* --- REVISI: Perbaikan Dark Mode untuk vibrationTable --- */
+  [data-theme="dark"] .vt-supplement .table-container,
+  [data-theme="dark"] .vt-supplement .literature-section,
+  [data-theme="dark"] .vt-supplement #vibrationTable {
+    background: var(--bg2);
+    color: var(--ink);
+  }
+  [data-theme="dark"] .vt-supplement #vibrationTable caption,
+  [data-theme="dark"] .vt-supplement .literature-section h3,
+  [data-theme="dark"] .vt-supplement .literature-section a { color: var(--ink); }
+  [data-theme="dark"] .vt-supplement #vibrationTable thead th {
+    background-color: color-mix(in oklab, var(--bg1) 80%, white 20%);
+    color: var(--ink);
+  }
+  [data-theme="dark"] .vt-supplement #vibrationTable td,
+  [data-theme="dark"] .vt-supplement #vibrationTable th{
+    border-color:var(--line);
+    color:var(--ink); /* Memastikan font berwarna terang */
+  }
+  [data-theme="dark"] .vt-supplement #vibrationTable tbody tr:hover{background:color-mix(in oklab, var(--accent) 12%, transparent)}
+  [data-theme="dark"] .vt-supplement #vibrationTable tbody tr.even-group {
+    background: color-mix(in oklab, var(--bg2) 90%, white 10%);
+  }
+  
+  /* --- REVISI: CSS untuk Modal Kustom --- */
+  .modal-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.6); backdrop-filter: blur(5px);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 1000; opacity: 0; visibility: hidden;
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+  }
+  .modal-overlay.visible { opacity: 1; visibility: visible; }
+  .modal-content {
+    background: var(--card); color: var(--ink);
+    padding: 24px; border-radius: var(--br);
+    width: 90%; max-width: 450px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    transform: scale(0.95); transition: transform 0.2s ease;
+  }
+  .modal-overlay.visible .modal-content { transform: scale(1); }
+  .modal-content h3 { margin-top: 0; }
+  .modal-body { margin: 16px 0; }
+  .modal-body .modal-input-group { margin-bottom: 12px; }
+  .modal-body input { width: 100%; }
+  .modal-footer { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
+  
+  /* --- Gemini Feature: Styling --- */
+  #gemini-assistant-card { margin-top: 20px; }
+  #gemini-result { 
+    margin-top: 16px; 
+    padding: 12px; 
+    background: color-mix(in oklab, var(--card) 92%, black 8%);
+    border-radius: 12px;
+    border: 1px solid var(--line);
+    min-height: 50px;
+    white-space: pre-wrap; /* Allows line breaks for paragraphs */
+    line-height: 1.4; /* REVISI: Spasi baris tunggal */
+  }
+  .loading-spinner {
+    border: 4px solid var(--line);
+    border-top: 4px solid var(--accent);
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    animation: spin 1s linear infinite;
+    margin: 10px auto;
+  }
+  @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+  @media print{
+    *{background:transparent !important;color:#000 !important;box-shadow:none !important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    body{background:#fff !important}
+    header p, .hint{color:#000 !important}
+    .card, .stat, table, th, td{background:#fff !important; color:#000 !important; border-color:#000 !important}
+    .pill{border-color:#000 !important; color:#000 !important; background:transparent !important}
+    .chartbox{height:auto !important}
+    canvas{width:140mm !important;height:140mm !important;background:#fff !important;padding:0 !important;border-radius:0 !important}
+    footer a{color:#000 !important}
+    .modal-overlay { display: none !important; } /* Sembunyikan modal saat print */
+  }
+</style>
+</head>
+
+<body>
+<header>
+  <h1 id="t_title">Vibration Exposure Simulation A(8) (EU 2002/44/EC)</h1>
+  <p id="t_sub">Formula: <span style="font-family:ui-monospace">A(8) = aₕᵥ · √(T / 8)</span>, T in hours; normalized to 8 h</p>
+</header>
+
+<div class="toolbar" role="group" aria-label="Toolbar">
+  <button class="btn icon" id="btnPrint" title="Print/Save PDF">🖨️ <span data-t="print">Print PDF</span></button>
+  <button class="btn icon secondary" id="btnTheme" title="Toggle theme">🌓 <span id="themeLabel">Light</span></button>
+  <button class="btn icon secondary" id="btnCopy" title="Copy configuration link">🔗 <span data-t="copyLink">Copy Link</span></button>
+  <button class="btn icon secondary" id="btnResetAll" title="Reset all inputs and selections">🔄 <span data-t="reset">Reset</span></button>
+  <span class="vsep" aria-hidden="true"></span>
+  <div class="langbtns" role="group" aria-label="Language">
+    <button class="langbtn" id="btnEN" aria-pressed="true" title="English">
+      <img src="https://mokhamadabrar.github.io/site_inspect/EN.png" alt="EN flag"/>
+      <span>EN</span>
+    </button>
+    <button class="langbtn" id="btnID" aria-pressed="false" title="Indonesia">
+      <img src="https://mokhamadabrar.github.io/site_inspect/ID.png" alt="ID flag"/>
+      <span>ID</span>
+    </button>
+  </div>
+</div>
+
+<!-- REVISI: Konten utama dibungkus dengan tag <main> untuk semantik yang lebih baik -->
+<main>
+  <div class="wrap">
+    <div class="card grid">
+      <div>
+        <h2 id="t_inputs">Inputs</h2>
+        <label for="ahv" id="t_ahvlabel">aₕᵥ (m/s²) – tool RMS</label>
+        <input id="ahv" type="number" step="0.01" min="2.5" max="18" value="2.50" />
+        <div class="hint" id="t_ahvhint">Example: 2.50 m/s² (A(8) equals 2.5 if used for full 8 h)</div>
+        <div id="ahv-validation-msg"></div>
+        <div class="row" style="margin-top:10px">
+          <div>
+            <label for="targetA" id="t_targetlabel">Target A(8) (m/s²)</label>
+            <input id="targetA" type="number" step="0.01" min="0" value="2.50" />
+            <div class="hint" id="t_targethint">Recommended &lt;= 2.50 as a safety margin</div>
+          </div>
+          <div>
+            <label for="shiftH" id="t_shiftlabel">Shift duration (h)</label>
+            <input id="shiftH" type="number" step="0.5" min="1" value="8" />
+            <div class="hint" id="t_shifthint">Exposure time ≤ shift; A(8) normalized to 8 h</div>
+          </div>
+          <div>
+            <label for="toolHours" id="t_toolhlabel">Tool hours/day (total)</label>
+            <input id="toolHours" type="number" step="0.25" min="0" value="8" />
+            <div class="hint" id="t_toolhhint">For minimum operators (rotation)</div>
+          </div>
+        </div>
+        <div class="stat" aria-live="polite">
+          <span id="t_a8fulltxt">If used continuously for the whole shift, A(8) = <b id="a8full">—</b></span>
+          <span class="pill" id="statusPill">—</span>
+        </div>
+        <div class="stat">
+          <span id="t_tmax8txt">Max exposure for target (8-h basis): <b id="tmax8">—</b> h</span>
+          <span class="pill ok" id="t_targetpill">Target-based</span>
+        </div>
+        <div class="stat">
+          <span id="t_tmaxlimtxt">Exposure limited by shift: <b id="tmaxLimited">—</b> h</span>
+          <span class="pill" id="t_shiftpill">Shift limit</span>
+        </div>
+        <div class="stat">
+          <span id="t_perhourtxt">Per-hour recommendation: <b id="perHour">—</b> (work + break)</span>
+          <span class="pill" id="t_dutypill">Duty cycle</span>
+        </div>
+        <div class="stat">
+          <span id="t_opsneedtxt">Operators needed (min): <b id="opsNeeded">—</b></span>
+          <span class="pill" id="t_rotpill">Rotation</span>
+        </div>
+        <div class="stat">
+          <span>HSE exposure points: <b id="pointsNow">—</b></span>
+          <span class="pill" id="pointsPill">—</span>
+        </div>
+      </div>
+      <div>
+        <h2 id="t_opts">Schedule Options & A(8)</h2>
+        <div class="small" style="margin-bottom: 8px;">Mode: <b id="dutyMode"></b></div>
+        <div class="small" id="t_presethint">Add row: Work′ + Break′ per hour. <b>Click a row to update the donut chart & curve.</b></div>
+        <div class="controls-inline" aria-label="Quick duty slider">
+          <label class="small" for="quickWork" style="margin:0">Work per hour:</label>
+          <input id="quickWork" type="range" min="0" max="60" step="5" value="45" aria-label="Work minutes per hour">
+          <span id="quickBadge" class="pill">45′ work + 15′ break</span>
+          <button class="btn secondary small" id="btnUseQuick">Use</button>
+          <span class="vsep" aria-hidden="true"></span>
+          <button class="btn small" id="btnAddPreset">+ Custom Preset</button>
+        </div>
+        <div class="table-responsive">
+          <table id="schedTable" aria-label="Per-hour scheme table">
+            <thead>
+              <tr>
+                <th id="t_colScheme">Per-hour scheme</th>
+                <th>Duty</th>
+                <th id="t_colT">T (h/day)</th>
+                <th>A(8) (m/s²)</th>
+                <th id="t_colStatus">Status</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <div class="small" style="margin-top:6px" id="t_dutydef">Duty = work minutes per hour / 60. Effective T = duty × shift (≤ shift). A(8)=aₕᵥ·√(T/8).</div>
+      </div>
+    </div>
+
+    <!-- Gemini Feature: AI Assistant Card -->
+    <div class="card" id="gemini-assistant-card">
+        <h2 id="t_gemini_title">Asisten K3 (AI)</h2>
+        <p class="small" id="t_gemini_desc">Dapatkan rekomendasi keselamatan dan kesehatan kerja (K3) yang dapat ditindaklanjuti berdasarkan data simulasi Anda, didukung oleh Gemini.</p>
+        <button class="btn icon" id="btnGenerateRecs">✨ <span data-t="generateRecs">Buat Rekomendasi K3</span></button>
+        <div id="gemini-result"></div>
+    </div>
+
+    <div class="card grid">
+      <div>
+        <h3 id="t_chart1title">Work vs Break per Hour</h3>
+        <div class="chartbox"><canvas id="chartWB"></canvas></div>
+      </div>
+      <div>
+        <h3 id="t_chart2title">Risk Analysis vs Shift Duration</h3>
+        <div class="chartbox"><canvas id="chartA8"></canvas></div>
+        <div class="small" id="t_chart2hint">Curves auto-generated from Calculated, Optimized (5-min step), and Selected duties.</div>
+      </div>
+    </div>
+    <div class="card">
+      <h2 id="rr_title">Ready-Reckoner: Vibration Exposure Points</h2>
+      <p class="small" id="rr_desc">
+        Points use the HSE scheme: <code>Points = 2 × a² × t</code> (a in m/s², t in hours). 100 pts ≈ EAV (A(8)=2.5), 400 pts ≈ ELV (A(8)=5).
+        Click a cell to apply its <i>a</i> and <i>T</i> to the simulation.
+      </p>
+      <div class="ready-wrap">
+        <table class="ready" id="rrTable" role="grid" aria-label="Ready-Reckoner table">
+          <caption id="rrCap">Daily exposure duration →</caption>
+          <thead><tr id="rrHead"></tr></thead>
+          <tbody id="rrBody"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="card" id="card-rotation">
+      <h2 id="t_sec2">Worker Rotation</h2>
+      <p id="t_sec2p">If the total workload exceeds the maximum exposure time per person, divide the work among several operators. Rotation is an effective administrative control. Minimum operators = ceil(Total Tool Hours / T<sub>max</sub>).</p>
+    </div>
+    <div class="card" id="card-engineering">
+      <h2 id="t_sec3">Engineering Controls</h2>
+      <ul id="t_sec3ul">
+        <li><b>Top Priority:</b> Use low-vibration tools or anti-vibration handles.</li>
+        <li>Regular maintenance: balancing, alignment, replace worn components causing vibration.</li>
+      </ul>
+    </div>
+    <div class="card" id="card-administrative">
+      <h2 id="t_sec4">Administrative Controls</h2>
+      <ul id="t_sec4ul">
+        <li>Implement work & break schedules to lower daily exposure (T).</li>
+        <li>Schedule high-vibration tasks early in the shift.</li>
+      </ul>
+    </div>
+    <div class="card" id="card-technique">
+      <h2 id="t_sec5">Training & Work Technique</h2>
+      <ul id="t_sec5ul">
+        <li>Grip lightly (without losing control) to minimize transmission.</li>
+        <li>Use good posture; avoid awkward positions.</li>
+      </ul>
+    </div>
+    <div class="card" id="card-ppe">
+      <h2 id="t_sec6">PPE</h2>
+      <ul id="t_sec6ul">
+        <li>Use certified anti-vibration gloves (EN ISO 10819). Limited effectiveness at low frequencies.</li>
+        <li>PPE is not a substitute for engineering/administrative controls.</li>
+      </ul>
+    </div>
+    <div class="card"><p class="small" id="t_foot">EU thresholds: EAV = 2.5 m/s²; ELV = 5.0 m/s². Control hierarchy: Engineering &gt; Administrative &gt; PPE.</p></div>
+  </div>
+  <div class="vt-supplement">
+    <div class="table-container">
+      <table id="vibrationTable">
+        <caption>Table 2 Examples of vibration magnitudes</caption>
+        <thead>
+          <tr>
+            <th>Class of plant</th>
+            <th>Type of plant</th>
+            <th class="sortable">Vibration magnitude</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="group-start odd-group">
+            <td rowspan="3">Road breakers</td>
+            <td>Typical</td>
+            <td>12 m/s<sup>2</sup></td>
+          </tr>
+          <tr class="sub-row odd-group">
+            <td>Modern tool designs, good operating conditions and trained operators</td>
+            <td>5 m/s<sup>2</sup></td>
+          </tr>
+          <tr class="sub-row odd-group">
+            <td>Worst tools and operating conditions</td>
+            <td>20 m/s<sup>2</sup></td>
+          </tr>
+          <tr class="group-start even-group">
+            <td rowspan="3">Demolition hammers</td>
+            <td>Modern tools</td>
+            <td>8 m/s<sup>2</sup></td>
+          </tr>
+          <tr class="sub-row even-group">
+            <td>Typical</td>
+            <td>15 m/s<sup>2</sup></td>
+          </tr>
+          <tr class="sub-row even-group">
+            <td>Worst tools</td>
+            <td>25 m/s<sup>2</sup></td>
+          </tr>
+          <tr class="group-start odd-group">
+            <td rowspan="3">Hammer drills/combi hammers</td>
+            <td>Typical</td>
+            <td>9 m/s<sup>2</sup></td>
+          </tr>
+          <tr class="sub-row odd-group">
+            <td>Best tools and operating conditions</td>
+            <td>6 m/s<sup>2</sup></td>
+          </tr>
+          <tr class="sub-row odd-group">
+            <td>Worst tools and operating conditions</td>
+            <td>25 m/s<sup>2</sup></td>
+          </tr>
+          <tr class="group-start even-group">
+            <td rowspan="2">Needle scalers</td>
+            <td>Modern tool designs</td>
+            <td>5-7 m/s<sup>2</sup></td>
+          </tr>
+          <tr class="sub-row even-group">
+            <td>Older tool designs</td>
+            <td>10-25 m/s<sup>2</sup></td>
+          </tr>
+          <tr class="group-start odd-group">
+            <td rowspan="1">Scabblers (hammer type)</td>
+            <td>Typical</td>
+            <td>20-40 m/s<sup>2</sup></td>
+          </tr>
+          <tr class="group-start even-group">
+            <td rowspan="2">Angle grinders (large)</td>
+            <td>Modern vibration-reduced designs</td>
+            <td>4 m/s<sup>2</sup></td>
+          </tr>
+          <tr class="sub-row even-group">
+            <td>Other types</td>
+            <td>8 m/s<sup>2</sup></td>
+          </tr>
+          <tr class="group-start odd-group">
+            <td rowspan="1">Angle grinders (small)</td>
+            <td>Typical</td>
+            <td>2-6 m/s<sup>2</sup></td>
+          </tr>
+          <tr class="group-start even-group">
+            <td rowspan="1">Clay spades/jigger picks</td>
+            <td>Typical</td>
+            <td>16 m/s<sup>2</sup></td>
+          </tr>
+          <tr class="group-start odd-group">
+            <td rowspan="2">Chipping hammers (metal-working, foundries)</td>
+            <td>Typical fettling</td>
+            <td>18 m/s<sup>2</sup></td>
+          </tr>
+          <tr class="sub-row odd-group">
+            <td>Modern tool designs</td>
+            <td>10 m/s<sup>2</sup></td>
+          </tr>
+          <tr class="group-start even-group">
+            <td rowspan="2">Pneumatic stone-working hammers</td>
+            <td>Vibration-reduced hammers and sleeved chisels</td>
+            <td>8-12 m/s<sup>2</sup></td>
+          </tr>
+          <tr class="sub-row even-group">
+            <td>Older tools, conventional chisels</td>
+            <td>30 m/s<sup>2</sup></td>
+          </tr>
+          <tr class="group-start odd-group">
+            <td rowspan="1">Chainsaws</td>
+            <td>Typical</td>
+            <td>6 m/s<sup>2</sup></td>
+          </tr>
+          <tr class="group-start even-group">
+            <td rowspan="2">Brushcutters</td>
+            <td>Typical</td>
+            <td>4 m/s<sup>2</sup></td>
+          </tr>
+          <tr class="sub-row even-group">
+            <td>Best</td>
+            <td>2 m/s<sup>2</sup></td>
+          </tr>
+          <tr class="group-start odd-group">
+            <td rowspan="1">Sanders (random orbital)</td>
+            <td>Typical</td>
+            <td>7-10 m/s<sup>2</sup></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="literature-section">
+      <h3>Literature:</h3>
+      <ol>
+        <li>HSE UK Hand-arm vibration — <a href="https://www.hse.gov.uk/pubns/priced/l140.pdf" target="_blank" rel="noopener noreferrer">https://www.hse.gov.uk/.../l140.pdf</a></li>
+        <li>AU Gov Guide to Measuring Assessing Workplace Exposure to Hand-Arm Vibration — <a href="https://www.safeworkaustralia.gov.au/system/files/documents/1703/guidetomeasuringassessinghandarmvibration.pdf" target="_blank" rel="noopener noreferrer">https://www.safeworkaustralia.gov.au/...</a></li>
+        <li>PERMENAKER No. 5 2018 — <a href="https://jdih.kemnaker.go.id/asset/data_puu/Permen_5_2018.pdf" target="_blank" rel="noopener noreferrer">https://jdih.kemnaker.go.id/.../Permen_5_2018.pdf</a></li>
+        <li value="5">SNI 7054:2019 — <a href="https://pesta.bsn.go.id/produk/detail/12373-sni70542019" target="_blank" rel="noopener noreferrer">https://pesta.bsn.go.id/.../12373-sni70542019</a></li>
+        <li>Pengukuran Getaran Tangan Dosimeter — <a href="https://has-environmental.com/wp-content/uploads/2024/03/SV-103-Hand-Arm-Vibration.pdf" target="_blank" rel="noopener noreferrer">https://has-environmental.com/.../SV-103-Hand-Arm-Vibration.pdf</a></li>
+      </ol>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div>Desaigned by <a href="https://id.linkedin.com/in/mokhamadabrar" target="_blank" rel="noopener">Mokhamad Abrar</a></div>
+  <div>Reviewed by <a href="https://id.linkedin.com/in/avior-qhse" target="_blank" rel="noopener">Ratu Avior, MSc.</a>  and  <a href="https://id.linkedin.com/in/raniannisaroyani" target="_blank" rel="noopener">Ir. Rani Anisa Royani, MSc.</a></div>
+  <div>Sustainable Apps Development @ Aug 2025</div>
+</footer>
+
+<!-- REVISI: Modal Kustom untuk menggantikan alert() dan prompt() -->
+<div id="customModal" class="modal-overlay">
+  <div class="modal-content">
+    <h3 id="modalTitle"></h3>
+    <div id="modalBody" class="modal-body"></div>
+    <div id="modalFooter" class="modal-footer"></div>
+  </div>
+</div>
+
+<script>
+// REVISI: Seluruh kode JavaScript dibungkus dalam IIFE untuk mencegah polusi global scope.
+(function() {
+  'use strict';
+
+  /* --- register plugins early --- */
+  (function ensureAnnotationPlugin(){
+    try{
+      const plug = window['chartjs-plugin-annotation'];
+      if(plug && typeof Chart?.register === 'function'){
+        if(!Chart.registry?.plugins?.get?.('annotation')) Chart.register(plug);
+      }
+    }catch(_e){}
+  })();
+
+  const cssVar = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim() || '';
+  const Cfg = () => ({
+    ink: cssVar('--ink'), muted: cssVar('--muted'), accent: cssVar('--accent'),
+    ok: cssVar('--ok'), warn: cssVar('--warn'), bad: cssVar('--bad'),
+    line: cssVar('--line'), lineMinor: cssVar('--line') + '80', breakGreen: cssVar('--breakGreen')
+  });
+
+  Chart.defaults.animation = false;
+  const perfMeter = {
+    id:'perfMeter',
+    beforeRender(chart){ chart.$t0 = performance.now(); },
+    afterRender(chart){ const t=performance.now()-(chart.$t0||performance.now()); const {ctx,chartArea}=chart; if(!chartArea) return; const C=Cfg(); ctx.save(); ctx.font='10px ui-monospace'; ctx.textAlign='right'; ctx.textBaseline='top'; ctx.fillStyle=C.muted; ctx.fillText(`${Math.round(t)} ms`, chartArea.right-6, chartArea.top+4); ctx.restore();}
+  };
+  
+  // REVISI: Plugin custom untuk menampilkan label permanen di tengah chart doughnut
+  const doughnutLabelPlugin = {
+    id: 'doughnutLabel',
+    afterDraw: (chart) => {
+      if (chart.config.type !== 'doughnut' || chart.getDataVisibility(0) === false) return;
+      const { ctx, chartArea } = chart;
+      if (!chartArea) return;
+      const data = chart.data.datasets[0].data;
+      if (data.length < 2) return;
+
+      const workMins = data[0];
+      const breakMins = data[1];
+      const C = Cfg();
+      
+      const centerX = (chartArea.left + chartArea.right) / 2;
+      const centerY = (chartArea.top + chartArea.bottom) / 2;
+      
+      ctx.save();
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      
+      // Teks "Work"
+      ctx.font = 'bold 1.1rem system-ui';
+      ctx.fillStyle = C.accent;
+      ctx.fillText(`${workMins}′`, centerX, centerY - 12);
+      
+      // Teks "Break"
+      ctx.font = 'bold 1.1rem system-ui';
+      ctx.fillStyle = Cfg().ink;
+      ctx.fillText(`${breakMins}′`, centerX, centerY + 12);
+      
+      ctx.restore();
+    }
+  };
+
+
+  /* --- i18n --- */
+  const T = {
+    en:{title:"Vibration Exposure Simulation A(8) (EU 2002/44/EC)",sub:"Formula: A(8) = aₕᵥ · √(T / 8), T in hours; normalized to 8 h",inputs:"Inputs",ahvlabel:"aₕᵥ (m/s²) – tool RMS",ahvhint:"Example: 2.50 m/s² (A(8) equals 2.5 if used for full 8 h)",targetlabel:"Target A(8) (m/s²)",targethint:"Recommended <= 2.50 as a safety margin",shiftlabel:"Shift duration (h)",shifthint:"Exposure time ≤ shift; A(8) normalized to 8 h",toolhlabel:"Tool hours/day (total)",toolhhint:"For minimum operators (rotation)",a8fulltxt:"If used continuously for the whole shift, A(8) = ",tmax8txt:"Max exposure for target (8-h basis): ",tmaxlimtxt:"Exposure limited by shift: ",perhourtxt:"Per-hour recommendation: ",opsneedtxt:"Operators needed (min): ",opts:"Schedule Options & A(8)",presethint:"Add row: Work′ + Break′ per hour. <b>Click a row to update the donut chart & curve.</b>",colScheme:"Per-hour scheme",colT:"T (h/day)",colStatus:"Status",dutydef:"Duty = work minutes per hour / 60. Effective T = duty × shift (≤ shift). A(8)=aₕᵥ·√(T/8).",chart1title:"Work vs Break per Hour",chart2title:"Risk Analysis vs aₕᵥ",chart2hint:"A single curve representing the active work schedule.",sec2:"Worker Rotation",sec2p:"If the total workload exceeds the maximum exposure time per person, divide the work among several operators. Rotation is a very effective administrative control to reduce individual exposure. Minimum operators = ceil(Total Tool Hours / T<sub>max</sub>).",sec3:"Engineering Controls",sec3ul:["<b>Top Priority:</b> Use low-vibration tool models or anti-vibration handles.","Perform regular maintenance: balancing, alignment, replace worn components that cause vibration."],sec4:"Administrative Controls",sec4ul:["Implement work & break schedules (vibration breaks) to lower daily exposure (T).","Schedule high-vibration tasks at the start of the shift when workers are physically optimal."],sec5:"Training & Work Technique",sec5ul:["Grip the tool as lightly as possible (without losing control) to minimize vibration transmission.","Use good posture and avoid awkward positions that increase strain on hands and arms."],sec6:"PPE",sec6ul:["Use certified anti-vibration gloves (EN ISO 10819). Their effectiveness is limited at low frequencies.","PPE is not a substitute for engineering or administrative controls."],foot:"EU thresholds: EAV = 2.5 m/s² (action required); ELV = 5.0 m/s² (must not be exceeded). Control hierarchy: Engineering > Administrative > PPE.",pills:{below:"Below EAV",at:"At EAV",between:"Between EAV–ELV",above:"Above ELV!",target:"Target-based",shift:"Shift limit",duty:"Duty cycle",rot:"Rotation"},ann:{eav:"EAV: Action Level (2.5)",elv:"ELV: Limit Value (5.0)"},mode:{target:"target",selected:"selected"},rr:{cap:"Daily exposure duration →",mag:"m/s²"},modal:{linkCopied:"Link copied.",copyPrompt:"Copy this link:",addPresetTitle:"Add Custom Preset",workMinLabel:"Work minutes per hour (0–60)",breakMinLabel:"Break minutes per hour (0–60)",invalidInput:"Invalid input.",ok:"OK",cancel:"Cancel",add:"Add"},print:"Print PDF",copyLink:"Copy Link",reset:"Reset",geminiTitle:"HSE Assistant (AI)",geminiDesc:"Get actionable health and safety recommendations based on your simulation data, powered by Gemini.",generateRecs:"Generate HSE Recommendations",geminiError:"Could not get recommendations. Please try again."},
+    id:{title:"Simulasi Paparan Getaran A(8) (EU 2002/44/EC)",sub:"Rumus: A(8) = aₕᵥ · √(T / 8), T dalam jam; normalisasi ke 8 jam",inputs:"Input",ahvlabel:"aₕᵥ (m/s²) – RMS alat",ahvhint:"Contoh: 2.50 m/s² (A(8) = 2.5 jika 8 jam penuh)",targetlabel:"Target A(8) (m/s²)",targethint:"Disarankan <= 2,50 sebagai margin aman",shiftlabel:"Durasi shift (jam)",shifthint:"Paparan ≤ durasi shift; A(8) dinormalisasi ke 8 jam",toolhlabel:"Total jam alat/hari",toolhhint:"Untuk hitung operator minimum (rotasi)",a8fulltxt:"Jika dipakai terus sepanjang shift, A(8) = ",tmax8txt:"Durasi paparan maksimum (target, basis 8 jam): ",tmaxlimtxt:"Batas paparan dibatasi shift: ",perhourtxt:"Rekomendasi per jam: ",opsneedtxt:"Kebutuhan operator (min): ",opts:"Opsi Jadwal & A(8)",presethint:"Tambah baris: Work′ + Break′ per jam. <b>Klik baris untuk update chart.</b>",colScheme:"Skema per jam",colT:"T (jam/hari)",colStatus:"Status",dutydef:"Duty = menit kerja per jam / 60. T efektif = duty × durasi shift (≤ shift). A(8)=aₕᵥ·√(T/8).",chart1title:"Chart: Work vs Break per Jam",chart2title:"Chart: Analisis Risiko A(8) vs aₕᵥ",chart2hint:"Satu kurva mewakili jadwal kerja yang aktif.",sec2:"Rotasi Pekerja",sec2p:"Jika beban kerja total > T<sub>max</sub> per orang, bagi ke beberapa operator. Rotasi efektif menurunkan paparan.",sec3:"Kontrol Rekayasa",sec3ul:["Utamakan alat low-vibration atau pegangan anti-getaran.","Rawat berkala: balancing, alignment, ganti komponen aus."],sec4:"Kontrol Administratif",sec4ul:["Jadwal kerja & jeda menurunkan T.","Jadwalkan pekerjaan getaran tinggi di awal shift."],sec5:"Pelatihan & Teknik Kerja",sec5ul:["Pegang seringan mungkin tanpa kehilangan kontrol.","Gunakan postur baik; hindari posisi canggung."],sec6:"APD",sec6ul:["Sarung tangan anti-getaran (EN ISO 10819).","APD bukan pengganti kontrol lain."],foot:"Ambang EU: EAV = 2,5 m/s²; ELV = 5,0 m/s².",pills:{below:"Di bawah EAV",at:"Tepat EAV",between:"Antara EAV–ELV",above:"Di atas ELV!",target:"Berbasis target",shift:"Batas shift",duty:"Duty cycle",rot:"Rotasi"},ann:{eav:"EAV: Level Aksi (2.5)",elv:"ELV: Nilai Batas (5.0)"},mode:{target:"target",selected:"terpilih"},rr:{cap:"Durasi paparan harian →",mag:"m/s²"},modal:{linkCopied:"Tautan disalin.",copyPrompt:"Salin tautan ini:",addPresetTitle:"Tambah Preset Kustom",workMinLabel:"Menit kerja per jam (0–60)",breakMinLabel:"Menit jeda per jam (0–60)",invalidInput:"Input tidak valid.",ok:"OK",cancel:"Batal",add:"Tambah"},print:"Cetak PDF",copyLink:"Salin Tautan",reset:"Reset",geminiTitle:"Asisten K3 (AI)",geminiDesc:"Dapatkan rekomendasi keselamatan dan kesehatan kerja (K3) yang dapat ditindaklanjuti berdasarkan data simulasi Anda, didukung oleh Gemini.",generateRecs:"Buat Rekomendasi K3",geminiError:"Tidak dapat mengambil rekomendasi. Silakan coba lagi."}
+  };
+  let lang='en';
+
+  /* --- data/state --- */
+  const defaultPresets=[
+    {work:60,break:0,labelID:"60′ kerja + 0′ jeda (kontinu)",labelEN:"60′ work + 0′ break (continuous)"},
+    {work:50,break:10,labelID:"50′ kerja + 10′ jeda",labelEN:"50′ work + 10′ break"},
+    {work:45,break:15,labelID:"45′ kerja + 15′ jeda",labelEN:"45′ work + 15′ break"},
+    {work:30,break:30,labelID:"30′ kerja + 30′ jeda",labelEN:"30′ work + 30′ break"},
+    {work:20,break:40,labelID:"20′ kerja + 40′ jeda",labelEN:"20′ work + 40′ break"},
+    {work:15,break:45,labelID:"15′ kerja + 45′ jeda",labelEN:"15′ work + 45′ break"},
+    {work:10,break:50,labelID:"10′ kerja + 50′ jeda",labelEN:"10′ work + 50′ break"},
+    {work:5,break:55,labelID:"5′ kerja + 55′ jeda",labelEN:"5′ work + 55′ break"}
+  ];
+  let customPresets=[];
+  let chartWB, chartA8;
+  let activeDuty = 45/60;
+  let lastOptimizedDuty = null;
+
+  /* --- RR --- */
+  const rrTimesMin = [5,15,30,60,120,180,240,300,360,480,600];
+  const rrMags = [1,1.5,2,2.5,3,3.5,4,4.5,5,5.5,6,7,8,9,10,11,12,13,14,15,16,18,19,20,25,30,40];
+  const formatTimeLabel = (m)=> m<60?`${m}m`:(m%60===0?`${m/60}h`:`${(m/60).toFixed(1)}h`);
+  const rrPoints = (a, m)=> 2 * a * a * (m/60);
+  const classifyPts = (p)=> p>=400?'pv-bad' : (p>=100?'pv-warn':'pv-ok');
+
+  /* --- utils --- */
+  function pillText(a8){ const P=T[lang].pills; if(!isFinite(a8))return{text:"—",cls:"pill"}; if(a8<2.5)return{text:P.below,cls:"pill ok"}; if(Math.abs(a8-2.5)<1e-9)return{text:P.at,cls:"pill warn"}; if(a8>5.0)return{text:P.above,cls:"pill bad"}; return{text:P.between,cls:"pill warn"}}
+  function fmt(x,d=2){if(!isFinite(x))return"—";return Number(x).toFixed(d)}
+  // REVISI: Fungsi debounce untuk optimasi performa input
+  function debounce(func, delay = 300) {
+    let timeout;
+    return function(...args) {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => func.apply(this, args), delay);
+    };
+  }
+
+  /* --- persist --- */
+  const saveState = () => {
+    const state = {
+      ahv:+document.getElementById('ahv').value, targetA:+document.getElementById('targetA').value,
+      shiftH:+document.getElementById('shiftH').value, toolHours:+document.getElementById('toolHours').value,
+      lang, theme:document.documentElement.getAttribute('data-theme'),
+      presets:customPresets, activeDuty, lastOptimizedDuty
+    };
+    localStorage.setItem('a8sim.state', JSON.stringify(state));
+    return state;
+  };
+  const loadState = () => { try{ return JSON.parse(localStorage.getItem('a8sim.state')||'null') }catch{return null} };
+  const applyState = (s) => {
+    if(!s) return;
+    document.getElementById('ahv').value = s.ahv ?? 2.5;
+    document.getElementById('targetA').value = s.targetA ?? 2.5;
+    document.getElementById('shiftH').value = s.shiftH ?? 8;
+    document.getElementById('toolHours').value = s.toolHours ?? 8;
+    if(s.lang){ lang=s.lang; setLang(lang); }
+    customPresets = Array.isArray(s.presets)? s.presets : [];
+    activeDuty = typeof s.activeDuty==='number'? s.activeDuty : activeDuty;
+    lastOptimizedDuty = typeof s.lastOptimizedDuty==='number'? s.lastOptimizedDuty : lastOptimizedDuty;
+    if(s.theme) setTheme(s.theme);
+  };
+
+  /* --- theme --- */
+  function setTheme(theme){
+    document.documentElement.setAttribute('data-theme', theme);
+    document.getElementById('themeLabel').textContent = theme==='dark'?'Dark':'Light';
+    applyChartTheme();
+    saveState();
+  }
+
+  /* --- charts --- */
+  function buildCharts(){
+    const C=Cfg();
+    chartWB=new Chart(document.getElementById('chartWB').getContext('2d'),{
+      type:'doughnut',
+      data:{labels:[lang==='id'?'Kerja':'Work',lang==='id'?'Jeda':'Break'],
+        datasets:[{data:[45,15],backgroundColor:[C.accent+'b3', C.breakGreen],borderColor:[C.accent, C.breakGreen],borderWidth:1}]},
+      options:{
+        responsive:true, maintainAspectRatio:false, parsing:false,
+        plugins:{
+          legend:{position:'bottom',labels:{color: C.ink}},
+          tooltip: { enabled: false } // REVISI: Matikan tooltip bawaan
+        }
+      },
+      plugins:[perfMeter, doughnutLabelPlugin] // REVISI: Tambahkan plugin custom
+    });
+    chartA8=new Chart(document.getElementById('chartA8').getContext('2d'),{
+      type:'line',
+      data:{labels:[],datasets:[]},
+      options:{
+        responsive:true,maintainAspectRatio:false,parsing:false,
+        elements:{line:{borderJoinStyle:'round'}},
+        interaction:{mode:'index',intersect:false},
+        plugins:{
+          legend:{display:false}, 
+          decimation:{enabled:true,algorithm:'lttb',samples:90},
+          annotation:{annotations:{}},
+          tooltip:{
+            callbacks:{
+              title(items){ if(!items?.length) return ''; const ahv=+items[0].label; return `aₕᵥ: ${ahv.toFixed(2)} m/s²`; },
+              label(ctx){ const a8=+ctx.parsed.y; return `A(8): ${a8.toFixed(2)} m/s²`; },
+              afterLabel(ctx){
+                const EAV=2.5, ELV=5.0, a8=+ctx.parsed.y;
+                const m = (x,th)=>((x/th)-1)*100, s=(v)=> (v>=0?'+':'')+v.toFixed(1)+'%';
+                return [`EAV 2.50: ${s(m(a8,EAV))}`,`ELV 5.00: ${s(m(a8,ELV))}`];
+              }
+            }
+          }
+        },
+        scales:{
+          x:{type: 'linear', title:{display:true,text: 'aₕᵥ (m/s²) – tool RMS'}, min: 0, max: 20, grid:{ color: (ctx) => (ctx.tick.major ? Cfg().line : Cfg().lineMinor), lineWidth: (ctx) => (ctx.tick.major ? 1.5 : 0.7), }, ticks:{ color: C.muted, stepSize: 5 }},
+          y:{type: 'logarithmic', title:{display:true,text:'A(8) (m/s²)'}, min: 0.1, max: 20, grid:{ color: (ctx) => (ctx.tick.major ? Cfg().line : Cfg().lineMinor), lineWidth: (ctx) => (ctx.tick.major ? 1.5 : 0.7), }, ticks:{ color: C.muted, callback: function(value) { if ([0.1, 1, 5, 10, 20].includes(value)) return value.toString(); if (value === 2.5) return '2.5'; }}}
+        }
+      },
+      plugins:[perfMeter]
+    });
+    applyChartTheme();
+  }
+
+  function buildCurveDataset(label, duty, color){
+    const shiftH=+document.getElementById('shiftH').value;
+    const T = duty*shiftH;
+    if (T <= 0) return { label, data: [], _duty: duty, borderColor: color };
+    const ys=[], x_max = 20;
+    for(let ahv = 0; ahv <= x_max; ahv += 0.1) {
+      const a8 = ahv*Math.sqrt(T/8);
+      if (a8 >= 0.1) ys.push({x: ahv, y: +a8.toFixed(3)});
+    }
+    return {label, data:ys, _duty:duty, tension:0.4, pointRadius:0, spanGaps:true, borderWidth: 2.5, borderColor:color, backgroundColor:color+'33'};
+  }
+  
+  function applyChartTheme(){
+    if(!chartA8||!chartWB) return; const C=Cfg(), L=T[lang];
+    chartWB.options.plugins.legend.labels.color = C.ink;
+    chartWB.data.datasets[0].backgroundColor=[C.accent+'b3', C.breakGreen];
+    chartWB.data.datasets[0].borderColor=[C.accent, C.breakGreen];
+    chartWB.update('none');
+    chartA8.options.scales.x.title.color=C.muted; chartA8.options.scales.x.ticks.color=C.muted;
+    chartA8.options.scales.y.title.color=C.muted; chartA8.options.scales.y.ticks.color=C.muted;
+    chartA8.options.plugins.annotation.annotations = {
+      eavBand:{type:'box',yMin:2.5,yMax:5.0,backgroundColor:C.warn+'26',borderColor:C.warn+'4d',borderWidth:1},
+      elvBand:{type:'box',yMin:5.0,yMax:999,backgroundColor:C.bad+'26',borderColor:C.bad+'4d',borderWidth:1},
+      eavLine:{type:'line',yMin:2.5,yMax:2.5,borderColor:C.warn,borderWidth:1.5,borderDash:[6,6],label:{content:L.ann.eav,position:'start',enabled:true,font:{size:10},color:C.warn,backgroundColor:'rgba(0,0,0,0.55)'}},
+      elvLine:{type:'line',yMin:5.0,yMax:5.0,borderColor:C.bad,borderWidth:1.5,label:{content:L.ann.elv,position:'start',enabled:true,font:{size:10},color:C.bad,backgroundColor:'rgba(0,0,0,0.55)'}}
+    };
+    chartA8.update('none');
+  }
+
+  /* --- Bahasa --- */
+  function setLang(newLang){
+    lang=newLang; const L=T[lang]; if(!L) return;
+    const set=(id,txt)=>{const el=document.getElementById(id);if(el){if(Array.isArray(txt)){el.innerHTML=txt.map(li=>`<li>${li}</li>`).join('')}else{el.innerHTML=txt}}};
+    const setByDataT = (key, text) => { document.querySelectorAll(`[data-t="${key}"]`).forEach(el => el.textContent = text); };
+    set('t_title',L.title); set('t_sub',L.sub);
+    set('t_inputs',L.inputs); set('t_ahvlabel',L.ahvlabel); set('t_ahvhint',L.ahvhint);
+    set('t_targetlabel',L.targetlabel); set('t_targethint',L.targethint);
+    set('t_shiftlabel',L.shiftlabel); set('t_shifthint',L.shifthint);
+    set('t_toolhlabel',L.toolhlabel); set('t_toolhhint',L.toolhhint);
+    set('t_a8fulltxt',`${L.a8fulltxt}<b id="a8full">—</b>`);
+    set('t_tmax8txt',`${L.tmax8txt}<b id="tmax8">—</b> ${lang==='id'?'jam':'h'}`);
+    set('t_tmaxlimtxt',`${L.tmaxlimtxt}<b id="tmaxLimited">—</b> ${lang==='id'?'jam':'h'}`);
+    set('t_perhourtxt',`${L.perhourtxt}<b id="perHour">—</b> (${lang==='id'?'kerja + jeda':'work + break'})`);
+    set('t_opsneedtxt',`${L.opsneedtxt}<b id="opsNeeded">—</b>`);
+    set('t_opts',L.opts); set('t_presethint',L.presethint); set('t_colScheme',L.colScheme); set('t_colT',L.colT); set('t_colStatus',L.colStatus);
+    set('t_dutydef',L.dutydef); set('t_chart1title',L.chart1title); set('t_chart2title',L.chart2title); set('t_chart2hint',L.chart2hint);
+    set('t_foot',L.foot); set('rrCap',L.rr.cap);
+    set('t_gemini_title', L.geminiTitle); set('t_gemini_desc', L.geminiDesc);
+    setByDataT('print', L.print); setByDataT('copyLink', L.copyLink); setByDataT('reset', L.reset); setByDataT('generateRecs', L.generateRecs);
+    buildRR(true);
+    if(chartWB){ chartWB.data.labels=[lang==='id'?'Kerja':'Work',lang==='id'?'Jeda':'Break']; chartWB.update('none'); }
+    if(chartA8){ chartA8.options.scales.x.title.text = (lang==='id'?'aₕᵥ (m/s²) – RMS alat':'aₕᵥ (m/s²) – tool RMS'); chartA8.update('none'); }
+    document.getElementById('btnEN').classList.toggle('active', lang==='en'); document.getElementById('btnEN').setAttribute('aria-pressed', lang==='en');
+    document.getElementById('btnID').classList.toggle('active', lang==='id'); document.getElementById('btnID').setAttribute('aria-pressed', lang==='id');
+    applyChartTheme();
+    recalc();
+    saveState();
+  }
+
+  /* --- Recalc & Plotting --- */
+  function recalc(){
+    const ahvInput = document.getElementById('ahv'), ahv = parseFloat(ahvInput.value);
+    const validationMsg = document.getElementById('ahv-validation-msg');
+    if (ahv < 2.5 || ahv > 18) {
+      validationMsg.textContent = lang === 'id' ? 'Rentang pengisian: 2.5 - 18 m/s².' : 'Input range: 2.5 - 18 m/s².';
+      validationMsg.style.display = 'block';
+      return;
+    } else {
+      validationMsg.style.display = 'none';
+    }
+    const targetA=+document.getElementById('targetA').value||2.5, shiftH=+document.getElementById('shiftH').value, toolHours=+document.getElementById('toolHours').value;
+    const a8full=ahv*Math.sqrt(shiftH/8), pill=pillText(a8full);
+    document.getElementById('a8full').textContent=fmt(a8full,2);
+    const pillEl=document.getElementById('statusPill');pillEl.textContent=pill.text;pillEl.className=pill.cls;
+    const Tmax8=8*Math.pow(targetA/ahv,2), TmaxLimited=Math.min(Tmax8,shiftH);
+    document.getElementById('tmax8').textContent=fmt(Tmax8,2);
+    document.getElementById('tmaxLimited').textContent=fmt(TmaxLimited,2);
+    const dutyTarget=(shiftH>0)?(TmaxLimited/shiftH):0;
+    const dutyRaw = (8*Math.pow(targetA/ahv,2))/shiftH || 0;
+    const workOpt = Math.max(0, Math.min(60, Math.floor(dutyRaw*60/5)*5));
+    lastOptimizedDuty = workOpt/60;
+    const workMin=Math.round(60*dutyTarget), breakMin=60-workMin;
+    document.getElementById('perHour').textContent=`${workMin}′ + ${breakMin}′`;
+    let opsNeeded="—";if(isFinite(toolHours)&&toolHours>0&&TmaxLimited>0)opsNeeded=Math.ceil(toolHours/TmaxLimited);
+    document.getElementById('opsNeeded').textContent=opsNeeded;
+    const rows=[...defaultPresets,...customPresets], tbody=document.querySelector('#schedTable tbody'); tbody.innerHTML="";
+    rows.forEach((p,idx)=>{
+      const dutyRow=p.work/60,T=dutyRow*shiftH,A8=ahv*Math.sqrt(T/8),st=pillText(A8);
+      const label=(lang==='id'?(p.labelID||`${p.work}′+${p.break}′`):(p.labelEN||`${p.work}′+${p.break}′`));
+      const tr=document.createElement('tr'); tr.dataset.work=p.work; tr.dataset.break=p.break;
+      if(activeDuty!==null && Math.abs(activeDuty-dutyRow)<1e-9) tr.classList.add('active');
+      tr.innerHTML=`<td>${label}</td><td>${Math.round(dutyRow*100)}%</td><td>${fmt(T,2)}</td><td>${fmt(A8,2)}</td><td><span class="${st.cls}">${st.text}</span></td><td>${idx>=defaultPresets.length?`<button class="btn small" data-idx="${idx}" title="${lang==='id'?'Hapus':'Delete'}">🗑</button>`:''}</td>`;
+      tbody.appendChild(tr)
+    });
+    if(!chartWB.updatedFromTable){
+      const w = activeDuty!==null ? Math.round(activeDuty*60) : workMin;
+      chartWB.data.datasets[0].data=[w,60-w];
+      chartWB.update('none');
+    }
+    chartWB.updatedFromTable=false;
+    const C=Cfg(), dutyForCurve = activeDuty !== null ? activeDuty : dutyTarget;
+    const curveLabel = lang === 'id' ? 'Kurva Risiko Aktif' : 'Active Risk Curve';
+    const mainCurve = buildCurveDataset(curveLabel, dutyForCurve, C.accent);
+    const point_a8 = ahv * Math.sqrt((dutyForCurve * shiftH) / 8);
+    const pointDataset = { label: 'Current Input', data: [{x: ahv, y: point_a8}], pointBackgroundColor: C.bad, pointRadius: 5, pointHoverRadius: 7, type: 'scatter', showLine: false };
+    chartA8.data.datasets = [mainCurve, pointDataset];
+    chartA8.update('none');
+    const dutyForPts = (activeDuty!==null)?activeDuty:dutyTarget, Tcur = dutyForPts*shiftH;
+    const pts = rrPoints(ahv, Tcur*60);
+    document.getElementById('pointsNow').textContent = Math.round(pts);
+    const pcls = pts>=400?'pill bad':(pts>=100?'pill warn':'pill ok');
+    const ptxt = pts>=400?(lang==='id'?'Di atas ELV!':'Above ELV!'):(pts>=100?(lang==='id'?'Antara EAV–ELV':'Between EAV–ELV'):(lang==='id'?'Di bawah EAV':'Below EAV'));
+    const pp=document.getElementById('pointsPill'); pp.className=pcls; pp.textContent=ptxt;
+    highlightRR(ahv, Tcur);
+    const dutyModeEl = document.getElementById('dutyMode');
+    if (dutyModeEl) dutyModeEl.textContent = (activeDuty===null? T[lang].mode.target : T[lang].mode.selected);
+    saveState();
+  }
+  const debouncedRecalc = debounce(recalc, 350);
+  
+  // REVISI: Fungsi untuk mereset semua input dan state ke default
+  function resetAll() {
+    document.getElementById('ahv').value = "2.50";
+    document.getElementById('targetA').value = "2.50";
+    document.getElementById('shiftH').value = "8";
+    document.getElementById('toolHours').value = "8";
+    document.getElementById('quickWork').value = "45";
+    
+    customPresets = [];
+    activeDuty = 45/60;
+    lastOptimizedDuty = null;
+    
+    localStorage.removeItem('a8sim.state');
+    
+    // The problematic history.pushState call has been removed to prevent SecurityError
+    // in sandboxed environments. The app state will reset, but URL params will remain.
+    
+    recalc();
+  }
+
+  /* --- Ready-Reckoner --- */
+  function buildRR(relabelOnly=false){
+    const head=document.getElementById('rrHead'), body=document.getElementById('rrBody');
+    if(!relabelOnly){ head.innerHTML=''; body.innerHTML=''; }
+    head.innerHTML = `<th style="min-width:72px">${T[lang].rr.mag}</th>` + rrTimesMin.map(m=>`<th data-min="${m}">${formatTimeLabel(m)}</th>`).join('');
+    if(relabelOnly) return;
+    rrMags.forEach(a=>{
+      const tr=document.createElement('tr');
+      tr.innerHTML = `<td class="small"><b>${a}</b></td>` + rrTimesMin.map(m=>{
+        const pts = Math.round(rrPoints(a,m));
+        const cls = classifyPts(pts);
+        return `<td data-a="${a}" data-min="${m}" class="${cls}" title="${pts} pts">${pts}</td>`;
+      }).join('');
+      body.appendChild(tr);
+    });
+    body.addEventListener('click', e=>{
+      const td = e.target.closest('td[data-a][data-min]'); if(!td) return;
+      const a = +td.dataset.a, m = +td.dataset.min, shiftH = +document.getElementById('shiftH').value||8;
+      document.getElementById('ahv').value = a;
+      const duty = Math.max(0, Math.min(1, (m/60)/shiftH));
+      activeDuty = duty;
+      const w = Math.round(duty*60); chartWB.data.datasets[0].data=[w,60-w]; chartWB.updatedFromTable=true; chartWB.update('none');
+      recalc();
+      document.querySelectorAll('#rrBody td.sel').forEach(el=>el.classList.remove('sel'));
+      td.classList.add('sel');
+    });
+  }
+
+  function highlightRR(a_now, T_now_h){
+    const aIdx = rrMags.reduce((bi,_i,idx)=> (Math.abs(rrMags[idx]-a_now)<Math.abs(rrMags[bi]-a_now)?idx:bi),0);
+    const mins = T_now_h*60;
+    const cIdx = rrTimesMin.reduce((bi,_m,idx)=> (Math.abs(rrTimesMin[idx]-mins)<Math.abs(rrTimesMin[bi]-mins)?idx:bi),0);
+    document.querySelectorAll('#rrBody td.sel').forEach(el=>el.classList.remove('sel'));
+    const row = document.querySelector(`#rrBody tr:nth-child(${aIdx+1})`);
+    if(row){
+      const td = row.querySelector(`td[data-min="${rrTimesMin[cIdx]}"]`);
+      if(td) td.classList.add('sel');
+    }
+  }
+
+  /* --- Share --- */
+  function stateToQuery(){
+    const s = saveState();
+    const q = new URLSearchParams({ahv:s.ahv, targetA:s.targetA, shiftH:s.shiftH, toolHours:s.toolHours, lang:s.lang, theme:s.theme, duty: s.activeDuty??''});
+    return `${location.origin}${location.pathname}?${q.toString()}`
+  }
+  function loadFromQuery(){
+    const q = new URLSearchParams(location.search);
+    if(!q.has('ahv')) return;
+    const s = {ahv:+q.get('ahv'), targetA:+q.get('targetA'), shiftH:+q.get('shiftH'), toolHours:+q.get('toolHours'), lang:q.get('lang')||'en', theme:q.get('theme')||'light', presets:[], activeDuty: q.get('duty')? +q.get('duty') : activeDuty};
+    applyState(s);
+  }
+
+  /* --- REVISI: Modal Kustom --- */
+  const modal = document.getElementById('customModal');
+  const modalTitle = document.getElementById('modalTitle');
+  const modalBody = document.getElementById('modalBody');
+  const modalFooter = document.getElementById('modalFooter');
+  
+  function showModal() { modal.classList.add('visible'); }
+  function hideModal() { modal.classList.remove('visible'); }
+  
+  function showAlert(message, title = 'Info') {
+    modalTitle.textContent = title;
+    modalBody.innerHTML = `<p>${message}</p>`;
+    modalFooter.innerHTML = `<button class="btn" id="modalOkBtn">${T[lang].modal.ok}</button>`;
+    document.getElementById('modalOkBtn').onclick = hideModal;
+    showModal();
+  }
+
+  function showPrompt(config) {
+    modalTitle.textContent = config.title;
+    let bodyHtml = '';
+    config.inputs.forEach(input => {
+      bodyHtml += `
+        <div class="modal-input-group">
+          <label for="${input.id}">${input.label}</label>
+          <input type="number" id="${input.id}" value="${input.value}" step="1" min="0" max="60">
+        </div>`;
+    });
+    modalBody.innerHTML = bodyHtml;
+    modalFooter.innerHTML = `
+      <button class="btn secondary" id="modalCancelBtn">${T[lang].modal.cancel}</button>
+      <button class="btn" id="modalSubmitBtn">${config.submitText}</button>`;
+    
+    document.getElementById('modalCancelBtn').onclick = hideModal;
+    document.getElementById('modalSubmitBtn').onclick = () => {
+      const values = config.inputs.map(input => +document.getElementById(input.id).value);
+      config.callback(values);
+      hideModal();
+    };
+    showModal();
+  }
+
+  modal.addEventListener('click', (e) => { if (e.target === modal) hideModal(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && modal.classList.contains('visible')) hideModal(); });
+
+  /* --- Gemini Feature: Generate Recommendations --- */
+  async function generateRecommendations() {
+    const resultDiv = document.getElementById('gemini-result');
+    const generateBtn = document.getElementById('btnGenerateRecs');
+    resultDiv.innerHTML = '<div class="loading-spinner"></div>';
+    generateBtn.disabled = true;
+
+    // Get current values
+    const ahv = +document.getElementById('ahv').value;
+    const shiftH = +document.getElementById('shiftH').value;
+    const workMins = Math.round(activeDuty * 60);
+    const T_val = activeDuty * shiftH;
+    const A8 = ahv * Math.sqrt(T_val / 8);
+
+    // REVISI: Prompt dinamis berdasarkan bahasa yang aktif
+    const currentLang = lang;
+    const riskStatusEN = A8 > 5.0 ? "above the Exposure Limit Value (ELV)" : (A8 >= 2.5 ? "between the Exposure Action Value (EAV) and ELV" : "below the EAV");
+    const riskStatusID = A8 > 5.0 ? "di atas Nilai Batas Aksi (ELV)" : (A8 >= 2.5 ? "di antara Nilai Aksi (EAV) dan Nilai Batas (ELV)" : "di bawah Nilai Aksi (EAV)");
+
+    const promptEN = `You are an expert Health, Safety, and Environment (HSE) officer. Based on the following hand-arm vibration exposure simulation data, provide specific and actionable control recommendations.
+
+    Simulation Data:
+    - Tool Vibration Value (a_hv): ${ahv.toFixed(2)} m/s²
+    - Total Shift Duration: ${shiftH} hours
+    - Work Schedule per Hour: ${workMins} minutes of work, ${60 - workMins} minutes of break
+    - Total Effective Exposure Time (T): ${T_val.toFixed(2)} hours
+    - Resulting Vibration Exposure A(8): ${A8.toFixed(2)} m/s²
+    - Risk Status: ${riskStatusEN}
+
+    Please provide these recommendations in well-structured paragraphs, without using Markdown titles or bullet points. Ensure there is a space between paragraphs for readability. Make the recommendations practical and easy for a field manager or HSE officer to understand. Use English.`;
+
+    const promptID = `Anda adalah seorang ahli Kesehatan dan Keselamatan Kerja (K3) atau HSE. Berdasarkan data simulasi paparan getaran tangan-lengan berikut, berikan rekomendasi kontrol yang spesifik dan dapat ditindaklanjuti.
+
+    Data Simulasi:
+    - Nilai Getaran Alat (a_hv): ${ahv.toFixed(2)} m/s²
+    - Durasi Shift Total: ${shiftH} jam
+    - Jadwal Kerja per Jam: ${workMins} menit kerja, ${60 - workMins} menit istirahat
+    - Total Waktu Paparan Efektif (T): ${T_val.toFixed(2)} jam
+    - Hasil Paparan Getaran A(8): ${A8.toFixed(2)} m/s²
+    - Status Risiko: ${riskStatusID}
+
+    Tolong berikan rekomendasi ini dalam beberapa paragraf yang terstruktur dengan baik, tanpa menggunakan judul atau daftar berpoin Markdown. Pastikan ada spasi antar paragraf untuk keterbacaan. Buat rekomendasi ini praktis dan mudah dipahami untuk manajer lapangan atau petugas K3. Gunakan bahasa Indonesia.`;
+
+    const prompt = currentLang === 'id' ? promptID : promptEN;
+
+
+    let chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
+    const payload = { contents: chatHistory };
+    const apiKey = ""; // API key is handled by the environment
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+    
+    try {
+        let response;
+        let result;
+        let retries = 3;
+        let delay = 1000;
+
+        for (let i = 0; i < retries; i++) {
+            response = await fetch(apiUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            if (response.ok) {
+                result = await response.json();
+                break;
+            } else {
+                if (i < retries - 1) {
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                    delay *= 2; // Exponential backoff
+                } else {
+                    throw new Error(`API request failed with status ${response.status}`);
+                }
+            }
+        }
+
+        if (result && result.candidates && result.candidates.length > 0 &&
+            result.candidates[0].content && result.candidates[0].content.parts &&
+            result.candidates[0].content.parts.length > 0) {
+            const text = result.candidates[0].content.parts[0].text;
+            resultDiv.textContent = text; // Menggunakan textContent untuk format paragraf
+        } else {
+            throw new Error("Invalid response structure from API.");
+        }
+    } catch (error) {
+        console.error("Gemini API Error:", error);
+        resultDiv.textContent = T[lang].geminiError;
+    } finally {
+        generateBtn.disabled = false;
+    }
+  }
+  
+  /* --- Event Listeners --- */
+  function setupEventListeners() {
+    document.getElementById('schedTable').addEventListener('click', e => {
+      const delBtn = e.target.closest('button[data-idx]');
+      if (delBtn) {
+        const idx = parseInt(delBtn.dataset.idx, 10), customIdx = idx - defaultPresets.length;
+        if (customIdx >= 0 && customIdx < customPresets.length) {
+          customPresets.splice(customIdx, 1);
+          if (customPresets.length === 0) activeDuty = null;
+          recalc();
+        }
+        return;
+      }
+      const row = e.target.closest('tr[data-work]');
+      if (row) {
+        const work = +row.dataset.work;
+        if (!isNaN(work)) {
+          chartWB.data.datasets[0].data = [work, 60 - work];
+          chartWB.updatedFromTable = true;
+          chartWB.update('none');
+          activeDuty = work / 60;
+          document.querySelectorAll('#schedTable tbody tr.active').forEach(tr => tr.classList.remove('active'));
+          row.classList.add('active');
+          recalc();
+        }
+      }
+    });
+
+    document.getElementById('btnPrint').addEventListener('click', () => window.print());
+    document.getElementById('btnTheme').addEventListener('click', () => setTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'));
+    document.getElementById('btnEN').addEventListener('click', () => setLang('en'));
+    document.getElementById('btnID').addEventListener('click', () => setLang('id'));
+    document.getElementById('btnResetAll').addEventListener('click', resetAll); // REVISI: Tambahkan event listener untuk reset
+    document.getElementById('btnGenerateRecs').addEventListener('click', generateRecommendations); // Gemini Feature
+    
+    document.getElementById('btnCopy').addEventListener('click', async () => {
+      const url = stateToQuery();
+      try {
+        await navigator.clipboard.writeText(url);
+        showAlert(T[lang].modal.linkCopied);
+      } catch {
+        showPrompt({
+          title: T[lang].modal.copyPrompt,
+          inputs: [{ id: 'copyUrlInput', label: '', value: url }],
+          submitText: T[lang].modal.ok,
+          callback: () => {} // No action needed on callback
+        });
+        document.getElementById('copyUrlInput').select();
+      }
+    });
+
+    document.getElementById('btnAddPreset').addEventListener('click', () => {
+      showPrompt({
+        title: T[lang].modal.addPresetTitle,
+        inputs: [
+          { id: 'promptWork', label: T[lang].modal.workMinLabel, value: 45 },
+          { id: 'promptBreak', label: T[lang].modal.breakMinLabel, value: 15 }
+        ],
+        submitText: T[lang].modal.add,
+        callback: ([w, b]) => {
+          const wi = Math.max(0, Math.min(60, w || 0)), bi = Math.max(0, Math.min(60, b || 0));
+          if (wi + bi === 0) {
+            showAlert(T[lang].modal.invalidInput, 'Error');
+            return;
+          }
+          customPresets.push({ work: wi, break: bi });
+          activeDuty = wi / 60;
+          recalc();
+        }
+      });
+    });
+
+    const quick = document.getElementById('quickWork');
+    const quickBadge = document.getElementById('quickBadge');
+    const syncQuick = () => { const w=+quick.value; quickBadge.textContent = (lang==='id'?`${w}′ kerja + ${60-w}′ jeda`:`${w}′ work + ${60-w}′ break`); };
+    quick.addEventListener('input', syncQuick);
+    document.getElementById('btnUseQuick').addEventListener('click', () => {
+      const w = +quick.value;
+      activeDuty = w / 60;
+      chartWB.data.datasets[0].data = [w, 60 - w];
+      chartWB.updatedFromTable = true;
+      chartWB.update('none');
+      recalc();
+    });
+    
+    // REVISI: Gunakan debouncing untuk input utama
+    ['ahv', 'targetA', 'shiftH', 'toolHours'].forEach(id => {
+      document.getElementById(id).addEventListener('input', debouncedRecalc);
+    });
+  }
+
+  /* --- init --- */
+  document.addEventListener('DOMContentLoaded', () => {
+    buildCharts();
+    buildRR(false);
+    loadFromQuery();
+    const local = loadState();
+    if (local && !location.search) applyState(local);
+    setTheme(document.documentElement.getAttribute('data-theme') || 'light');
+    setLang(lang || 'en');
+    const w = +document.getElementById('quickWork').value;
+    activeDuty = w / 60;
+    chartWB.data.datasets[0].data = [w, 60 - w];
+    chartWB.update('none');
+    document.getElementById('btnEN').classList.add('active');
+    document.getElementById('btnEN').setAttribute('aria-pressed', 'true');
+    setupEventListeners();
+    recalc();
+  });
+
+  // Script sorting untuk Tabel Magnitudo Vibrasi
+  document.addEventListener('DOMContentLoaded', function () {
+    const getSortValue = (row) => {
+      const textValue = row.cells[row.cells.length - 1].textContent;
+      const match = textValue.match(/(\d+(\.\d+)?)/);
+      return match ? parseFloat(match[0]) : 0;
+    };
+    const sortableHeader = document.querySelector('#vibrationTable .sortable');
+    if (!sortableHeader) return;
+    let sortDirection = 'asc';
+    sortableHeader.addEventListener('click', () => {
+      const tableBody = document.querySelector('#vibrationTable tbody');
+      const groupStarts = Array.from(tableBody.querySelectorAll('tr.group-start'));
+      const groups = groupStarts.map(startRow => {
+        const group = [startRow];
+        let nextSibling = startRow.nextElementSibling;
+        while (nextSibling && nextSibling.classList.contains('sub-row')) {
+          group.push(nextSibling);
+          nextSibling = nextSibling.nextElementSibling;
+        }
+        return { rows: group, sortValue: getSortValue(startRow) };
+      });
+      groups.sort((a, b) => sortDirection === 'asc' ? a.sortValue - b.sortValue : b.sortValue - a.sortValue);
+      tableBody.innerHTML = '';
+      groups.forEach(group => group.rows.forEach(row => tableBody.appendChild(row)));
+      document.querySelectorAll('#vibrationTable .sortable').forEach(th => th.classList.remove('asc', 'desc'));
+      sortableHeader.classList.add(sortDirection);
+      sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+    });
+  });
+
+})(); // Akhir dari IIFE
+</script>
+
+</body>
+</html>
