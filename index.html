@@ -65,8 +65,8 @@
   .grid{display:grid;gap:14px}
   @media(min-width:980px){ .grid{grid-template-columns:1.05fr 1.15fr}}
   label{display:block;font-size:14px;color:var(--muted);margin-bottom:6px}
-  input[type=number]{width:100%;padding:10px 12px;background:var(--card);border:1px solid color-mix(in oklab, var(--ink) 18%, transparent);color:var(--ink);border-radius:12px;outline:none}
-  input[type=number]:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--focus)}
+  input[type=number], input[type=text]{width:100%;padding:10px 12px;background:var(--card);border:1px solid color-mix(in oklab, var(--ink) 18%, transparent);color:var(--ink);border-radius:12px;outline:none}
+  input[type=number]:focus, input[type=text]:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--focus)}
   .row{display:grid;gap:12px;grid-template-columns:repeat(auto-fit, minmax(120px, 1fr));}
   @media(max-width:720px){ .row{grid-template-columns:1fr}}
   .hint{font-size:12px;color:var(--muted)}
@@ -350,7 +350,7 @@
       <h2 id="rr_title">Ready-Reckoner: Vibration Exposure Points</h2>
       <p class="small" id="rr_desc">
         Points use the HSE scheme: <code>Points = 2 × a² × t</code> (a in m/s², t in hours). 100 pts ≈ EAV (A(8)=2.5), 400 pts ≈ ELV (A(8)=5).
-        Click a cell to apply its <i>a</i> and <i>T</i> to the simulation.
+        Click a cell to apply its a and T to the simulation.
       </p>
       <div class="ready-wrap">
         <table class="ready" id="rrTable" role="grid" aria-label="Ready-Reckoner table">
@@ -952,7 +952,7 @@
       bodyHtml += `
         <div class="modal-input-group">
           <label for="${input.id}">${input.label}</label>
-          <input type="number" id="${input.id}" value="${input.value}" step="1" min="0" max="60">
+          <input type="${input.type || 'number'}" id="${input.id}" value="${input.value}" step="1" min="0" max="60">
         </div>`;
     });
     modalBody.innerHTML = bodyHtml;
@@ -962,9 +962,8 @@
     
     document.getElementById('modalCancelBtn').onclick = hideModal;
     document.getElementById('modalSubmitBtn').onclick = () => {
-      const values = config.inputs.map(input => +document.getElementById(input.id).value);
+      const values = config.inputs.map(input => document.getElementById(input.id).value);
       config.callback(values);
-      hideModal();
     };
     showModal();
   }
@@ -974,6 +973,15 @@
 
   /* --- Gemini Feature: Generate Recommendations --- */
   async function generateRecommendations() {
+    // REVISI: Masukkan Kunci API Anda di sini
+    const apiKey = "AIzaSyA8vjraAuGdr5Uakp_h7kKRiVrcGvQq5YQ";
+
+    if (!apiKey || apiKey === "AIzaSyA8vjraAuGdr5Uakp_h7kKRiVrcGvQq5YQ") {
+      console.error("Gemini API Key not provided in the script.");
+      showAlert("API Key is not configured in the application script.", "Configuration Error");
+      return;
+    }
+
     const resultDiv = document.getElementById('gemini-result');
     const generateBtn = document.getElementById('btnGenerateRecs');
     resultDiv.innerHTML = '<div class="loading-spinner"></div>';
@@ -986,7 +994,6 @@
     const T_val = activeDuty * shiftH;
     const A8 = ahv * Math.sqrt(T_val / 8);
 
-    // REVISI: Prompt dinamis berdasarkan bahasa yang aktif
     const currentLang = lang;
     const riskStatusEN = A8 > 5.0 ? "above the Exposure Limit Value (ELV)" : (A8 >= 2.5 ? "between the Exposure Action Value (EAV) and ELV" : "below the EAV");
     const riskStatusID = A8 > 5.0 ? "di atas Nilai Batas Aksi (ELV)" : (A8 >= 2.5 ? "di antara Nilai Aksi (EAV) dan Nilai Batas (ELV)" : "di bawah Nilai Aksi (EAV)");
@@ -1017,10 +1024,8 @@
 
     const prompt = currentLang === 'id' ? promptID : promptEN;
 
-
     let chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
     const payload = { contents: chatHistory };
-    const apiKey = ""; // API key is handled by the environment
     const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
     
     try {
@@ -1053,7 +1058,7 @@
             result.candidates[0].content && result.candidates[0].content.parts &&
             result.candidates[0].content.parts.length > 0) {
             const text = result.candidates[0].content.parts[0].text;
-            resultDiv.textContent = text; // Menggunakan textContent untuk format paragraf
+            resultDiv.textContent = text;
         } else {
             throw new Error("Invalid response structure from API.");
         }
@@ -1097,8 +1102,8 @@
     document.getElementById('btnTheme').addEventListener('click', () => setTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'));
     document.getElementById('btnEN').addEventListener('click', () => setLang('en'));
     document.getElementById('btnID').addEventListener('click', () => setLang('id'));
-    document.getElementById('btnResetAll').addEventListener('click', resetAll); // REVISI: Tambahkan event listener untuk reset
-    document.getElementById('btnGenerateRecs').addEventListener('click', generateRecommendations); // Gemini Feature
+    document.getElementById('btnResetAll').addEventListener('click', resetAll);
+    document.getElementById('btnGenerateRecs').addEventListener('click', generateRecommendations);
     
     document.getElementById('btnCopy').addEventListener('click', async () => {
       const url = stateToQuery();
@@ -1108,9 +1113,9 @@
       } catch {
         showPrompt({
           title: T[lang].modal.copyPrompt,
-          inputs: [{ id: 'copyUrlInput', label: '', value: url }],
+          inputs: [{ id: 'copyUrlInput', label: '', value: url, type: 'text' }],
           submitText: T[lang].modal.ok,
-          callback: () => {} // No action needed on callback
+          callback: () => {}
         });
         document.getElementById('copyUrlInput').select();
       }
@@ -1120,12 +1125,12 @@
       showPrompt({
         title: T[lang].modal.addPresetTitle,
         inputs: [
-          { id: 'promptWork', label: T[lang].modal.workMinLabel, value: 45 },
-          { id: 'promptBreak', label: T[lang].modal.breakMinLabel, value: 15 }
+          { id: 'promptWork', label: T[lang].modal.workMinLabel, value: 45, type: 'number' },
+          { id: 'promptBreak', label: T[lang].modal.breakMinLabel, value: 15, type: 'number' }
         ],
         submitText: T[lang].modal.add,
         callback: ([w, b]) => {
-          const wi = Math.max(0, Math.min(60, w || 0)), bi = Math.max(0, Math.min(60, b || 0));
+          const wi = Math.max(0, Math.min(60, +w || 0)), bi = Math.max(0, Math.min(60, +b || 0));
           if (wi + bi === 0) {
             showAlert(T[lang].modal.invalidInput, 'Error');
             return;
@@ -1150,7 +1155,6 @@
       recalc();
     });
     
-    // REVISI: Gunakan debouncing untuk input utama
     ['ahv', 'targetA', 'shiftH', 'toolHours'].forEach(id => {
       document.getElementById(id).addEventListener('input', debouncedRecalc);
     });
