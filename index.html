@@ -13,7 +13,6 @@
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.0.1/dist/chartjs-plugin-annotation.min.js"></script>
-    <!-- Gemini Feature: Simple Markdown Parser (kept for potential future use, but not used for current paragraph format) -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
 <style>
@@ -36,14 +35,51 @@
     --rr-ok:#163a23; --rr-warn:#3a2f13; --rr-bad:#3a1515;
   }
   *{box-sizing:border-box}
-  html{font-size: 15px;}
+  html{font-size: 15px; scroll-behavior: smooth;}
   body{margin:0;font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:var(--ink);background:linear-gradient(180deg,var(--bg1),var(--bg2));line-height:1.5}
-  header{padding:24px 16px 6px;text-align:center}
-  header h1 { margin: 0 0 6px; font-weight: 700; letter-spacing: .2px; font-size: clamp(1.2rem, 4.5vw, 2.2rem); }
-  header p{margin:0;color:var(--muted)}
+  
+  /* --- REVISI: Header dengan Background Image --- */
+  header {
+    padding: 60px 16px;
+    text-align: center;
+    position: relative;
+    color: white;
+    border-radius: 0 0 24px 24px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    background-image: url('https://raw.githubusercontent.com/simcalc/simcalc.github.io/refs/heads/main/img/jack-hammer.webp');
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+  }
+  header::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.5); /* Overlay semi-transparan */
+    z-index: 1;
+  }
+  header h1, header p {
+    position: relative;
+    z-index: 2;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+  }
+  header h1 { 
+    margin: 0 0 6px; 
+    font-weight: 700; 
+    letter-spacing: .2px; 
+    font-size: clamp(1.2rem, 4.5vw, 2.2rem); 
+  }
+  header p {
+    margin:0;
+    color: #e0e0e0;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.7);
+  }
+  
   .brandbar{display:flex;justify-content:center;margin:8px 0 4px}
   .brandbar img{max-height:42px; width:auto; object-fit:contain}
-  main{ overflow-x: hidden; } /* REVISI: Wrapper <main> untuk konten utama */
+  main{ overflow-x: hidden; }
   .wrap{max-width:1100px;margin:16px auto 42px;padding:0 16px;}
   .toolbar{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:8px 0 16px}
   .btn{cursor:pointer;padding:8px 12px;border-radius:10px;border:1px solid color-mix(in oklab, var(--ink) 15%, transparent);background:color-mix(in oklab, var(--card) 92%, black 8%);color:var(--ink); min-height:40px; font-size: 0.9rem;}
@@ -197,9 +233,12 @@
     border-radius: 12px;
     border: 1px solid var(--line);
     min-height: 50px;
-    white-space: pre-wrap; /* Allows line breaks for paragraphs */
-    line-height: 1.4; /* REVISI: Spasi baris tunggal */
+    line-height: 1.4;
   }
+  #gemini-result h3 { font-size: 1.1rem; color: var(--accent); margin-top: 1rem; }
+  #gemini-result p { margin: 0.5rem 0; }
+  #gemini-result a { color: var(--accent); text-decoration: none; font-weight: 500;}
+  #gemini-result a:hover { text-decoration: underline; }
   .loading-spinner {
     border: 4px solid var(--line);
     border-top: 4px solid var(--accent);
@@ -493,12 +532,12 @@
     </div>
     <div class="literature-section">
       <h3>Literature:</h3>
-      <ol>
-        <li>HSE UK Hand-arm vibration — <a href="https://www.hse.gov.uk/pubns/priced/l140.pdf" target="_blank" rel="noopener noreferrer">https://www.hse.gov.uk/.../l140.pdf</a></li>
-        <li>AU Gov Guide to Measuring Assessing Workplace Exposure to Hand-Arm Vibration — <a href="https://www.safeworkaustralia.gov.au/system/files/documents/1703/guidetomeasuringassessinghandarmvibration.pdf" target="_blank" rel="noopener noreferrer">https://www.safeworkaustralia.gov.au/...</a></li>
-        <li>PERMENAKER No. 5 2018 — <a href="https://jdih.kemnaker.go.id/asset/data_puu/Permen_5_2018.pdf" target="_blank" rel="noopener noreferrer">https://jdih.kemnaker.go.id/.../Permen_5_2018.pdf</a></li>
-        <li value="5">SNI 7054:2019 — <a href="https://pesta.bsn.go.id/produk/detail/12373-sni70542019" target="_blank" rel="noopener noreferrer">https://pesta.bsn.go.id/.../12373-sni70542019</a></li>
-        <li>Pengukuran Getaran Tangan Dosimeter — <a href="https://has-environmental.com/wp-content/uploads/2024/03/SV-103-Hand-Arm-Vibration.pdf" target="_blank" rel="noopener noreferrer">https://has-environmental.com/.../SV-103-Hand-Arm-Vibration.pdf</a></li>
+      <ol id="literature-list">
+        <li id="ref-1">HSE UK Hand-arm vibration — <a href="https://www.hse.gov.uk/pubns/priced/l140.pdf" target="_blank" rel="noopener noreferrer">https://www.hse.gov.uk/.../l140.pdf</a></li>
+        <li id="ref-2">AU Gov Guide to Measuring Assessing Workplace Exposure to Hand-Arm Vibration — <a href="https://www.safeworkaustralia.gov.au/system/files/documents/1703/guidetomeasuringassessinghandarmvibration.pdf" target="_blank" rel="noopener noreferrer">https://www.safeworkaustralia.gov.au/...</a></li>
+        <li id="ref-3">PERMENAKER No. 5 2018 — <a href="https://jdih.kemnaker.go.id/asset/data_puu/Permen_5_2018.pdf" target="_blank" rel="noopener noreferrer">https://jdih.kemnaker.go.id/.../Permen_5_2018.pdf</a></li>
+        <li id="ref-4">SNI 7054:2019 — <a href="https://pesta.bsn.go.id/produk/detail/12373-sni70542019" target="_blank" rel="noopener noreferrer">https://pesta.bsn.go.id/.../12373-sni70542019</a></li>
+        <li id="ref-5">Pengukuran Getaran Tangan Dosimeter — <a href="https://has-environmental.com/wp-content/uploads/2024/03/SV-103-Hand-Arm-Vibration.pdf" target="_blank" rel="noopener noreferrer">https://has-environmental.com/.../SV-103-Hand-Arm-Vibration.pdf</a></li>
       </ol>
     </div>
   </div>
@@ -758,17 +797,7 @@
           legend:{display:false}, 
           decimation:{enabled:true,algorithm:'lttb',samples:90},
           annotation:{annotations:{}},
-          tooltip:{
-            callbacks:{
-              title(items){ if(!items?.length) return ''; const ahv=+items[0].label; return `aₕᵥ: ${ahv.toFixed(2)} m/s²`; },
-              label(ctx){ const a8=+ctx.parsed.y; return `A(8): ${a8.toFixed(2)} m/s²`; },
-              afterLabel(ctx){
-                const EAV=2.5, ELV=5.0, a8=+ctx.parsed.y;
-                const m = (x,th)=>((x/th)-1)*100, s=(v)=> (v>=0?'+':'')+v.toFixed(1)+'%';
-                return [`EAV 2.50: ${s(m(a8,EAV))}`,`ELV 5.00: ${s(m(a8,ELV))}`];
-              }
-            }
-          }
+          tooltip:{ enabled: false } // REVISI: Matikan tooltip bawaan
         },
         scales:{
           x:{type: 'linear', title:{display:true,text: 'aₕᵥ (m/s²) – tool RMS'}, min: 0, max: 20, grid:{ color: (ctx) => (ctx.tick.major ? Cfg().line : Cfg().lineMinor), lineWidth: (ctx) => (ctx.tick.major ? 1.5 : 0.7), }, ticks:{ color: C.muted, stepSize: 5 }},
@@ -1087,6 +1116,49 @@
   modal.addEventListener('click', (e) => { if (e.target === modal) hideModal(); });
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && modal.classList.contains('visible')) hideModal(); });
 
+  // REVISI: Fungsi untuk mengubah sitasi [n] menjadi link dan menangani referensi baru
+  function processAIResponse(text) {
+    const resultDiv = document.getElementById('gemini-result');
+    const litList = document.getElementById('literature-list');
+    let currentRefIndex = litList.children.length;
+
+    // Ekstrak bagian referensi baru jika ada
+    const newRefRegex = /(?:Referensi Baru|New References):?\s*\n([\s\S]*)/i;
+    const newRefMatch = text.match(newRefRegex);
+    let mainContent = text;
+
+    if (newRefMatch) {
+      mainContent = text.replace(newRefRegex, '').trim();
+      const newRefs = newRefMatch[1].split('\n').filter(line => line.trim() !== '');
+      
+      newRefs.forEach(refText => {
+        currentRefIndex++;
+        const newLi = document.createElement('li');
+        newLi.id = `ref-${currentRefIndex}`;
+        
+        // Coba cari URL untuk dijadikan link
+        const urlRegex = /(https?:\/\/[^\s]+)/;
+        const urlMatch = refText.match(urlRegex);
+        if (urlMatch) {
+          const url = urlMatch[0];
+          const textWithoutUrl = refText.replace(url, '').trim();
+          newLi.innerHTML = `${textWithoutUrl} — <a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a>`;
+        } else {
+          newLi.textContent = refText.replace(/^\d+\.\s*/, ''); // Hapus nomor urut dari AI
+        }
+        litList.appendChild(newLi);
+      });
+    }
+
+    // Ubah sitasi menjadi link
+    const linkedContent = mainContent.replace(/\[(\d+)\]/g, (match, number) => {
+      return ` <a href="#ref-${number}" title="Lihat referensi ${number}">[${number}]</a>`;
+    });
+
+    resultDiv.innerHTML = marked.parse(linkedContent); // Gunakan marked untuk render sub-bab
+  }
+
+
   /* --- Gemini Feature: Generate Recommendations --- */
   async function generateRecommendations() {
     // REVISI: Masukkan Kunci API Anda di sini
@@ -1113,6 +1185,10 @@
     const currentLang = lang;
     const riskStatusEN = A8 > 5.0 ? "above the Exposure Limit Value (ELV)" : (A8 >= 2.5 ? "between the Exposure Action Value (EAV) and ELV" : "below the EAV");
     const riskStatusID = A8 > 5.0 ? "di atas Nilai Batas Aksi (ELV)" : (A8 >= 2.5 ? "di antara Nilai Aksi (EAV) dan Nilai Batas (ELV)" : "di bawah Nilai Aksi (EAV)");
+    
+    // REVISI: Menambahkan daftar literatur ke prompt
+    const literatureItems = Array.from(document.querySelectorAll('#literature-list li'));
+    const literatureText = literatureItems.map((item, index) => `${index + 1}. ${item.textContent.trim().split('—')[0]}`).join('\n');
 
     const promptEN = `You are an expert Health, Safety, and Environment (HSE) officer. Based on the following hand-arm vibration exposure simulation data, provide specific and actionable control recommendations.
 
@@ -1120,11 +1196,18 @@
     - Tool Vibration Value (a_hv): ${ahv.toFixed(2)} m/s²
     - Total Shift Duration: ${shiftH} hours
     - Work Schedule per Hour: ${workMins} minutes of work, ${60 - workMins} minutes of break
-    - Total Effective Exposure Time (T): ${T_val.toFixed(2)} hours
     - Resulting Vibration Exposure A(8): ${A8.toFixed(2)} m/s²
     - Risk Status: ${riskStatusEN}
 
-    Please provide these recommendations in well-structured paragraphs, without using Markdown titles or bullet points. Ensure there is a space between paragraphs for readability. Make the recommendations practical and easy for a field manager or HSE officer to understand. Use English.`;
+    Structure your response using the following Markdown h3 headings: ### Worker Rotation, ### Engineering Controls, ### Administrative Controls, ### Training & Work Technique, ### PPE.
+    Under each heading, provide practical recommendations in paragraph form.
+    At the end of each relevant sentence, add a citation number in square brackets, e.g., [1], [3], that refers to the most appropriate source from the literature list below.
+    If you use knowledge that is not from the list, add a new section at the very end called "New References:" and list the new source(s) there.
+
+    Literature List:
+    ${literatureText}
+    
+    Use English.`;
 
     const promptID = `Anda adalah seorang ahli Kesehatan dan Keselamatan Kerja (K3) atau HSE. Berdasarkan data simulasi paparan getaran tangan-lengan berikut, berikan rekomendasi kontrol yang spesifik dan dapat ditindaklanjuti.
 
@@ -1132,11 +1215,18 @@
     - Nilai Getaran Alat (a_hv): ${ahv.toFixed(2)} m/s²
     - Durasi Shift Total: ${shiftH} jam
     - Jadwal Kerja per Jam: ${workMins} menit kerja, ${60 - workMins} menit istirahat
-    - Total Waktu Paparan Efektif (T): ${T_val.toFixed(2)} jam
     - Hasil Paparan Getaran A(8): ${A8.toFixed(2)} m/s²
     - Status Risiko: ${riskStatusID}
 
-    Tolong berikan rekomendasi ini dalam beberapa paragraf yang terstruktur dengan baik, tanpa menggunakan judul atau daftar berpoin Markdown. Pastikan ada spasi antar paragraf untuk keterbacaan. Buat rekomendasi ini praktis dan mudah dipahami untuk manajer lapangan atau petugas K3. Gunakan bahasa Indonesia.`;
+    Harap susun jawaban Anda menggunakan sub-bab Markdown h3 berikut: ### Worker Rotation, ### Engineering Controls, ### Administrative Controls, ### Training & Work Technique, ### PPE.
+    Di bawah setiap sub-bab, berikan rekomendasi praktis dalam bentuk paragraf.
+    Di akhir setiap kalimat yang relevan, tambahkan nomor sitasi dalam kurung siku, misalnya [1], [3], yang merujuk pada daftar literatur di bawah ini.
+    Jika Anda menggunakan sumber pengetahuan yang tidak ada dalam daftar, tambahkan bagian baru di paling akhir dengan judul "Referensi Baru:" dan sebutkan sumber baru tersebut.
+
+    Daftar Literatur:
+    ${literatureText}
+    
+    Gunakan bahasa Indonesia.`;
 
     const prompt = currentLang === 'id' ? promptID : promptEN;
 
@@ -1174,7 +1264,7 @@
             result.candidates[0].content && result.candidates[0].content.parts &&
             result.candidates[0].content.parts.length > 0) {
             const text = result.candidates[0].content.parts[0].text;
-            resultDiv.textContent = text;
+            processAIResponse(text); // REVISI: Gunakan fungsi baru untuk memproses response
         } else {
             throw new Error("Invalid response structure from API.");
         }
