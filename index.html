@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator Paparan Getaran A(8) [Disempurnakan]</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Custom styles for better visual appeal */
+        .status-below-eav { background-color: #28a745; color: white; }
+        .status-above-eav { background-color: #ffc107; color: #333; }
+        .status-above-elv { background-color: #dc3545; color: white; }
+        
+        /* Chart Legend Colors */
+        .legend-work::before { content: ''; display: inline-block; width: 12px; height: 12px; background-color: #007bff; margin-right: 8px; border-radius: 2px; }
+        .legend-rest::before { content: ''; display: inline-block; width: 12px; height: 12px; background-color: #17a2b8; margin-right: 8px; border-radius: 2px; }
+        .legend-break::before { content: ''; display: inline-block; width: 12px; height: 12px; background-color: #6c757d; margin-right: 8px; border-radius: 2px; }
+        .legend-idle::before { content: ''; display: inline-block; width: 12px; height: 12px; background-color: #e9ecef; margin-right: 8px; border-radius: 2px; }
+
+        /* -- PENINGKATAN: Gaya untuk Tooltip Info -- */
+        .info-container {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+        }
+        .info-icon {
+            cursor: pointer;
+            margin-left: 8px;
+            font-weight: 600;
+            color: #6b7280;
+            border: 1px solid #d1d5db;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 12px;
+        }
+        .tooltip-text {
+            visibility: hidden;
+            width: 280px;
+            background-color: #333;
+            color: #fff;
+            text-align: left;
+            border-radius: 6px;
+            padding: 8px 12px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -140px; /* Use half of the width to center */
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 12px;
+            font-weight: 400;
+            line-height: 1.6;
+        }
+        .tooltip-text::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #333 transparent transparent transparent;
+        }
+        .info-container:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        /* -- PENINGKATAN: Animasi Highlight untuk Input -- */
+        @keyframes highlight-input {
+            0% { box-shadow: 0 0 0 2px rgba(59, 130, 246, 0); }
+            50% { box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.6); }
+            100% { box-shadow: 0 0 0 2px rgba(59, 130, 246, 0); }
+        }
+        .input-highlight {
+            animation: highlight-input 1.5s ease-out;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-start justify-center min-h-screen p-4">
+
+    <div class="calculator-container bg-white p-4 sm:p-6 md:p-8 rounded-2xl shadow-lg w-full max-w-6xl">
+        <!-- Header Section -->
+        <header class="border-b pb-4 mb-6">
+            <h1 class="text-2xl md:text-3xl font-bold text-gray-800">Vibration Exposure Simulation A(8)</h1>
+            <p class="text-gray-500 mt-1">Simulasi paparan getaran dan manajemen waktu kerja sesuai standar keselamatan</p>
+        </header>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Left Column: Inputs -->
+            <div class="md:col-span-1">
+                <section class="inputs">
+                    <h3 class="text-lg font-semibold text-gray-700 mb-4">Parameter Getaran</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label for="tool-type" class="block text-xs font-medium text-gray-600 mb-1">Tipe Perkakas (Handtool)</label>
+                            <select id="tool-type" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 transition">
+                                <option value="" disabled selected>-- Pilih Tipe Perkakas --</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="ahv-input" class="block text-xs font-medium text-gray-600 mb-1">Getaran Alat (Ahv) m/s²</label>
+                            <input type="number" id="ahv-input" step="0.1" min="0" max="18" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 transition" />
+                        </div>
+                        <div>
+                            <label for="tool-hours-input" class="block text-xs font-medium text-gray-600 mb-1">Total Jam Penggunaan Alat sesuai Net jam kerja</label>
+                            <input type="number" id="tool-hours-input" step="0.5" min="1" max="6.5" value="6.5" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 transition" />
+                        </div>
+                        <div>
+                            <label for="operators-input" class="block text-xs font-medium text-gray-600 mb-1">Jumlah Operator (min)</label>
+                            <input type="number" id="operators-input" step="1" min="1" max="6" value="1" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 transition" />
+                        </div>
+                    </div>
+                </section>
+
+                <section class="schedule-inputs mt-6">
+                    <h3 class="text-lg font-semibold text-gray-700 mb-4">Jadwal Kerja Harian</h3>
+                    <div class="space-y-2 text-xs bg-gray-50 p-4 rounded-lg border">
+                        <p><strong>Jam Kerja:</strong> 08:00 - 16:00</p>
+                        <p><strong>Coffee Break 1:</strong> 09:30 (15 min)</p>
+                        <p><strong>Istirahat Siang:</strong> 12:00 - 13:00 (60 min)</p>
+                        <p><strong>Coffee Break 2:</strong> 14:45 (15 min)</p>
+                        <hr class="my-2" />
+                        <p class="text-xs"><strong>Total Durasi Shift:</strong> <span id="shift-duration-display" class="text-xs text-gray-700"></span></p>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Right Column: Outputs -->
+            <div class="md:col-span-1 lg:col-span-2">
+                <!-- Output Section -->
+                <section class="output-section bg-gray-50 p-6 rounded-lg text-center">
+                    <div class="info-container">
+                        <h2 class="text-lg font-semibold text-gray-600">HSE Exposure Points</h2>
+                        <!-- PENINGKATAN: Ikon Info dengan Tooltip -->
+                        <span class="info-icon" title="Klik untuk info">?</span>
+                        <span class="tooltip-text">
+                            <b>EAV (Batas Aksi): 100 poin.</b> Tindakan kontrol getaran harus dimulai. <br>
+                            <b>ELV (Batas Paparan): 400 poin.</b> Pekerja tidak boleh terpapar di atas level ini.
+                        </span>
+                    </div>
+                    <div id="hse-points-value" class="text-5xl font-bold text-gray-800 my-2">0</div>
+                    <div id="status-display" class="text-base font-semibold p-3 rounded-md transition-all duration-300">
+                        Calculating...
+                    </div>
+                    <div id="shift-limit-display" class="text-sm text-gray-500 mt-3"></div>
+                </section>
+                
+                <!-- Recommendation Section -->
+                <section class="recommendation-section bg-blue-50 border-l-4 border-blue-500 p-4 my-6 rounded-r-md">
+                    <h4 class="font-semibold text-blue-800">Rekomendasi Siklus Kerja Getaran</h4>
+                    <p id="per-hour-recommendation" class="text-xl font-bold text-blue-600 mt-1">60' Kerja + 0' Istirahat</p>
+                    <!-- PENINGKATAN: Catatan klarifikasi -->
+                    <p class="text-xs text-gray-500 mt-2">Ini adalah rekomendasi umum untuk manajemen risiko, bukan aturan yang kaku.</p>
+                </section>
+
+                <!-- Schedule Chart Section -->
+                <section class="schedule-section my-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-semibold text-gray-700">Timeline Manajemen Kerja</h3>
+                        <div id="chart-legend" class="flex space-x-4 text-xs">
+                            <span class="legend-work">Kerja</span>
+                            <span class="legend-rest">Istirahat Getaran</span>
+                            <span class="legend-break">Istirahat Shift</span>
+                        </div>
+                    </div>
+                    <div id="chart-container" class="space-y-1">
+                        <!-- Chart will be generated by JavaScript -->
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- DATA & CONFIGURATION ---
+            const toolData = {
+                "custom": { name: "-- Masukkan Manual --", ahv: 0 },
+                "2.0": { name: "Gerinda Kecil (< 100mm)", ahv: 2.0 },
+                "4.5": { name: "Gerinda Besar (> 100mm)", ahv: 4.5 },
+                "5.5": { name: "Bor Tangan (Impact)", ahv: 5.5 },
+                "8.0": { name: "Palu Jackhammer (Kecil)", ahv: 8.0 },
+                "12.0": { name: "Palu Jackhammer (Besar)", ahv: 12.0 },
+                "15.0": { name: "Mesin Gergaji Rantai", ahv: 15.0 }
+            };
+
+            const EAV_POINTS = 100; // Exposure Action Value
+            const ELV_POINTS = 400; // Exposure Limit Value
+            const TIME_BLOCK_MINUTES = 15; // Granularity of the timeline chart
+
+            // --- STATIC SCHEDULE CONFIGURATION ---
+            const staticSchedule = {
+                workStart: "08:00",
+                workEnd: "16:00",
+                break1Start: "09:30",
+                break1Duration: 15,
+                lunchStart: "12:00",
+                lunchDuration: 60,
+                break2Start: "14:45",
+                break2Duration: 15,
+            };
+
+            // --- DOM ELEMENT REFERENCES ---
+            const DOMElements = {
+                toolTypeSelect: document.getElementById('tool-type'),
+                ahvInput: document.getElementById('ahv-input'),
+                toolHoursInput: document.getElementById('tool-hours-input'),
+                operatorsInput: document.getElementById('operators-input'),
+                shiftDurationDisplay: document.getElementById('shift-duration-display'),
+                perHourRec: document.getElementById('per-hour-recommendation'),
+                hsePointsValue: document.getElementById('hse-points-value'),
+                statusDisplay: document.getElementById('status-display'),
+                chartContainer: document.getElementById('chart-container'),
+                shiftLimitDisplay: document.getElementById('shift-limit-display'),
+            };
+
+            // --- HELPER FUNCTIONS ---
+            const timeToMinutes = (timeStr) => {
+                const [hours, minutes] = timeStr.split(':').map(Number);
+                return hours * 60 + minutes;
+            };
+            
+            // PENINGKATAN: Fungsi untuk memberikan feedback visual pada input
+            const highlightInput = (element) => {
+                element.classList.remove('input-highlight');
+                // a trick to re-trigger the animation
+                void element.offsetWidth; 
+                element.classList.add('input-highlight');
+                setTimeout(() => {
+                    element.classList.remove('input-highlight');
+                }, 1500);
+            };
+
+            // --- INITIALIZATION ---
+            function initialize() {
+                for (const key in toolData) {
+                    const option = document.createElement('option');
+                    option.value = key;
+                    option.textContent = toolData[key].name;
+                    DOMElements.toolTypeSelect.appendChild(option);
+                }
+                DOMElements.toolTypeSelect.value = "5.5";
+                DOMElements.ahvInput.value = toolData["5.5"].ahv;
+                DOMElements.ahvInput.disabled = true;
+                
+                [DOMElements.toolTypeSelect, DOMElements.ahvInput, DOMElements.toolHoursInput, DOMElements.operatorsInput].forEach(el => {
+                    el.addEventListener('input', calculateAndUpdate);
+                });
+                DOMElements.toolTypeSelect.addEventListener('change', handleToolChange);
+                
+                calculateAndUpdate();
+            }
+
+            // --- EVENT HANDLERS ---
+            function handleToolChange(e) {
+                const selectedKey = e.target.value;
+                if (selectedKey !== 'custom') {
+                    DOMElements.ahvInput.value = toolData[selectedKey].ahv;
+                    DOMElements.ahvInput.disabled = true;
+                } else {
+                    DOMElements.ahvInput.disabled = false;
+                    DOMElements.ahvInput.focus();
+                }
+                calculateAndUpdate();
+            }
+
+            // --- CORE CALCULATION LOGIC ---
+            function calculateAndUpdate() {
+                const workStartMins = timeToMinutes(staticSchedule.workStart);
+                const workEndMins = timeToMinutes(staticSchedule.workEnd);
+                const totalShiftMins = workEndMins > workStartMins ? workEndMins - workStartMins : 0;
+                const totalBreakMins = staticSchedule.break1Duration + staticSchedule.lunchDuration + staticSchedule.break2Duration;
+                const netWorkMins = totalShiftMins - totalBreakMins;
+                const netWorkHours = netWorkMins / 60;
+                const shiftDurationHours = totalShiftMins / 60;
+                DOMElements.shiftDurationDisplay.textContent = `${shiftDurationHours.toFixed(2)} jam (Net: ${netWorkHours.toFixed(2)} jam)`;
+                DOMElements.toolHoursInput.max = netWorkHours.toFixed(2);
+
+                let ahv = parseFloat(DOMElements.ahvInput.value) || 0;
+                if (ahv > 18) {
+                    ahv = 18;
+                    DOMElements.ahvInput.value = 18;
+                    highlightInput(DOMElements.ahvInput);
+                }
+
+                let totalToolHours = parseFloat(DOMElements.toolHoursInput.value) || 0;
+                if (totalToolHours > netWorkHours) {
+                    totalToolHours = netWorkHours;
+                    DOMElements.toolHoursInput.value = netWorkHours.toFixed(2);
+                    highlightInput(DOMElements.toolHoursInput);
+                }
+
+                let originalOperators = parseInt(DOMElements.operatorsInput.value) || 1;
+                let numOperators = originalOperators;
+
+                // Auto-adjust: reduce exposure by increasing operators until below ELV
+                while (numOperators < 6) {
+                    const testExposure = Math.pow(ahv, 2) * (totalToolHours / numOperators);
+                    // PENINGKATAN: Kondisi disederhanakan
+                    if (testExposure < ELV_POINTS) break; 
+                    numOperators++;
+                }
+
+                // Auto-reduce operators if status is already Below EAV
+                while (numOperators > 1) {
+                    const testExposure = Math.pow(ahv, 2) * (totalToolHours / (numOperators - 1));
+                    if (testExposure >= EAV_POINTS) break;
+                    numOperators--;
+                }
+                
+                if (numOperators !== originalOperators) {
+                    DOMElements.operatorsInput.value = numOperators;
+                    highlightInput(DOMElements.operatorsInput);
+                }
+                
+                const exposureTimePerOperator = totalToolHours / numOperators;
+                const hsePoints = Math.pow(ahv, 2) * exposureTimePerOperator;
+                const a8Value = ahv * Math.sqrt(exposureTimePerOperator / 8);
+
+                updateStatusDisplay(hsePoints, a8Value);
+                DOMElements.shiftLimitDisplay.textContent = `Batas paparan dibatasi shift Net: ${netWorkHours.toFixed(2)} jam kerja Efektif`;
+                updateRecommendation(ahv);
+                
+                const scheduleForChart = {
+                    workStartMins, workEndMins,
+                    breaks: [
+                        { start: timeToMinutes(staticSchedule.break1Start), duration: staticSchedule.break1Duration },
+                        { start: timeToMinutes(staticSchedule.lunchStart), duration: staticSchedule.lunchDuration },
+                        { start: timeToMinutes(staticSchedule.break2Start), duration: staticSchedule.break2Duration }
+                    ]
+                };
+                const workMinutesPerOperator = exposureTimePerOperator * 60;
+                const workCycle = calculateWorkCycle(ahv);
+                updateChart(numOperators, scheduleForChart, workMinutesPerOperator, workCycle);
+            }
+
+            // --- UI UPDATE FUNCTIONS ---
+            function updateStatusDisplay(points, a8) {
+                DOMElements.hsePointsValue.textContent = points.toFixed(0);
+                const statusEl = DOMElements.statusDisplay;
+                statusEl.className = 'text-base font-semibold p-3 rounded-md transition-all duration-300';
+                if (points >= ELV_POINTS) {
+                    statusEl.textContent = `DI ATAS BATAS PAPARAN (Above ELV: ${a8.toFixed(2)} m/s²)`;
+                    statusEl.classList.add('status-above-elv');
+                } else if (points >= EAV_POINTS) {
+                    statusEl.textContent = `Di Atas Batas Aksi (Above EAV: ${a8.toFixed(2)} m/s²)`;
+                    statusEl.classList.add('status-above-eav');
+                } else {
+                    statusEl.textContent = `Di Bawah Batas Aksi (Below EAV: ${a8.toFixed(2)} m/s²)`;
+                    statusEl.classList.add('status-below-eav');
+                }
+            }
+            
+            function calculateWorkCycle(ahv) {
+                if (ahv <= 0) return { work: 60, rest: 0 };
+                const maxMinsPerDay_EAV = (EAV_POINTS / Math.pow(ahv, 2)) * 60;
+                if (maxMinsPerDay_EAV > 240) return { work: 60, rest: 0 };
+                if (maxMinsPerDay_EAV > 120) return { work: 45, rest: 15 };
+                if (maxMinsPerDay_EAV > 60) return { work: 30, rest: 30 };
+                if (maxMinsPerDay_EAV > 30) return { work: 15, rest: 45 };
+                return { work: 10, rest: 50 };
+            }
+
+            function updateRecommendation(ahv) {
+                if (ahv > 0) {
+                    const cycle = calculateWorkCycle(ahv);
+                    DOMElements.perHourRec.textContent = `${cycle.work}' Kerja + ${cycle.rest}' Istirahat Getaran`;
+                } else {
+                    DOMElements.perHourRec.textContent = "60' Kerja + 0' Istirahat Getaran";
+                }
+            }
+
+            function updateChart(numOperators, schedule, workMinutesPerOperator, workCycle) {
+                DOMElements.chartContainer.innerHTML = '';
+                const timeline = createTimeline(schedule);
+                renderTimeAxis(timeline);
+                
+                // PENINGKATAN: Menggunakan structuredClone() yang lebih modern
+                let operatorTimelines = Array(numOperators).fill(0).map(() => structuredClone(timeline));
+                let remainingWorkMinutes = Array(numOperators).fill(workMinutesPerOperator);
+                
+                // PENINGKATAN: Menambahkan komentar untuk menjelaskan logika kompleks
+                // Strategi: Iterasi melalui setiap slot waktu yang tersedia di timeline utama.
+                // Untuk setiap slot, cari operator yang masih punya sisa waktu kerja paling banyak.
+                // Tugaskan satu siklus kerja (kerja + istirahat) pada operator tersebut.
+                // Tandai slot waktu tersebut sebagai 'terpakai' di timeline utama agar tidak ditugaskan lagi,
+                // dan tandai sebagai 'idle' untuk operator lain.
+                for (let t = 0; t < timeline.length; t++) {
+                    if (timeline[t].type === 'available') {
+                        // Cari operator dengan sisa pekerjaan terbanyak untuk diprioritaskan.
+                        let opForThisSlot = findOperatorWithMostWork(remainingWorkMinutes);
+                        if (remainingWorkMinutes[opForThisSlot] <= 0) continue; // Skip jika tidak ada yg perlu kerja.
+
+                        // Isi satu siklus kerja/istirahat untuk operator yang dipilih, mulai dari slot waktu saat ini.
+                        let filled = fillCycleForOperator(operatorTimelines[opForThisSlot], t, workCycle, remainingWorkMinutes[opForThisSlot]);
+                        remainingWorkMinutes[opForThisSlot] -= filled.work;
+                        
+                        // Tandai slot yang digunakan sebagai 'taken' di timeline utama untuk menghindari tumpang tindih.
+                        for (let i = t; i <= filled.lastIndex && i < timeline.length; i++) {
+                            timeline[i].type = 'taken';
+                        }
+
+                        // Untuk semua operator lain, tandai slot waktu yang sama sebagai 'idle' karena alat sedang digunakan.
+                        for (let op2 = 0; op2 < numOperators; op2++) {
+                            if (op2 !== opForThisSlot) {
+                                for (let i = filled.startIndex; i <= filled.lastIndex && i < operatorTimelines[op2].length; i++) {
+                                    if (operatorTimelines[op2][i].type === 'available') {
+                                        operatorTimelines[op2][i].type = 'idle';
+                                    }
+                                }
+                            }
+                        }
+                        
+                        // Lompatkan pointer loop utama ke akhir siklus yang baru saja diisi.
+                        t = filled.lastIndex;
+                    }
+                }
+
+                operatorTimelines.forEach((opTimeline, index) => {
+                    renderOperatorChart(index + 1, opTimeline);
+                });
+            }
+            
+            function findOperatorWithMostWork(remainingWork) {
+                return remainingWork.indexOf(Math.max(...remainingWork));
+            }
+
+            function fillCycleForOperator(timeline, startIndex, cycle, maxWork) {
+                let workBlocksToFill = Math.min(Math.ceil(cycle.work / TIME_BLOCK_MINUTES), Math.ceil(maxWork / TIME_BLOCK_MINUTES));
+                let restBlocksToFill = Math.ceil(cycle.rest / TIME_BLOCK_MINUTES);
+                let workFilled = 0;
+                let lastIndex = startIndex - 1;
+
+                for (let i = 0; i < workBlocksToFill; i++) {
+                    let currentIndex = startIndex + i;
+                    if (currentIndex < timeline.length && timeline[currentIndex].type === 'available') {
+                        timeline[currentIndex].type = 'work';
+                        workFilled += TIME_BLOCK_MINUTES;
+                        lastIndex = currentIndex;
+                    } else {
+                        workBlocksToFill = i; 
+                        break;
+                    }
+                }
+
+                for (let i = 0; i < restBlocksToFill; i++) {
+                    let currentIndex = startIndex + workBlocksToFill + i;
+                    if (currentIndex < timeline.length && timeline[currentIndex].type === 'available') {
+                        timeline[currentIndex].type = 'rest';
+                        lastIndex = currentIndex;
+                    } else {
+                        break;
+                    }
+                }
+                return { work: workFilled, startIndex: startIndex, lastIndex: lastIndex };
+            }
+
+            function createTimeline(schedule) {
+                const timeline = [];
+                for (let min = schedule.workStartMins; min < schedule.workEndMins; min += TIME_BLOCK_MINUTES) {
+                    let blockType = 'available';
+                    for (const breakItem of schedule.breaks) {
+                        if (min >= breakItem.start && min < breakItem.start + breakItem.duration) {
+                            blockType = 'break';
+                            break;
+                        }
+                    }
+                    timeline.push({ time: min, type: blockType });
+                }
+                return timeline;
+            }
+
+            function renderTimeAxis(timelineData) {
+                const row = document.createElement('div');
+                row.className = 'flex items-center gap-3';
+                const label = document.createElement('div');
+                label.className = 'w-24 flex-shrink-0';
+                const container = document.createElement('div');
+                container.className = 'flex-grow grid border-b-2 border-gray-300';
+                container.style.gridTemplateColumns = `repeat(${timelineData.length}, 1fr)`;
+                let lastHour = -1;
+                timelineData.forEach((block, index) => {
+                    const el = document.createElement('div');
+                    const currentHour = Math.floor(block.time / 60);
+                    
+                    if (currentHour !== lastHour && block.time % 60 === 0) {
+                        const hours = currentHour.toString().padStart(2, '0');
+                        el.textContent = `${hours}:00`;
+                        el.className = 'text-xs text-gray-500 -ml-2';
+                        lastHour = currentHour;
+                    }
+                    
+                    if (block.time % 60 === 0 && index > 0) {
+                        el.style.borderLeft = '1px solid #e5e7eb';
+                    }
+
+                    container.appendChild(el);
+                });
+                row.appendChild(label);
+                row.appendChild(container);
+                DOMElements.chartContainer.appendChild(row);
+            }
+
+            function renderOperatorChart(opIndex, timelineData) {
+                const row = document.createElement('div');
+                row.className = 'flex items-center gap-3';
+                const label = document.createElement('div');
+                label.className = 'w-24 text-sm font-medium text-gray-700 flex-shrink-0';
+                label.textContent = `Operator ${opIndex}`;
+                const container = document.createElement('div');
+                container.className = 'flex-grow grid rounded-md overflow-hidden';
+                container.style.gridTemplateColumns = `repeat(${timelineData.length}, 1fr)`;
+                timelineData.forEach((block, index) => {
+                    const el = document.createElement('div');
+                    el.className = 'h-6';
+                    const hours = Math.floor(block.time / 60).toString().padStart(2, '0');
+                    const minutes = (block.time % 60).toString().padStart(2, '0');
+                    el.title = `Waktu: ${hours}:${minutes}`;
+
+                    if (block.type === 'work') el.style.backgroundColor = '#007bff';
+                    else if (block.type === 'rest') el.style.backgroundColor = '#17a2b8';
+                    else if (block.type === 'break') el.style.backgroundColor = '#6c757d';
+                    else el.style.backgroundColor = '#e9ecef';
+                    
+                    if (block.time % 60 === 0 && index > 0) {
+                        el.style.borderLeft = '1px solid #d1d5db';
+                    }
+
+                    container.appendChild(el);
+                });
+                row.appendChild(label);
+                row.appendChild(container);
+                DOMElements.chartContainer.appendChild(row);
+            }
+
+            // --- START THE APP ---
+            initialize();
+        });
+    </script>
+</body>
+</html>
