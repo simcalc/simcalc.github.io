@@ -6,6 +6,9 @@
   <title>Kalkulator Paparan Getaran A(8) — HSE + SWA (2025)</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- === ADDED: Chart.js library === -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.0.1/dist/chartjs-plugin-annotation.min.js"></script>
   <style>
     body { 
         font-family: 'Inter', sans-serif; 
@@ -88,13 +91,89 @@
     .dark .modal-content { background-color: #1e293b; color: #e2e8f0; }
     .modal-close-btn { position: absolute; top: 1rem; right: 1rem; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #6b7280; }
     .dark .modal-close-btn { color: #9ca3af; }
+    
+    .dark .guidance-formula-box code { color: #e2e8f0; }
+    
+    /* --- Styles for new Chart/Table section --- */
+    .card {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 24px;
+        box-shadow: 0 4px 16px rgba(0,0,0,.05);
+        margin-top: 2rem;
+    }
+    .dark .card {
+        background: #1e293b; /* Slate-800 */
+        border-color: #334155; /* Slate-700 */
+    }
+    .chartbox {
+        position: relative;
+        width: 100%;
+        height: clamp(280px, 38vw, 380px);
+    }
+    canvas.interactive-chart {
+        width: 100% !important;
+        height: 100% !important;
+        background: #fdfdfd;
+        border-radius: 12px;
+        padding: 8px;
+        border: 1px solid var(--line);
+    }
+    .dark canvas.interactive-chart {
+        background: #0f172a; /* Slate-900 */
+        border-color: #334155; /* Slate-700 */
+    }
+    .ready-wrap {
+        overflow: auto;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+    }
+    .ready {
+        border-collapse: collapse;
+        width: 100%;
+        font-size: 13px;
+        text-align: center;
+    }
+    .ready th, .ready td {
+        padding: 10px 12px;
+        border: 1px solid var(--line);
+    }
+    .ready th {
+        background: #f1f3f5;
+        position: sticky;
+        top: 0;
+    }
+    .dark .ready th { background: #334155; }
+    .ready td:first-child {
+        font-weight: bold;
+        background: #f1f3f5;
+        position: sticky;
+        left: 0;
+    }
+    .dark .ready td:first-child { background: #334155; }
+    .ready .pv-ok { background: #f0fdf4; } /* Green-50 */
+    .ready .pv-warn { background: #fefce8; } /* Yellow-50 */
+    .ready .pv-bad { background: #fef2f2; } /* Red-50 */
+    .dark .ready .pv-ok { background: rgba(16, 185, 129, 0.1); }
+    .dark .ready .pv-warn { background: rgba(245, 158, 11, 0.1); }
+    .dark .ready .pv-bad { background: rgba(239, 68, 68, 0.1); }
+    .ready td:hover {
+        cursor: pointer;
+        outline: 2px solid var(--color-primary);
+        outline-offset: -2px;
+    }
+    .ready td.sel {	
+        outline: 2px solid var(--color-primary);	
+        outline-offset: -2px;	
+        box-shadow: inset 0 0 10px rgba(13, 148, 136, 0.3);
+    }
   </style>
 </head>
 <body class="bg-slate-100 dark:bg-slate-900 flex items-start justify-center min-h-screen p-4 transition-colors duration-300">
   <div class="calculator-container bg-white p-4 sm:p-6 md:p-8 rounded-2xl shadow-xl w-full max-w-6xl">
     <header class="border-b border-slate-200 pb-4 mb-6 relative">
       <div class="flex items-center justify-end gap-2 mb-4">
-        <!-- === ADDED: Guidance Button === -->
         <button id="guidance-btn" class="toolbar-btn px-3 py-2 rounded-lg shadow-sm focus:outline-none" title="Panduan Aplikasi">
           <span class="sr-only">Panduan Aplikasi</span>
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
@@ -239,6 +318,31 @@
 
       </div>
     </div>
+    
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+        <div class="card">
+            <h3 class="text-lg font-semibold text-slate-700">Siklus Kerja per Jam</h3>
+            <div class="chartbox"><canvas id="chartWB" class="interactive-chart"></canvas></div>
+        </div>
+        <div class="card">
+            <h3 class="text-lg font-semibold text-slate-700">Analisis Risiko vs Durasi Paparan</h3>
+            <div class="chartbox"><canvas id="chartA8" class="interactive-chart"></canvas></div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2 class="text-xl font-semibold text-slate-700">Ready-Reckoner: Poin Paparan Getaran</h2>
+        <p class="text-sm text-slate-500 mb-4">
+            Poin menggunakan skema HSE: <code>Poin = 2 × Ahv² × Jam</code>. 100 poin ≈ EAV (A(8)=2.5), 400 poin ≈ ELV (A(8)=5). Klik sel untuk menerapkan nilai ke kalkulator.
+        </p>
+        <div class="ready-wrap">
+            <table class="ready" id="rrTable">
+                <thead><tr id="rrHead"></tr></thead>
+                <tbody id="rrBody"></tbody>
+            </table>
+        </div>
+    </div>
+
   </div>
 
   <div id="analysis-modal" class="modal-overlay">
@@ -251,7 +355,6 @@
       </div>
   </div>
   
-  <!-- === ADDED: Guidance Modal === -->
   <div id="guidance-modal" class="modal-overlay">
       <div class="modal-content">
           <button id="guidance-modal-close-btn" class="modal-close-btn">&times;</button>
@@ -265,6 +368,9 @@
     document.addEventListener('DOMContentLoaded', () => {
       // --- CONSTANTS ---
       const EAV_POINTS = 100; const ELV_POINTS = 400; const POINTS_FACTOR = 2; const ELV_A8 = 5; const TIME_BLOCK_MINUTES = 15;
+
+      // --- CHART INSTANCES ---
+      let chartWB, chartA8;
 
       // --- SCHEDULE (STATIC) ---
       const staticSchedule = {
@@ -298,6 +404,7 @@
         intermittentToolNote: document.getElementById('intermittent-tool-note'),
         guidanceBtn: document.getElementById('guidance-btn'), guidanceModal: document.getElementById('guidance-modal'),
         guidanceModalCloseBtn: document.getElementById('guidance-modal-close-btn'), guidanceOutput: document.getElementById('guidance-output'),
+        rrTable: document.getElementById('rrTable'), rrHead: document.getElementById('rrHead'), rrBody: document.getElementById('rrBody'),
       };
 
       // --- HELPERS ---
@@ -315,8 +422,8 @@
       function calculateAndUpdate(){ const ws=timeToMinutes(staticSchedule.workStart),we=timeToMinutes(staticSchedule.workEnd); const tsm=Math.max(0,we-ws); const tbm=staticSchedule.break1Duration+staticSchedule.lunchDuration+staticSchedule.break2Duration; const nwm=Math.max(0,tsm-tbm); const nwh=nwm/60; DOMElements.shiftDurationDisplay.textContent=`${(tsm/60).toFixed(2)} jam (Net: ${nwh.toFixed(2)} jam)`; DOMElements.toolHoursInput.max=nwh.toFixed(2); let ahv=parseFloat(DOMElements.ahvInput.value)||0; ahv=clamp(ahv,0,40); DOMElements.ahvInput.value=ahv; let tth=parseFloat(DOMElements.toolHoursInput.value)||0; tth=clamp(tth,0,nwh); DOMElements.toolHoursInput.value=tth.toFixed(2); let ops=parseInt(DOMElements.operatorsInput.value)||1; ops=clamp(ops,1,6); DOMElements.operatorsInput.value=ops; let denom= (ahv>0)?8*Math.pow(ELV_A8/ahv,2):Infinity; const step=parseFloat(DOMElements.toolHoursInput.step)||0.5; let recOps=1; if(isFinite(denom)&&tth>0){recOps=Math.ceil(tth/denom);} if(recOps>6&&isFinite(denom)){const max6=denom*6-1e-9; const q=Math.max(0,Math.floor(max6/step)*step); const c=clamp(q,0,nwh); if(c<tth-1e-9){tth=c; DOMElements.toolHoursInput.value=tth.toFixed(2); flashChange(DOMElements.toolHoursInput,'amber');} recOps=(tth>0&&isFinite(denom))?Math.ceil(tth/denom):1;} let numOps=clamp(Math.max(1,recOps),1,6); if(numOps!==ops){DOMElements.operatorsInput.value=numOps; flashChange(DOMElements.operatorsInput,'green');} else {DOMElements.operatorsInput.value=numOps;} if(numOps===6&&isFinite(denom)){const smax6=denom*6-1e-9; if(tth>=smax6-1e-12){const q6=Math.max(0,Math.floor(smax6/step)*step); const c6=clamp(q6,0,nwh); if(c6<tth-1e-9){tth=c6; DOMElements.toolHoursInput.value=tth.toFixed(2); flashChange(DOMElements.toolHoursInput,'amber');}}} const ept=(numOps>0)?tth/numOps:0; const hse=POINTS_FACTOR*ahv*ahv*ept; const a8v=(ept>0)?ahv*Math.sqrt(ept/8):0; updateStatusDisplay(hse,a8v); DOMElements.shiftLimitDisplay.textContent=`Batas paparan dibatasi shift Net: ${nwh.toFixed(2)} jam kerja efektif`; updateRecommendation(ahv); updateMaxExposureLimit(ahv); const sch={workStartMins:ws,workEndMins:we,breaks:[{start:timeToMinutes(staticSchedule.break1Start),duration:staticSchedule.break1Duration},{start:timeToMinutes(staticSchedule.lunchStart),duration:staticSchedule.lunchDuration},{start:timeToMinutes(staticSchedule.break2Start),duration:staticSchedule.break2Duration}]}; const wmp=ept*60; const wc=calculateWorkCycle(ahv); updateChart(numOps,sch,wmp,wc); persist(); }
       function updateStatusDisplay(p,a){DOMElements.hsePointsValue.textContent=Math.round(p).toString(); DOMElements.a8Value.textContent=a.toFixed(2); const e=DOMElements.statusDisplay; e.className='text-xs font-semibold p-2 rounded-md transition-all duration-300 mt-2'; let statusKey = ''; if(p>=ELV_POINTS){e.textContent=`DI ATAS BATAS PAPARAN (Above ELV: ${a.toFixed(2)} m/s²)`; e.classList.add('status-above-elv'); statusKey = 'elv';} else if(p>=EAV_POINTS){e.textContent=`Di Atas Batas Aksi (Above EAV: ${a.toFixed(2)} m/s²)`; e.classList.add('status-above-eav'); statusKey = 'eav';} else {e.textContent=`Di Bawah Batas Aksi (Below EAV: ${a.toFixed(2)} m/s²)`; e.classList.add('status-below-eav'); statusKey = 'below_eav';} DOMElements.analysisBtn.disabled=p<1; DOMElements.analysisBtn.dataset.statusKey = statusKey; }
       function updateMaxExposureLimit(a){if(a<=0){DOMElements.maxExposureLimitDisplay.textContent='Tidak terbatas';return;} const m=8*Math.pow(ELV_A8/a,2); DOMElements.maxExposureLimitDisplay.textContent=`${m.toFixed(2)} Jam`;}
-      function calculateWorkCycle(a){if(a<=0)return{work:60,rest:0}; const m=(EAV_POINTS/(POINTS_FACTOR*a*a))*60; if(m>240)return{work:60,rest:0}; if(m>120)return{work:45,rest:15}; if(m>60)return{work:30,rest:30}; if(m>30)return{work:15,rest:45}; return{work:10,rest:50};}
-      function updateRecommendation(a){const c=calculateWorkCycle(a); DOMElements.perHourRec.textContent=`${c.work}' Kerja + ${c.rest}' Istirahat Getaran`;}
+      function calculateWorkCycle(ahv){if(ahv<=0)return{work:60,rest:0}; const m=(EAV_POINTS/(POINTS_FACTOR*ahv*ahv))*60; if(m>240)return{work:60,rest:0}; if(m>120)return{work:45,rest:15}; if(m>60)return{work:30,rest:30}; if(m>30)return{work:15,rest:45}; return{work:10,rest:50};}
+      function updateRecommendation(ahv){const c=calculateWorkCycle(ahv); DOMElements.perHourRec.textContent=`${c.work}' Kerja + ${c.rest}' Istirahat Getaran`; updateChartWB(c); updateChartA8(ahv); }
       function createTimeline(s){const a=[]; for(let m=s.workStartMins;m<s.workEndMins;m+=TIME_BLOCK_MINUTES){let t='available'; for(const b of s.breaks){if(m>=b.start&&m<b.start+b.duration){t='break';break;}} a.push({time:m,type:t});} return a;}
       function renderTimeAxis(t){const r=document.createElement('div'); r.className='flex items-center gap-3'; const l=document.createElement('div'); l.className='w-24 flex-shrink-0'; const c=document.createElement('div'); c.className='flex-grow grid border-b-2 border-slate-300 pb-2'; c.style.gridTemplateColumns=`repeat(${t.length}, 1fr)`; c.style.borderBottom='2px solid '+cssVar('--color-grid'); let lh=-1; t.forEach((b,i)=>{const e=document.createElement('div'); const ch=Math.floor(b.time/60); if(ch!==lh&&b.time%60===0){const hh=ch.toString().padStart(2,'0'); e.innerHTML=`<div class="hidden sm:block text-xs text-slate-500">${hh}:00</div><div class="block sm:hidden text-[10px] text-slate-500 transform -rotate-90 origin-left whitespace-nowrap ml-1">${hh}:00</div>`; e.className='text-xs text-slate-500 -ml-2'; lh=ch;} if(b.time%60===0&&i>0){/* === MODIFIED: Vertical line removed === */} c.appendChild(e);}); r.appendChild(l); r.appendChild(c); DOMElements.chartContainer.appendChild(r);}
       function renderOperatorChart(i,t){const r=document.createElement('div'); r.className='flex items-center gap-3'; const l=document.createElement('div'); l.className='w-24 text-xs font-medium text-slate-700 flex-shrink-0'; l.textContent=`Operator ${i}`; const c=document.createElement('div'); c.className='flex-grow grid rounded-md overflow-hidden'; c.style.gridTemplateColumns=`repeat(${t.length}, 1fr)`; t.forEach((b,idx)=>{const e=document.createElement('div'); e.className='h-6'; const h=minutesToHHMM(b.time); e.title=`Waktu: ${h}`; if(b.type==='work')e.style.backgroundColor=cssVar('--color-work'); else if(b.type==='rest')e.style.backgroundColor=cssVar('--color-rest'); else if(b.type==='break')e.style.backgroundColor=cssVar('--color-break'); else e.style.backgroundColor=cssVar('--color-idle'); if(b.time%60===0&&idx>0){e.style.borderLeft='1px solid '+cssVar('--color-grid');} c.appendChild(e);}); r.appendChild(l); r.appendChild(c); DOMElements.chartContainer.appendChild(r);}
@@ -392,12 +499,12 @@
       
       function getGuidanceContent() {
           return `
-            <h1 class="text-2xl font-bold mb-4">Panduan Pengguna & Metodologi Aplikasi</h1>
-            <h2 class="text-xl font-semibold mt-6 mb-3 border-b pb-2">Abstrak</h2>
-            <p class="text-sm text-slate-300 leading-relaxed">Aplikasi ini adalah alat bantu simulasi dan manajemen risiko yang dirancang untuk menghitung paparan getaran pada tangan dan lengan (*Hand-Arm Vibration* / HAV) berdasarkan standar internasional dan nasional. Tujuannya adalah untuk membantu para profesional Keselamatan dan Kesehatan Kerja (K3), manajer, dan pekerja dalam merencanakan pekerjaan secara proaktif agar paparan getaran tidak melebihi Batas Nilai Aksi (*Exposure Action Value* / EAV) dan Batas Nilai Paparan (*Exposure Limit Value* / ELV) yang ditetapkan <span style="color:#0ea5e9;">[1][7]</span>. Aplikasi ini tidak hanya menghitung nilai paparan, tetapi juga secara cerdas merekomendasikan jumlah minimum operator dan jadwal kerja yang aman, menjadikannya alat bantu pengambilan keputusan yang efektif.</p>
+            <h1 class="text-2xl font-bold mb-4 text-slate-800 dark:text-slate-100">Panduan Pengguna & Metodologi Aplikasi</h1>
+            <h2 class="text-xl font-semibold mt-6 mb-3 border-b pb-2 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300">Abstrak</h2>
+            <p class="text-sm text-slate-700 dark:text-slate-300 leading-relaxed">Aplikasi ini adalah alat bantu simulasi dan manajemen risiko yang dirancang untuk menghitung paparan getaran pada tangan dan lengan (*Hand-Arm Vibration* / HAV) berdasarkan standar internasional dan nasional. Tujuannya adalah untuk membantu para profesional Keselamatan dan Kesehatan Kerja (K3), manajer, dan pekerja dalam merencanakan pekerjaan secara proaktif agar paparan getaran tidak melebihi Batas Nilai Aksi (*Exposure Action Value* / EAV) dan Batas Nilai Paparan (*Exposure Limit Value* / ELV) yang ditetapkan <span style="color:#0ea5e9;">[1][7]</span>. Aplikasi ini tidak hanya menghitung nilai paparan, tetapi juga secara cerdas merekomendasikan jumlah minimum operator dan jadwal kerja yang aman, menjadikannya alat bantu pengambilan keputusan yang efektif.</p>
             
-            <h2 class="text-xl font-semibold mt-6 mb-3 border-b pb-2">Cara Kerja Aplikasi</h2>
-            <ol class="list-decimal pl-5 space-y-2 text-sm text-slate-300">
+            <h2 class="text-xl font-semibold mt-6 mb-3 border-b pb-2 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300">Cara Kerja Aplikasi</h2>
+            <ol class="list-decimal pl-5 space-y-2 text-sm text-slate-700 dark:text-slate-300">
                 <li><strong>Pilih Tipe Perkakas:</strong> Mulailah dengan memilih alat yang akan digunakan dari daftar dropdown. Daftar ini mencakup perkakas umum serta database dari HSE (UK) dan Safe Work Australia (SWA) <span style="color:#0ea5e9;">[1][2]</span>. Jika alat tidak ada dalam daftar, pilih <strong>"-- Masukkan Manual --"</strong>.</li>
                 <li><strong>Masukkan Nilai Getaran (Ahv):</strong> Jika memilih alat dari daftar, nilai getarannya (Ahv, dalam m/s²) akan terisi otomatis <span style="color:#0ea5e9;">[5]</span>. Jika manual, masukkan nilai dari manual alat atau hasil pengukuran <span style="color:#0ea5e9;">[9]</span>.</li>
                 <li><strong>Tentukan Total Waktu Penggunaan:</strong> Masukkan total durasi alat akan digunakan oleh semua operator dalam satu hari (jam). Aplikasi akan mengingatkan jika alat umumnya digunakan secara intermiten, untuk memastikan input adalah "waktu pemicu" (*trigger time*) yang sebenarnya <span style="color:#0ea5e9;">[2]</span>.</li>
@@ -405,22 +512,22 @@
                 <li><strong>Dapatkan Analisis Risiko:</strong> Klik tombol **"✨ Tampilkan Analisis Risiko & Kontrol"** untuk laporan instan mengenai potensi bahaya dan rekomendasi pengendalian.</li>
             </ol>
 
-            <h2 class="text-xl font-semibold mt-6 mb-3 border-b pb-2">Mesin Inti: Logika Perhitungan dan Rumus</h2>
-            <h3 class="text-lg font-semibold mt-4 mb-2">1. Perhitungan Paparan Harian A(8)</h3>
-            <p class="text-sm text-slate-300">Ini adalah metrik standar sesuai ISO 5349 <span style="color:#0ea5e9;">[1][8]</span>:</p>
-            <p class="text-center my-2 bg-slate-900 p-2 rounded-md"><code>A(8) = A_hv × √(T_op / 8)</code></p>
+            <h2 class="text-xl font-semibold mt-6 mb-3 border-b pb-2 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300">Mesin Inti: Logika Perhitungan dan Rumus</h2>
+            <h3 class="text-lg font-semibold mt-4 mb-2 text-slate-700 dark:text-slate-300">1. Perhitungan Paparan Harian A(8)</h3>
+            <p class="text-sm text-slate-700 dark:text-slate-300">Ini adalah metrik standar sesuai ISO 5349 <span style="color:#0ea5e9;">[1][8]</span>:</p>
+            <p class="text-center my-2 bg-slate-100 dark:bg-slate-800 p-2 rounded-md guidance-formula-box"><code class="text-slate-800 dark:text-slate-200">A(8) = A_hv × √(T_op / 8)</code></p>
             
-            <h3 class="text-lg font-semibold mt-4 mb-2">2. HSE Exposure Points</h3>
-            <p class="text-sm text-slate-300">Metode poin dari HSE (UK) untuk mengukur risiko <span style="color:#0ea5e9;">[1]</span>:</p>
-            <p class="text-center my-2 bg-slate-900 p-2 rounded-md"><code>Poin ≈ 2 × A_hv² × T_op</code></p>
+            <h3 class="text-lg font-semibold mt-4 mb-2 text-slate-700 dark:text-slate-300">2. HSE Exposure Points</h3>
+            <p class="text-sm text-slate-700 dark:text-slate-300">Metode poin dari HSE (UK) untuk mengukur risiko <span style="color:#0ea5e9;">[1]</span>:</p>
+            <p class="text-center my-2 bg-slate-100 dark:bg-slate-800 p-2 rounded-md guidance-formula-box"><code class="text-slate-800 dark:text-slate-200">Poin ≈ 2 × A_hv² × T_op</code></p>
             
-            <h3 class="text-lg font-semibold mt-4 mb-2">3. Logika Cerdas: Penentuan Operator & Penyesuaian Waktu</h3>
-            <p class="text-sm text-slate-300">Tujuannya adalah menjaga A(8) per operator di bawah 5.0 m/s² <span style="color:#0ea5e9;">[1][7]</span>. Aplikasi menghitung operator ideal dengan rumus turunan dari A(8) <span style="color:#0ea5e9;">[8]</span>:</p>
-            <p class="text-center my-2 bg-slate-900 p-2 rounded-md"><code>n_min = ceil(T_total / (8 × (5/A_hv)²))</code></p>
-            <p class="text-sm text-slate-300">Jika hasilnya > 6, aplikasi akan mengurangi total waktu kerja secara otomatis untuk menjaga skenario tetap praktis dan aman <span style="color:#0ea5e9;">[2][6]</span>.</p>
+            <h3 class="text-lg font-semibold mt-4 mb-2 text-slate-700 dark:text-slate-300">3. Logika Cerdas: Penentuan Operator & Penyesuaian Waktu</h3>
+            <p class="text-sm text-slate-700 dark:text-slate-300">Tujuannya adalah menjaga A(8) per operator di bawah 5.0 m/s² <span style="color:#0ea5e9;">[1][7]</span>. Aplikasi menghitung operator ideal dengan rumus turunan dari A(8) <span style="color:#0ea5e9;">[8]</span>:</p>
+            <p class="text-center my-2 bg-slate-100 dark:bg-slate-800 p-2 rounded-md guidance-formula-box"><code class="text-slate-800 dark:text-slate-200">n_min = ceil(T_total / (8 × (5/A_hv)²))</code></p>
+            <p class="text-sm text-slate-700 dark:text-slate-300">Jika hasilnya > 6, aplikasi akan mengurangi total waktu kerja secara otomatis untuk menjaga skenario tetap praktis dan aman <span style="color:#0ea5e9;">[2][6]</span>.</p>
             
-            <h2 class="text-xl font-semibold mt-6 mb-3 border-b pb-2">Daftar Pustaka</h2>
-            <ol class="list-decimal pl-5 space-y-1 text-sm text-slate-300">
+            <h2 class="text-xl font-semibold mt-6 mb-3 border-b pb-2 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300">Daftar Pustaka</h2>
+            <ol class="list-decimal pl-5 space-y-1 text-sm text-slate-700 dark:text-slate-300">
                 <li>Health and Safety Executive (HSE) UK. (2019). *Hand-arm vibration: The Control of Vibration at Work Regulations 2005 (L140)*.</li>
                 <li>Safe Work Australia. (2017). *Guide to Measuring and Assessing Workplace Exposure to Hand-Arm Vibration*.</li>
                 <li>Figueiredo, M., & Nogueira, H. (2020). *Measurement and evaluation of human exposure to vibration transmitted to hand-arm*.</li>
@@ -436,7 +543,154 @@
 
       // --- EVENTS & STATE ---
       function persist(){ try{ const d={toolType:DOMElements.toolTypeSelect.value,ahv:parseFloat(DOMElements.ahvInput.value)||0,toolHours:parseFloat(DOMElements.toolHoursInput.value)||0,operators:parseInt(DOMElements.operatorsInput.value)||1}; localStorage.setItem('a8Calc',JSON.stringify(d)); }catch(_){} }
-      function init(){ try{localStorage.removeItem('a8Calc');}catch(_){} populateToolOptions(); DOMElements.toolTypeSelect.selectedIndex=0; DOMElements.ahvInput.disabled=false; DOMElements.ahvInput.value=2.5; updateSourceNote(null,null); DOMElements.toolHoursInput.value='6.5'; DOMElements.operatorsInput.value='1'; const t=(function(){try{return localStorage.getItem('theme')||'light';}catch(_){return'light';}})(); applyTheme(t); document.getElementById('theme-toggle')?.addEventListener('click',()=>{applyTheme(document.body.classList.contains('dark')?'light':'dark');}); const fb=document.getElementById('formula-btn'),fp=document.getElementById('formula-panel'); fb?.addEventListener('click',e=>{e.stopPropagation(); const o=fp.classList.contains('hidden'); fp.classList.toggle('hidden'); fb.setAttribute('aria-expanded',o?'true':'false');}); fp?.addEventListener('click',e=>e.stopPropagation()); document.addEventListener('click',()=>{if(!fp?.classList.contains('hidden')){fp.classList.add('hidden'); fb?.setAttribute('aria-expanded','false');}}); document.getElementById('reset-btn')?.addEventListener('click',()=>{try{localStorage.removeItem('a8Calc');}catch(_){} populateToolOptions(); DOMElements.toolTypeSelect.selectedIndex=0; DOMElements.ahvInput.disabled=false; DOMElements.ahvInput.value=2.5; updateSourceNote(null,null); DOMElements.toolHoursInput.value='6.5'; DOMElements.operatorsInput.value='1'; calculateAndUpdate();}); DOMElements.toolTypeSelect.addEventListener('change',e=>{DOMElements.toolHoursInput.value='6.5'; handleToolChange(e);}); DOMElements.ahvInput.addEventListener('input',()=>{DOMElements.toolHoursInput.value='6.5'; calculateAndUpdate();}); DOMElements.toolHoursInput.addEventListener('input',()=>{flashChange(DOMElements.toolHoursInput,'amber'); calculateAndUpdate();}); DOMElements.operatorsInput.addEventListener('input',()=>{flashChange(DOMElements.operatorsInput,'green'); calculateAndUpdate();}); 
+      
+      // === FIXED: Chart initialization and update functions added ===
+      function initCharts() {
+        const C = () => ({
+            accent: cssVar('--color-primary'), line: cssVar('--color-grid'),
+            warn: cssVar('--color-warning'), bad: cssVar('--color-danger'),
+            muted: cssVar('--color-primary-dark'),
+        });
+
+        const doughnutLabelPlugin = {
+            id: 'doughnutLabel',
+            afterDraw: (chart) => {
+                if (chart.config.type !== 'doughnut') return;
+                const { ctx, chartArea } = chart;
+                const data = chart.data.datasets[0].data;
+                if (data.length < 2) return;
+                const [workMins, breakMins] = data;
+                const config = C();
+                const centerX = (chartArea.left + chartArea.right) / 2;
+                const centerY = (chartArea.top + chartArea.bottom) / 2;
+                ctx.save();
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.font = 'bold 1.2rem Inter, system-ui';
+                ctx.fillStyle = config.accent;
+                ctx.fillText(`${workMins}′ Work`, centerX, centerY - 14);
+                ctx.font = '1rem Inter, system-ui';
+                ctx.fillStyle = config.muted;
+                ctx.fillText(`${breakMins}′ Break`, centerX, centerY + 14);
+                ctx.restore();
+            }
+        };
+
+        chartWB = new Chart(document.getElementById('chartWB'), {
+            type: 'doughnut',
+            data: {
+                labels: ['Work (min)', 'Break (min)'],
+                datasets: [{
+                    data: [45, 15],
+                    backgroundColor: [C().accent, C().line],
+                    borderWidth: 0,
+                    circumference: 360,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '70%',
+                plugins: { legend: { display: false }, tooltip: { enabled: true } }
+            },
+            plugins: [doughnutLabelPlugin]
+        });
+
+        chartA8 = new Chart(document.getElementById('chartA8'), {
+            type: 'line',
+            data: {
+                labels: Array.from({ length: 9 }, (_, i) => i + 1),
+                datasets: [{
+                    label: 'A(8) Calculated',
+                    data: [],
+                    borderColor: C().accent,
+                    backgroundColor: C().accent + '30',
+                    fill: true,
+                    tension: 0.4,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: { title: { display: true, text: 'Durasi Paparan per Operator (Jam)' } },
+                    y: { title: { display: true, text: 'A(8) (m/s²)' }, min: 0 }
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { mode: 'index', intersect: false },
+                    annotation: {
+                        annotations: {
+                            eavLine: { type: 'line', yMin: 2.5, yMax: 2.5, borderColor: C().warn, borderWidth: 2, borderDash: [10, 5], label: { content: 'EAV', position: 'start', enabled: true, backgroundColor: 'rgba(0,0,0,0.6)' } },
+                            elvLine: { type: 'line', yMin: 5, yMax: 5, borderColor: C().bad, borderWidth: 2, borderDash: [10, 5], label: { content: 'ELV', position: 'start', enabled: true, backgroundColor: 'rgba(0,0,0,0.6)' } }
+                        }
+                    }
+                }
+            }
+        });
+      }
+
+      function updateChartWB(cycle) {
+        if (!chartWB) return;
+        chartWB.data.datasets[0].data = [cycle.work, cycle.rest];
+        chartWB.update();
+      }
+
+      function updateChartA8(ahv) {
+        if (!chartA8) return;
+        const labels = Array.from({ length: 17 }, (_, i) => (i * 0.5)); // 0 to 8 hours in 0.5h steps
+        const data = labels.map(t => ahv > 0 ? ahv * Math.sqrt(t / 8) : 0);
+        chartA8.data.labels = labels;
+        chartA8.data.datasets[0].data = data;
+        chartA8.options.scales.x.title.text = `Durasi Paparan per Operator (Jam) | Ahv = ${ahv.toFixed(1)} m/s²`;
+        chartA8.update();
+      }
+      
+      function createReadyReckoner() {
+        const T_VALS = [0.25, 0.5, 1, 2, 4, 6, 8, 12];
+        const A_VALS = [2, 3, 4, 5, 6, 7, 8, 10, 12, 14, 16, 18];
+        let headHTML = '<th>aₕ,ᵥ (m/s²) ↓ | Waktu (jam) →</th>';
+        T_VALS.forEach(t => headHTML += `<th>${t} h</th>`);
+        DOMElements.rrHead.innerHTML = headHTML;
+        let bodyHTML = '';
+        A_VALS.forEach(a => {
+            bodyHTML += `<tr><td>${a}</td>`;
+            T_VALS.forEach(t => {
+                const points = 2 * a * a * t;
+                let pClass = 'pv-ok';
+                if (points >= 400) pClass = 'pv-bad';
+                else if (points >= 100) pClass = 'pv-warn';
+                bodyHTML += `<td class="${pClass}" data-a="${a}" data-t="${t}">${Math.round(points)}</td>`;
+            });
+            bodyHTML += '</tr>';
+        });
+        DOMElements.rrBody.innerHTML = bodyHTML;
+      }
+
+      function init(){ 
+        try{localStorage.removeItem('a8Calc');}catch(_){} 
+        populateToolOptions(); 
+        DOMElements.toolTypeSelect.selectedIndex=0; 
+        DOMElements.ahvInput.disabled=false; 
+        DOMElements.ahvInput.value=2.5; 
+        updateSourceNote(null,null); 
+        DOMElements.toolHoursInput.value='6.5'; 
+        DOMElements.operatorsInput.value='1'; 
+        const t=(function(){try{return localStorage.getItem('theme')||'light';}catch(_){return'light';}})(); 
+        applyTheme(t); 
+        initCharts(); // Initialize charts
+        createReadyReckoner(); // Create the table
+
+        document.getElementById('theme-toggle')?.addEventListener('click',()=>{applyTheme(document.body.classList.contains('dark')?'light':'dark');}); 
+        const fb=document.getElementById('formula-btn'),fp=document.getElementById('formula-panel'); 
+        fb?.addEventListener('click',e=>{e.stopPropagation(); const o=fp.classList.contains('hidden'); fp.classList.toggle('hidden'); fb.setAttribute('aria-expanded',o?'true':'false');}); 
+        fp?.addEventListener('click',e=>e.stopPropagation()); 
+        document.addEventListener('click',()=>{if(!fp?.classList.contains('hidden')){fp.classList.add('hidden'); fb?.setAttribute('aria-expanded','false');}}); 
+        document.getElementById('reset-btn')?.addEventListener('click',()=>{try{localStorage.removeItem('a8Calc');}catch(_){} populateToolOptions(); DOMElements.toolTypeSelect.selectedIndex=0; DOMElements.ahvInput.disabled=false; DOMElements.ahvInput.value=2.5; updateSourceNote(null,null); DOMElements.toolHoursInput.value='6.5'; DOMElements.operatorsInput.value='1'; calculateAndUpdate();}); 
+        DOMElements.toolTypeSelect.addEventListener('change',e=>{DOMElements.toolHoursInput.value='6.5'; handleToolChange(e);}); 
+        DOMElements.ahvInput.addEventListener('input',()=>{DOMElements.toolHoursInput.value='6.5'; calculateAndUpdate();}); 
+        DOMElements.toolHoursInput.addEventListener('input',()=>{flashChange(DOMElements.toolHoursInput,'amber'); calculateAndUpdate();}); 
+        DOMElements.operatorsInput.addEventListener('input',()=>{flashChange(DOMElements.operatorsInput,'green'); calculateAndUpdate();}); 
         
         // Modal Listeners
         DOMElements.analysisBtn.addEventListener('click', showStaticAnalysis); 
@@ -449,6 +703,19 @@
         });
         DOMElements.guidanceModalCloseBtn.addEventListener('click', ()=>{DOMElements.guidanceModal.classList.remove('visible');});
         DOMElements.guidanceModal.addEventListener('click', e => { if(e.target === DOMElements.guidanceModal) { DOMElements.guidanceModal.classList.remove('visible'); }});
+        
+        DOMElements.rrTable.addEventListener('click', (e) => {
+            const cell = e.target.closest('td');
+            if (!cell || !cell.dataset.a) return;
+            DOMElements.toolTypeSelect.value = 'custom';
+            DOMElements.ahvInput.disabled = false;
+            DOMElements.ahvInput.value = cell.dataset.a;
+            DOMElements.toolHoursInput.value = cell.dataset.t;
+            calculateAndUpdate();
+            const selectedRRCell = document.querySelector('.ready td.sel');
+            if (selectedRRCell) selectedRRCell.classList.remove('sel');
+            cell.classList.add('sel');
+        });
 
         calculateAndUpdate(); 
       }
