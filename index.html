@@ -114,6 +114,9 @@
     .modal-content { background-color: var(--color-bg-container); padding: 2rem; border-radius: 0.75rem; width: 90%; max-width: 600px; max-height: 80vh; overflow-y: auto; position: relative; }
     .modal-close-btn { position: absolute; top: 1rem; right: 1rem; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--color-text-muted); }
     
+    .guidance-formula-box code { color: var(--color-text-header); }
+    .dark .guidance-formula-box code { color: #FFFFFF; }
+
     /* --- Chart/Table section --- */
     .card { background: var(--color-bg-container); border: 1px solid var(--color-border); border-radius: 16px; padding: 24px; box-shadow: 0 4px 16px rgba(0,0,0,.05); margin-top: 2rem; }
     .chartbox {
@@ -155,17 +158,33 @@
         }
     }
 
-    /* === NEW: Footer Styles === */
+    /* === UPDATED: Footer Styles === */
     footer {
+        position: relative;
         text-align: center;
         margin-top: 2.5rem;
-        padding-bottom: 1rem;
+        padding: 2rem 1rem;
         font-size: 0.75rem; /* 12px */
-        color: var(--color-text-muted);
+        border-radius: 0.75rem;
+        overflow: hidden;
+        z-index: 0;
+    }
+    footer, footer div {
+        color: #fff; /* White text for contrast */
+    }
+    footer::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background-image: linear-gradient(rgba(10, 25, 47, 0.7), rgba(10, 25, 47, 0.9)), url('https://raw.githubusercontent.com/simcalc/simcalc.github.io/refs/heads/main/img/hammer.webp');
+        background-size: cover;
+        background-position: center;
+        z-index: -1;
     }
     footer a {
         color: var(--color-primary);
         text-decoration: none;
+        font-weight: 600;
     }
     footer a:hover {
         text-decoration: underline;
@@ -173,11 +192,49 @@
     footer div {
         margin-bottom: 0.5rem;
     }
+    
+    /* === NEW: Header Background Styles === */
+    .header-bg {
+        background-image: linear-gradient(to top, rgba(10, 25, 47, 0.85), rgba(10, 25, 47, 0.6)), url('https://raw.githubusercontent.com/simcalc/simcalc.github.io/refs/heads/main/img/Vibration_Simulation.webp');
+        background-size: cover;
+        background-position: center 40%;
+        border-radius: 0.75rem;
+        padding: 1.5rem;
+        border-bottom-width: 0;
+    }
+
+    .header-bg h1, .header-bg p {
+        color: #fff !important;
+        text-shadow: 1px 1px 3px rgba(0,0,0,0.6);
+    }
+
+    .dark .header-bg h1 {
+        color: var(--color-primary) !important;
+        text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
+    }
+    .dark .header-bg p {
+        color: var(--color-text-header) !important;
+        text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
+    }
+
+    .header-bg .toolbar-btn {
+        background-color: rgba(255, 255, 255, 0.2) !important;
+        backdrop-filter: blur(5px);
+        -webkit-backdrop-filter: blur(5px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        color: #fff !important;
+    }
+
+    .dark .header-bg .toolbar-btn {
+        background-color: rgba(100, 255, 218, 0.1) !important;
+        border-color: rgba(100, 255, 218, 0.3) !important;
+        color: var(--color-primary) !important;
+    }
   </style>
 </head>
 <body class="p-4 transition-colors duration-300">
   <div class="calculator-container p-4 sm:p-6 md:p-8 rounded-2xl shadow-xl w-full max-w-6xl mx-auto">
-    <header class="border-b pb-4 mb-6 relative">
+    <header class="pb-4 mb-6 relative header-bg">
       <div class="flex items-center justify-end gap-2 mb-4">
         <button id="guidance-btn" class="toolbar-btn px-3 py-2 rounded-lg shadow-sm focus:outline-none" title="Panduan Aplikasi"><span class="sr-only">Panduan Aplikasi</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></button>
         <button id="reset-btn" class="toolbar-btn px-3 py-2 rounded-lg shadow-sm focus:outline-none" title="Reset ke Default"><span class="sr-only">Reset ke Default</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11A8.1 8.1 0 0 0 4.5 9M4 5v4h4"/><path d="M4 13a8.1 8.1 0 0 0 15.5 2m.5 4v-4h-4"/></svg></button>
@@ -190,7 +247,7 @@
       
       <div>
         <h1 class="text-2xl md:text-3xl font-bold">Vibration Exposure Simulation A(8)</h1>
-        <p class="mt-1 text-slate-500">Simulasi paparan getaran & manajemen waktu kerja (HSE L140 + SWA Table 2)</p>
+        <p class="mt-1">Simulasi paparan getaran & manajemen waktu kerja (HSE L140 + SWA Table 2)</p>
       </div>
 
       <div id="formula-panel" class="hidden absolute right-2 top-16 mt-3 w-[380px] max-w-[90vw] rounded-xl shadow-lg p-4 text-sm z-20 dark-panel">
@@ -324,7 +381,7 @@
   <!-- === NEW: Footer Element === -->
   <footer>
     <div>Designed by <a href="https://id.linkedin.com/in/mokhamadabrar" target="_blank" rel="noopener">Mokhamad Abrar</a></div>
-    <div>Reviewed by <a href="https://id.linkedin.com/in/avior-qhse" target="_blank" rel="noopener">Ratu Avior, MSc.</a> and <a href="https://id.linkedin.com/in/raniannisaroyani" target="_blank" rel="noopener noreferrer">Ir. Rani Anisa Royani, MSc.</a></div>
+    <div>Reviewed by <a href="https://id.linkedin.com/in/avior-qhse" target="_blank" rel="noopener">Ratu Avior, MSc.</a> and <a href="https://id.linkedin.com/in/raniannisaroyani" target="_blank" rel="noopener noreferrer">Ir. Rani A Royani, MSc.</a></div>
     <div>Sustainable Apps Development @ Aug 2025</div>
   </footer>
 
@@ -466,8 +523,9 @@
           DOMElements.shiftLimitDisplay.textContent = `Batas paparan dibatasi shift Net: ${netWorkHours.toFixed(2)} jam kerja efektif`;
           updateRecommendation(ahv);
           updateMaxExposureLimit(ahv);
-          // === NEW FEATURE: Highlight the closest cell in the Ready Reckoner table ===
-          updateReadyReckonerHighlight(hsePoints);
+          
+          // === UPDATE: Pass input values to the highlight function ===
+          updateReadyReckonerHighlight(ahv, exposureTimePerOperator);
 
           const scheduleForChart = {
               workStartMins: workStartMins,
@@ -528,15 +586,89 @@
           DOMElements.analysisModal.classList.add('visible');
       }
       
+      // === UPDATED: Added new sections to the guidance content ===
       function getGuidanceContent() {
-          return `<h1 class="text-2xl font-bold mb-4">Panduan Pengguna & Metodologi Aplikasi</h1><h2 class="text-xl font-semibold mt-6 mb-3 border-b pb-2">Abstrak</h2><p class="text-sm leading-relaxed">Aplikasi ini adalah alat bantu simulasi dan manajemen risiko yang dirancang untuk menghitung paparan getaran pada tangan dan lengan (*Hand-Arm Vibration* / HAV) berdasarkan standar internasional dan nasional. Tujuannya adalah untuk membantu para profesional Keselamatan dan Kesehatan Kerja (K3), manajer, dan pekerja dalam merencanakan pekerjaan secara proaktif agar paparan getaran tidak melebihi Batas Nilai Aksi (*Exposure Action Value* / EAV) dan Batas Nilai Paparan (*Exposure Limit Value* / ELV) yang ditetapkan <span style="color:var(--color-primary)">[1][7]</span>. Aplikasi ini tidak hanya menghitung nilai paparan, tetapi juga secara cerdas merekomendasikan jumlah minimum operator dan jadwal kerja yang aman, menjadikannya alat bantu pengambilan keputusan yang efektif.</p><h2 class="text-xl font-semibold mt-6 mb-3 border-b pb-2">Cara Kerja Aplikasi</h2><ol class="list-decimal pl-5 space-y-2 text-sm"><li><strong>Pilih Tipe Perkakas:</strong> Mulailah dengan memilih alat yang akan digunakan dari daftar dropdown. Daftar ini mencakup perkakas umum serta database dari HSE (UK) dan Safe Work Australia (SWA) <span style="color:var(--color-primary)">[1][2]</span>. Jika alat tidak ada dalam daftar, pilih <strong>"-- Masukkan Manual --"</strong>.</li><li><strong>Masukkan Nilai Getaran (Ahv):</strong> Jika memilih alat dari daftar, nilai getarannya (Ahv, dalam m/s²) akan terisi otomatis <span style="color:var(--color-primary)">[5]</span>. Jika manual, masukkan nilai dari manual alat atau hasil pengukuran <span style="color:var(--color-primary)">[9]</span>.</li><li><strong>Tentukan Total Waktu Penggunaan:</strong> Masukkan total durasi alat akan digunakan oleh semua operator dalam satu hari (jam). Aplikasi akan mengingatkan jika alat umumnya digunakan secara intermiten, untuk memastikan input adalah "waktu pemicu" (*trigger time*) yang sebenarnya <span style="color:var(--color-primary)">[2]</span>.</li><li><strong>Lihat Hasil & Rekomendasi:</strong> Aplikasi akan secara instan menampilkan jumlah operator minimum, nilai paparan, status risiko, dan visualisasi jadwal kerja yang aman <span style="color:var(--color-primary)">[1][2][7]</span>.</li><li><strong>Dapatkan Analisis Risiko:</strong> Klik tombol **"✨ Tampilkan Analisis Risiko & Kontrol"** untuk laporan instan mengenai potensi bahaya dan rekomendasi pengendalian.</li></ol><h2 class="text-xl font-semibold mt-6 mb-3 border-b pb-2">Mesin Inti: Logika Perhitungan dan Rumus</h2><h3 class="text-lg font-semibold mt-4 mb-2">1. Perhitungan Paparan Harian A(8)</h3><p class="text-sm">Ini adalah metrik standar sesuai ISO 5349 <span style="color:var(--color-primary)">[1][8]</span>:</p><p class="text-center my-2 bg-slate-100 dark:bg-slate-800 p-2 rounded-md"><code>A(8) = A_hv × √(T_op / 8)</code></p><h3 class="text-lg font-semibold mt-4 mb-2">2. HSE Exposure Points</h3><p class="text-sm">Metode poin dari HSE (UK) untuk mengukur risiko <span style="color:var(--color-primary)">[1]</span>:</p><p class="text-center my-2 bg-slate-100 dark:bg-slate-800 p-2 rounded-md"><code>Poin ≈ 2 × A_hv² × T_op</code></p><h3 class="text-lg font-semibold mt-4 mb-2">3. Logika Cerdas: Penentuan Operator & Penyesuaian Waktu</h3><p class="text-sm">Tujuannya adalah menjaga A(8) per operator di bawah 5.0 m/s² <span style="color:var(--color-primary)">[1][7]</span>. Aplikasi menghitung operator ideal dengan rumus turunan dari A(8) <span style="color:var(--color-primary)">[8]</span>:</p><p class="text-center my-2 bg-slate-100 dark:bg-slate-800 p-2 rounded-md"><code>n_min = ceil(T_total / (8 × (5/A_hv)²))</code></p><p class="text-sm">Jika hasilnya > 6, aplikasi akan mengurangi total waktu kerja secara otomatis untuk menjaga skenario tetap praktis dan aman <span style="color:var(--color-primary)">[2][6]</span>.</p><h2 class="text-xl font-semibold mt-6 mb-3 border-b pb-2">Memahami Hasil: Batas Waktu vs. Grafik Risiko</h2><p class="text-sm leading-relaxed">Anda mungkin melihat "Batas Waktu Paparan" menunjukkan nilai yang sangat tinggi (misalnya, 32 jam). Ini adalah hal yang wajar dan menunjukkan bahwa alat tersebut sangat aman. Berikut penjelasannya:</p><ul class="list-disc pl-5 space-y-2 text-sm mt-2"><li><strong>"Per Hari" Mengacu pada 8 Jam:</strong> Dalam standar K3, semua perhitungan dinormalisasi ke <strong>hari kerja standar 8 jam</strong>, bukan 24 jam.</li><li><strong>Batas Waktu adalah Ukuran Risiko:</strong> Nilai ini adalah perhitungan teoretis yang menjawab pertanyaan: "Berapa lama waktu yang dibutuhkan untuk mencapai batas bahaya (ELV)?" Semakin tinggi nilainya, semakin aman alat tersebut untuk digunakan dalam shift kerja normal.</li><li><strong>Grafik Risiko adalah Visualisasi Praktis:</strong> Grafik "Analisis Risiko" menunjukkan bagaimana paparan (A(8)) meningkat selama shift kerja normal (0-8 jam). Ini membantu Anda melihat secara visual kapan paparan akan melewati batas aman (EAV) dan batas bahaya (ELV) dalam konteks kerja sehari-hari.</li></ul><h2 class="text-xl font-semibold mt-6 mb-3 border-b pb-2">Daftar Pustaka</h2><ol class="list-decimal pl-5 space-y-1 text-sm"><li>HSE UK. (2019). *L140*.</li><li>Safe Work Australia. (2017). *Guide to Measuring HAV*.</li><li>Figueiredo, M., & Nogueira, H. (2020). *Measurement and evaluation of human exposure to vibration*.</li><li>Dewangan, K. N., & De, A. (2018). *Determination of hand-transmitted vibration risk*.</li><li>Paddan, G. S., & Griffin, M. J. (2018). *Evaluation and Measurement of Hand-Transmitted Vibrations*.</li><li>Navy and Marine Corps Public Health Center. (2011). *Human Vibration Technical Guide*.</li><li>Kemenaker RI. (2018). *Permenaker No. 5 2018*.</li><li>BSN. (2019). *SNI 7054:2019*.</li><li>HAS Environmental. *SV 103 Hand-Arm Vibration Dosimeter & Analyser*.</li></ol>`;
+          return `<h1 class="text-2xl font-bold mb-4">Panduan Pengguna & Metodologi Aplikasi</h1>
+            <h2 class="text-xl font-semibold mt-6 mb-3 border-b pb-2">Abstrak</h2>
+            <p class="text-sm leading-relaxed">Aplikasi ini adalah alat bantu simulasi dan manajemen risiko yang dirancang untuk menghitung paparan getaran pada tangan dan lengan (*Hand-Arm Vibration* / HAV) berdasarkan standar internasional dan nasional. Tujuannya adalah untuk membantu para profesional Keselamatan dan Kesehatan Kerja (K3), manajer, dan pekerja dalam merencanakan pekerjaan secara proaktif agar paparan getaran tidak melebihi Batas Nilai Aksi (*Exposure Action Value* / EAV) dan Batas Nilai Paparan (*Exposure Limit Value* / ELV) yang ditetapkan <span style="color:var(--color-primary)">[1][7]</span>. Aplikasi ini tidak hanya menghitung nilai paparan, tetapi juga secara cerdas merekomendasikan jumlah minimum operator dan jadwal kerja yang aman, menjadikannya alat bantu pengambilan keputusan yang efektif.</p>
+            
+            <h2 class="text-xl font-semibold mt-6 mb-3 border-b pb-2">Alur Proses Aplikasi</h2>
+            <p class="text-sm leading-relaxed">Setiap kali Anda mengubah input, aplikasi secara instan melakukan serangkaian proses berikut:</p>
+            <ol class="list-decimal pl-5 space-y-2 text-sm mt-2">
+                <li><strong>Input Diterima:</strong> Aplikasi mengambil nilai getaran (Ahv), total jam kerja alat, dan jumlah operator.</li>
+                <li><strong>Logika Cerdas:</strong> Aplikasi menghitung skenario kerja yang paling aman, termasuk merekomendasikan jumlah operator minimum. Jika skenario membutuhkan lebih dari 6 operator, aplikasi akan secara otomatis mengurangi total jam kerja ke tingkat yang lebih praktis.</li>
+                <li><strong>Perhitungan Inti:</strong> Menggunakan skenario yang sudah disesuaikan, aplikasi menghitung nilai kritis seperti Poin Paparan HSE dan A(8), serta merekomendasikan siklus kerja per jam.</li>
+                <li><strong>Distribusi Output:</strong> Hasil perhitungan kemudian didistribusikan ke semua komponen antarmuka: nilai numerik, status risiko, grafik, timeline, dan sorotan pada tabel referensi diperbarui secara *real-time*.</li>
+            </ol>
+
+            <h2 class="text-xl font-semibold mt-6 mb-3 border-b pb-2">Cara Kerja Aplikasi</h2><ol class="list-decimal pl-5 space-y-2 text-sm"><li><strong>Pilih Tipe Perkakas:</strong> Mulailah dengan memilih alat yang akan digunakan dari daftar dropdown. Daftar ini mencakup perkakas umum serta database dari HSE (UK) dan Safe Work Australia (SWA) <span style="color:var(--color-primary)">[1][2]</span>. Jika alat tidak ada dalam daftar, pilih <strong>"-- Masukkan Manual --"</strong>.</li><li><strong>Masukkan Nilai Getaran (Ahv):</strong> Jika memilih alat dari daftar, nilai getarannya (Ahv, dalam m/s²) akan terisi otomatis <span style="color:var(--color-primary)">[5]</span>. Jika manual, masukkan nilai dari manual alat atau hasil pengukuran <span style="color:var(--color-primary)">[9]</span>.</li><li><strong>Tentukan Total Waktu Penggunaan:</strong> Masukkan total durasi alat akan digunakan oleh semua operator dalam satu hari (jam). Aplikasi akan mengingatkan jika alat umumnya digunakan secara intermiten, untuk memastikan input adalah "waktu pemicu" (*trigger time*) yang sebenarnya <span style="color:var(--color-primary)">[2]</span>.</li><li><strong>Lihat Hasil & Rekomendasi:</strong> Aplikasi akan secara instan menampilkan jumlah operator minimum, nilai paparan, status risiko, dan visualisasi jadwal kerja yang aman <span style="color:var(--color-primary)">[1][2][7]</span>.</li><li><strong>Dapatkan Analisis Risiko:</strong> Klik tombol **"✨ Tampilkan Analisis Risiko & Kontrol"** untuk laporan instan mengenai potensi bahaya dan rekomendasi pengendalian.</li></ol>
+            
+            <h2 class="text-xl font-semibold mt-6 mb-3 border-b pb-2">Mesin Inti: Logika Perhitungan dan Rumus</h2><h3 class="text-lg font-semibold mt-4 mb-2">1. Perhitungan Paparan Harian A(8)</h3><p class="text-sm">Ini adalah metrik standar sesuai ISO 5349 <span style="color:var(--color-primary)">[1][8]</span>:</p><p class="text-center my-2 bg-slate-100 dark:bg-slate-800 p-2 rounded-md guidance-formula-box"><code class="font-mono">A(8) = A_hv × √(T_op / 8)</code></p><h3 class="text-lg font-semibold mt-4 mb-2">2. HSE Exposure Points</h3><p class="text-sm">Metode poin dari HSE (UK) untuk mengukur risiko <span style="color:var(--color-primary)">[1]</span>:</p><p class="text-center my-2 bg-slate-100 dark:bg-slate-800 p-2 rounded-md guidance-formula-box"><code class="font-mono">Poin ≈ 2 × A_hv² × T_op</code></p><h3 class="text-lg font-semibold mt-4 mb-2">3. Logika Cerdas: Penentuan Operator & Penyesuaian Waktu</h3><p class="text-sm">Tujuannya adalah menjaga A(8) per operator di bawah 5.0 m/s² <span style="color:var(--color-primary)">[1][7]</span>. Aplikasi menghitung operator ideal dengan rumus turunan dari A(8) <span style="color:var(--color-primary)">[8]</span>:</p><p class="text-center my-2 bg-slate-100 dark:bg-slate-800 p-2 rounded-md guidance-formula-box"><code class="font-mono">n_min = ceil(T_total / (8 × (5/A_hv)²))</code></p><p class="text-sm">Jika hasilnya > 6, aplikasi akan mengurangi total waktu kerja secara otomatis untuk menjaga skenario tetap praktis dan aman <span style="color:var(--color-primary)">[2][6]</span>.</p>
+            
+            <h2 class="text-xl font-semibold mt-6 mb-3 border-b pb-2">Memahami Chart "Siklus Kerja per Jam"</h2>
+            <p class="text-sm leading-relaxed">Chart berbentuk donat ini memberikan visualisasi dari "Rekomendasi Siklus Kerja Getaran". Tujuannya adalah untuk memberikan panduan praktis tentang cara menyeimbangkan waktu kerja dan istirahat dalam satu jam agar paparan getaran tetap di bawah batas aman (EAV).</p>
+            <p class="text-sm leading-relaxed mt-2">Angka pada chart ini didapat dari logika keselamatan proaktif:</p>
+            <ol class="list-decimal pl-5 space-y-2 text-sm mt-2">
+                <li><strong>Menghitung Menit Aman:</strong> Aplikasi menghitung total menit seorang operator bisa bekerja dalam satu hari sebelum mencapai batas aman (EAV 100 poin) menggunakan rumus: <code>Menit Aman = (100 / (2 × Ahv²)) × 60</code>.</li>
+                <li><strong>Menjadi Siklus Praktis:</strong> Total menit aman ini kemudian dikonversi menjadi siklus kerja-istirahat yang mudah diikuti dalam satu jam. Jika alat sangat aman (total menit aman > 240), rekomendasinya adalah 60 menit kerja. Seiring meningkatnya bahaya (total menit aman menurun), waktu kerja akan dipersingkat dan waktu istirahat akan diperpanjang.</li>
+            </ol>
+
+            <h2 class="text-xl font-semibold mt-6 mb-3 border-b pb-2">Memahami Sorotan pada Tabel Ready-Reckoner</h2>
+            <p class="text-sm leading-relaxed">Sorotan kuning atau sian pada tabel Ready-Reckoner berfungsi sebagai <strong>penunjuk referensi visual</strong> yang intuitif, bukan sebagai hasil perhitungan langsung. Logikanya adalah sebagai berikut:</p>
+            <ol class="list-decimal pl-5 space-y-2 text-sm mt-2">
+                <li><strong>Mencari Baris Getaran (aₕ,ᵥ) Terdekat:</strong> Aplikasi pertama-tama akan mencari baris pada tabel yang memiliki nilai getaran (aₕ,ᵥ) paling mendekati nilai yang Anda masukkan di kalkulator.</li>
+                <li><strong>Mencari Kolom Durasi Terdekat:</strong> Setelah menemukan baris yang paling cocok, aplikasi akan mencari kolom di dalam baris tersebut yang memiliki durasi paparan paling mendekati waktu paparan per operator yang dihitung.</li>
+            </ol>
+            <p class="text-sm leading-relaxed mt-2">Tujuan dari fitur ini adalah untuk membantu Anda dengan cepat menemukan titik referensi yang paling relevan pada tabel statis berdasarkan parameter dinamis yang Anda masukkan, sehingga memudahkan perbandingan visual.</p>
+            
+            <h2 class="text-xl font-semibold mt-6 mb-3 border-b pb-2">Memahami Hasil: Batas Waktu vs. Grafik Risiko</h2><p class="text-sm leading-relaxed">Anda mungkin melihat "Batas Waktu Paparan" menunjukkan nilai yang sangat tinggi (misalnya, 32 jam). Ini adalah hal yang wajar dan menunjukkan bahwa alat tersebut sangat aman. Berikut penjelasannya:</p><ul class="list-disc pl-5 space-y-2 text-sm mt-2"><li><strong>"Per Hari" Mengacu pada 8 Jam:</strong> Dalam standar K3, semua perhitungan dinormalisasi ke <strong>hari kerja standar 8 jam</strong>, bukan 24 jam.</li><li><strong>Batas Waktu adalah Ukuran Risiko:</strong> Nilai ini adalah perhitungan teoretis yang menjawab pertanyaan: "Berapa lama waktu yang dibutuhkan untuk mencapai batas bahaya (ELV)?" Semakin tinggi nilainya, semakin aman alat tersebut untuk digunakan dalam shift kerja normal.</li><li><strong>Grafik Risiko adalah Visualisasi Praktis:</strong> Grafik "Analisis Risiko" menunjukkan bagaimana paparan (A(8)) meningkat selama shift kerja normal (0-8 jam). Ini membantu Anda melihat secara visual kapan paparan akan melewati batas aman (EAV) dan batas bahaya (ELV) dalam konteks kerja sehari-hari.</li></ul><h2 class="text-xl font-semibold mt-6 mb-3 border-b pb-2">Daftar Pustaka</h2><ol class="list-decimal pl-5 space-y-1 text-sm"><li>HSE UK. (2019). *L140*.</li><li>Safe Work Australia. (2017). *Guide to Measuring HAV*.</li><li>Figueiredo, M., & Nogueira, H. (2020). *Measurement and evaluation of human exposure to vibration*.</li><li>Dewangan, K. N., & De, A. (2018). *Determination of hand-transmitted vibration risk*.</li><li>Paddan, G. S., & Griffin, M. J. (2018). *Evaluation and Measurement of Hand-Transmitted Vibrations*.</li><li>Navy and Marine Corps Public Health Center. (2011). *Human Vibration Technical Guide*.</li><li>Kemenaker RI. (2018). *Permenaker No. 5 2018*.</li><li>BSN. (2019). *SNI 7054:2019*.</li><li>HAS Environmental. *SV 103 Hand-Arm Vibration Dosimeter & Analyser*.</li></ol>`;
       }
 
       // --- EVENTS & STATE ---
       function persist(){ try{ const d={toolType:DOMElements.toolTypeSelect.value,ahv:parseFloat(DOMElements.ahvInput.value)||0,toolHours:parseFloat(DOMElements.toolHoursInput.value)||0,operators:parseInt(DOMElements.operatorsInput.value)||1}; localStorage.setItem('a8Calc',JSON.stringify(d)); }catch(_){} }
       
-      function updateReadyReckonerHighlight(targetPoints) {
-          const currentlySelected = DOMElements.rrTable.querySelector('td.sel'); if (currentlySelected) { currentlySelected.classList.remove('sel'); } if (targetPoints <= 0) return; let closestCell = null; let minDiff = Infinity; const cells = DOMElements.rrBody.querySelectorAll('td[data-a]'); cells.forEach(cell => { const cellPoints = parseInt(cell.textContent, 10); const diff = Math.abs(cellPoints - targetPoints); if (diff < minDiff) { minDiff = diff; closestCell = cell; } }); if (closestCell) { closestCell.classList.add('sel'); }
+      // === UPDATED: New logic for highlighting the cell ===
+      function updateReadyReckonerHighlight(inputAhv, inputHours) {
+          const currentlySelected = DOMElements.rrTable.querySelector('td.sel');
+          if (currentlySelected) {
+              currentlySelected.classList.remove('sel');
+          }
+
+          if (inputAhv <= 0 || inputHours <= 0) return;
+
+          let bestMatchRow = null;
+          let minAhvDiff = Infinity;
+
+          // 1. Find the best matching row (closest Ahv)
+          const rows = DOMElements.rrBody.querySelectorAll('tr');
+          rows.forEach(row => {
+              const rowAhv = parseFloat(row.firstElementChild.textContent);
+              const diff = Math.abs(rowAhv - inputAhv);
+              if (diff < minAhvDiff) {
+                  minAhvDiff = diff;
+                  bestMatchRow = row;
+              }
+          });
+
+          if (!bestMatchRow) return;
+
+          // 2. Within that row, find the best matching column (closest hours)
+          let bestMatchCell = null;
+          let minHourDiff = Infinity;
+          const cells = bestMatchRow.querySelectorAll('td[data-t]');
+          cells.forEach(cell => {
+              const cellHours = parseFloat(cell.dataset.t);
+              const diff = Math.abs(cellHours - inputHours);
+              if (diff < minHourDiff) {
+                  minHourDiff = diff;
+                  bestMatchCell = cell;
+              }
+          });
+
+          // 3. Highlight the final cell
+          if (bestMatchCell) {
+              bestMatchCell.classList.add('sel');
+          }
       }
       
       function initCharts() {
@@ -598,7 +730,8 @@
         populateToolOptions(); 
         DOMElements.toolTypeSelect.selectedIndex=0; DOMElements.ahvInput.disabled=false; DOMElements.ahvInput.value=2.5; 
         updateSourceNote(null,null); DOMElements.toolHoursInput.value='6.5'; DOMElements.operatorsInput.value='1'; 
-        const t=(function(){try{return localStorage.getItem('theme')||'light';}catch(_){return'light';}})(); 
+        // === UPDATED: Set default theme to dark ===
+        const t=(function(){try{return localStorage.getItem('theme')||'dark';}catch(_){return'dark';}})(); 
         applyTheme(t); initCharts(); createReadyReckoner();
 
         document.getElementById('theme-toggle')?.addEventListener('click',()=>{
