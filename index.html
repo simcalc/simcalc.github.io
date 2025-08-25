@@ -7,65 +7,98 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    body { font-family: 'Inter', sans-serif; }
-    .status-below-eav { background-color: #28a745; color: #fff; }
-    .status-above-eav  { background-color: #ffc107; color: #333; }
-    .status-above-elv  { background-color: #dc3545; color: #fff; }
-    .legend-work::before { content: ''; display:inline-block; width:12px; height:12px; background:#007bff; margin-right:8px; border-radius:2px; }
-    .legend-rest::before { content: ''; display:inline-block; width:12px; height:12px; background:#17a2b8; margin-right:8px; border-radius:2px; }
-    .legend-break::before{ content: ''; display:inline-block; width:12px; height:12px; background:#6c757d; margin-right:8px; border-radius:2px; }
-    .legend-idle::before { content: ''; display:inline-block; width:12px; height:12px; background:#e9ecef; margin-right:8px; border-radius:2px; }
+    body { 
+        font-family: 'Inter', sans-serif; 
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+    :root {
+        --color-primary: #0d9488; /* Teal-600 */
+        --color-primary-light: #ccfbf1; /* Teal-100 */
+        --color-primary-dark: #115e59; /* Teal-800 */
+        --color-safe: #10b981; /* Emerald-500 */
+        --color-warning: #f59e0b; /* Amber-500 */
+        --color-danger: #ef4444; /* Red-500 */
+        --color-work: #0ea5e9; /* Sky-500 */
+        --color-rest: #14b8a6; /* Teal-500 */
+        --color-break: #64748b; /* Slate-500 */
+        --color-idle: #e2e8f0; /* Slate-200 */
+        --color-grid: #e2e8f0; /* Slate-200 */
+    }
+    .dark:root {
+        --color-idle: #334155; /* Slate-700 */
+        --color-grid: #334155; /* Slate-700 */
+    }
+
+    .status-below-eav { background-color: var(--color-safe); color: #fff; }
+    .status-above-eav { background-color: var(--color-warning); color: #27272a; }
+    .status-above-elv { background-color: var(--color-danger); color: #fff; }
+    
+    .legend-work::before { content: ''; display:inline-block; width:12px; height:12px; background-color:var(--color-work); margin-right:8px; border-radius:3px; }
+    .legend-rest::before { content: ''; display:inline-block; width:12px; height:12px; background-color:var(--color-rest); margin-right:8px; border-radius:3px; }
+    .legend-break::before{ content: ''; display:inline-block; width:12px; height:12px; background-color:var(--color-break); margin-right:8px; border-radius:3px; }
+    .legend-idle::before { content: ''; display:inline-block; width:12px; height:12px; background-color:var(--color-idle); margin-right:8px; border-radius:3px; }
+    
     .info-container{ position:relative; display:inline-flex; align-items:center; }
     .info-icon{ cursor:pointer; margin-left:8px; font-weight:600; color:#6b7280; border:1px solid #d1d5db; border-radius:50%; width:18px; height:18px; display:inline-flex; justify-content:center; align-items:center; font-size:12px; }
     .tooltip-text{ visibility:hidden; width:300px; background:#333; color:#fff; text-align:left; border-radius:6px; padding:8px 12px; position:absolute; z-index:1; bottom:125%; left:50%; transform:translateX(-50%); opacity:0; transition:opacity .3s; font-size:12px; line-height:1.6; }
     .tooltip-text::after{ content:""; position:absolute; top:100%; left:50%; margin-left:-5px; border-width:5px; border-style:solid; border-color:#333 transparent transparent transparent; }
     .info-container:hover .tooltip-text{ visibility:visible; opacity:1; }
-    @keyframes highlight-input { 0%{ box-shadow:0 0 0 2px rgba(59,130,246,0);} 50%{ box-shadow:0 0 0 3px rgba(59,130,246,.6);} 100%{ box-shadow:0 0 0 2px rgba(59,130,246,0);} }
+    
+    @keyframes highlight-input { 0%{ box-shadow:0 0 0 2px rgba(13,148,136,0);} 50%{ box-shadow:0 0 0 3px rgba(13,148,136,.5);} 100%{ box-shadow:0 0 0 2px rgba(13,148,136,0);} }
     .input-highlight{ animation:highlight-input 1.5s ease-out; }
+
     /* --- DARK MODE & FLASH --- */
     .icon-sun{display:none}
     .dark .icon-sun{display:inline}
     .dark .icon-moon{display:none}
-    body.dark{ background-color:#0b1220; }
-    .dark .calculator-container{ background-color:#111827; color:#e5e7eb; }
-    .dark .output-section{ background-color:#0f172a; }
-    .dark .recommendation-section{ background-color:#0b1220; border-color:#2563eb; }
-    .dark .schedule-inputs .bg-gray-50{ background-color:#0f172a; border-color:#1f2937; }
-    .dark .text-gray-800, .dark .text-gray-700, .dark .text-gray-600, .dark .text-gray-500{ color:#e5e7eb !important; }
-    .dark .border-gray-200{ border-color:#1f2937 !important; }
+    body.dark{ background-color:#0f172a; } /* Slate-900 */
+    .dark .calculator-container{ background-color:#1e293b; color:#e2e8f0; } /* Slate-800, Slate-200 */
+    .dark .output-section{ background-color:rgba(15,23,42,0.5); } /* Slate-900 transparent */
+    .dark .recommendation-section{ background-color:transparent; border-color:var(--color-primary); }
+    .dark .schedule-inputs .bg-slate-50, .dark .disclaimer-section { background-color:#1e293b; border-color:#334155; } /* Slate-800, Slate-700 */
+    
+    .dark .text-slate-800 { color: #f1f5f9 !important; } /* Slate-100 for main titles */
+    .dark .text-slate-700 { color: #e2e8f0 !important; } /* Slate-200 for subtitles */
+    .dark .text-slate-600 { color: #cbd5e1 !important; } /* Slate-300 for labels */
+    .dark .text-slate-500 { color: #94a3b8 !important; } /* Slate-400 for secondary text */
+    
+    .dark .border-slate-200, .dark .border-slate-300 { border-color:#334155 !important; } /* Slate-700 */
     .dark .tooltip-text{ background:#374151; color:#f9fafb; }
     .dark .tooltip-text::after{ border-color:#374151 transparent transparent transparent; }
-    .dark .dark-panel{ background-color:#0f172a; border-color:#1f2937; color:#e5e7eb; }
-    .toolbar-btn{ background:#ffffff; color:#374151; border:1px solid #d1d5db; }
-    .toolbar-btn:hover{ background:#f3f4f6; }
-    .dark .toolbar-btn{ background:#111827; color:#e5e7eb; border-color:#374151; }
-    .dark .toolbar-btn:hover{ background:#1f2937; }
+    .dark .dark-panel{ background-color:#1e293b; border-color:#334155; color:#e2e8f0; }
+    .toolbar-btn{ background:#ffffff; color:#475569; border:1px solid #cbd5e1; } /* Slate-600, Slate-300 */
+    .toolbar-btn:hover{ background:#f1f5f9; } /* Slate-100 */
+    .dark .toolbar-btn{ background:#334155; color:#cbd5e1; border-color:#475569; } /* Slate-700, Slate-300, Slate-600 */
+    .dark .toolbar-btn:hover{ background:#475569; } /* Slate-600 */
+    
     @keyframes flash-amber{0%{box-shadow:0 0 0 0 rgba(245,158,11,0)}30%{box-shadow:0 0 0 6px rgba(245,158,11,0.6)}100%{box-shadow:0 0 0 0 rgba(245,158,11,0)}}
     .flash-amber{animation:flash-amber 1s ease-out}
-    @keyframes flash-green{0%{box-shadow:0 0 0 0 rgba(34,197,94,0)}30%{box-shadow:0 0 0 6px rgba(34,197,94,0.6)}100%{box-shadow:0 0 0 0 rgba(34,197,94,0)}}
+    @keyframes flash-green{0%{box-shadow:0 0 0 0 rgba(16,185,129,0)}30%{box-shadow:0 0 0 6px rgba(16,185,129,0.6)}100%{box-shadow:0 0 0 0 rgba(16,185,129,0)}}
     .flash-green{animation:flash-green 1s ease-out}
-  :root{--color-work:#007bff;--color-rest:#17a2b8;--color-break:#6c757d;--color-idle:#e9ecef;--color-grid:#e5e7eb}
-    body.dark{--color-idle:#475569;--color-grid:#374151}
-    .legend-work::before{background-color:var(--color-work)!important}
-    .legend-rest::before{background-color:var(--color-rest)!important}
-    .legend-break::before{background-color:var(--color-break)!important}
-    .legend-idle::before{background-color:var(--color-idle)!important}
-    .dark input,.dark select,.dark textarea{background-color:#0f172a;color:#e5e7eb;border-color:#374151}
-    .dark input:focus,.dark select:focus,.dark textarea:focus{outline:none;box-shadow:0 0 0 2px rgba(59,130,246,.5);border-color:#2563eb}
-    .dark .bg-white{background-color:#0f172a!important}
-    /* --- GEMINI MODAL --- */
-    .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0, 0, 0, 0.5); display: flex; align-items: center; justify-content: center; z-index: 50; opacity: 0; visibility: hidden; transition: opacity 0.3s, visibility 0.3s; }
+
+    .dark input,.dark select,.dark textarea{background-color:#0f172a;color:#e2e8f0;border-color:#475569}
+    .dark input:focus,.dark select:focus,.dark textarea:focus{outline:none;box-shadow:0 0 0 2px rgba(13,148,136,.5);border-color:var(--color-primary)}
+    .dark .bg-white{background-color:#1e293b!important}
+    
+    /* --- MODAL --- */
+    .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0, 0, 0, 0.5); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; z-index: 50; opacity: 0; visibility: hidden; transition: opacity 0.3s, visibility 0.3s; }
     .modal-overlay.visible { opacity: 1; visibility: visible; }
     .modal-content { background-color: white; padding: 2rem; border-radius: 0.75rem; width: 90%; max-width: 600px; max-height: 80vh; overflow-y: auto; position: relative; }
-    .dark .modal-content { background-color: #1f2937; color: #e5e7eb; }
+    .dark .modal-content { background-color: #1e293b; color: #e2e8f0; }
     .modal-close-btn { position: absolute; top: 1rem; right: 1rem; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #6b7280; }
     .dark .modal-close-btn { color: #9ca3af; }
   </style>
 </head>
-<body class="bg-gray-100 flex items-start justify-center min-h-screen p-4">
-  <div class="calculator-container bg-white p-4 sm:p-6 md:p-8 rounded-2xl shadow-lg w-full max-w-6xl">
-    <header class="border-b pb-4 mb-6 relative">
+<body class="bg-slate-100 dark:bg-slate-900 flex items-start justify-center min-h-screen p-4 transition-colors duration-300">
+  <div class="calculator-container bg-white p-4 sm:p-6 md:p-8 rounded-2xl shadow-xl w-full max-w-6xl">
+    <header class="border-b border-slate-200 pb-4 mb-6 relative">
       <div class="flex items-center justify-end gap-2 mb-4">
+        <!-- === ADDED: Guidance Button === -->
+        <button id="guidance-btn" class="toolbar-btn px-3 py-2 rounded-lg shadow-sm focus:outline-none" title="Panduan Aplikasi">
+          <span class="sr-only">Panduan Aplikasi</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+        </button>
         <button id="reset-btn" class="toolbar-btn px-3 py-2 rounded-lg shadow-sm focus:outline-none" title="Reset ke Default">
           <span class="sr-only">Reset ke Default</span>
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11A8.1 8.1 0 0 0 4.5 9M4 5v4h4"/><path d="M4 13a8.1 8.1 0 0 0 15.5 2m.5 4v-4h-4"/></svg>
@@ -85,11 +118,11 @@
       </div>
       
       <div>
-        <h1 class="text-2xl md:text-3xl font-bold text-gray-800">Vibration Exposure Simulation A(8)</h1>
-        <p class="text-gray-500 mt-1">Simulasi paparan getaran & manajemen waktu kerja (HSE L140 + SWA Table 2)</p>
+        <h1 class="text-2xl md:text-3xl font-bold text-slate-800">Vibration Exposure Simulation A(8)</h1>
+        <p class="text-slate-500 mt-1">Simulasi paparan getaran & manajemen waktu kerja (HSE L140 + SWA Table 2)</p>
       </div>
 
-      <div id="formula-panel" class="hidden absolute right-2 top-16 mt-3 w-[380px] max-w-[90vw] rounded-xl shadow-lg bg-white border p-4 text-sm z-20 dark-panel">
+      <div id="formula-panel" class="hidden absolute right-2 top-16 mt-3 w-[380px] max-w-[90vw] rounded-xl shadow-lg bg-white border border-slate-200 p-4 text-sm z-20 dark-panel">
         <div class="font-semibold mb-2">Rumus yang digunakan</div>
         <ul class="list-disc pl-5 space-y-2">
           <li><b>A(8)</b> = Ahv × √(T<sub>op</sub>/8), dengan T<sub>op</sub> = T<sub>total</sub>/n.</li>
@@ -104,89 +137,89 @@
       <!-- Left: Inputs -->
       <div class="md:col-span-1">
         <section class="inputs">
-          <h3 class="text-lg font-semibold text-gray-700 mb-4">Parameter Getaran</h3>
+          <h3 class="text-lg font-semibold text-slate-700 mb-4">Parameter Getaran</h3>
           <div class="space-y-4">
             <div>
-              <label for="tool-type" class="block text-xs font-medium text-gray-600 mb-1">Tipe Perkakas (Handtool)</label>
-              <select id="tool-type" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 transition">
+              <label for="tool-type" class="block text-xs font-medium text-slate-600 mb-1">Tipe Perkakas (Handtool)</label>
+              <select id="tool-type" class="w-full p-2 border border-slate-300 rounded-md shadow-sm focus:ring-teal-500 focus:border-teal-500 transition">
                 <option value="" disabled selected>-- Pilih Tipe Perkakas --</option>
               </select>
             </div>
 
             <div>
-              <label for="ahv-input" class="block text-xs font-medium text-gray-600 mb-1">Getaran Alat (Ahv) m/s²</label>
-              <input type="number" id="ahv-input" step="0.1" min="0" max="40" value="2.5" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 transition" />
-              <small id="source-note" class="text-xs text-gray-500 mt-1 block"></small>
+              <label for="ahv-input" class="block text-xs font-medium text-slate-600 mb-1">Getaran Alat (Ahv) m/s²</label>
+              <input type="number" id="ahv-input" step="0.1" min="0" max="40" value="2.5" class="w-full p-2 border border-slate-300 rounded-md shadow-sm focus:ring-teal-500 focus:border-teal-500 transition" />
+              <small id="source-note" class="text-xs text-slate-500 mt-1 block"></small>
             </div>
 
             <div>
-              <label for="tool-hours-input" class="block text-xs font-medium text-gray-600 mb-1">Total Waktu Penggunaan Alat sesuai Net jam kerja</label>
+              <label for="tool-hours-input" class="block text-xs font-medium text-slate-600 mb-1">Total Waktu Penggunaan Alat sesuai Net jam kerja</label>
               <div class="relative">
-                <input type="number" id="tool-hours-input" step="0.5" min="0" max="6.5" value="6.5" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 transition pr-12" />
+                <input type="number" id="tool-hours-input" step="0.5" min="0" max="6.5" value="6.5" class="w-full p-2 border border-slate-300 rounded-md shadow-sm focus:ring-teal-500 focus:border-teal-500 transition pr-12" />
                 <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                  <span class="text-gray-500">Jam</span>
+                  <span class="text-slate-500">Jam</span>
                 </div>
               </div>
               <small id="intermittent-tool-note" class="text-xs text-amber-600 mt-1 block hidden"></small>
             </div>
 
             <div>
-              <label for="operators-input" class="block text-xs font-medium text-gray-600 mb-1">Jumlah Operator (min)</label>
-              <input type="number" id="operators-input" step="1" min="1" max="6" value="1" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 transition" />
+              <label for="operators-input" class="block text-xs font-medium text-slate-600 mb-1">Jumlah Operator (min)</label>
+              <input type="number" id="operators-input" step="1" min="1" max="6" value="1" class="w-full p-2 border border-slate-300 rounded-md shadow-sm focus:ring-teal-500 focus:border-teal-500 transition" />
             </div>
 
-            <div class="mt-4 pt-4 border-t border-gray-200">
-              <label class="block text-xs font-medium text-gray-600 mb-1">Batas Waktu Paparan Operator per Hari</label>
-              <p id="max-exposure-limit-display" class="text-lg font-bold text-gray-800">- Jam</p>
+            <div class="mt-4 pt-4 border-t border-slate-200">
+              <label class="block text-xs font-medium text-slate-600 mb-1">Batas Waktu Paparan Operator per Hari</label>
+              <p id="max-exposure-limit-display" class="text-lg font-bold text-slate-800">- Jam</p>
             </div>
           </div>
         </section>
 
         <section class="schedule-inputs mt-6">
-          <h3 class="text-lg font-semibold text-gray-700 mb-4">Jadwal Kerja Harian</h3>
-          <div class="space-y-2 text-xs bg-gray-50 p-4 rounded-lg border">
+          <h3 class="text-lg font-semibold text-slate-700 mb-4">Jadwal Kerja Harian</h3>
+          <div class="space-y-2 text-xs bg-slate-50 p-4 rounded-lg border border-slate-200">
             <p><strong>Jam Kerja:</strong> 08:00 - 16:00</p>
             <p><strong>Coffee Break 1:</strong> 09:30 (15 min)</p>
             <p><strong>Istirahat Siang:</strong> 12:00 - 13:00 (60 min)</p>
             <p><strong>Coffee Break 2:</strong> 14:45 (15 min)</p>
-            <hr class="my-2" />
-            <p class="text-xs"><strong>Total Durasi Shift:</strong> <span id="shift-duration-display" class="text-xs text-gray-700"></span></p>
+            <hr class="my-2 border-slate-200" />
+            <p class="text-xs"><strong>Total Durasi Shift:</strong> <span id="shift-duration-display" class="text-xs text-slate-700"></span></p>
           </div>
         </section>
       </div>
 
       <!-- Right: Outputs -->
       <div class="md:col-span-1 lg:col-span-2">
-        <section class="output-section bg-gray-50 px-6 py-3 rounded-lg text-center">
+        <section class="output-section bg-slate-100 px-6 py-3 rounded-lg text-center">
           <div class="info-container">
-            <h2 class="text-sm font-semibold text-gray-600">HSE Exposure Points (≈ 2×Ahv²×jam)</h2>
+            <h2 class="text-sm font-semibold text-slate-600">HSE Exposure Points (≈ 2×Ahv²×jam)</h2>
             <span class="info-icon" title="Klik untuk info">?</span>
             <span class="tooltip-text">
               <b>EAV (Batas Aksi): 100 poin.</b> Tindakan kontrol getaran harus dimulai.<br />
               <b>ELV (Batas Paparan): 400 poin.</b> Pekerja tidak boleh terpapar di atas level ini.
             </span>
           </div>
-          <div id="hse-points-value" class="text-3xl font-bold text-gray-800 my-1">0</div>
-          <div class="text-xs text-gray-600">A(8): <span id="a8-value">0.00</span> m/s²</div>
+          <div id="hse-points-value" class="text-3xl font-bold text-slate-800 my-1">0</div>
+          <div class="text-xs text-slate-600">A(8): <span id="a8-value">0.00</span> m/s²</div>
           <div id="status-display" role="status" aria-live="polite" class="text-xs font-semibold p-2 rounded-md transition-all duration-300 mt-2">Calculating...</div>
-          <div id="shift-limit-display" class="text-xs text-gray-500 mt-1"></div>
+          <div id="shift-limit-display" class="text-xs text-slate-500 mt-1"></div>
           
           <div class="mt-3">
-              <button id="analysis-btn" class="w-full bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition">
+              <button id="analysis-btn" class="w-full bg-teal-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-teal-700 disabled:bg-slate-400 disabled:cursor-not-allowed transition-colors duration-200">
                   ✨ Tampilkan Analisis Risiko & Kontrol
               </button>
           </div>
         </section>
 
-        <section class="recommendation-section bg-blue-50 border-l-4 border-blue-500 p-3 my-6 rounded-r-md">
-          <h4 class="font-semibold text-blue-800 text-xs">Rekomendasi Siklus Kerja Getaran</h4>
-          <p id="per-hour-recommendation" class="text-base font-bold text-blue-600">60' Kerja + 0' Istirahat</p>
-          <p class="text-xs text-gray-500 mt-1">Rekomendasi umum untuk manajemen risiko; sesuaikan dengan kondisi nyata.</p>
+        <section class="recommendation-section bg-teal-50 border-l-4 border-teal-500 p-3 my-6 rounded-r-md">
+          <h4 class="font-semibold text-teal-800 text-xs">Rekomendasi Siklus Kerja Getaran</h4>
+          <p id="per-hour-recommendation" class="text-base font-bold text-teal-700">60' Kerja + 0' Istirahat</p>
+          <p class="text-xs text-slate-500 mt-1">Rekomendasi umum untuk manajemen risiko; sesuaikan dengan kondisi nyata.</p>
         </section>
 
         <section class="schedule-section my-6">
           <div class="flex justify-between items-center mb-4">
-            <h3 class="text-base font-semibold text-gray-700">Timeline Manajemen Kerja</h3>
+            <h3 class="text-base font-semibold text-slate-700">Timeline Manajemen Kerja</h3>
             <div id="chart-legend" class="flex space-x-4 text-xs">
               <span class="legend-work">Kerja</span>
               <span class="legend-rest">Istirahat Getaran</span>
@@ -197,9 +230,9 @@
           <div id="chart-container" class="space-y-1"></div>
         </section>
         
-        <section class="disclaimer-section mt-6 bg-gray-50 p-4 rounded-lg border">
-            <h4 class="font-semibold text-gray-700 text-xs mb-2">Catatan Penggunaan Alat</h4>
-            <p class="text-gray-600 leading-relaxed" style="font-size: 0.7rem;">
+        <section class="disclaimer-section mt-6 bg-slate-50 p-4 rounded-lg border border-slate-200">
+            <h4 class="font-semibold text-slate-700 text-xs mb-2">Catatan Penggunaan Alat</h4>
+            <p class="text-slate-600 leading-relaxed" style="font-size: 0.7rem;">
                 Disclaimer: Alat yang digunakan kemungkinan tidak dioperasikan secara kontinu sesuai dengan kurun waktu pada "Timeline Manajemen Kerja" di atas. Silakan Anda menurunkan waktu penggunaan alat yang efektif pada boks "Total Waktu Penggunaan Alat" sehingga jumlah operator akan berkurang sesuai dengan rencana Anda.
             </p>
         </section>
@@ -214,6 +247,16 @@
           <h2 class="text-xl font-bold mb-4">Analisis Risiko & Rekomendasi Kontrol</h2>
           <div id="analysis-output">
               <!-- Static content will be injected here -->
+          </div>
+      </div>
+  </div>
+  
+  <!-- === ADDED: Guidance Modal === -->
+  <div id="guidance-modal" class="modal-overlay">
+      <div class="modal-content">
+          <button id="guidance-modal-close-btn" class="modal-close-btn">&times;</button>
+          <div id="guidance-output">
+              <!-- Guidance content will be injected here -->
           </div>
       </div>
   </div>
@@ -253,6 +296,8 @@
         analysisBtn: document.getElementById('analysis-btn'), analysisModal: document.getElementById('analysis-modal'),
         modalCloseBtn: document.getElementById('modal-close-btn'), analysisOutput: document.getElementById('analysis-output'),
         intermittentToolNote: document.getElementById('intermittent-tool-note'),
+        guidanceBtn: document.getElementById('guidance-btn'), guidanceModal: document.getElementById('guidance-modal'),
+        guidanceModalCloseBtn: document.getElementById('guidance-modal-close-btn'), guidanceOutput: document.getElementById('guidance-output'),
       };
 
       // --- HELPERS ---
@@ -273,25 +318,25 @@
       function calculateWorkCycle(a){if(a<=0)return{work:60,rest:0}; const m=(EAV_POINTS/(POINTS_FACTOR*a*a))*60; if(m>240)return{work:60,rest:0}; if(m>120)return{work:45,rest:15}; if(m>60)return{work:30,rest:30}; if(m>30)return{work:15,rest:45}; return{work:10,rest:50};}
       function updateRecommendation(a){const c=calculateWorkCycle(a); DOMElements.perHourRec.textContent=`${c.work}' Kerja + ${c.rest}' Istirahat Getaran`;}
       function createTimeline(s){const a=[]; for(let m=s.workStartMins;m<s.workEndMins;m+=TIME_BLOCK_MINUTES){let t='available'; for(const b of s.breaks){if(m>=b.start&&m<b.start+b.duration){t='break';break;}} a.push({time:m,type:t});} return a;}
-      function renderTimeAxis(t){const r=document.createElement('div'); r.className='flex items-center gap-3'; const l=document.createElement('div'); l.className='w-24 flex-shrink-0'; const c=document.createElement('div'); c.className='flex-grow grid border-b-2 border-gray-300'; c.style.gridTemplateColumns=`repeat(${t.length}, 1fr)`; c.style.borderBottom='2px solid '+cssVar('--color-grid'); let lh=-1; t.forEach((b,i)=>{const e=document.createElement('div'); const ch=Math.floor(b.time/60); if(ch!==lh&&b.time%60===0){const hh=ch.toString().padStart(2,'0'); e.innerHTML=`<div class="hidden sm:block text-xs text-gray-500">${hh}:00</div><div class="block sm:hidden text-[10px] text-gray-500 transform -rotate-90 origin-left whitespace-nowrap">${hh}:00</div>`; e.className='text-xs text-gray-500 -ml-2'; lh=ch;} if(b.time%60===0&&i>0){e.style.borderLeft='1px solid '+cssVar('--color-grid');} c.appendChild(e);}); r.appendChild(l); r.appendChild(c); DOMElements.chartContainer.appendChild(r);}
-      function renderOperatorChart(i,t){const r=document.createElement('div'); r.className='flex items-center gap-3'; const l=document.createElement('div'); l.className='w-24 text-xs font-medium text-gray-700 flex-shrink-0'; l.textContent=`Operator ${i}`; const c=document.createElement('div'); c.className='flex-grow grid rounded-md overflow-hidden'; c.style.gridTemplateColumns=`repeat(${t.length}, 1fr)`; t.forEach((b,idx)=>{const e=document.createElement('div'); e.className='h-6'; const h=minutesToHHMM(b.time); e.title=`Waktu: ${h}`; if(b.type==='work')e.style.backgroundColor=cssVar('--color-work'); else if(b.type==='rest')e.style.backgroundColor=cssVar('--color-rest'); else if(b.type==='break')e.style.backgroundColor=cssVar('--color-break'); else e.style.backgroundColor=cssVar('--color-idle'); if(b.time%60===0&&idx>0){e.style.borderLeft='1px solid '+cssVar('--color-grid');} c.appendChild(e);}); r.appendChild(l); r.appendChild(c); DOMElements.chartContainer.appendChild(r);}
+      function renderTimeAxis(t){const r=document.createElement('div'); r.className='flex items-center gap-3'; const l=document.createElement('div'); l.className='w-24 flex-shrink-0'; const c=document.createElement('div'); c.className='flex-grow grid border-b-2 border-slate-300 pb-2'; c.style.gridTemplateColumns=`repeat(${t.length}, 1fr)`; c.style.borderBottom='2px solid '+cssVar('--color-grid'); let lh=-1; t.forEach((b,i)=>{const e=document.createElement('div'); const ch=Math.floor(b.time/60); if(ch!==lh&&b.time%60===0){const hh=ch.toString().padStart(2,'0'); e.innerHTML=`<div class="hidden sm:block text-xs text-slate-500">${hh}:00</div><div class="block sm:hidden text-[10px] text-slate-500 transform -rotate-90 origin-left whitespace-nowrap ml-1">${hh}:00</div>`; e.className='text-xs text-slate-500 -ml-2'; lh=ch;} if(b.time%60===0&&i>0){/* === MODIFIED: Vertical line removed === */} c.appendChild(e);}); r.appendChild(l); r.appendChild(c); DOMElements.chartContainer.appendChild(r);}
+      function renderOperatorChart(i,t){const r=document.createElement('div'); r.className='flex items-center gap-3'; const l=document.createElement('div'); l.className='w-24 text-xs font-medium text-slate-700 flex-shrink-0'; l.textContent=`Operator ${i}`; const c=document.createElement('div'); c.className='flex-grow grid rounded-md overflow-hidden'; c.style.gridTemplateColumns=`repeat(${t.length}, 1fr)`; t.forEach((b,idx)=>{const e=document.createElement('div'); e.className='h-6'; const h=minutesToHHMM(b.time); e.title=`Waktu: ${h}`; if(b.type==='work')e.style.backgroundColor=cssVar('--color-work'); else if(b.type==='rest')e.style.backgroundColor=cssVar('--color-rest'); else if(b.type==='break')e.style.backgroundColor=cssVar('--color-break'); else e.style.backgroundColor=cssVar('--color-idle'); if(b.time%60===0&&idx>0){e.style.borderLeft='1px solid '+cssVar('--color-grid');} c.appendChild(e);}); r.appendChild(l); r.appendChild(c); DOMElements.chartContainer.appendChild(r);}
       function findOperatorWithMostWork(r){return r.indexOf(Math.max(...r));}
       function fillCycleForOperator(t,s,c,m){const wb=Math.min(Math.ceil(c.work/TIME_BLOCK_MINUTES),Math.ceil(m/TIME_BLOCK_MINUTES)); const rb=Math.ceil(c.rest/TIME_BLOCK_MINUTES); let wf=0; let li=s-1; for(let i=0;i<wb;i++){const idx=s+i; if(idx<t.length&&t[idx].type==='available'){t[idx].type='work'; wf+=TIME_BLOCK_MINUTES; li=idx;} else {break;}} for(let i=0;i<rb;i++){const idx=s+wb+i; if(idx<t.length&&t[idx].type==='available'){t[idx].type='rest'; li=idx;} else {break;}} return{work:wf,startIndex:s,lastIndex:li};}
       function updateChart(n,s,w,c){DOMElements.chartContainer.innerHTML=''; const t=createTimeline(s); renderTimeAxis(t); const ot=Array.from({length:n},()=>JSON.parse(JSON.stringify(t))); const r=Array.from({length:n},()=>w); for(let i=0;i<t.length;i++){if(t[i].type!=='available')continue; const o=findOperatorWithMostWork(r); if(r[o]<=0)continue; const f=fillCycleForOperator(ot[o],i,c,r[o]); r[o]-=f.work; for(let j=i;j<=f.lastIndex&&j<t.length;j++){if(t[j].type==='available')t[j].type='taken';} for(let k=0;k<n;k++)if(k!==o){for(let l=f.startIndex;l<=f.lastIndex&&l<ot[k].length;l++){if(ot[k][l].type==='available')ot[k][l].type='idle';}} i=f.lastIndex;} ot.forEach((tl,idx)=>renderOperatorChart(idx+1,tl));}
 
       // --- STATIC ANALYSIS TEMPLATES ---
       function getStaticAnalysisTemplates(toolName, a8Value) {
-        const sup = (n) => `<sup class="text-blue-500 font-semibold ml-1">[${n}]</sup>`;
-        const refs = `<h3 class="text-lg font-bold mt-4 pt-3 border-t mb-2">Referensi</h3><div class="text-xs text-gray-500 mt-2 grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1">
-            <span>[1] <a href="https://www.hse.gov.uk/pubns/priced/l140.pdf" target="_blank" rel="noopener noreferrer" class="text-blue-500 hover:underline">HSE UK Hand-arm vibration — L140</a></span>
-            <span>[2] <a href="https://www.safeworkaustralia.gov.au/system/files/documents/1703/guidetomeasuringassessinghandarmvibration.pdf" target="_blank" rel="noopener noreferrer" class="text-blue-500 hover:underline">AU Gov Guide to Measuring... Hand-Arm Vibration</a></span>
-            <span>[3] <a href="https://www.scielo.br/j/rbeb/a/BDK5twJFSh9vQHHqQtw7GGz/?lang=en" target="_blank" rel="noopener noreferrer" class="text-blue-500 hover:underline">Measurement... exposure to vibration... to hand-arm</a></span>
-            <span>[4] <a href="https://www.sciencedirect.com/science/article/pii/S0169814118304918" target="_blank" rel="noopener noreferrer" class="text-blue-500 hover:underline">Determination of hand-transmitted vibration risk...</a></span>
-            <span>[5] <a href="https://www.researchgate.net/publication/323084149_Evaluation_and_Measurement_of_Hand-Transmitted_Vibrations" target="_blank" rel="noopener noreferrer" class="text-blue-500 hover:underline">Evaluation and Measurement of Hand-Transmitted Vibrations</a></span>
-            <span>[6] <a href="https://www.med.navy.mil/Portals/62/Documents/NMFA/NMCPHC/root/Industrial%20Hygiene/Human-Vibration-Technical-Guide.pdf" target="_blank" rel="noopener noreferrer" class="text-blue-500 hover:underline">Human Vibration Guide — med.navy.mil</a></span>
-            <span>[7] <a href="https://jdih.kemnaker.go.id/asset/data_puu/Permen_5_2018.pdf" target="_blank" rel="noopener noreferrer" class="text-blue-500 hover:underline">PERMENAKER No. 5 2018</a></span>
-            <span>[8] <a href="https://pesta.bsn.go.id/produk/detail/12373-sni70542019" target="_blank" rel="noopener noreferrer" class="text-blue-500 hover:underline">SNI 7054:2019</a></span>
-            <span>[9] <a href="https://has-environmental.com/wp-content/uploads/2024/03/SV-103-Hand-Arm-Vibration.pdf" target="_blank" rel="noopener noreferrer" class="text-blue-500 hover:underline">Pengukuran Getaran Tangan Dosimeter</a></span>
+        const sup = (n) => `<sup class="text-teal-500 font-semibold ml-1">[${n}]</sup>`;
+        const refs = `<h3 class="text-lg font-bold mt-4 pt-3 border-t border-slate-200 dark:border-slate-700 mb-2">Referensi</h3><div class="text-xs text-slate-500 mt-2 grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1">
+            <span>[1] <a href="https://www.hse.gov.uk/pubns/priced/l140.pdf" target="_blank" rel="noopener noreferrer" class="text-teal-500 hover:underline">HSE UK Hand-arm vibration — L140</a></span>
+            <span>[2] <a href="https://www.safeworkaustralia.gov.au/system/files/documents/1703/guidetomeasuringassessinghandarmvibration.pdf" target="_blank" rel="noopener noreferrer" class="text-teal-500 hover:underline">AU Gov Guide to Measuring... Hand-Arm Vibration</a></span>
+            <span>[3] <a href="https://www.scielo.br/j/rbeb/a/BDK5twJFSh9vQHHqQtw7GGz/?lang=en" target="_blank" rel="noopener noreferrer" class="text-teal-500 hover:underline">Measurement... exposure to vibration... to hand-arm</a></span>
+            <span>[4] <a href="https://www.sciencedirect.com/science/article/pii/S0169814118304918" target="_blank" rel="noopener noreferrer" class="text-teal-500 hover:underline">Determination of hand-transmitted vibration risk...</a></span>
+            <span>[5] <a href="https://www.researchgate.net/publication/323084149_Evaluation_and_Measurement_of_Hand-Transmitted_Vibrations" target="_blank" rel="noopener noreferrer" class="text-teal-500 hover:underline">Evaluation and Measurement of Hand-Transmitted Vibrations</a></span>
+            <span>[6] <a href="https://www.med.navy.mil/Portals/62/Documents/NMFA/NMCPHC/root/Industrial%20Hygiene/Human-Vibration-Technical-Guide.pdf" target="_blank" rel="noopener noreferrer" class="text-teal-500 hover:underline">Human Vibration Guide — med.navy.mil</a></span>
+            <span>[7] <a href="https://jdih.kemnaker.go.id/asset/data_puu/Permen_5_2018.pdf" target="_blank" rel="noopener noreferrer" class="text-teal-500 hover:underline">PERMENAKER No. 5 2018</a></span>
+            <span>[8] <a href="https://pesta.bsn.go.id/produk/detail/12373-sni70542019" target="_blank" rel="noopener noreferrer" class="text-teal-500 hover:underline">SNI 7054:2019</a></span>
+            <span>[9] <a href="https://has-environmental.com/wp-content/uploads/2024/03/SV-103-Hand-Arm-Vibration.pdf" target="_blank" rel="noopener noreferrer" class="text-teal-500 hover:underline">Pengukuran Getaran Tangan Dosimeter</a></span>
         </div>`;
         
         return {
@@ -344,10 +389,69 @@
           DOMElements.analysisOutput.innerHTML = content;
           DOMElements.analysisModal.classList.add('visible');
       }
+      
+      function getGuidanceContent() {
+          return `
+            <h1 class="text-2xl font-bold mb-4">Panduan Pengguna & Metodologi Aplikasi</h1>
+            <h2 class="text-xl font-semibold mt-6 mb-3 border-b pb-2">Abstrak</h2>
+            <p class="text-sm text-slate-300 leading-relaxed">Aplikasi ini adalah alat bantu simulasi dan manajemen risiko yang dirancang untuk menghitung paparan getaran pada tangan dan lengan (*Hand-Arm Vibration* / HAV) berdasarkan standar internasional dan nasional. Tujuannya adalah untuk membantu para profesional Keselamatan dan Kesehatan Kerja (K3), manajer, dan pekerja dalam merencanakan pekerjaan secara proaktif agar paparan getaran tidak melebihi Batas Nilai Aksi (*Exposure Action Value* / EAV) dan Batas Nilai Paparan (*Exposure Limit Value* / ELV) yang ditetapkan <span style="color:#0ea5e9;">[1][7]</span>. Aplikasi ini tidak hanya menghitung nilai paparan, tetapi juga secara cerdas merekomendasikan jumlah minimum operator dan jadwal kerja yang aman, menjadikannya alat bantu pengambilan keputusan yang efektif.</p>
+            
+            <h2 class="text-xl font-semibold mt-6 mb-3 border-b pb-2">Cara Kerja Aplikasi</h2>
+            <ol class="list-decimal pl-5 space-y-2 text-sm text-slate-300">
+                <li><strong>Pilih Tipe Perkakas:</strong> Mulailah dengan memilih alat yang akan digunakan dari daftar dropdown. Daftar ini mencakup perkakas umum serta database dari HSE (UK) dan Safe Work Australia (SWA) <span style="color:#0ea5e9;">[1][2]</span>. Jika alat tidak ada dalam daftar, pilih <strong>"-- Masukkan Manual --"</strong>.</li>
+                <li><strong>Masukkan Nilai Getaran (Ahv):</strong> Jika memilih alat dari daftar, nilai getarannya (Ahv, dalam m/s²) akan terisi otomatis <span style="color:#0ea5e9;">[5]</span>. Jika manual, masukkan nilai dari manual alat atau hasil pengukuran <span style="color:#0ea5e9;">[9]</span>.</li>
+                <li><strong>Tentukan Total Waktu Penggunaan:</strong> Masukkan total durasi alat akan digunakan oleh semua operator dalam satu hari (jam). Aplikasi akan mengingatkan jika alat umumnya digunakan secara intermiten, untuk memastikan input adalah "waktu pemicu" (*trigger time*) yang sebenarnya <span style="color:#0ea5e9;">[2]</span>.</li>
+                <li><strong>Lihat Hasil & Rekomendasi:</strong> Aplikasi akan secara instan menampilkan jumlah operator minimum, nilai paparan, status risiko, dan visualisasi jadwal kerja yang aman <span style="color:#0ea5e9;">[1][2][7]</span>.</li>
+                <li><strong>Dapatkan Analisis Risiko:</strong> Klik tombol **"✨ Tampilkan Analisis Risiko & Kontrol"** untuk laporan instan mengenai potensi bahaya dan rekomendasi pengendalian.</li>
+            </ol>
+
+            <h2 class="text-xl font-semibold mt-6 mb-3 border-b pb-2">Mesin Inti: Logika Perhitungan dan Rumus</h2>
+            <h3 class="text-lg font-semibold mt-4 mb-2">1. Perhitungan Paparan Harian A(8)</h3>
+            <p class="text-sm text-slate-300">Ini adalah metrik standar sesuai ISO 5349 <span style="color:#0ea5e9;">[1][8]</span>:</p>
+            <p class="text-center my-2 bg-slate-900 p-2 rounded-md"><code>A(8) = A_hv × √(T_op / 8)</code></p>
+            
+            <h3 class="text-lg font-semibold mt-4 mb-2">2. HSE Exposure Points</h3>
+            <p class="text-sm text-slate-300">Metode poin dari HSE (UK) untuk mengukur risiko <span style="color:#0ea5e9;">[1]</span>:</p>
+            <p class="text-center my-2 bg-slate-900 p-2 rounded-md"><code>Poin ≈ 2 × A_hv² × T_op</code></p>
+            
+            <h3 class="text-lg font-semibold mt-4 mb-2">3. Logika Cerdas: Penentuan Operator & Penyesuaian Waktu</h3>
+            <p class="text-sm text-slate-300">Tujuannya adalah menjaga A(8) per operator di bawah 5.0 m/s² <span style="color:#0ea5e9;">[1][7]</span>. Aplikasi menghitung operator ideal dengan rumus turunan dari A(8) <span style="color:#0ea5e9;">[8]</span>:</p>
+            <p class="text-center my-2 bg-slate-900 p-2 rounded-md"><code>n_min = ceil(T_total / (8 × (5/A_hv)²))</code></p>
+            <p class="text-sm text-slate-300">Jika hasilnya > 6, aplikasi akan mengurangi total waktu kerja secara otomatis untuk menjaga skenario tetap praktis dan aman <span style="color:#0ea5e9;">[2][6]</span>.</p>
+            
+            <h2 class="text-xl font-semibold mt-6 mb-3 border-b pb-2">Daftar Pustaka</h2>
+            <ol class="list-decimal pl-5 space-y-1 text-sm text-slate-300">
+                <li>Health and Safety Executive (HSE) UK. (2019). *Hand-arm vibration: The Control of Vibration at Work Regulations 2005 (L140)*.</li>
+                <li>Safe Work Australia. (2017). *Guide to Measuring and Assessing Workplace Exposure to Hand-Arm Vibration*.</li>
+                <li>Figueiredo, M., & Nogueira, H. (2020). *Measurement and evaluation of human exposure to vibration transmitted to hand-arm*.</li>
+                <li>Dewangan, K. N., & De, A. (2018). *Determination of hand-transmitted vibration risk on the human*.</li>
+                <li>Paddan, G. S., & Griffin, M. J. (2018). *Evaluation and Measurement of Hand-Transmitted Vibrations*.</li>
+                <li>Navy and Marine Corps Public Health Center. (2011). *Human Vibration Technical Guide*.</li>
+                <li>Kementerian Ketenagakerjaan Republik Indonesia. (2018). *Permenaker Nomor 5 Tahun 2018*.</li>
+                <li>Badan Standardisasi Nasional (BSN). (2019). *SNI 7054:2019*.</li>
+                <li>HAS Environmental. *SV 103 Hand-Arm Vibration Dosimeter & Analyser*.</li>
+            </ol>
+          `;
+      }
 
       // --- EVENTS & STATE ---
       function persist(){ try{ const d={toolType:DOMElements.toolTypeSelect.value,ahv:parseFloat(DOMElements.ahvInput.value)||0,toolHours:parseFloat(DOMElements.toolHoursInput.value)||0,operators:parseInt(DOMElements.operatorsInput.value)||1}; localStorage.setItem('a8Calc',JSON.stringify(d)); }catch(_){} }
-      function init(){ try{localStorage.removeItem('a8Calc');}catch(_){} populateToolOptions(); DOMElements.toolTypeSelect.selectedIndex=0; DOMElements.ahvInput.disabled=false; DOMElements.ahvInput.value=2.5; updateSourceNote(null,null); DOMElements.toolHoursInput.value='6.5'; DOMElements.operatorsInput.value='1'; const t=(function(){try{return localStorage.getItem('theme')||'light';}catch(_){return'light';}})(); applyTheme(t); document.getElementById('theme-toggle')?.addEventListener('click',()=>{applyTheme(document.body.classList.contains('dark')?'light':'dark');}); const fb=document.getElementById('formula-btn'),fp=document.getElementById('formula-panel'); fb?.addEventListener('click',e=>{e.stopPropagation(); const o=fp.classList.contains('hidden'); fp.classList.toggle('hidden'); fb.setAttribute('aria-expanded',o?'true':'false');}); fp?.addEventListener('click',e=>e.stopPropagation()); document.addEventListener('click',()=>{if(!fp?.classList.contains('hidden')){fp.classList.add('hidden'); fb?.setAttribute('aria-expanded','false');}}); document.getElementById('reset-btn')?.addEventListener('click',()=>{try{localStorage.removeItem('a8Calc');}catch(_){} populateToolOptions(); DOMElements.toolTypeSelect.selectedIndex=0; DOMElements.ahvInput.disabled=false; DOMElements.ahvInput.value=2.5; updateSourceNote(null,null); DOMElements.toolHoursInput.value='6.5'; DOMElements.operatorsInput.value='1'; calculateAndUpdate();}); DOMElements.toolTypeSelect.addEventListener('change',e=>{DOMElements.toolHoursInput.value='6.5'; handleToolChange(e);}); DOMElements.ahvInput.addEventListener('input',()=>{DOMElements.toolHoursInput.value='6.5'; calculateAndUpdate();}); DOMElements.toolHoursInput.addEventListener('input',()=>{flashChange(DOMElements.toolHoursInput,'amber'); calculateAndUpdate();}); DOMElements.operatorsInput.addEventListener('input',()=>{flashChange(DOMElements.operatorsInput,'green'); calculateAndUpdate();}); DOMElements.analysisBtn.addEventListener('click', showStaticAnalysis); DOMElements.modalCloseBtn.addEventListener('click',()=>{DOMElements.analysisModal.classList.remove('visible');}); DOMElements.analysisModal.addEventListener('click',e=>{if(e.target===DOMElements.analysisModal){DOMElements.analysisModal.classList.remove('visible');}}); calculateAndUpdate(); }
+      function init(){ try{localStorage.removeItem('a8Calc');}catch(_){} populateToolOptions(); DOMElements.toolTypeSelect.selectedIndex=0; DOMElements.ahvInput.disabled=false; DOMElements.ahvInput.value=2.5; updateSourceNote(null,null); DOMElements.toolHoursInput.value='6.5'; DOMElements.operatorsInput.value='1'; const t=(function(){try{return localStorage.getItem('theme')||'light';}catch(_){return'light';}})(); applyTheme(t); document.getElementById('theme-toggle')?.addEventListener('click',()=>{applyTheme(document.body.classList.contains('dark')?'light':'dark');}); const fb=document.getElementById('formula-btn'),fp=document.getElementById('formula-panel'); fb?.addEventListener('click',e=>{e.stopPropagation(); const o=fp.classList.contains('hidden'); fp.classList.toggle('hidden'); fb.setAttribute('aria-expanded',o?'true':'false');}); fp?.addEventListener('click',e=>e.stopPropagation()); document.addEventListener('click',()=>{if(!fp?.classList.contains('hidden')){fp.classList.add('hidden'); fb?.setAttribute('aria-expanded','false');}}); document.getElementById('reset-btn')?.addEventListener('click',()=>{try{localStorage.removeItem('a8Calc');}catch(_){} populateToolOptions(); DOMElements.toolTypeSelect.selectedIndex=0; DOMElements.ahvInput.disabled=false; DOMElements.ahvInput.value=2.5; updateSourceNote(null,null); DOMElements.toolHoursInput.value='6.5'; DOMElements.operatorsInput.value='1'; calculateAndUpdate();}); DOMElements.toolTypeSelect.addEventListener('change',e=>{DOMElements.toolHoursInput.value='6.5'; handleToolChange(e);}); DOMElements.ahvInput.addEventListener('input',()=>{DOMElements.toolHoursInput.value='6.5'; calculateAndUpdate();}); DOMElements.toolHoursInput.addEventListener('input',()=>{flashChange(DOMElements.toolHoursInput,'amber'); calculateAndUpdate();}); DOMElements.operatorsInput.addEventListener('input',()=>{flashChange(DOMElements.operatorsInput,'green'); calculateAndUpdate();}); 
+        
+        // Modal Listeners
+        DOMElements.analysisBtn.addEventListener('click', showStaticAnalysis); 
+        DOMElements.modalCloseBtn.addEventListener('click',()=>{DOMElements.analysisModal.classList.remove('visible');}); 
+        DOMElements.analysisModal.addEventListener('click',e=>{if(e.target===DOMElements.analysisModal){DOMElements.analysisModal.classList.remove('visible');}});
+        
+        DOMElements.guidanceBtn.addEventListener('click', () => {
+            DOMElements.guidanceOutput.innerHTML = getGuidanceContent();
+            DOMElements.guidanceModal.classList.add('visible');
+        });
+        DOMElements.guidanceModalCloseBtn.addEventListener('click', ()=>{DOMElements.guidanceModal.classList.remove('visible');});
+        DOMElements.guidanceModal.addEventListener('click', e => { if(e.target === DOMElements.guidanceModal) { DOMElements.guidanceModal.classList.remove('visible'); }});
+
+        calculateAndUpdate(); 
+      }
       function handleToolChange(e){
         const k=e.target.value; 
         const noteEl = DOMElements.intermittentToolNote;
