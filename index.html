@@ -4,14 +4,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Kalkulator Paparan Getaran A(8) — HSE + SWA (2025)</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- === ADDED: Chart.js library === -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.0.1/dist/chartjs-plugin-annotation.min.js"></script>
   <style>
-    body { 
-        font-family: 'Inter', sans-serif; 
+    body {  
+        font-family: 'Exo 2', sans-serif;  
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
     }
@@ -122,7 +122,17 @@
     }
 
     /* --- Chart/Table section --- */
-    .card { background: var(--color-bg-container); border: 1px solid var(--color-border); border-radius: 16px; padding: 24px; box-shadow: 0 4px 16px rgba(0,0,0,.05); margin-top: 2rem; }
+    .card, .neumorphism {  
+        background: var(--color-bg-container);  
+        border: 1px solid var(--color-border);  
+        border-radius: 16px;  
+        padding: 24px;  
+        transition: box-shadow 0.3s ease-in-out;
+        box-shadow: 6px 6px 12px #d9dce1, -6px -6px 12px #ffffff;
+    }
+    .dark .card, .dark .neumorphism {
+        box-shadow: 6px 6px 12px #071225, -6px -6px 12px #152a4b;
+    }
     .chartbox {
         position: relative;
         width: 100%;
@@ -205,6 +215,7 @@
         border-radius: 0.75rem;
         padding: 1.5rem;
         border-bottom-width: 0;
+        text-shadow: 1px 1px 3px rgba(0,0,0,0.4);
     }
 
     .header-bg h1, .header-bg p {
@@ -239,9 +250,138 @@
     .dark .header-bg .toolbar-btn .icon-sun {
         color: #f59e0b !important; /* Industrial Yellow */
     }
+    
+    /* === NEW: Scroll to Top Button === */
+    #scrollToTopBtn {
+        display: none;
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 99;
+        border: none;
+        outline: none;
+        background-color: var(--color-primary);
+        color: black;
+        cursor: pointer;
+        padding: 10px;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    .dark #scrollToTopBtn {
+        background-color: var(--color-primary);
+        color: #0A192F;
+    }
+    @media (min-width: 640px) {
+      #scrollToTopBtn {
+        display: none !important;
+      }
+    }
+
+    /* === NEW: Print Styles === */
+    @media print {
+      @page {
+        size: A4;
+        margin: 1.5cm;
+      }
+
+      /* Hide everything by default */
+      body > *:not(#print-area) {
+        display: none !important;
+      }
+      
+      /* Only show the print area */
+      #print-area {
+        display: block !important;
+      }
+      
+      /* General print styles */
+      body {
+        padding: 0 !important;
+        margin: 0 !important;
+        background-color: #ffffff !important;
+        color: #000000 !important;
+        font-size: 9pt; /* UPDATED: Reduced base font size */
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      /* Print Header and Footer */
+      #print-header-content {
+        text-align: center;
+        margin-bottom: 1.5rem;
+        border-bottom: 2px solid #000;
+        padding-bottom: 1rem;
+      }
+      #print-header-content h1 { font-size: 16pt; font-weight: bold; color: #000 !important; }
+      #print-header-content p { font-size: 10pt; color: #333 !important; }
+      
+      #print-footer-content {
+        position: fixed;
+        bottom: 0.5cm;
+        right: 1.5cm;
+        font-size: 8pt;
+        color: #666 !important;
+      }
+      
+      /* Main two-column layout */
+      #print-main-content {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem; /* UPDATED: Reduced gap */
+        align-items: start;
+      }
+      
+      /* Analysis section (full width) */
+      #print-analysis-section {
+        margin-top: 1.5rem;
+        page-break-before: auto;
+        border: 1px solid #ccc;
+        padding: 0.75rem; /* UPDATED: Reduced padding */
+        border-radius: 8px;
+        font-size: 8.5pt; /* UPDATED: Specific smaller font size */
+        line-height: 1.3; /* UPDATED: Adjusted line height */
+      }
+      #print-analysis-section h3, #print-analysis-section h4 {
+        color: #000 !important;
+        margin-top: 0.5rem;
+        margin-bottom: 0.25rem;
+        padding-bottom: 0.25rem;
+        border-bottom: 1px solid #eee;
+        font-size: 1.1em;
+      }
+      #print-analysis-section ul {
+        list-style-position: inside;
+        padding-left: 0.5rem;
+      }
+      
+      /* Styling for cloned elements */
+      .print-card {
+        border: 1px solid #ccc !important;
+        padding: 0.75rem !important; /* UPDATED: Reduced padding */
+        border-radius: 8px !important;
+        page-break-inside: avoid;
+        margin-bottom: 0.75rem; /* UPDATED: Reduced margin */
+      }
+      .print-card h3, .print-card h4 { color: #000 !important; font-size: 1.1em; }
+      .print-card p, .print-card div, .print-card small, .print-card label, .print-card span { color: #333 !important; }
+      .print-card .output-section { background-color: #eeeeee !important; }
+      .print-card .status-below-eav, .print-card .status-above-eav, .print-card .status-above-elv {
+        border: 1px solid #999;
+        color: #000 !important;
+      }
+      .print-card .status-below-eav { background-color: #c8e6c9 !important; }
+      .print-card .status-above-eav { background-color: #fff9c4 !important; }
+      .print-card .status-above-elv { background-color: #ffcdd2 !important; }
+      .print-card .recommendation-section { background-color: #f5f5f5 !important; border-color: #ccc !important; }
+      .print-card .recommendation-section h4, .print-card .recommendation-section p { color: #000 !important; }
+      .print-card img { max-width: 100%; border: 1px solid #ddd; border-radius: 4px; }
+    }
   </style>
 </head>
 <body class="p-4 transition-colors duration-300">
+  
   <div class="calculator-container p-4 sm:p-6 md:p-8 rounded-2xl shadow-xl w-full max-w-6xl mx-auto">
     <header class="pb-4 mb-6 relative header-bg">
       <div class="flex items-center justify-end gap-2 mb-4">
@@ -252,6 +392,10 @@
         <button id="reset-btn" class="toolbar-btn px-3 py-2 rounded-lg shadow-sm focus:outline-none" title="Reset ke Default">
           <span class="sr-only">Reset ke Default</span>
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11A8.1 8.1 0 0 0 4.5 9M4 5v4h4"/><path d="M4 13a8.1 8.1 0 0 0 15.5 2m.5 4v-4h-4"/></svg>
+        </button>
+        <button id="print-btn" class="toolbar-btn px-3 py-2 rounded-lg shadow-sm focus:outline-none" title="Cetak Laporan (PDF)">
+            <span class="sr-only">Cetak Laporan</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
         </button>
         <button id="formula-btn" class="toolbar-btn px-3 py-2 rounded-lg shadow-sm focus:outline-none" title="Tunjukkan rumus" aria-haspopup="true" aria-expanded="false"><span class="sr-only">Tunjukkan rumus</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h18M8 8h8M8 16l8-8M3 20h18"/></svg></button>
         <button id="theme-toggle" class="toolbar-btn px-3 py-2 rounded-lg shadow-sm focus:outline-none" title="Mode Gelap / Terang" aria-label="Toggle dark mode">
@@ -278,7 +422,7 @@
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
       <!-- Left: Inputs -->
-      <div class="md:col-span-1">
+      <div id="input-column" class="md:col-span-1 neumorphism p-6 rounded-2xl">
         <section class="inputs">
           <h3 class="text-lg font-semibold mb-4">Parameter Getaran</h3>
           <div class="space-y-4">
@@ -330,8 +474,8 @@
       </div>
 
       <!-- Right: Outputs -->
-      <div class="md:col-span-1 lg:col-span-2">
-        <section class="output-section px-6 py-3 rounded-lg text-center">
+      <div id="output-column" class="md:col-span-1 lg:col-span-2">
+        <section class="output-section px-6 py-3 rounded-lg text-center neumorphism">
           <div class="info-container">
             <h2 class="text-sm font-semibold">HSE Exposure Points (≈ 2×Ahv²×jam)</h2>
             <span class="info-icon" title="Klik untuk info">?</span>
@@ -352,13 +496,13 @@
           </div>
         </section>
 
-        <section class="recommendation-section border-l-4 p-3 my-6 rounded-r-md">
+        <section class="recommendation-section border-l-4 p-3 my-6 rounded-r-md neumorphism">
           <h4 class="font-semibold text-xs">Rekomendasi Siklus Kerja Getaran</h4>
           <p id="per-hour-recommendation" class="text-base font-bold">60' Kerja + 0' Istirahat</p>
           <p class="text-xs mt-1">Rekomendasi umum untuk manajemen risiko; sesuaikan dengan kondisi nyata.</p>
         </section>
 
-        <section class="schedule-section my-6">
+        <section class="schedule-section my-6 neumorphism p-6 rounded-2xl">
           <div class="flex justify-between items-center mb-4">
             <h3 class="text-base font-semibold">Timeline Manajemen Kerja</h3>
             <div id="chart-legend" class="flex space-x-4 text-xs">
@@ -368,7 +512,7 @@
           <div id="chart-container" class="space-y-1"></div>
         </section>
         
-        <section class="disclaimer-section mt-6 p-4 rounded-lg border">
+        <section class="disclaimer-section mt-6 p-4 rounded-lg border neumorphism">
             <h4 class="font-semibold text-xs mb-2">Catatan Penggunaan Alat</h4>
             <p class="leading-relaxed" style="font-size: 0.7rem;">
                 Disclaimer: Alat yang digunakan kemungkinan tidak dioperasikan secara kontinu sesuai dengan kurun waktu pada "Timeline Manajemen Kerja" di atas. Silakan Anda menurunkan waktu penggunaan alat yang efektif pada boks "Total Waktu Penggunaan Alat" sehingga jumlah operator akan berkurang sesuai dengan rencana Anda.
@@ -378,12 +522,12 @@
       </div>
     </div>
     
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+    <div class="mt-10 grid grid-cols-1 lg:grid-cols-2 gap-10">
         <div class="card"><h3 class="text-lg font-semibold">Siklus Kerja per Jam</h3><p class="text-xs -mt-2 mb-2 text-slate-500">Visualisasi dari "Rekomendasi Siklus Kerja Getaran" di atas.</p><div class="chartbox"><canvas id="chartWB" class="interactive-chart"></canvas></div></div>
         <div class="card"><h3 class="text-lg font-semibold">Analisis Risiko vs Durasi Paparan</h3><div class="chartbox"><canvas id="chartA8" class="interactive-chart"></canvas></div></div>
     </div>
 
-    <div class="card">
+    <div class="card mt-10">
         <h2 class="text-xl font-semibold">Ready-Reckoner: Poin Paparan Getaran</h2>
         <p class="text-xs mb-4 text-slate-500">Poin menggunakan skema HSE: <code>Poin = 2 × Ahv² × Jam</code>. 100 poin ≈ EAV (A(8)=2.5), 400 poin ≈ ELV (A(8)=5). Klik sel untuk menerapkan nilai ke kalkulator.</p>
         <div class="ready-wrap"><table class="ready" id="rrTable"><thead><tr id="rrHead"></tr></thead><tbody id="rrBody"></tbody></table></div>
@@ -392,6 +536,18 @@
 
   <div id="analysis-modal" class="modal-overlay"><div class="modal-content"><button id="modal-close-btn" class="modal-close-btn">&times;</button><h2 class="text-xl font-bold mb-4">Analisis Risiko & Rekomendasi Kontrol</h2><div id="analysis-output"></div></div></div>
   <div id="guidance-modal" class="modal-overlay"><div class="modal-content"><button id="guidance-modal-close-btn" class="modal-close-btn">&times;</button><div id="guidance-output"></div></div></div>
+  
+  <div class="mt-8 flex justify-center items-center gap-4">
+      <button id="home-btn" class="flex items-center gap-2 px-4 py-2 rounded-lg neumorphism">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          Home
+      </button>
+      <button id="guidance-btn-footer" class="flex items-center gap-2 px-4 py-2 rounded-lg neumorphism">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+          Guidance
+      </button>
+  </div>
+
 
   <!-- === NEW: Footer Element === -->
   <footer>
@@ -399,6 +555,22 @@
     <div>Reviewed by <a href="https://id.linkedin.com/in/avior-qhse" target="_blank" rel="noopener">Ratu Avior, MSc.</a> and <a href="https://id.linkedin.com/in/raniannisaroyani" target="_blank" rel="noopener noreferrer">Ir. Rani Anisa Royani, MSc.</a></div>
     <div>Sustainable Apps Development @ Aug 2025</div>
   </footer>
+
+  <button id="scrollToTopBtn" title="Go to top">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 7-7 7 7"/><path d="M12 19V5"/></svg>
+  </button>
+  
+  <!-- === NEW: Dedicated Print Area === -->
+  <div id="print-area" class="hidden">
+    <div id="print-header-content"></div>
+    <div id="print-main-content">
+        <div id="print-col-1"></div>
+        <div id="print-col-2"></div>
+    </div>
+    <div id="print-analysis-section"></div>
+    <div id="print-footer-content"></div>
+  </div>
+
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -423,17 +595,17 @@
       };
       const allTools = { ...HSE_TOOLS, ...SWA_TOOLS };
       const SIMPLE_KEYS = [
-        'drill-impact-masonry', 'angle-grinder-100-180', 'angle-grinder-flap-100-125', 'die-grinder', 'sander-orbital', 
+        'drill-impact-masonry', 'angle-grinder-100-180', 'angle-grinder-flap-100-125', 'die-grinder', 'sander-orbital',  
         'demolition-rotary-hammer', 'impact-wrench-small', 'chainsaw', 'needle-scaler-vr', 'plate-compactor-vr'
       ];
 
       // --- DOM REFS ---
       const DOMElements = {
-        toolTypeSelect: document.getElementById('tool-type'), ahvInput: document.getElementById('ahv-input'), toolHoursInput: document.getElementById('tool-hours-input'), 
-        operatorsInput: document.getElementById('operators-input'), shiftDurationDisplay: document.getElementById('shift-duration-display'), 
-        perHourRec: document.getElementById('per-hour-recommendation'), hsePointsValue: document.getElementById('hse-points-value'), 
-        statusDisplay: document.getElementById('status-display'), chartContainer: document.getElementById('chart-container'), 
-        shiftLimitDisplay: document.getElementById('shift-limit-display'), maxExposureLimitDisplay: document.getElementById('max-exposure-limit-display'), 
+        toolTypeSelect: document.getElementById('tool-type'), ahvInput: document.getElementById('ahv-input'), toolHoursInput: document.getElementById('tool-hours-input'),  
+        operatorsInput: document.getElementById('operators-input'), shiftDurationDisplay: document.getElementById('shift-duration-display'),  
+        perHourRec: document.getElementById('per-hour-recommendation'), hsePointsValue: document.getElementById('hse-points-value'),  
+        statusDisplay: document.getElementById('status-display'), chartContainer: document.getElementById('chart-container'),  
+        shiftLimitDisplay: document.getElementById('shift-limit-display'), maxExposureLimitDisplay: document.getElementById('max-exposure-limit-display'),  
         a8Value: document.getElementById('a8-value'), sourceNote: document.getElementById('source-note'),
         analysisBtn: document.getElementById('analysis-btn'), analysisModal: document.getElementById('analysis-modal'),
         modalCloseBtn: document.getElementById('modal-close-btn'), analysisOutput: document.getElementById('analysis-output'),
@@ -441,6 +613,15 @@
         guidanceBtn: document.getElementById('guidance-btn'), guidanceModal: document.getElementById('guidance-modal'),
         guidanceModalCloseBtn: document.getElementById('guidance-modal-close-btn'), guidanceOutput: document.getElementById('guidance-output'),
         rrTable: document.getElementById('rrTable'), rrHead: document.getElementById('rrHead'), rrBody: document.getElementById('rrBody'),
+        scrollToTopBtn: document.getElementById('scrollToTopBtn'),
+        homeBtn: document.getElementById('home-btn'),
+        guidanceBtnFooter: document.getElementById('guidance-btn-footer'),
+        printBtn: document.getElementById('print-btn'),
+        printHeaderContent: document.getElementById('print-header-content'),
+        printFooterContent: document.getElementById('print-footer-content'),
+        printCol1: document.getElementById('print-col-1'),
+        printCol2: document.getElementById('print-col-2'),
+        printAnalysisSection: document.getElementById('print-analysis-section'),
       };
 
       // --- HELPERS ---
@@ -536,7 +717,7 @@
           // 5. Update UI with all results
           updateStatusDisplay(hsePoints, a8Value);
           DOMElements.shiftLimitDisplay.textContent = `Batas paparan dibatasi shift Net: ${netWorkHours.toFixed(2)} jam kerja efektif`;
-          updateRecommendation(ahv);
+          updateRecommendation(ahv, exposureTimePerOperator, a8Value);
           updateMaxExposureLimit(ahv);
           
           // === UPDATE: Pass input values to the highlight function ===
@@ -562,7 +743,7 @@
       function updateStatusDisplay(p,a){DOMElements.hsePointsValue.textContent=Math.round(p).toString(); DOMElements.a8Value.textContent=a.toFixed(2); const e=DOMElements.statusDisplay; e.className='text-xs font-semibold p-2 rounded-md transition-all duration-300 mt-2'; let statusKey = ''; if(p>=ELV_POINTS){e.textContent=`DI ATAS BATAS PAPARAN (Above ELV: ${a.toFixed(2)} m/s²)`; e.classList.add('status-above-elv'); statusKey = 'elv';} else if(p>=EAV_POINTS){e.textContent=`Di Atas Batas Aksi (Above EAV: ${a.toFixed(2)} m/s²)`; e.classList.add('status-above-eav'); statusKey = 'eav';} else {e.textContent=`Di Bawah Batas Aksi (Below EAV: ${a.toFixed(2)} m/s²)`; e.classList.add('status-below-eav'); statusKey = 'below_eav';} DOMElements.analysisBtn.disabled=p<1; DOMElements.analysisBtn.dataset.statusKey = statusKey; }
       function updateMaxExposureLimit(a){if(a<=0){DOMElements.maxExposureLimitDisplay.textContent='Tidak terbatas';return;} const m=8*Math.pow(ELV_A8/a,2); DOMElements.maxExposureLimitDisplay.textContent=`${m.toFixed(2)} Jam`;}
       function calculateWorkCycle(ahv){if(ahv<=0)return{work:60,rest:0}; const m=(EAV_POINTS/(POINTS_FACTOR*ahv*ahv))*60; if(m>240)return{work:60,rest:0}; if(m>120)return{work:45,rest:15}; if(m>60)return{work:30,rest:30}; if(m>30)return{work:15,rest:45}; return{work:10,rest:50};}
-      function updateRecommendation(ahv){const c=calculateWorkCycle(ahv); DOMElements.perHourRec.textContent=`${c.work}' Kerja + ${c.rest}' Istirahat Getaran`; updateChartWB(c); updateChartA8(ahv); }
+      function updateRecommendation(ahv, exposureTimePerOperator, a8Value){const c=calculateWorkCycle(ahv); DOMElements.perHourRec.textContent=`${c.work}' Kerja + ${c.rest}' Istirahat Getaran`; updateChartWB(c); updateChartA8(ahv, exposureTimePerOperator, a8Value); }
       function createTimeline(s){const a=[]; for(let m=s.workStartMins;m<s.workEndMins;m+=TIME_BLOCK_MINUTES){let t='available'; for(const b of s.breaks){if(m>=b.start&&m<b.start+b.duration){t='break';break;}} a.push({time:m,type:t});} return a;}
       function renderTimeAxis(t){const r=document.createElement('div'); r.className='flex items-center gap-3'; const l=document.createElement('div'); l.className='w-24 flex-shrink-0'; const c=document.createElement('div'); c.className='flex-grow grid border-b-2 pb-2'; c.style.gridTemplateColumns=`repeat(${t.length}, 1fr)`; c.style.borderBottom='2px solid '+cssVar('--color-grid'); let lh=-1; t.forEach((b,i)=>{const e=document.createElement('div'); const ch=Math.floor(b.time/60); if(ch!==lh&&b.time%60===0){const hh=ch.toString().padStart(2,'0'); e.innerHTML=`<div class="hidden sm:block text-xs">${hh}:00</div><div class="block sm:hidden text-[10px] transform -rotate-90 origin-left whitespace-nowrap ml-1">${hh}:00</div>`; e.className='text-xs -ml-2'; lh=ch;} if(b.time%60===0&&i>0){} c.appendChild(e);}); r.appendChild(l); r.appendChild(c); DOMElements.chartContainer.appendChild(r);}
       function renderOperatorChart(i,t){const r=document.createElement('div'); r.className='flex items-center gap-3'; const l=document.createElement('div'); l.className='w-24 text-xs font-medium flex-shrink-0'; l.textContent=`Operator ${i}`; const c=document.createElement('div'); c.className='flex-grow grid rounded-md overflow-hidden'; c.style.gridTemplateColumns=`repeat(${t.length}, 1fr)`; t.forEach((b,idx)=>{const e=document.createElement('div'); e.className='h-6'; const h=minutesToHHMM(b.time); e.title=`Waktu: ${h}`; if(b.type==='work')e.style.backgroundColor=cssVar('--color-work'); else if(b.type==='rest')e.style.backgroundColor=cssVar('--color-rest'); else if(b.type==='break')e.style.backgroundColor=cssVar('--color-break'); else e.style.backgroundColor=cssVar('--color-idle'); if(b.time%60===0&&idx>0){e.style.borderLeft='1px solid '+cssVar('--color-grid');} c.appendChild(e);}); r.appendChild(l); r.appendChild(c); DOMElements.chartContainer.appendChild(r);}
@@ -573,6 +754,7 @@
       // --- STATIC ANALYSIS TEMPLATES ---
       function getStaticAnalysisTemplates(toolName, a8Value) {
         const sup = (n) => `<sup style="color:var(--color-primary)" class="font-semibold ml-1">[${n}]</sup>`;
+        const closeButtonHTML = `<button id="analysis-close-bottom" class="w-full mt-6 py-2 px-4 rounded-lg font-semibold" style="background-color:var(--color-primary); color:#000;">Tutup</button>`;
         const refs = `<h3 class="text-lg font-bold mt-4 pt-3 border-t mb-2">Referensi</h3><div class="text-xs mt-2 grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1">
             <span>[1] <a href="https://www.hse.gov.uk/pubns/priced/l140.pdf" target="_blank" rel="noopener noreferrer" style="color:var(--color-primary)" class="hover:underline">HSE UK Hand-arm vibration — L140</a></span>
             <span>[2] <a href="https://www.safeworkaustralia.gov.au/system/files/documents/1703/guidetomeasuringassessinghandarmvibration.pdf" target="_blank" rel="noopener noreferrer" style="color:var(--color-primary)" class="hover:underline">AU Gov Guide to Measuring... Hand-Arm Vibration</a></span>
@@ -585,9 +767,9 @@
             <span>[9] <a href="https://has-environmental.com/wp-content/uploads/2024/03/SV-103-Hand-Arm-Vibration.pdf" target="_blank" rel="noopener noreferrer" style="color:var(--color-primary)" class="hover:underline">Pengukuran Getaran Tangan Dosimeter</a></span>
         </div>`;
         return {
-          below_eav: `<h3 class="text-lg font-bold mb-2">Analisis Risiko: Risiko Rendah</h3><p class="text-sm">Paparan getaran untuk <strong>${toolName}</strong> dengan nilai A(8) <strong>${a8Value} m/s²</strong> berada di bawah Batas Aksi (EAV). Risiko pengembangan Hand-Arm Vibration Syndrome (HAVS) dalam skenario ini tergolong rendah, namun praktik kerja yang baik harus tetap dijaga untuk memastikan paparan tetap serendah mungkin (ALARP).${sup(1)+sup(7)}</p><h3 class="text-lg font-bold mt-4 mb-2">Rekomendasi Hirarki Kontrol</h3><h4 class="text-md font-semibold mt-3 mb-1">1. Worker Rotation</h4><ul class="list-disc pl-5 space-y-1 text-sm"><li>Meskipun di bawah batas, rotasi pekerja tetap menjadi praktik yang baik untuk meminimalkan paparan kumulatif jangka panjang.${sup(2)}</li><li>Rancang tugas pekerjaan agar mencakup variasi aktivitas, menggabungkan tugas bergetar dengan tugas yang tidak bergetar.${sup(1)}</li></ul><h4 class="text-md font-semibold mt-3 mb-1">2. Engineering Controls</h4><ul class="list-disc pl-5 space-y-1 text-sm"><li>Pastikan alat (${toolName}) dalam kondisi prima melalui perawatan rutin untuk menjaga tingkat getaran sesuai spesifikasi pabrikan.${sup(4)}</li><li>Saat membeli peralatan baru, pilih model dengan tingkat getaran yang rendah.${sup(1)}</li><li>Gunakan jig, penyangga, atau sistem suspensi untuk menopang alat berat jika memungkinkan.${sup(1)}</li></ul><h4 class="text-md font-semibold mt-3 mb-1">3. Administrative Controls</h4><ul class="list-disc pl-5 space-y-1 text-sm"><li>Jadwalkan istirahat singkat secara berkala (misalnya, 10-15 menit setiap jam) untuk memungkinkan pemulihan sirkulasi darah pada tangan dan lengan.${sup(6)}</li><li>Sebarkan tugas yang melibatkan getaran sepanjang hari, hindari melakukannya secara terus-menerus dalam satu blok waktu yang panjang.${sup(2)}</li></ul><h4 class="text-md font-semibold mt-3 mb-1">4. Training & Work Technique</h4><ul class="list-disc pl-5 space-y-1 text-sm"><li>Pastikan operator menggunakan teknik kerja yang benar, seperti tidak menggenggam alat terlalu erat dan membiarkan alat melakukan pekerjaannya.${sup(1)}</li><li>Latih pekerja untuk mengenali gejala awal HAVS dan pentingnya melaporkannya.${sup(2)}</li><li>Anjurkan untuk menjaga tangan tetap hangat dan kering selama bekerja.${sup(1)}</li></ul><h4 class="text-md font-semibold mt-3 mb-1">5. PPE</h4><ul class="list-disc pl-5 space-y-1 text-sm"><li>Gunakan sarung tangan untuk menjaga tangan tetap hangat dan kering, yang mendukung sirkulasi darah yang baik.${sup(1)}</li><li>Sarung tangan anti-getaran bersertifikasi (ISO 10819) dapat dipertimbangkan sebagai pelengkap, bukan sebagai kontrol utama.${sup(5)}</li></ul>${refs}`,
-          eav: `<h3 class="text-lg font-bold mb-2">Analisis Risiko: Risiko Terkendali</h3><p class="text-sm">Paparan getaran untuk <strong>${toolName}</strong> dengan nilai A(8) <strong>${a8Value} m/s²</strong> telah melampaui Batas Aksi (EAV). Ini adalah level peringatan yang mengharuskan penerapan tindakan kontrol untuk mengurangi risiko. Paparan berkelanjutan pada level ini dapat meningkatkan kemungkinan terjadinya gangguan kesehatan seperti HAVS.${sup(1)+sup(7)}</p><h3 class="text-lg font-bold mt-4 mb-2">Rekomendasi Hirarki Kontrol</h3><h4 class="text-md font-semibold mt-3 mb-1">1. Worker Rotation</h4><ul class="list-disc pl-5 space-y-1 text-sm"><li><strong>Prioritas Utama:</strong> Terapkan skema rotasi pekerja seperti yang disimulasikan untuk membagi total durasi kerja dan memastikan tidak ada satu individu pun yang melebihi batas paparan harian.${sup(2)+sup(8)}</li></ul><h4 class="text-md font-semibold mt-3 mb-1">2. Engineering Controls</h4><ul class="list-disc pl-5 space-y-1 text-sm"><li>Evaluasi kemungkinan penggunaan alat alternatif dengan tingkat getaran (Ahv) yang lebih rendah untuk tugas yang sama.${sup(4)}</li><li>Lakukan perawatan preventif pada alat untuk memastikan komponen peredam getaran berfungsi optimal.${sup(5)}</li></ul><h4 class="text-md font-semibold mt-3 mb-1">3. Administrative Controls</h4><ul class="list-disc pl-5 space-y-1 text-sm"><li>Implementasikan istirahat terstruktur (misalnya, 10 menit setiap jam) dari pekerjaan yang melibatkan getaran.${sup(6)}</li><li>Kurangi total waktu penggunaan alat per hari jika memungkinkan, seperti yang disarankan oleh kalkulator ini.${sup(1)}</li></ul><h4 class="text-md font-semibold mt-3 mb-1">4. Training & Work Technique</h4><ul class="list-disc pl-5 space-y-1 text-sm"><li>Berikan pelatihan penyegaran kepada operator mengenai risiko HAVS dan teknik kerja yang aman untuk meminimalkan paparan.${sup(2)}</li></ul><h4 class="text-md font-semibold mt-3 mb-1">5. PPE</h4><ul class="list-disc pl-5 space-y-1 text-sm"><li>Wajibkan penggunaan sarung tangan anti-getaran yang memenuhi standar ISO 10819 sebagai kontrol tambahan.${sup(5)}</li></ul><h4 class="text-md font-semibold mt-3 mb-1">6. Pengukuran dan Lain-lain</h4><ul class="list-disc pl-5 space-y-1 text-sm"><li>Laksanakan program pengawasan kesehatan (health surveillance) bagi semua operator yang terpapar di atas EAV untuk deteksi dini gejala HAVS.${sup(1)+sup(7)}</li></ul>${refs}`,
-          elv: `<h3 class="text-lg font-bold mb-2" style="color:var(--color-danger)">Analisis Risiko: Risiko Tinggi (Tidak Diizinkan)</h3><p class="text-sm"><strong>PERINGATAN:</strong> Paparan getaran untuk <strong>${toolName}</strong> dengan nilai A(8) <strong>${a8Value} m/s²</strong> telah melampaui Batas Nilai Paparan (ELV). Skenario kerja ini <strong>TIDAK DIIZINKAN</strong> dan harus dihentikan segera. Risiko kerusakan kesehatan permanen (HAVS) sangat tinggi.${sup(1)+sup(7)}</p><h3 class="text-lg font-bold mt-4 mb-2">Rekomendasi Hirarki Kontrol (Tindakan Segera)</h3><h4 class="text-md font-semibold mt-3 mb-1">1. Worker Rotation</h4><ul class="list-disc pl-5 space-y-1 text-sm"><li>Rotasi pekerja saja tidak cukup pada level ini. Tindakan rekayasa dan administratif yang lebih signifikan harus menjadi prioritas utama.${sup(2)}</li></ul><h4 class="text-md font-semibold mt-3 mb-1">2. Engineering Controls</h4><ul class="list-disc pl-5 space-y-1 text-sm"><li><strong>Hentikan Penggunaan Alat:</strong> Segera hentikan penggunaan alat ini hingga rencana kontrol yang memadai tersedia.${sup(1)}</li><li><strong>Substitusi Wajib:</strong> Cari dan gunakan metode kerja alternatif yang tidak melibatkan getaran atau gunakan alat dengan nilai Ahv yang jauh lebih rendah.${sup(4)}</li></ul><h4 class="text-md font-semibold mt-3 mb-1">3. Administrative Controls</h4><ul class="list-disc pl-5 space-y-1 text-sm"><li><strong>Desain Ulang Pekerjaan:</strong> Rancang ulang proses kerja untuk secara drastis mengurangi total waktu penggunaan alat hingga paparan berada di bawah EAV, bukan hanya ELV.${sup(7)}</li><li>Lakukan investigasi segera untuk memahami mengapa paparan melebihi ELV dan implementasikan tindakan perbaikan.${sup(2)}</li></ul><h4 class="text-md font-semibold mt-3 mb-1">4. Training & Work Technique</h4><ul class="list-disc pl-5 space-y-1 text-sm"><li>Lakukan evaluasi ulang kompetensi dan teknik kerja semua operator yang terlibat.${sup(6)}</li></ul><h4 class="text-md font-semibold mt-3 mb-1">5. PPE</h4><ul class="list-disc pl-5 space-y-1 text-sm"><li>APD tidak dapat diandalkan sebagai kontrol utama pada tingkat risiko ini, namun tetap wajib digunakan sebagai lapisan pertahanan terakhir.${sup(5)}</li></ul><h4 class="text-md font-semibold mt-3 mb-1">6. Pengukuran dan Lain-lain</h4><ul class="list-disc pl-5 space-y-1 text-sm"><li>Segera masukkan semua pekerja yang terlibat ke dalam program pengawasan kesehatan intensif.${sup(1)+sup(7)}</li></ul>${refs}`
+          below_eav: `<h3 class="text-lg font-bold mb-2">Analisis Risiko: Risiko Rendah</h3><p class="text-sm">Paparan getaran untuk <strong>${toolName}</strong> dengan nilai A(8) <strong>${a8Value} m/s²</strong> berada di bawah Batas Aksi (EAV). Risiko pengembangan Hand-Arm Vibration Syndrome (HAVS) dalam skenario ini tergolong rendah, namun praktik kerja yang baik harus tetap dijaga untuk memastikan paparan tetap serendah mungkin (ALARP).${sup(1)+sup(7)}</p><h3 class="text-lg font-bold mt-4 mb-2">Rekomendasi Hirarki Kontrol</h3><h4 class="text-md font-semibold mt-3 mb-1">1. Worker Rotation</h4><ul class="list-disc pl-5 space-y-1 text-sm"><li>Meskipun di bawah batas, rotasi pekerja tetap menjadi praktik yang baik untuk meminimalkan paparan kumulatif jangka panjang.${sup(2)}</li><li>Rancang tugas pekerjaan agar mencakup variasi aktivitas, menggabungkan tugas bergetar dengan tugas yang tidak bergetar.${sup(1)}</li></ul><h4 class="text-md font-semibold mt-3 mb-1">2. Engineering Controls</h4><ul class="list-disc pl-5 space-y-1 text-sm"><li>Pastikan alat (${toolName}) dalam kondisi prima melalui perawatan rutin untuk menjaga tingkat getaran sesuai spesifikasi pabrikan.${sup(4)}</li><li>Saat membeli peralatan baru, pilih model dengan tingkat getaran yang rendah.${sup(1)}</li><li>Gunakan jig, penyangga, atau sistem suspensi untuk menopang alat berat jika memungkinkan.${sup(1)}</li></ul><h4 class="text-md font-semibold mt-3 mb-1">3. Administrative Controls</h4><ul class="list-disc pl-5 space-y-1 text-sm"><li>Jadwalkan istirahat singkat secara berkala (misalnya, 10-15 menit setiap jam) untuk memungkinkan pemulihan sirkulasi darah pada tangan dan lengan.${sup(6)}</li><li>Sebarkan tugas yang melibatkan getaran sepanjang hari, hindari melakukannya secara terus-menerus dalam satu blok waktu yang panjang.${sup(2)}</li></ul><h4 class="text-md font-semibold mt-3 mb-1">4. Training & Work Technique</h4><ul class="list-disc pl-5 space-y-1 text-sm"><li>Pastikan operator menggunakan teknik kerja yang benar, seperti tidak menggenggam alat terlalu erat dan membiarkan alat melakukan pekerjaannya.${sup(1)}</li><li>Latih pekerja untuk mengenali gejala awal HAVS dan pentingnya melaporkannya.${sup(2)}</li><li>Anjurkan untuk menjaga tangan tetap hangat dan kering selama bekerja.${sup(1)}</li></ul><h4 class="text-md font-semibold mt-3 mb-1">5. PPE</h4><ul class="list-disc pl-5 space-y-1 text-sm"><li>Gunakan sarung tangan untuk menjaga tangan tetap hangat dan kering, yang mendukung sirkulasi darah yang baik.${sup(1)}</li><li>Sarung tangan anti-getaran bersertifikasi (ISO 10819) dapat dipertimbangkan sebagai pelengkap, bukan sebagai kontrol utama.${sup(5)}</li></ul>`,
+          eav: `<h3 class="text-lg font-bold mb-2">Analisis Risiko: Risiko Terkendali</h3><p class="text-sm">Paparan getaran untuk <strong>${toolName}</strong> dengan nilai A(8) <strong>${a8Value} m/s²</strong> telah melampaui Batas Aksi (EAV). Ini adalah level peringatan yang mengharuskan penerapan tindakan kontrol untuk mengurangi risiko. Paparan berkelanjutan pada level ini dapat meningkatkan kemungkinan terjadinya gangguan kesehatan seperti HAVS.${sup(1)+sup(7)}</p><h3 class="text-lg font-bold mt-4 mb-2">Rekomendasi Hirarki Kontrol</h3><h4 class="text-md font-semibold mt-3 mb-1">1. Worker Rotation</h4><ul class="list-disc pl-5 space-y-1 text-sm"><li><strong>Prioritas Utama:</strong> Terapkan skema rotasi pekerja seperti yang disimulasikan untuk membagi total durasi kerja dan memastikan tidak ada satu individu pun yang melebihi batas paparan harian.${sup(2)+sup(8)}</li></ul><h4 class="text-md font-semibold mt-3 mb-1">2. Engineering Controls</h4><ul class="list-disc pl-5 space-y-1 text-sm"><li>Evaluasi kemungkinan penggunaan alat alternatif dengan tingkat getaran (Ahv) yang lebih rendah untuk tugas yang sama.${sup(4)}</li><li>Lakukan perawatan preventif pada alat untuk memastikan komponen peredam getaran berfungsi optimal.${sup(5)}</li></ul><h4 class="text-md font-semibold mt-3 mb-1">3. Administrative Controls</h4><ul class="list-disc pl-5 space-y-1 text-sm"><li>Implementasikan istirahat terstruktur (misalnya, 10 menit setiap jam) dari pekerjaan yang melibatkan getaran.${sup(6)}</li><li>Kurangi total waktu penggunaan alat per hari jika memungkinkan, seperti yang disarankan oleh kalkulator ini.${sup(1)}</li></ul><h4 class="text-md font-semibold mt-3 mb-1">4. Training & Work Technique</h4><ul class="list-disc pl-5 space-y-1 text-sm"><li>Berikan pelatihan penyegaran kepada operator mengenai risiko HAVS dan teknik kerja yang aman untuk meminimalkan paparan.${sup(2)}</li></ul><h4 class="text-md font-semibold mt-3 mb-1">5. PPE</h4><ul class="list-disc pl-5 space-y-1 text-sm"><li>Wajibkan penggunaan sarung tangan anti-getaran yang memenuhi standar ISO 10819 sebagai kontrol tambahan.${sup(5)}</li></ul><h4 class="text-md font-semibold mt-3 mb-1">6. Pengukuran dan Lain-lain</h4><ul class="list-disc pl-5 space-y-1 text-sm"><li>Laksanakan program pengawasan kesehatan (health surveillance) bagi semua operator yang terpapar di atas EAV untuk deteksi dini gejala HAVS.${sup(1)+sup(7)}</li></ul>`,
+          elv: `<h3 class="text-lg font-bold mb-2" style="color:var(--color-danger)">Analisis Risiko: Risiko Tinggi (Tidak Diizinkan)</h3><p class="text-sm"><strong>PERINGATAN:</strong> Paparan getaran untuk <strong>${toolName}</strong> dengan nilai A(8) <strong>${a8Value} m/s²</strong> telah melampaui Batas Nilai Paparan (ELV). Skenario kerja ini <strong>TIDAK DIIZINKAN</strong> dan harus dihentikan segera. Risiko kerusakan kesehatan permanen (HAVS) sangat tinggi.${sup(1)+sup(7)}</p><h3 class="text-lg font-bold mt-4 mb-2">Rekomendasi Hirarki Kontrol (Tindakan Segera)</h3><h4 class="text-md font-semibold mt-3 mb-1">1. Worker Rotation</h4><ul class="list-disc pl-5 space-y-1 text-sm"><li>Rotasi pekerja saja tidak cukup pada level ini. Tindakan rekayasa dan administratif yang lebih signifikan harus menjadi prioritas utama.${sup(2)}</li></ul><h4 class="text-md font-semibold mt-3 mb-1">2. Engineering Controls</h4><ul class="list-disc pl-5 space-y-1 text-sm"><li><strong>Hentikan Penggunaan Alat:</strong> Segera hentikan penggunaan alat ini hingga rencana kontrol yang memadai tersedia.${sup(1)}</li><li><strong>Substitusi Wajib:</strong> Cari dan gunakan metode kerja alternatif yang tidak melibatkan getaran atau gunakan alat dengan nilai Ahv yang jauh lebih rendah.${sup(4)}</li></ul><h4 class="text-md font-semibold mt-3 mb-1">3. Administrative Controls</h4><ul class="list-disc pl-5 space-y-1 text-sm"><li><strong>Desain Ulang Pekerjaan:</strong> Rancang ulang proses kerja untuk secara drastis mengurangi total waktu penggunaan alat hingga paparan berada di bawah EAV, bukan hanya ELV.${sup(7)}</li><li>Lakukan investigasi segera untuk memahami mengapa paparan melebihi ELV dan implementasikan tindakan perbaikan.${sup(2)}</li></ul><h4 class="text-md font-semibold mt-3 mb-1">4. Training & Work Technique</h4><ul class="list-disc pl-5 space-y-1 text-sm"><li>Lakukan evaluasi ulang kompetensi dan teknik kerja semua operator yang terlibat.${sup(6)}</li></ul><h4 class="text-md font-semibold mt-3 mb-1">5. PPE</h4><ul class="list-disc pl-5 space-y-1 text-sm"><li>APD tidak dapat diandalkan sebagai kontrol utama pada tingkat risiko ini, namun tetap wajib digunakan sebagai lapisan pertahanan terakhir.${sup(5)}</li></ul><h4 class="text-md font-semibold mt-3 mb-1">6. Pengukuran dan Lain-lain</h4><ul class="list-disc pl-5 space-y-1 text-sm"><li>Segera masukkan semua pekerja yang terlibat ke dalam program pengawasan kesehatan intensif.${sup(1)+sup(7)}</li></ul>`
         };
       }
 
@@ -597,12 +779,16 @@
           const toolName = selectedToolKey !== 'custom' && allTools[selectedToolKey] ? allTools[selectedToolKey].name : 'Alat yang dimasukkan manual';
           const a8Value = DOMElements.a8Value.textContent;
           const templates = getStaticAnalysisTemplates(toolName, a8Value);
-          DOMElements.analysisOutput.innerHTML = templates[statusKey] || '<p>Analisis tidak tersedia.</p>';
+          DOMElements.analysisOutput.innerHTML = (templates[statusKey] || '<p>Analisis tidak tersedia.</p>') + `<button id="analysis-close-bottom" class="w-full mt-6 py-2 px-4 rounded-lg font-semibold" style="background-color:var(--color-primary); color:#000;">Tutup</button>`;
           DOMElements.analysisModal.classList.add('visible');
+          document.getElementById('analysis-close-bottom')?.addEventListener('click', () => {
+              DOMElements.analysisModal.classList.remove('visible');
+          });
       }
       
       // === UPDATED: Added new sections to the guidance content ===
       function getGuidanceContent() {
+          const closeButtonHTML = `<button id="guidance-close-bottom" class="w-full mt-6 py-2 px-4 rounded-lg font-semibold" style="background-color:var(--color-primary); color:#000;">Tutup</button>`;
           return `<h1 class="text-2xl font-bold mb-4">Panduan Pengguna & Metodologi Aplikasi</h1>
             <h2 class="text-xl font-semibold mt-6 mb-3 border-b pb-2">Abstrak</h2>
             <p class="text-sm leading-relaxed">Aplikasi ini adalah alat bantu simulasi dan manajemen risiko yang dirancang untuk menghitung paparan getaran pada tangan dan lengan (*Hand-Arm Vibration* / HAV) berdasarkan standar internasional dan nasional. Tujuannya adalah untuk membantu para profesional Keselamatan dan Kesehatan Kerja (K3), manajer, dan pekerja dalam merencanakan pekerjaan secara proaktif agar paparan getaran tidak melebihi Batas Nilai Aksi (*Exposure Action Value* / EAV) dan Batas Nilai Paparan (*Exposure Limit Value* / ELV) yang ditetapkan <span style="color:var(--color-primary)">[1][7]</span>. Aplikasi ini tidak hanya menghitung nilai paparan, tetapi juga secara cerdas merekomendasikan jumlah minimum operator dan jadwal kerja yang aman, menjadikannya alat bantu pengambilan keputusan yang efektif.</p>
@@ -636,7 +822,74 @@
             </ol>
             <p class="text-sm leading-relaxed mt-2">Tujuan dari fitur ini adalah untuk membantu Anda dengan cepat menemukan titik referensi yang paling relevan pada tabel statis berdasarkan parameter dinamis yang Anda masukkan, sehingga memudahkan perbandingan visual.</p>
             
-            <h2 class="text-xl font-semibold mt-6 mb-3 border-b pb-2">Memahami Hasil: Batas Waktu vs. Grafik Risiko</h2><p class="text-sm leading-relaxed">Anda mungkin melihat "Batas Waktu Paparan" menunjukkan nilai yang sangat tinggi (misalnya, 32 jam). Ini adalah hal yang wajar dan menunjukkan bahwa alat tersebut sangat aman. Berikut penjelasannya:</p><ul class="list-disc pl-5 space-y-2 text-sm mt-2"><li><strong>"Per Hari" Mengacu pada 8 Jam:</strong> Dalam standar K3, semua perhitungan dinormalisasi ke <strong>hari kerja standar 8 jam</strong>, bukan 24 jam.</li><li><strong>Batas Waktu adalah Ukuran Risiko:</strong> Nilai ini adalah perhitungan teoretis yang menjawab pertanyaan: "Berapa lama waktu yang dibutuhkan untuk mencapai batas bahaya (ELV)?" Semakin tinggi nilainya, semakin aman alat tersebut untuk digunakan dalam shift kerja normal.</li><li><strong>Grafik Risiko adalah Visualisasi Praktis:</strong> Grafik "Analisis Risiko" menunjukkan bagaimana paparan (A(8)) meningkat selama shift kerja normal (0-8 jam). Ini membantu Anda melihat secara visual kapan paparan akan melewati batas aman (EAV) dan batas bahaya (ELV) dalam konteks kerja sehari-hari.</li></ul><h2 class="text-xl font-semibold mt-6 mb-3 border-b pb-2">Daftar Pustaka</h2><ol class="list-decimal pl-5 space-y-1 text-sm"><li>HSE UK. (2019). *L140*.</li><li>Safe Work Australia. (2017). *Guide to Measuring HAV*.</li><li>Figueiredo, M., & Nogueira, H. (2020). *Measurement and evaluation of human exposure to vibration*.</li><li>Dewangan, K. N., & De, A. (2018). *Determination of hand-transmitted vibration risk*.</li><li>Paddan, G. S., & Griffin, M. J. (2018). *Evaluation and Measurement of Hand-Transmitted Vibrations*.</li><li>Navy and Marine Corps Public Health Center. (2011). *Human Vibration Technical Guide*.</li><li>Kemenaker RI. (2018). *Permenaker No. 5 2018*.</li><li>BSN. (2019). *SNI 7054:2019*.</li><li>HAS Environmental. *SV 103 Hand-Arm Vibration Dosimeter & Analyser*.</li></ol>`;
+            <h2 class="text-xl font-semibold mt-6 mb-3 border-b pb-2">Memahami Hasil: Batas Waktu vs. Grafik Risiko</h2><p class="text-sm leading-relaxed">Anda mungkin melihat "Batas Waktu Paparan" menunjukkan nilai yang sangat tinggi (misalnya, 32 jam). Ini adalah hal yang wajar dan menunjukkan bahwa alat tersebut sangat aman. Berikut penjelasannya:</p><ul class="list-disc pl-5 space-y-2 text-sm mt-2"><li><strong>"Per Hari" Mengacu pada 8 Jam:</strong> Dalam standar K3, semua perhitungan dinormalisasi ke <strong>hari kerja standar 8 jam</strong>, bukan 24 jam.</li><li><strong>Batas Waktu adalah Ukuran Risiko:</strong> Nilai ini adalah perhitungan teoretis yang menjawab pertanyaan: "Berapa lama waktu yang dibutuhkan untuk mencapai batas bahaya (ELV)?" Semakin tinggi nilainya, semakin aman alat tersebut untuk digunakan dalam shift kerja normal.</li><li><strong>Grafik Risiko adalah Visualisasi Praktis:</strong> Grafik "Analisis Risiko" menunjukkan bagaimana paparan (A(8)) meningkat selama shift kerja normal (0-8 jam). Ini membantu Anda melihat secara visual kapan paparan akan melewati batas aman (EAV) dan batas bahaya (ELV) dalam konteks kerja sehari-hari.</li></ul><h2 class="text-xl font-semibold mt-6 mb-3 border-b pb-2">Daftar Pustaka</h2><ol class="list-decimal pl-5 space-y-1 text-sm"><li>HSE UK. (2019). *L140*.</li><li>Safe Work Australia. (2017). *Guide to Measuring HAV*.</li><li>Figueiredo, M., & Nogueira, H. (2020). *Measurement and evaluation of human exposure to vibration*.</li><li>Dewangan, K. N., & De, A. (2018). *Determination of hand-transmitted vibration risk*.</li><li>Paddan, G. S., & Griffin, M. J. (2018). *Evaluation and Measurement of Hand-Transmitted Vibrations*.</li><li>Navy and Marine Corps Public Health Center. (2011). *Human Vibration Technical Guide*.</li><li>Kemenaker RI. (2018). *Permenaker No. 5 2018*.</li><li>BSN. (2019). *SNI 7054:2019*.</li><li>HAS Environmental. *SV 103 Hand-Arm Vibration Dosimeter & Analyser*.</li></ol>${closeButtonHTML}`;
+      }
+
+      // --- NEW: Print Handler ---
+      function handlePrint() {
+        // 1. Clear previous print content
+        DOMElements.printCol1.innerHTML = '';
+        DOMElements.printCol2.innerHTML = '';
+        DOMElements.printAnalysisSection.innerHTML = '';
+
+        // 2. Populate Header and Footer
+        const now = new Date();
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+        const formattedDate = now.toLocaleDateString('id-ID', options) + ' WIB';
+        DOMElements.printHeaderContent.innerHTML = `
+          <h1 class="text-xl font-bold">Laporan Simulasi Paparan Getaran</h1>
+          <p>Berdasarkan data yang dimasukkan pada ${formattedDate}</p>
+        `;
+        DOMElements.printFooterContent.textContent = `Laporan dibuat oleh Aplikasi Simulasi Getaran | ${formattedDate}`;
+
+        // 3. Clone required elements into Column 1
+        const cloneAndAppend = (selector, parent) => {
+          const element = document.querySelector(selector);
+          if (element) {
+            const clone = element.cloneNode(true);
+            clone.classList.add('print-card');
+            parent.appendChild(clone);
+          }
+        };
+        cloneAndAppend('#input-column .inputs', DOMElements.printCol1);
+        cloneAndAppend('#output-column .output-section', DOMElements.printCol1);
+        cloneAndAppend('#output-column .recommendation-section', DOMElements.printCol1);
+        cloneAndAppend('#output-column .disclaimer-section', DOMElements.printCol1);
+
+        // 4. Convert charts to images and add to Column 2
+        const addChartToPrint = (chartInstance, title, parent) => {
+          if (chartInstance) {
+            const card = document.createElement('div');
+            card.className = 'print-card';
+            const titleEl = document.createElement('h3');
+            titleEl.textContent = title;
+            titleEl.style.fontWeight = '600';
+            titleEl.style.marginBottom = '0.5rem';
+            const img = document.createElement('img');
+            img.src = chartInstance.toBase64Image();
+            card.appendChild(titleEl);
+            card.appendChild(img);
+            parent.appendChild(card);
+          }
+        };
+        addChartToPrint(chartWB, 'Siklus Kerja per Jam', DOMElements.printCol2);
+        addChartToPrint(chartA8, 'Analisis Risiko vs Durasi Paparan', DOMElements.printCol2);
+
+        // 5. Generate and add Analysis content
+        const statusKey = DOMElements.analysisBtn.dataset.statusKey;
+        if (statusKey) {
+            const selectedToolKey = DOMElements.toolTypeSelect.value;
+            const toolName = selectedToolKey !== 'custom' && allTools[selectedToolKey] ? allTools[selectedToolKey].name : 'Alat yang dimasukkan manual';
+            const a8Value = DOMElements.a8Value.textContent;
+            const templates = getStaticAnalysisTemplates(toolName, a8Value);
+            const analysisHTML = templates[statusKey] || '';
+            // Remove the close button and references from the print version
+            const cleanHTML = analysisHTML.replace(/<button.*<\/button>/, '').replace(/<h3.*Referensi<\/h3>[\s\S]*/, '');
+            DOMElements.printAnalysisSection.innerHTML = cleanHTML;
+        }
+        
+        // 6. Trigger print dialog
+        window.print();
       }
 
       // --- EVENTS & STATE ---
@@ -689,14 +942,14 @@
       function initCharts() {
         const C = () => ({ accent: cssVar('--color-primary'), line: cssVar('--color-grid'), warn: cssVar('--color-warning'), bad: cssVar('--color-danger'), muted: cssVar('--color-primary-dark'), text: cssVar('--color-text-body') });
         const doughnutLabelPlugin = { id: 'doughnutLabel', afterDraw: (chart) => { if (chart.config.type !== 'doughnut') return; const { ctx, chartArea } = chart; const data = chart.data.datasets[0].data; if (data.length < 2) return; const [workMins, breakMins] = data; const config = C(); const centerX = (chartArea.left + chartArea.right) / 2; const centerY = (chartArea.top + chartArea.bottom) / 2; ctx.save(); ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.font = 'bold 1.2rem Inter, system-ui'; ctx.fillStyle = config.accent; ctx.fillText(`${workMins}′ Work`, centerX, centerY - 14); ctx.font = '1rem Inter, system-ui'; ctx.fillStyle = config.text; ctx.fillText(`${breakMins}′ Break`, centerX, centerY + 14); ctx.restore(); } };
-        const chartDefaults = { scales: { x: { ticks: { color: C().text }, grid: { color: C().line }, title: { display: true, color: C().text } }, y: { ticks: { color: C().text }, grid: { color: C().line }, title: { display: true, color: C().text }, min: 0 } }, plugins: { legend: { display: false }, tooltip: { mode: 'index', intersect: false } } };
+        const chartDefaults = { scales: { x: { ticks: { color: C().text }, grid: { color: C().line }, title: { display: true, color: C().text }, min: 0, max: 8 }, y: { ticks: { color: C().text }, grid: { color: C().line }, title: { display: true, color: C().text }, min: 0 } }, plugins: { legend: { display: false }, tooltip: { enabled: false } } };
         
         chartWB = new Chart(document.getElementById('chartWB'), { type: 'doughnut', data: { labels: ['Work (min)', 'Break (min)'], datasets: [{ data: [45, 15], backgroundColor: [C().accent, C().line], borderWidth: 0, circumference: 360, }] }, options: { responsive: true, maintainAspectRatio: false, cutout: '70%', plugins: { legend: { display: false }, tooltip: { enabled: true } } }, plugins: [doughnutLabelPlugin] });
-        chartA8 = new Chart(document.getElementById('chartA8'), { type: 'line', data: { labels: Array.from({ length: 9 }, (_, i) => i + 1), datasets: [{ label: 'A(8) Calculated', data: [], borderColor: C().accent, backgroundColor: C().accent + '30', fill: true, tension: 0.4, }] }, options: { ...chartDefaults, responsive: true, maintainAspectRatio: false, scales: { ...chartDefaults.scales, x: { ...chartDefaults.scales.x, title: { ...chartDefaults.scales.x.title, text: 'Durasi Paparan per Operator (Jam)' } }, y: { ...chartDefaults.scales.y, title: { ...chartDefaults.scales.y.title, text: 'A(8) (m/s²)' } } }, plugins: { ...chartDefaults.plugins, annotation: { annotations: { eavLine: { type: 'line', yMin: 2.5, yMax: 2.5, borderColor: C().warn, borderWidth: 2, borderDash: [10, 5], label: { content: 'EAV', position: 'start', enabled: true, backgroundColor: 'rgba(0,0,0,0.6)' } }, elvLine: { type: 'line', yMin: 5, yMax: 5, borderColor: C().bad, borderWidth: 2, borderDash: [10, 5], label: { content: 'ELV', position: 'start', enabled: true, backgroundColor: 'rgba(0,0,0,0.6)' } } } } } } });
+        chartA8 = new Chart(document.getElementById('chartA8'), { type: 'line', data: { datasets: [{ label: 'A(8) Calculated', data: [], borderColor: C().accent, backgroundColor: C().accent + '30', fill: true, tension: 0.4, }] }, options: { ...chartDefaults, responsive: true, maintainAspectRatio: false, scales: { ...chartDefaults.scales, x: { ...chartDefaults.scales.x, type: 'linear', title: { ...chartDefaults.scales.x.title, text: 'Durasi Paparan per Operator (Jam)' } }, y: { ...chartDefaults.scales.y, title: { ...chartDefaults.scales.y.title, text: 'A(8) (m/s²)' } } }, plugins: { ...chartDefaults.plugins, annotation: { annotations: { eavLine: { type: 'line', yMin: 2.5, yMax: 2.5, borderColor: C().warn, borderWidth: 2, borderDash: [10, 5], label: { content: 'EAV', position: 'start', enabled: true, backgroundColor: 'rgba(0,0,0,0.6)' } }, elvLine: { type: 'line', yMin: 5, yMax: 5, borderColor: C().bad, borderWidth: 2, borderDash: [10, 5], label: { content: 'ELV', position: 'start', enabled: true, backgroundColor: 'rgba(0,0,0,0.6)' } } } } } } });
       }
 
       function updateChartColors() {
-        const C = () => ({ accent: cssVar('--color-primary'), line: cssVar('--color-grid'), warn: cssVar('--color-warning'), bad: cssVar('--color-danger'), text: cssVar('--color-text-body') });
+        const C = () => ({ accent: cssVar('--color-primary'), line: cssVar('--color-grid'), warn: cssVar('--color-warning'), bad: cssVar('--color-danger'), text: cssVar('--color-text-body'), bgBody: cssVar('--color-bg-body') });
         if(chartWB) {
             chartWB.data.datasets[0].backgroundColor = [C().accent, C().line];
             chartWB.update();
@@ -711,14 +964,91 @@
             chartA8.options.scales.y.ticks.color = config.text;
             chartA8.options.scales.y.grid.color = config.line;
             chartA8.options.scales.y.title.color = config.text;
-            chartA8.options.plugins.annotation.annotations.eavLine.borderColor = config.warn;
-            chartA8.options.plugins.annotation.annotations.elvLine.borderColor = config.bad;
+            
+            const annotations = chartA8.options.plugins.annotation.annotations;
+            if (annotations) {
+                if(annotations.eavLine) annotations.eavLine.borderColor = config.warn;
+                if(annotations.elvLine) annotations.elvLine.borderColor = config.bad;
+                if(annotations.resultPoint) {
+                    annotations.resultPoint.backgroundColor = config.accent;
+                    annotations.resultPoint.borderColor = config.bgBody;
+                }
+            }
             chartA8.update();
         }
       }
 
       function updateChartWB(cycle) { if (!chartWB) return; chartWB.data.datasets[0].data = [cycle.work, cycle.rest]; chartWB.update(); }
-      function updateChartA8(ahv) { if (!chartA8) return; const labels = Array.from({ length: 17 }, (_, i) => (i * 0.5)); const data = labels.map(t => ahv > 0 ? ahv * Math.sqrt(t / 8) : 0); chartA8.data.labels = labels; chartA8.data.datasets[0].data = data; chartA8.options.scales.x.title.text = `Durasi Paparan per Operator (Jam) | Ahv = ${ahv.toFixed(1)} m/s²`; chartA8.update(); }
+      
+      function updateChartA8(ahv, exposureTimePerOperator, a8Value) {
+          if (!chartA8) return;
+
+          const maxTime = 8; // Always use 8 hours for the curve's x-axis range
+          const numSteps = 40; // More points for a smoother curve
+          const labels = Array.from({ length: numSteps + 1 }, (_, i) => (i * maxTime / numSteps));
+          
+          const data = labels.map(t => ahv > 0 ? ahv * Math.sqrt(t / 8) : 0);
+
+          chartA8.data.labels = labels.map(l => l.toFixed(2));
+          chartA8.data.datasets[0].data = data;
+          chartA8.options.scales.x.title.text = `Durasi Paparan per Operator (Jam) | Ahv = ${ahv.toFixed(1)} m/s²`;
+          
+          const C = () => ({ accent: cssVar('--color-primary'), warn: cssVar('--color-warning'), bad: cssVar('--color-danger'), bgBody: cssVar('--color-bg-body') });
+          const config = C();
+
+          const newAnnotations = {
+              eavLine: { type: 'line', yMin: 2.5, yMax: 2.5, borderColor: config.warn, borderWidth: 2, borderDash: [10, 5], label: { content: 'EAV', position: 'start', enabled: true, backgroundColor: 'rgba(0,0,0,0.6)' } },
+              elvLine: { type: 'line', yMin: 5, yMax: 5, borderColor: config.bad, borderWidth: 2, borderDash: [10, 5], label: { content: 'ELV', position: 'start', enabled: true, backgroundColor: 'rgba(0,0,0,0.6)' } }
+          };
+
+          if (exposureTimePerOperator > 0 && a8Value > 0) {
+              let yAdjust = -35;
+              let xAdjust = 15;
+              
+              if (a8Value > chartA8.scales.y.max * 0.8) {
+                  yAdjust = 35;
+              }
+              if (exposureTimePerOperator > chartA8.scales.x.max * 0.8) {
+                  xAdjust = -65;
+              }
+              // New condition for high Ahv values
+              if (ahv >= 17) {
+                  xAdjust = 65;
+                  yAdjust = 0;
+              }
+
+              newAnnotations.resultPoint = {
+                  type: 'point',
+                  xValue: exposureTimePerOperator,
+                  yValue: a8Value,
+                  backgroundColor: config.accent,
+                  radius: 6,
+                  borderColor: config.bgBody,
+                  borderWidth: 2,
+              };
+              newAnnotations.resultLabel = {
+                  type: 'label',
+                  xValue: exposureTimePerOperator,
+                  yValue: a8Value,
+                  content: [
+                      `Durasi: ${exposureTimePerOperator.toFixed(2)} Jam`,
+                      `A(8): ${a8Value.toFixed(2)} m/s²`
+                  ],
+                  backgroundColor: 'rgba(0,0,0,0.75)',
+                  color: 'white',
+                  font: {
+                      size: 11,
+                      family: 'Inter, sans-serif'
+                  },
+                  borderRadius: 4,
+                  padding: 6,
+                  yAdjust: yAdjust,
+                  xAdjust: xAdjust,
+              };
+          }
+          chartA8.options.plugins.annotation.annotations = newAnnotations;
+          chartA8.update();
+      }
       
       function createReadyReckoner() {
         const T_VALS_LABELS = ['5m', '15m', '30m', '1 jam', '2 jam', '3 jam', '4 jam', '5 jam', '6 jam', '8 jam', '10 jam', '12 jam'];
@@ -766,7 +1096,13 @@
         DOMElements.analysisBtn.addEventListener('click', showStaticAnalysis); 
         DOMElements.modalCloseBtn.addEventListener('click',()=>{DOMElements.analysisModal.classList.remove('visible');}); 
         DOMElements.analysisModal.addEventListener('click',e=>{if(e.target===DOMElements.analysisModal){DOMElements.analysisModal.classList.remove('visible');}});
-        DOMElements.guidanceBtn.addEventListener('click', () => { DOMElements.guidanceOutput.innerHTML = getGuidanceContent(); DOMElements.guidanceModal.classList.add('visible'); });
+        DOMElements.guidanceBtn.addEventListener('click', () => {  
+            DOMElements.guidanceOutput.innerHTML = getGuidanceContent();  
+            DOMElements.guidanceModal.classList.add('visible');  
+            document.getElementById('guidance-close-bottom')?.addEventListener('click', () => {
+                DOMElements.guidanceModal.classList.remove('visible');
+            });
+        });
         DOMElements.guidanceModalCloseBtn.addEventListener('click', ()=>{DOMElements.guidanceModal.classList.remove('visible');});
         DOMElements.guidanceModal.addEventListener('click', e => { if(e.target === DOMElements.guidanceModal) { DOMElements.guidanceModal.classList.remove('visible'); }});
         
@@ -777,6 +1113,29 @@
             const selectedRRCell = document.querySelector('.ready td.sel'); if (selectedRRCell) selectedRRCell.classList.remove('sel');
             cell.classList.add('sel');
         });
+
+        // Scroll to top functionality
+        window.onscroll = function() {
+            if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+                DOMElements.scrollToTopBtn.style.display = "block";
+            } else {
+                DOMElements.scrollToTopBtn.style.display = "none";
+            }
+        };
+        DOMElements.scrollToTopBtn.addEventListener('click', () => {
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        });
+        
+        // Footer buttons
+        DOMElements.homeBtn.addEventListener('click', () => {
+            window.location.reload();
+        });
+        DOMElements.guidanceBtnFooter.addEventListener('click', () => {
+            DOMElements.guidanceBtn.click();
+        });
+        
+        // NEW: Print button listener
+        DOMElements.printBtn.addEventListener('click', handlePrint);
 
         calculateAndUpdate(); 
       }
