@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulasi Interaktif Prinsip Bernoulli</title>
+    
+    <!-- Impor Tailwind CSS untuk styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Impor Chart.js untuk grafik -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Impor Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* Custom styling untuk melengkapi Tailwind CSS */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #111827; /* Dark background */
+        }
+
+        .card {
+            background-color: #1f2937; /* Slightly lighter card background */
+            border: 1px solid #374151;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            border-color: #3b82f6;
+            transform: translateY(-4px);
+        }
+
+        /* Styling untuk animasi pipa */
+        #pipe-container {
+            position: relative;
+            width: 100%;
+            height: 230px; /* Increased height */
+            overflow: hidden;
+            background-color: #374151;
+            border-radius: 12px;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        #streamline-svg {
+            position: absolute;
+            top: 65px; /* Adjusted position */
+            left: 0;
+            width: 100%;
+            height: 100px;
+            overflow: visible; /* Allow paths to start/end off-screen */
+        }
+        
+        .streamline-base {
+            fill: none;
+            stroke: #3b82f6;
+            opacity: 0.2;
+            stroke-width: 1.5;
+        }
+        
+        .streamline-tracer {
+            fill: none;
+            stroke-linecap: round;
+        }
+
+        #pipe-container::before,
+        #pipe-container::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            right: 0;
+            background-color: #111827;
+            height: 65px; /* Adjusted height */
+        }
+        
+        #pipe-container::before { top: 0; border-bottom-left-radius: 10px; border-bottom-right-radius: 10px; }
+        #pipe-container::after { bottom: 0; border-top-left-radius: 10px; border-top-right-radius: 10px; }
+        
+        .pipe-throat { 
+            position: absolute; left: 35%; width: 30%; top: 0; bottom: 0; 
+        }
+        .pipe-throat::before,
+        .pipe-throat::after {
+            content: '';
+            position: absolute; left: 0; right: 0;
+            background-color: #111827;
+            height: var(--throat-wall-height, 95px); /* Adjusted default */
+            transition: height 0.3s ease;
+        }
+        .pipe-throat::before { top: 0; border-bottom-left-radius: 40px; border-bottom-right-radius: 40px; }
+        .pipe-throat::after { bottom: 0; border-top-left-radius: 40px; border-top-right-radius: 40px; }
+
+        /* Custom styling untuk slider */
+        input[type="range"] {
+            -webkit-appearance: none; appearance: none;
+            width: 100%; height: 8px;
+            background: #4b5563; border-radius: 5px;
+            outline: none; opacity: 0.7;
+            transition: opacity .2s;
+        }
+        input[type="range"]:hover { opacity: 1; }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none; appearance: none;
+            width: 20px; height: 20px;
+            background: #3b82f6; cursor: pointer;
+            border-radius: 50%; border: 2px solid #1f2937;
+        }
+        input[type="range"]::-moz-range-thumb {
+            width: 20px; height: 20px;
+            background: #3b82f6; cursor: pointer;
+            border-radius: 50%; border: 2px solid #1f2937;
+        }
+        
+        /* Styling untuk Manometer dan Legenda */
+        .legend-text {
+            position: absolute;
+            color: white;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            text-shadow: 0 0 3px black;
+            z-index: 10;
+        }
+        .manometer-tube {
+            position: absolute;
+            top: 5px;
+            width: 16px;
+            background-color: rgba(107, 114, 128, 0.5);
+            border: 2px solid #9ca3af;
+            border-bottom: none;
+            border-radius: 4px 4px 0 0;
+            z-index: 10;
+            transition: all 0.3s ease;
+        }
+        #manometer1 {
+            height: 60px;
+        }
+        .manometer-fluid {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            background: linear-gradient(to top, #60a5fa, #a5b4fc);
+            transition: height 0.5s ease;
+        }
+        .point-marker {
+            position: absolute;
+            color: white;
+            font-family: sans-serif;
+            font-size: 14px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 10;
+        }
+        .point-marker::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background-color: black;
+            border-radius: 50%;
+            border: 1px solid white;
+            margin-bottom: 4px;
+        }
+        .area-line {
+            position: absolute;
+            width: 2px;
+            background-color: rgba(255, 255, 255, 0.5);
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body class="text-gray-200">
+
+    <div class="container mx-auto p-4 md:p-8">
+        
+        <header class="text-center mb-10">
+            <h1 class="text-4xl md:text-5xl font-bold text-white mb-2">Simulasi Dinamis Prinsip Bernoulli</h1>
+            <p class="text-lg text-gray-400">Geser slider untuk melihat perubahan secara real-time.</p>
+        </header>
+
+        <main class="grid grid-cols-1 lg:grid-cols-5 gap-8">
+            
+            <div class="lg:col-span-3 grid grid-cols-1 gap-8">
+                
+                <!-- Kontrol Interaktif -->
+                <section id="interactive-controls" class="card rounded-xl p-6">
+                    <h2 class="text-2xl font-semibold mb-6 border-b border-gray-600 pb-3 text-white">Kontrol Interaktif</h2>
+                    <div class="space-y-6">
+                        <div>
+                            <label for="velocity1-slider" class="block text-sm font-medium text-gray-400 mb-2">Kecepatan Awal (v₁) — <span id="velocity1-slider-value" class="font-bold text-white">2.0 m/s</span></label>
+                            <input type="range" id="velocity1-slider" min="0.1" max="10" step="0.1" value="2" class="w-full">
+                        </div>
+                        <div>
+                            <label for="area2-slider" class="block text-sm font-medium text-gray-400 mb-2">Luas Area Sempit (A₂) — <span id="area2-slider-value" class="font-bold text-white">5.0 Inch²</span></label>
+                            <input type="range" id="area2-slider" min="0.5" max="6" step="0.1" value="5" class="w-full">
+                        </div>
+                        <div>
+                            <label for="pressure1-slider" class="block text-sm font-medium text-gray-400 mb-2">Tekanan Awal (P₁) — <span id="pressure1-slider-value" class="font-bold text-white">29 Psi</span></label>
+                            <input type="range" id="pressure1-slider" min="0" max="35" step="1" value="29" class="w-full">
+                        </div>
+                        <div>
+                            <label for="height1-slider" class="block text-sm font-medium text-gray-400 mb-2">Ketinggian Awal (h₁) — <span id="height1-slider-value" class="font-bold text-white">5.0 m</span></label>
+                            <input type="range" id="height1-slider" min="0" max="10" step="0.1" value="5" class="w-full">
+                        </div>
+                        <div>
+                            <label for="density-slider" class="block text-sm font-medium text-gray-400 mb-2">Massa Jenis (ρ) — <span id="density-slider-value" class="font-bold text-white">1000 kg/m³</span></label>
+                            <input type="range" id="density-slider" min="100" max="1000" step="10" value="1000" class="w-full">
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Input Data Detail -->
+                <section id="input-data" class="card rounded-xl p-6">
+                    <h2 class="text-2xl font-semibold mb-6 border-b border-gray-600 pb-3 text-white">Parameter Simulasi</h2>
+                    <form id="bernoulli-form" class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                        <!-- Parameter Titik 1 -->
+                        <div>
+                            <h3 class="text-lg font-medium text-blue-400 mb-2">Titik 1 (Area Lebar)</h3>
+                            <div class="space-y-3">
+                                <div>
+                                    <label for="pressure1" class="block text-sm font-medium text-gray-400 mb-1">Tekanan (P₁) <span class="text-gray-500">Psi</span></label>
+                                    <input type="number" id="pressure1" value="29" step="1" min="0" max="35" class="w-full bg-gray-700 border border-gray-600 rounded-md p-2 text-white focus:ring-blue-500 focus:border-blue-500">
+                                </div>
+                                <div>
+                                    <label for="area1" class="block text-sm font-medium text-gray-400 mb-1">Luas (A₁) <span class="text-gray-500">Inch²</span></label>
+                                    <input type="number" id="area1" value="31" step="0.1" min="0.1" class="w-full bg-gray-700 border border-gray-600 rounded-md p-2 text-white focus:ring-blue-500 focus:border-blue-500">
+                                </div>
+                                <div>
+                                    <label for="velocity1" class="block text-sm font-medium text-gray-400 mb-1">Kecepatan (v₁) <span class="text-gray-500">m/s</span></label>
+                                    <input type="number" id="velocity1" value="2" step="0.1" class="w-full bg-gray-700 border border-gray-600 rounded-md p-2 text-white focus:ring-blue-500 focus:border-blue-500">
+                                </div>
+                                <div>
+                                    <label for="height1" class="block text-sm font-medium text-gray-400 mb-1">Ketinggian (h₁) <span class="text-gray-500">m</span></label>
+                                    <input type="number" id="height1" value="5" step="0.1" max="10" class="w-full bg-gray-700 border border-gray-600 rounded-md p-2 text-white focus:ring-blue-500 focus:border-blue-500">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Parameter Titik 2 -->
+                        <div>
+                            <h3 class="text-lg font-medium text-blue-400 mb-2">Titik 2 (Area Sempit)</h3>
+                            <div class="space-y-3">
+                                <div>
+                                    <label for="area2" class="block text-sm font-medium text-gray-400 mb-1">Luas (A₂) <span class="text-gray-500">Inch²</span></label>
+                                    <input type="number" id="area2" value="5" step="0.1" min="0.1" max="6" class="w-full bg-gray-700 border border-gray-600 rounded-md p-2 text-white focus:ring-blue-500 focus:border-blue-500">
+                                </div>
+                                <div>
+                                    <label for="height2" class="block text-sm font-medium text-gray-400 mb-1">Ketinggian (h₂) <span class="text-gray-500">m</span></label>
+                                    <input type="number" id="height2" value="5" step="0.1" class="w-full bg-gray-700 border border-gray-600 rounded-md p-2 text-white focus:ring-blue-500 focus:border-blue-500">
+                                </div>
+                                <div class="md:col-span-2 mt-4 pt-3">
+                                    <h3 class="text-lg font-medium text-blue-400 mb-2">Parameter Umum</h3>
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label for="fluid-density" class="block text-sm font-medium text-gray-400 mb-1">Massa Jenis (ρ)</label>
+                                            <input type="number" id="fluid-density" value="1000" step="10" max="1000" class="w-full bg-gray-700 border border-gray-600 rounded-md p-2 text-white focus:ring-blue-500 focus:border-blue-500">
+                                        </div>
+                                        <div>
+                                            <label for="gravity" class="block text-sm font-medium text-gray-400 mb-1">Gravitasi (g)</label>
+                                            <input type="number" id="gravity" value="9.81" step="0.1" class="w-full bg-gray-700 border border-gray-600 rounded-md p-2 text-white focus:ring-blue-500 focus:border-blue-500">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </section>
+                
+            </div>
+
+            <div class="lg:col-span-2 flex flex-col gap-8">
+                
+                <section id="output-kalkulasi" class="card rounded-xl p-6">
+                    <h2 class="text-2xl font-semibold mb-4 border-b border-gray-600 pb-3 text-white">Output Real-time</h2>
+                    <div class="space-y-4 text-lg">
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-400">Kecepatan (v₂):</span>
+                            <span id="output-velocity2" class="font-bold text-2xl text-blue-400">0 m/s</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-400">Tekanan (P₂):</span>
+                            <span id="output-pressure2" class="font-bold text-2xl text-blue-400">0 Psi</span>
+                        </div>
+                        <hr class="border-gray-600 my-4">
+                        <div class="flex justify-between items-center text-sm">
+                            <span class="text-gray-400">Energi Total (Titik 1):</span>
+                            <span id="output-energy1" class="font-semibold text-green-400">0 J/m³</span>
+                        </div>
+                        <div class="flex justify-between items-center text-sm">
+                            <span class="text-gray-400">Energi Total (Titik 2):</span>
+                            <span id="output-energy2" class="font-semibold text-green-400">0 J/m³</span>
+                        </div>
+                    </div>
+                </section>
+                
+                <section id="animasi-konsep" class="card rounded-xl p-6 flex-grow flex flex-col">
+                    <h2 class="text-2xl font-semibold mb-4 border-b border-gray-600 pb-3 text-white">Animasi Aliran</h2>
+                    <div id="pipe-container" class="flex-grow">
+                        <!-- Manometers and Legends -->
+                        <div id="manometer1" class="manometer-tube" style="left: 20%;">
+                            <div id="manometer-fluid1" class="manometer-fluid"></div>
+                        </div>
+                        <div id="manometer2" class="manometer-tube" style="left: 50%; transform: translateX(-50%);">
+                            <div id="manometer-fluid2" class="manometer-fluid"></div>
+                        </div>
+                        <div id="h-dimension" class="absolute flex items-start" style="display: none; height: 0; top: 0; left: 37%; color: #facc15; z-index: 10;">
+                            <div class="w-px h-full bg-current relative">
+                                <div class="absolute -left-1 top-0 w-2 h-px bg-current"></div>
+                                <div class="absolute -left-1 bottom-0 w-2 h-px bg-current"></div>
+                            </div>
+                            <span class="ml-2 text-lg font-semibold">h</span>
+                        </div>
+                        
+                        <div class="legend-text" style="top: 25px; left: 10%;">A₁</div>
+                        <div class="legend-text" style="top: 100px; left: 10%;">v₁ →</div>
+                        <div class="legend-text" style="bottom: 45px; left: 10%;">P₁</div>
+                        <div class="point-marker" style="bottom: 85px; left: 20%;">1</div>
+                        
+                        <div class="legend-text" style="top: 35px; left: 49%;">A₂</div>
+                        <div class="legend-text" style="top: 100px; right: 10%;">→ v₂</div>
+                        <div class="legend-text" style="bottom: 45px; right: 10%;">P₂</div>
+                        <div class="point-marker" style="bottom: 85px; left: 50%; transform: translateX(-50%);">2</div>
+
+                        <div id="area-line-1" class="area-line" style="left: 20%;"></div>
+                        <div id="area-line-2" class="area-line" style="left: 50%; transform: translateX(-50%);"></div>
+                        
+                        <svg id="streamline-svg"></svg>
+                        <div class="pipe-throat"></div>
+                    </div>
+                     <div id="comparison-display" class="mt-4 p-4 bg-gray-800 rounded-lg text-center font-mono text-lg">
+                        <!-- Konten diisi oleh JavaScript -->
+                    </div>
+                </section>
+
+                <section id="grafik-bernoulli" class="card rounded-xl p-6 h-80">
+                    <h2 class="text-2xl font-semibold mb-4 border-b border-gray-600 pb-3 text-white">Grafik Perbandingan</h2>
+                    <canvas id="bernoulliChart"></canvas>
+                </section>
+            </div>
+        </main>
+        
+        <section id="daftar-pustaka" class="card rounded-xl p-6 mt-8">
+            <h2 class="text-2xl font-semibold mb-4 border-b border-gray-600 pb-3 text-white">Daftar Pustaka & Referensi</h2>
+            <ul class="list-disc list-inside space-y-2 text-gray-400 text-sm">
+                <li>Çengel, Y. A., & Cimbala, J. M. (Diterbitkan tahun 2017). *Fluid Mechanics: Fundamentals and Applications*. McGraw-Hill Education.</li>
+                <li>White, F. M. (Diterbitkan tahun 2016). *Fluid Mechanics*. McGraw-Hill Education.</li>
+            </ul>
+        </section>
+
+        <footer class="text-center py-8 text-gray-500 text-sm">
+            <p>&copy; 2024 Simulasi Interaktif. Dibuat untuk tujuan edukasi.</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const PSI_TO_PA = 6894.76;
+            const INCH2_TO_M2 = 0.00064516;
+
+            const form = document.getElementById('bernoulli-form');
+            const {
+                'fluid-density': fluidDensityInput, gravity: gravityInput,
+                pressure1: pressure1Input, area1: area1Input, velocity1: velocity1Input, height1: height1Input,
+                area2: area2Input, height2: height2Input
+            } = form.elements;
+
+            const velocity1Slider = document.getElementById('velocity1-slider');
+            const area2Slider = document.getElementById('area2-slider');
+            const densitySlider = document.getElementById('density-slider');
+            const pressure1Slider = document.getElementById('pressure1-slider');
+            const height1Slider = document.getElementById('height1-slider');
+            const velocity1SliderValue = document.getElementById('velocity1-slider-value');
+            const area2SliderValue = document.getElementById('area2-slider-value');
+            const densitySliderValue = document.getElementById('density-slider-value');
+            const pressure1SliderValue = document.getElementById('pressure1-slider-value');
+            const height1SliderValue = document.getElementById('height1-slider-value');
+            
+            const outputVelocity2 = document.getElementById('output-velocity2');
+            const outputPressure2 = document.getElementById('output-pressure2');
+            const outputEnergy1 = document.getElementById('output-energy1');
+            const outputEnergy2 = document.getElementById('output-energy2');
+            
+            const pipeThroat = document.querySelector('.pipe-throat');
+            const comparisonDisplay = document.getElementById('comparison-display');
+            const manometerFluid1 = document.getElementById('manometer-fluid1');
+            const manometerFluid2 = document.getElementById('manometer-fluid2');
+            const hDimension = document.getElementById('h-dimension');
+            const areaLine1 = document.getElementById('area-line-1');
+            const areaLine2 = document.getElementById('area-line-2');
+            const manometer1 = document.getElementById('manometer1');
+            const manometer2 = document.getElementById('manometer2');
+
+            // === Logika Animasi SVG ===
+            const svgNS = "http://www.w3.org/2000/svg";
+            const svgContainer = document.getElementById('streamline-svg');
+            const streamlines = [];
+            const numStreamlines = 50; 
+            let animationFrameId;
+            let time = 0;
+
+            function createStreamlines() {
+                svgContainer.innerHTML = '';
+                streamlines.length = 0;
+                
+                const defs = document.createElementNS(svgNS, 'defs');
+                const gradient = document.createElementNS(svgNS, 'linearGradient');
+                gradient.setAttribute('id', 'streamline-gradient');
+                gradient.innerHTML = `<stop offset="0%" stop-color="#bfdbfe" stop-opacity="0" /><stop offset="40%" stop-color="#bfdbfe" stop-opacity="0.5" /><stop offset="50%" stop-color="#bfdbfe" stop-opacity="0.8" /><stop offset="60%" stop-color="#bfdbfe" stop-opacity="0.5" /><stop offset="100%" stop-color="#bfdbfe" stop-opacity="0" />`;
+                
+                const centerGradient = document.createElementNS(svgNS, 'linearGradient');
+                centerGradient.setAttribute('id', 'streamline-gradient-center');
+                centerGradient.innerHTML = `<stop offset="0%" stop-color="white" stop-opacity="0" /><stop offset="45%" stop-color="white" stop-opacity="1" /><stop offset="55%" stop-color="white" stop-opacity="0" /><stop offset="100%" stop-color="white" stop-opacity="0" />`;
+                
+                defs.appendChild(gradient);
+                defs.appendChild(centerGradient);
+                svgContainer.appendChild(defs);
+
+                const containerHeight = svgContainer.clientHeight;
+                for (let i = 0; i < numStreamlines; i++) {
+                    const yPos = (containerHeight / (numStreamlines + 1)) * (i + 1);
+                    
+                    const basePath = document.createElementNS(svgNS, 'path');
+                    basePath.setAttribute('class', 'streamline-base');
+
+                    const tracerPath = document.createElementNS(svgNS, 'path');
+                    tracerPath.setAttribute('class', 'streamline-tracer');
+
+                    const isCenter = i > numStreamlines * 0.35 && i < numStreamlines * 0.65;
+                    if(isCenter) {
+                        tracerPath.setAttribute('stroke', 'url(#streamline-gradient-center)');
+                        tracerPath.setAttribute('stroke-width', '4');
+                    } else {
+                        tracerPath.setAttribute('stroke', 'url(#streamline-gradient)');
+                        tracerPath.setAttribute('stroke-width', '2.5');
+                    }
+
+                    streamlines.push({
+                        base: basePath,
+                        tracer: tracerPath,
+                        initialY: yPos,
+                        isCenter: isCenter
+                    });
+                    svgContainer.appendChild(basePath);
+                    svgContainer.appendChild(tracerPath);
+                }
+            }
+
+            function generatePathData(y, compressionRatio) {
+                const pipeWidth = svgContainer.clientWidth;
+                const pipeHeight = svgContainer.clientHeight;
+                const pipeCenterY = pipeHeight / 2;
+                
+                const throatStart = pipeWidth * 0.35;
+                const throatEnd = pipeWidth * 0.65;
+                
+                const distFromCenter = y - pipeCenterY;
+                const compressedY = pipeCenterY + distFromCenter * compressionRatio;
+                const controlPointOffset = pipeWidth * 0.1;
+
+                return `M ${-controlPointOffset},${y} L ${throatStart - controlPointOffset},${y} C ${throatStart},${y} ${throatStart},${compressedY} ${throatStart + controlPointOffset},${compressedY} L ${throatEnd - controlPointOffset},${compressedY} C ${throatEnd},${compressedY} ${throatEnd},${y} ${throatEnd + controlPointOffset},${y} L ${pipeWidth + controlPointOffset},${y}`;
+            }
+
+            function updateStreamlinePaths() {
+                 const A1 = parseFloat(area1Input.value) * INCH2_TO_M2;
+                 const A2 = parseFloat(area2Input.value) * INCH2_TO_M2;
+                 const compressionRatio = (A1 > 0 && A2 > 0) ? Math.sqrt(A2 / A1) : 1;
+
+                 streamlines.forEach(s => {
+                     const pathData = generatePathData(s.initialY, compressionRatio);
+                     s.base.setAttribute('d', pathData);
+                     s.tracer.setAttribute('d', pathData);
+                     s.pathLength = s.tracer.getTotalLength();
+                 });
+            }
+
+            function animateStreamlines() {
+                time += 1;
+                const v1 = parseFloat(velocity1Input.value);
+                const A1 = parseFloat(area1Input.value) * INCH2_TO_M2;
+                const rho = parseFloat(fluidDensityInput.value);
+                
+                const baseRho = 1000;
+                const densityFactor = (rho > 0) ? baseRho / rho : 1;
+                
+                streamlines.forEach((s, i) => {
+                    if (!s.pathLength) return;
+                    
+                    const speed = (v1 / A1) * 0.0013 * densityFactor;
+                    
+                    const segmentLength = 40;
+                    const gapLength = 20; 
+                    s.tracer.setAttribute('stroke-dasharray', `${segmentLength} ${gapLength}`);
+                    
+                    const offset = -(time * speed * (s.isCenter ? 1.2 : 1) + i * (segmentLength + gapLength) / 3);
+                    s.tracer.style.strokeDashoffset = offset;
+                });
+                
+                animationFrameId = requestAnimationFrame(animateStreamlines);
+            }
+            
+            // === Logika Grafik (Chart.js) ===
+            const ctx = document.getElementById('bernoulliChart').getContext('2d');
+            let bernoulliChart;
+
+            function initializeChart() {
+                bernoulliChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Tekanan (Psi)', 'Kecepatan (m/s)'],
+                        datasets: [{
+                            label: 'Titik 1', data: [0, 0], backgroundColor: 'rgba(59, 130, 246, 0.7)',
+                        }, {
+                            label: 'Titik 2', data: [0, 0], backgroundColor: 'rgba(34, 197, 94, 0.7)',
+                        }]
+                    },
+                    options: {
+                        indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+                        plugins: { legend: { labels: { color: '#d1d5db' } } },
+                        scales: {
+                            x: { beginAtZero: true, ticks: { color: '#9ca3af' }, grid: { color: '#374151' } },
+                            y: { ticks: { color: '#d1d5db' }, grid: { color: '#374151' } }
+                        }
+                    }
+                });
+            }
+
+            function updateChart(P1_psi, v1, P2_psi, v2) {
+                if (!bernoulliChart) return;
+                bernoulliChart.data.datasets[0].data = [P1_psi, v1];
+                bernoulliChart.data.datasets[1].data = [P2_psi, v2];
+                bernoulliChart.update();
+            }
+            
+            function updateManometers(P1_psi, P2_psi) {
+                const maxPressureForVisual = 35; 
+                let height1 = (P1_psi / maxPressureForVisual) * 100;
+                let height2 = (P2_psi / maxPressureForVisual) * 100;
+
+                height1 = Math.max(0, Math.min(100, height1));
+                height2 = Math.max(0, Math.min(100, height2));
+                
+                manometerFluid1.style.height = `${height1}%`;
+                manometerFluid2.style.height = `${height2}%`;
+
+                // Update 'h' dimension line
+                const tubeHeight = manometer1.clientHeight;
+                
+                if (P1_psi > P2_psi && (height1 - height2) > 2) { 
+                    hDimension.style.display = 'flex';
+                    
+                    const fluidTop1_absolute = manometer1.offsetTop + tubeHeight * (1 - height1 / 100);
+                    const fluidTop2_absolute = manometer2.offsetTop + tubeHeight * (1 - height2 / 100);
+                    
+                    hDimension.style.top = `${fluidTop1_absolute}px`;
+                    hDimension.style.height = `${fluidTop2_absolute - fluidTop1_absolute}px`;
+                } else {
+                    hDimension.style.display = 'none';
+                }
+            }
+
+            // === Logika Perhitungan Utama & Update UI ===
+            function calculateAndDisplay() {
+                if (parseFloat(pressure1Input.value) < 0) {
+                    pressure1Input.value = 0;
+                }
+                if (parseFloat(pressure1Input.value) > 35) {
+                    pressure1Input.value = 35;
+                }
+                 if (parseFloat(area2Input.value) > 6) {
+                    area2Input.value = 6;
+                }
+                if (parseFloat(height1Input.value) > 10) {
+                    height1Input.value = 10;
+                }
+
+                const P1_psi = parseFloat(pressure1Input.value);
+                const A1_in2 = parseFloat(area1Input.value);
+                const A2_in2 = parseFloat(area2Input.value);
+                const v1 = parseFloat(velocity1Input.value);
+                
+                const rho = parseFloat(fluidDensityInput.value);
+                const g = parseFloat(gravityInput.value);
+                const h1 = parseFloat(height1Input.value);
+                const h2 = parseFloat(height2Input.value);
+                const P1 = P1_psi * PSI_TO_PA;
+                const A1 = A1_in2 * INCH2_TO_M2;
+                const A2 = A2_in2 * INCH2_TO_M2;
+                
+                if ([rho, g, P1, A1, v1, h1, A2, h2].some(isNaN) || A1 <= 0 || A2 <= 0) return;
+
+                const v2 = (A1 * v1) / A2;
+                const P2 = P1 + (0.5 * rho * (v1**2 - v2**2)) + (rho * g * (h1 - h2));
+                const P2_psi = P2 / PSI_TO_PA;
+
+                const totalEnergy1 = P1 + (0.5 * rho * v1**2) + (rho * g * h1);
+                const totalEnergy2 = P2 + (0.5 * rho * v2**2) + (rho * g * h2);
+
+                outputVelocity2.textContent = `${v2.toFixed(2)} m/s`;
+                outputPressure2.textContent = `${P2_psi.toFixed(2)} Psi`;
+                outputEnergy1.textContent = `${totalEnergy1.toFixed(0)} J/m³`;
+                outputEnergy2.textContent = `${totalEnergy2.toFixed(0)} J/m³`;
+                
+                updateChart(P1_psi, v1, P2_psi, v2);
+                updatePipeThroat(A1_in2, A2_in2);
+                updateComparisonDisplay(A1_in2, A2_in2, v1, v2, P1_psi, P2_psi);
+                updateStreamlinePaths();
+                updateManometers(P1_psi, P2_psi);
+            }
+
+            function updatePipeThroat(A1_in2, A2_in2) {
+                const totalContainerHeight = 230; 
+                const flowAreaHeight = 100;
+                const compressionRatio = (A1_in2 > 0 && A2_in2 > 0) ? Math.sqrt(A2_in2 / A1_in2) : 1;
+                const openingHeight = Math.max(10, flowAreaHeight * compressionRatio);
+                const wallHeight = (totalContainerHeight - openingHeight) / 2;
+                pipeThroat.style.setProperty('--throat-wall-height', `${wallHeight}px`);
+                
+                // Update Manometer positions and height
+                manometer1.style.top = `5px`;
+                manometer1.style.height = `60px`;
+
+                const manometer2Top = 5;
+                manometer2.style.top = `${manometer2Top}px`;
+                manometer2.style.height = `${wallHeight - manometer2Top}px`;
+
+                // Update Area Lines
+                areaLine1.style.height = `${flowAreaHeight}px`;
+                areaLine1.style.top = `65px`; 
+                areaLine2.style.height = `${openingHeight}px`;
+                areaLine2.style.top = `${wallHeight + 20}px`;
+            }
+
+            function updateComparisonDisplay(A1, A2, v1, v2, P1, P2) {
+                const areaComp = A2 < A1 ? '<' : A2 > A1 ? '>' : '=';
+                const velComp = v2 > v1 ? '>' : v2 < v1 ? '<' : '=';
+                const pressComp = P2 < P1 ? '<' : P2 > P1 ? '>' : '=';
+
+                comparisonDisplay.innerHTML = `
+                    <div class="flex justify-around items-center w-full">
+                        <div class="space-y-2">
+                            <div class="flex justify-center items-center ${A2 < A1 ? 'text-green-400' : 'text-gray-400'}">A₂ ${areaComp} A₁</div>
+                            <div class="flex justify-center items-center ${v2 > v1 ? 'text-green-400' : 'text-gray-400'}">v₂ ${velComp} v₁</div>
+                        </div>
+                        <div class="border-l-2 border-dashed border-gray-600 h-12 mx-4"></div>
+                        <div class="flex justify-center items-center text-xl ${P2 < P1 ? 'text-yellow-400' : 'text-gray-400'}">
+                            P₂ ${pressComp} P₁
+                        </div>
+                    </div>
+                `;
+            }
+
+            function syncControls() {
+                velocity1Slider.value = velocity1Input.value;
+                velocity1SliderValue.textContent = `${parseFloat(velocity1Input.value).toFixed(1)} m/s`;
+                area2Slider.value = area2Input.value;
+                area2SliderValue.textContent = `${parseFloat(area2Input.value).toFixed(1)} Inch²`;
+                densitySlider.value = fluidDensityInput.value;
+                densitySliderValue.textContent = `${parseFloat(fluidDensityInput.value).toFixed(0)} kg/m³`;
+                pressure1Slider.value = pressure1Input.value;
+                pressure1SliderValue.textContent = `${parseFloat(pressure1Input.value).toFixed(0)} Psi`;
+                height1Slider.value = height1Input.value;
+                height1SliderValue.textContent = `${parseFloat(height1Input.value).toFixed(1)} m`;
+                calculateAndDisplay();
+            }
+
+            velocity1Slider.addEventListener('input', (e) => {
+                velocity1Input.value = e.target.value;
+                syncControls();
+            });
+            area2Slider.addEventListener('input', (e) => {
+                area2Input.value = e.target.value;
+                syncControls();
+            });
+            densitySlider.addEventListener('input', (e) => {
+                fluidDensityInput.value = e.target.value;
+                syncControls();
+            });
+            pressure1Slider.addEventListener('input', (e) => {
+                pressure1Input.value = e.target.value;
+                syncControls();
+            });
+            height1Slider.addEventListener('input', (e) => {
+                height1Input.value = e.target.value;
+                syncControls();
+            });
+            
+            form.addEventListener('input', syncControls);
+            
+            initializeChart();
+            createStreamlines();
+            if (animationFrameId) cancelAnimationFrame(animationFrameId);
+            animateStreamlines();
+            syncControls();
+
+            window.addEventListener('resize', () => {
+                createStreamlines();
+                updateStreamlinePaths();
+            });
+        });
+    </script>
+</body>
+</html>
+
+
