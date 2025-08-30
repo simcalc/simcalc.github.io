@@ -182,7 +182,8 @@
 
         <main class="grid grid-cols-1 lg:grid-cols-2 gap-8">
             
-            <div class="flex flex-col gap-8">
+            <!-- Kolom 1: Kontrol dan Daftar Pustaka -->
+            <div class="flex flex-col gap-8 order-1 lg:order-1">
                 
                 <!-- Kontrol Interaktif -->
                 <section id="interactive-controls" class="card rounded-xl p-6">
@@ -218,92 +219,34 @@
                         </div>
                     </div>
                 </section>
+                
+                 <section id="daftar-pustaka" class="card rounded-xl p-6 order-last">
+                    <h2 class="text-2xl font-semibold mb-4 border-b border-gray-600 pb-3 text-white">Daftar Pustaka & Referensi</h2>
+                    <ul class="list-disc list-inside space-y-2 text-gray-400 text-sm">
+                        <li>Çengel, Y. A., & Cimbala, J. M. (Diterbitkan tahun 2017). *Fluid Mechanics: Fundamentals and Applications*. McGraw-Hill Education.</li>
+                        <li>White, F. M. (Diterbitkan tahun 2016). *Fluid Mechanics*. McGraw-Hill Education.</li>
+                    </ul>
+                </section>
 
                 <!-- Hidden Input Data Detail for logic -->
                 <section id="input-data" class="card rounded-xl p-6" hidden>
-                    <h2 class="text-2xl font-semibold mb-6 border-b border-gray-600 pb-3 text-white">Parameter Simulasi</h2>
-                    <form id="bernoulli-form" class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
-                        <!-- Parameter Titik 1 -->
-                        <div>
-                            <h3 class="text-lg font-medium text-blue-400 mb-2">Titik 1 (Area Lebar)</h3>
-                            <div class="space-y-3">
-                                <div>
-                                    <label for="pressure1" class="block text-sm font-medium text-gray-400 mb-1">Tekanan (P₁) <span class="text-gray-500">Psi</span></label>
-                                    <input type="number" id="pressure1" value="29" step="1" min="0" max="35" class="w-full bg-gray-700 border border-gray-600 rounded-md p-2 text-white focus:ring-blue-500 focus:border-blue-500">
-                                </div>
-                                <div>
-                                    <label for="area1" class="block text-sm font-medium text-gray-400 mb-1">Luas (A₁) <span class="text-gray-500">Inch²</span></label>
-                                    <input type="number" id="area1" value="8" step="0.1" min="1" max="10" class="w-full bg-gray-700 border border-gray-600 rounded-md p-2 text-white focus:ring-blue-500 focus:border-blue-500">
-                                </div>
-                                <div>
-                                    <label for="velocity1" class="block text-sm font-medium text-gray-400 mb-1">Kecepatan (v₁) <span class="text-gray-500">m/s</span></label>
-                                    <input type="number" id="velocity1" value="2" step="0.1" class="w-full bg-gray-700 border border-gray-600 rounded-md p-2 text-white focus:ring-blue-500 focus:border-blue-500">
-                                </div>
-                                <div>
-                                    <label for="height1" class="block text-sm font-medium text-gray-400 mb-1">Ketinggian (h₁) <span class="text-gray-500">m</span></label>
-                                    <input type="number" id="height1" value="5" step="0.1" max="10" class="w-full bg-gray-700 border border-gray-600 rounded-md p-2 text-white focus:ring-blue-500 focus:border-blue-500">
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Parameter Titik 2 -->
-                        <div>
-                            <h3 class="text-lg font-medium text-blue-400 mb-2">Titik 2 (Area Sempit)</h3>
-                            <div class="space-y-3">
-                                <div>
-                                    <label for="area2" class="block text-sm font-medium text-gray-400 mb-1">Luas (A₂) <span class="text-gray-500">Inch²</span></label>
-                                    <input type="number" id="area2" value="5" step="0.1" min="0.1" max="6" class="w-full bg-gray-700 border border-gray-600 rounded-md p-2 text-white focus:ring-blue-500 focus:border-blue-500">
-                                </div>
-                                <div>
-                                    <label for="height2" class="block text-sm font-medium text-gray-400 mb-1">Ketinggian (h₂) <span class="text-gray-500">m</span></label>
-                                    <input type="number" id="height2" value="5" step="0.1" max="10" class="w-full bg-gray-700 border border-gray-600 rounded-md p-2 text-white focus:ring-blue-500 focus:border-blue-500">
-                                </div>
-                                <div class="md:col-span-2 mt-4 pt-3">
-                                    <h3 class="text-lg font-medium text-blue-400 mb-2">Parameter Umum</h3>
-                                    <div class="grid grid-cols-2 gap-4">
-                                        <div>
-                                            <label for="fluid-density" class="block text-sm font-medium text-gray-400 mb-1">Massa Jenis (ρ)</label>
-                                            <input type="number" id="fluid-density" value="1000" step="10" max="1000" class="w-full bg-gray-700 border border-gray-600 rounded-md p-2 text-white focus:ring-blue-500 focus:border-blue-500">
-                                        </div>
-                                        <div>
-                                            <label for="gravity" class="block text-sm font-medium text-gray-400 mb-1">Gravitasi (g)</label>
-                                            <input type="number" id="gravity" value="9.81" step="0.1" class="w-full bg-gray-700 border border-gray-600 rounded-md p-2 text-white focus:ring-blue-500 focus:border-blue-500">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                    <form id="bernoulli-form">
+                        <input type="number" id="pressure1" value="29">
+                        <input type="number" id="area1" value="8">
+                        <input type="number" id="velocity1" value="2">
+                        <input type="number" id="height1" value="5">
+                        <input type="number" id="area2" value="5">
+                        <input type="number" id="height2" value="5">
+                        <input type="number" id="fluid-density" value="1000">
+                        <input type="number" id="gravity" value="9.81">
                     </form>
                 </section>
                 
             </div>
 
-            <div class="lg:col-span-1 flex flex-col gap-8">
-                
-                <section id="output-kalkulasi" class="card rounded-xl p-6">
-                    <h2 class="text-2xl font-semibold mb-4 border-b border-gray-600 pb-3 text-white">Output Real-time</h2>
-                    <div class="space-y-4 text-lg">
-                        <div class="flex justify-between items-center">
-                            <span class="text-gray-400">Kecepatan (v₂):</span>
-                            <span id="output-velocity2" class="font-bold text-2xl text-blue-400">0 m/s</span>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <span class="text-gray-400">Tekanan (P₂):</span>
-                            <span id="output-pressure2" class="font-bold text-2xl text-blue-400">0 Psi</span>
-                        </div>
-                        <hr class="border-gray-600 my-4">
-                        <div class="flex justify-between items-center text-sm">
-                            <span class="text-gray-400">Energi Total (Titik 1):</span>
-                            <span id="output-energy1" class="font-semibold text-green-400">0 J/m³</span>
-                        </div>
-                        <div class="flex justify-between items-center text-sm">
-                            <span class="text-gray-400">Energi Total (Titik 2):</span>
-                            <span id="output-energy2" class="font-semibold text-green-400">0 J/m³</span>
-                        </div>
-                    </div>
-                </section>
-                
-                <section id="animasi-konsep" class="card rounded-xl p-6 flex-grow flex flex-col">
+            <!-- Kolom 2: Visualisasi -->
+            <div class="flex flex-col gap-8 order-2 lg:order-2">
+                <section id="animasi-konsep" class="card rounded-xl p-6 flex-grow flex flex-col order-1 lg:order-2">
                     <h2 class="text-2xl font-semibold mb-4 border-b border-gray-600 pb-3 text-white">Animasi Aliran</h2>
                     <div id="pipe-container" class="flex-grow">
                         <!-- Manometers and Legends -->
@@ -341,20 +284,32 @@
                         <!-- Konten diisi oleh JavaScript -->
                     </div>
                 </section>
+
+                <section id="output-kalkulasi" class="card rounded-xl p-6 order-2 lg:order-1">
+                    <h2 class="text-2xl font-semibold mb-4 border-b border-gray-600 pb-3 text-white">Output Real-time</h2>
+                    <div class="space-y-4 text-lg">
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-400">Kecepatan (v₂):</span>
+                            <span id="output-velocity2" class="font-bold text-2xl text-blue-400">0 m/s</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-400">Tekanan (P₂):</span>
+                            <span id="output-pressure2" class="font-bold text-2xl text-blue-400">0 Psi</span>
+                        </div>
+                        <hr class="border-gray-600 my-4">
+                        <div class="flex justify-between items-center text-sm">
+                            <span class="text-gray-400">Energi Total (Titik 1):</span>
+                            <span id="output-energy1" class="font-semibold text-green-400">0 J/m³</span>
+                        </div>
+                        <div class="flex justify-between items-center text-sm">
+                            <span class="text-gray-400">Energi Total (Titik 2):</span>
+                            <span id="output-energy2" class="font-semibold text-green-400">0 J/m³</span>
+                        </div>
+                    </div>
+                </section>
             </div>
         </main>
-        
-        <section id="daftar-pustaka" class="card rounded-xl p-6 mt-8">
-            <h2 class="text-2xl font-semibold mb-4 border-b border-gray-600 pb-3 text-white">Daftar Pustaka & Referensi</h2>
-            <ul class="list-disc list-inside space-y-2 text-gray-400 text-sm">
-                <li>Çengel, Y. A., & Cimbala, J. M. (Diterbitkan tahun 2017). *Fluid Mechanics: Fundamentals and Applications*. McGraw-Hill Education.</li>
-                <li>White, F. M. (Diterbitkan tahun 2016). *Fluid Mechanics*. McGraw-Hill Education.</li>
-            </ul>
-        </section>
 
-        <footer class="text-center py-8 text-gray-500 text-sm">
-            <p>&copy; 2024 Simulasi Interaktif. Dibuat untuk tujuan edukasi.</p>
-        </footer>
     </div>
 
     <script>
@@ -585,7 +540,6 @@
                 outputEnergy1.textContent = `${totalEnergy1.toFixed(0)} J/m³`;
                 outputEnergy2.textContent = `${totalEnergy2.toFixed(0)} J/m³`;
                 
-                // updateChart(P1_psi, v1, P2_psi, v2); // No chart to update
                 updatePipeThroat(A1_in2, A2_in2);
                 updateComparisonDisplay(A1_in2, A2_in2, v1, v2, P1_psi, P2_psi);
                 updateStreamlinePaths();
@@ -683,7 +637,6 @@
             
             form.addEventListener('input', syncControls);
             
-            // initializeChart(); // No chart to initialize
             createStreamlines();
             if (animationFrameId) cancelAnimationFrame(animationFrameId);
             animateStreamlines();
