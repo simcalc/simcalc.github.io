@@ -8,9 +8,6 @@
     <!-- Impor Tailwind CSS untuk styling -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Impor Chart.js untuk grafik -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
     <!-- Impor Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -183,9 +180,9 @@
             <p class="text-lg text-gray-400">Geser slider untuk melihat perubahan secara real-time.</p>
         </header>
 
-        <main class="grid grid-cols-1 lg:grid-cols-5 gap-8">
+        <main class="grid grid-cols-1 lg:grid-cols-2 gap-8">
             
-            <div class="lg:col-span-3 grid grid-cols-1 gap-8">
+            <div class="flex flex-col gap-8">
                 
                 <!-- Kontrol Interaktif -->
                 <section id="interactive-controls" class="card rounded-xl p-6">
@@ -194,6 +191,10 @@
                         <div>
                             <label for="velocity1-slider" class="block text-sm font-medium text-gray-400 mb-2">Kecepatan Awal (v₁) — <span id="velocity1-slider-value" class="font-bold text-white">2.0 m/s</span></label>
                             <input type="range" id="velocity1-slider" min="0.1" max="10" step="0.1" value="2" class="w-full">
+                        </div>
+                         <div>
+                            <label for="area1-slider" class="block text-sm font-medium text-gray-400 mb-2">Luas Area Awal (A₁) — <span id="area1-slider-value" class="font-bold text-white">8.0 Inch²</span></label>
+                            <input type="range" id="area1-slider" min="1" max="10" step="0.1" value="8" class="w-full">
                         </div>
                         <div>
                             <label for="area2-slider" class="block text-sm font-medium text-gray-400 mb-2">Luas Area Sempit (A₂) — <span id="area2-slider-value" class="font-bold text-white">5.0 Inch²</span></label>
@@ -208,14 +209,18 @@
                             <input type="range" id="height1-slider" min="0" max="10" step="0.1" value="5" class="w-full">
                         </div>
                         <div>
+                            <label for="height2-slider" class="block text-sm font-medium text-gray-400 mb-2">Ketinggian Kedua (h₂) — <span id="height2-slider-value" class="font-bold text-white">5.0 m</span></label>
+                            <input type="range" id="height2-slider" min="0" max="10" step="0.1" value="5" class="w-full">
+                        </div>
+                        <div>
                             <label for="density-slider" class="block text-sm font-medium text-gray-400 mb-2">Massa Jenis (ρ) — <span id="density-slider-value" class="font-bold text-white">1000 kg/m³</span></label>
                             <input type="range" id="density-slider" min="100" max="1000" step="10" value="1000" class="w-full">
                         </div>
                     </div>
                 </section>
 
-                <!-- Input Data Detail -->
-                <section id="input-data" class="card rounded-xl p-6">
+                <!-- Hidden Input Data Detail for logic -->
+                <section id="input-data" class="card rounded-xl p-6" hidden>
                     <h2 class="text-2xl font-semibold mb-6 border-b border-gray-600 pb-3 text-white">Parameter Simulasi</h2>
                     <form id="bernoulli-form" class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
                         <!-- Parameter Titik 1 -->
@@ -228,7 +233,7 @@
                                 </div>
                                 <div>
                                     <label for="area1" class="block text-sm font-medium text-gray-400 mb-1">Luas (A₁) <span class="text-gray-500">Inch²</span></label>
-                                    <input type="number" id="area1" value="31" step="0.1" min="0.1" class="w-full bg-gray-700 border border-gray-600 rounded-md p-2 text-white focus:ring-blue-500 focus:border-blue-500">
+                                    <input type="number" id="area1" value="8" step="0.1" min="1" max="10" class="w-full bg-gray-700 border border-gray-600 rounded-md p-2 text-white focus:ring-blue-500 focus:border-blue-500">
                                 </div>
                                 <div>
                                     <label for="velocity1" class="block text-sm font-medium text-gray-400 mb-1">Kecepatan (v₁) <span class="text-gray-500">m/s</span></label>
@@ -251,7 +256,7 @@
                                 </div>
                                 <div>
                                     <label for="height2" class="block text-sm font-medium text-gray-400 mb-1">Ketinggian (h₂) <span class="text-gray-500">m</span></label>
-                                    <input type="number" id="height2" value="5" step="0.1" class="w-full bg-gray-700 border border-gray-600 rounded-md p-2 text-white focus:ring-blue-500 focus:border-blue-500">
+                                    <input type="number" id="height2" value="5" step="0.1" max="10" class="w-full bg-gray-700 border border-gray-600 rounded-md p-2 text-white focus:ring-blue-500 focus:border-blue-500">
                                 </div>
                                 <div class="md:col-span-2 mt-4 pt-3">
                                     <h3 class="text-lg font-medium text-blue-400 mb-2">Parameter Umum</h3>
@@ -273,7 +278,7 @@
                 
             </div>
 
-            <div class="lg:col-span-2 flex flex-col gap-8">
+            <div class="lg:col-span-1 flex flex-col gap-8">
                 
                 <section id="output-kalkulasi" class="card rounded-xl p-6">
                     <h2 class="text-2xl font-semibold mb-4 border-b border-gray-600 pb-3 text-white">Output Real-time</h2>
@@ -336,11 +341,6 @@
                         <!-- Konten diisi oleh JavaScript -->
                     </div>
                 </section>
-
-                <section id="grafik-bernoulli" class="card rounded-xl p-6 h-80">
-                    <h2 class="text-2xl font-semibold mb-4 border-b border-gray-600 pb-3 text-white">Grafik Perbandingan</h2>
-                    <canvas id="bernoulliChart"></canvas>
-                </section>
             </div>
         </main>
         
@@ -370,15 +370,19 @@
             } = form.elements;
 
             const velocity1Slider = document.getElementById('velocity1-slider');
+            const area1Slider = document.getElementById('area1-slider');
             const area2Slider = document.getElementById('area2-slider');
             const densitySlider = document.getElementById('density-slider');
             const pressure1Slider = document.getElementById('pressure1-slider');
             const height1Slider = document.getElementById('height1-slider');
+            const height2Slider = document.getElementById('height2-slider');
             const velocity1SliderValue = document.getElementById('velocity1-slider-value');
+            const area1SliderValue = document.getElementById('area1-slider-value');
             const area2SliderValue = document.getElementById('area2-slider-value');
             const densitySliderValue = document.getElementById('density-slider-value');
             const pressure1SliderValue = document.getElementById('pressure1-slider-value');
             const height1SliderValue = document.getElementById('height1-slider-value');
+            const height2SliderValue = document.getElementById('height2-slider-value');
             
             const outputVelocity2 = document.getElementById('output-velocity2');
             const outputPressure2 = document.getElementById('output-pressure2');
@@ -503,39 +507,6 @@
                 animationFrameId = requestAnimationFrame(animateStreamlines);
             }
             
-            // === Logika Grafik (Chart.js) ===
-            const ctx = document.getElementById('bernoulliChart').getContext('2d');
-            let bernoulliChart;
-
-            function initializeChart() {
-                bernoulliChart = new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: ['Tekanan (Psi)', 'Kecepatan (m/s)'],
-                        datasets: [{
-                            label: 'Titik 1', data: [0, 0], backgroundColor: 'rgba(59, 130, 246, 0.7)',
-                        }, {
-                            label: 'Titik 2', data: [0, 0], backgroundColor: 'rgba(34, 197, 94, 0.7)',
-                        }]
-                    },
-                    options: {
-                        indexAxis: 'y', responsive: true, maintainAspectRatio: false,
-                        plugins: { legend: { labels: { color: '#d1d5db' } } },
-                        scales: {
-                            x: { beginAtZero: true, ticks: { color: '#9ca3af' }, grid: { color: '#374151' } },
-                            y: { ticks: { color: '#d1d5db' }, grid: { color: '#374151' } }
-                        }
-                    }
-                });
-            }
-
-            function updateChart(P1_psi, v1, P2_psi, v2) {
-                if (!bernoulliChart) return;
-                bernoulliChart.data.datasets[0].data = [P1_psi, v1];
-                bernoulliChart.data.datasets[1].data = [P2_psi, v2];
-                bernoulliChart.update();
-            }
-            
             function updateManometers(P1_psi, P2_psi) {
                 const maxPressureForVisual = 35; 
                 let height1 = (P1_psi / maxPressureForVisual) * 100;
@@ -577,6 +548,15 @@
                 if (parseFloat(height1Input.value) > 10) {
                     height1Input.value = 10;
                 }
+                if (parseFloat(height2Input.value) > 10) {
+                    height2Input.value = 10;
+                }
+                 if (parseFloat(area1Input.value) > 10) {
+                    area1Input.value = 10;
+                }
+                if (parseFloat(area1Input.value) < 1) {
+                    area1Input.value = 1;
+                }
 
                 const P1_psi = parseFloat(pressure1Input.value);
                 const A1_in2 = parseFloat(area1Input.value);
@@ -605,7 +585,7 @@
                 outputEnergy1.textContent = `${totalEnergy1.toFixed(0)} J/m³`;
                 outputEnergy2.textContent = `${totalEnergy2.toFixed(0)} J/m³`;
                 
-                updateChart(P1_psi, v1, P2_psi, v2);
+                // updateChart(P1_psi, v1, P2_psi, v2); // No chart to update
                 updatePipeThroat(A1_in2, A2_in2);
                 updateComparisonDisplay(A1_in2, A2_in2, v1, v2, P1_psi, P2_psi);
                 updateStreamlinePaths();
@@ -657,6 +637,8 @@
             function syncControls() {
                 velocity1Slider.value = velocity1Input.value;
                 velocity1SliderValue.textContent = `${parseFloat(velocity1Input.value).toFixed(1)} m/s`;
+                area1Slider.value = area1Input.value;
+                area1SliderValue.textContent = `${parseFloat(area1Input.value).toFixed(1)} Inch²`;
                 area2Slider.value = area2Input.value;
                 area2SliderValue.textContent = `${parseFloat(area2Input.value).toFixed(1)} Inch²`;
                 densitySlider.value = fluidDensityInput.value;
@@ -665,11 +647,17 @@
                 pressure1SliderValue.textContent = `${parseFloat(pressure1Input.value).toFixed(0)} Psi`;
                 height1Slider.value = height1Input.value;
                 height1SliderValue.textContent = `${parseFloat(height1Input.value).toFixed(1)} m`;
+                height2Slider.value = height2Input.value;
+                height2SliderValue.textContent = `${parseFloat(height2Input.value).toFixed(1)} m`;
                 calculateAndDisplay();
             }
 
             velocity1Slider.addEventListener('input', (e) => {
                 velocity1Input.value = e.target.value;
+                syncControls();
+            });
+            area1Slider.addEventListener('input', (e) => {
+                area1Input.value = e.target.value;
                 syncControls();
             });
             area2Slider.addEventListener('input', (e) => {
@@ -688,10 +676,14 @@
                 height1Input.value = e.target.value;
                 syncControls();
             });
+            height2Slider.addEventListener('input', (e) => {
+                height2Input.value = e.target.value;
+                syncControls();
+            });
             
             form.addEventListener('input', syncControls);
             
-            initializeChart();
+            // initializeChart(); // No chart to initialize
             createStreamlines();
             if (animationFrameId) cancelAnimationFrame(animationFrameId);
             animateStreamlines();
@@ -705,5 +697,4 @@
     </script>
 </body>
 </html>
-
 
