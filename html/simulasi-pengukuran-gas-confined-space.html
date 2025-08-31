@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simulasi Pengukuran Gas Confined Space</title>
+    <title>Simulasi Gas Confined Space (Versi Canvas)</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -42,14 +42,122 @@
         .footer a:hover {
             text-decoration: underline;
         }
+        /* Style untuk section pembahasan dan daftar pustaka */
+        .discussion-section {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            text-align: left;
+            color: #2b2d42;
+        }
+        .discussion-section h2 {
+            font-size: 1.5em;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #e9ecef;
+            padding-bottom: 10px;
+        }
+        .discussion-section h3 {
+            font-size: 1.2em;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        .discussion-section p, .discussion-section li {
+            line-height: 1.7;
+            margin-bottom: 15px;
+        }
+        .references {
+            list-style-type: decimal;
+            padding-left: 20px;
+        }
+        .references li {
+            margin-bottom: 10px;
+        }
+        /* Tambahkan style untuk link di daftar pustaka */
+        .references a {
+            color: #0056b3;
+            text-decoration: none;
+        }
+        .references a:hover {
+            text-decoration: underline;
+        }
+        .example-calc {
+            background-color: #f8f9fa;
+            border-left: 4px solid #8d99ae;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+        }
+        .example-calc strong {
+            color: #0056b3;
+        }
+        /* Style baru untuk sitasi */
+        .citation {
+            font-weight: 600;
+            color: #0056b3;
+            font-size: 0.8em;
+            vertical-align: super;
+        }
     </style>
 </head>
 <body>
     <div class="simulation-container">
         <canvas id="simulationCanvas"></canvas>
+        
+        <!-- Bagian Pembahasan dan Daftar Pustaka -->
+        <div class="discussion-section">
+            <h2>Pembahasan</h2>
+            <p>
+                Simulasi ini dirancang untuk memberikan pemahaman visual mengenai prosedur keselamatan kerja di ruang terbatas (confined space), yang merupakan salah satu area kerja dengan risiko paling tinggi. Dua aspek krusial yang disimulasikan adalah teknik pengukuran gas yang benar dan cara menghitung kebutuhan pertukaran udara untuk ventilasi.
+            </p>
+
+            <h3>1. Pengukuran Gas Berdasarkan Stratifikasi</h3>
+            <p>
+                Atmosfer di dalam ruang terbatas jarang sekali homogen. Berbagai jenis gas berbahaya dapat terkumpul pada lapisan (strata) yang berbeda tergantung pada berat molekul (BM) atau densitasnya dibandingkan dengan udara (BM ≈ 29 g/mol). Fenomena ini disebut stratifikasi gas<sup class="citation">[3]</sup>. Karena itu, pengujian atmosfer tidak cukup hanya dilakukan pada satu titik. Standar keselamatan internasional seperti OSHA secara eksplisit mengharuskan pengujian dilakukan pada beberapa interval kedalaman, umumnya setiap 1.2 meter (4 kaki), untuk mendeteksi semua potensi bahaya<sup class="citation">[1]</sup>.
+            </p>
+            <ul>
+                <li><strong>Lapisan Atas (Gas Ringan):</strong> Gas seperti Metana (CH₄, BM=16) jauh lebih ringan dari udara, sehingga akan naik dan terakumulasi di bagian atas tangki. Mengabaikan lapisan ini dapat menimbulkan risiko ledakan.</li>
+                <li><strong>Lapisan Tengah (Gas Seberat Udara):</strong> Karbon Monoksida (CO, BM=28) memiliki berat yang hampir sama dengan udara. Gas ini cenderung bercampur dan menyebar di seluruh bagian, namun paling representatif diukur di lapisan tengah.</li>
+                <li><strong>Lapisan Bawah (Gas Berat):</strong> Gas seperti Hidrogen Sulfida (H₂S, BM=34) lebih berat dari udara, sehingga akan tenggelam dan terkonsentrasi di dasar tangki. Ini adalah gas yang sangat beracun dan mematikan.</li>
+            </ul>
+
+            <h3>2. Perhitungan Kebutuhan Ventilasi dan Blower</h3>
+            <p>
+                Setelah atmosfer berbahaya terdeteksi, ventilasi paksa menggunakan blower adalah langkah mitigasi yang wajib dilakukan sebelum izin masuk diberikan<sup class="citation">[2, 4]</sup>. Tujuannya adalah untuk mengganti udara terkontaminasi dengan udara bersih. Efektivitas ventilasi diukur dengan standar <strong>Air Changes per Hour (ACH)</strong>, yaitu berapa kali total volume udara di dalam ruang diganti dalam satu jam.
+            </p>
+            <p>
+                Standar OSHA merekomendasikan minimal 5 hingga 10 kali pertukaran udara per jam (ACH)<sup class="citation">[1]</sup>. Perhitungan kebutuhan flow rate blower didasarkan pada rumus:<br>
+                <strong>Flow Blower (m³/jam) = Volume Ruang (m³) × Target ACH</strong>
+            </p>
+            <div class="example-calc">
+                <strong>Contoh Perhitungan:</strong><br>
+                Menggunakan data default dari kalkulator:<br>
+                Panjang = 4 m, Lebar = 3 m, Tinggi = 5 m<br><br>
+                <strong>1. Hitung Volume:</strong><br>
+                Volume = 4 m × 3 m × 5 m = <strong>60 m³</strong><br><br>
+                <strong>2. Hitung Kebutuhan Flow Blower:</strong><br>
+                - Rekomendasi (10 ACH): 60 m³ × 10 = <strong>600 m³/jam</strong><br>
+                - Minimum (5 ACH): 60 m³ × 5 = <strong>300 m³/jam</strong>
+            </div>
+            <p>
+                Sebelum pekerja diizinkan masuk untuk pertama kalinya, direkomendasikan untuk melakukan pembersihan awal (purging) dengan menjalankan blower selama durasi yang setara dengan <strong>5 hingga 7 kali pertukaran udara penuh</strong>. Ini untuk memastikan kantong-kantong gas yang terperangkap dapat dihilangkan secara tuntas<sup class="citation">[3]</sup>. Namun, perlu ditekankan bahwa durasi waktu hanyalah estimasi. Pengujian ulang atmosfer secara menyeluruh setelah ventilasi adalah satu-satunya cara untuk memverifikasi bahwa ruang tersebut aman untuk dimasuki<sup class="citation">[1, 2]</sup>.
+            </p>
+            
+            <h2>Daftar Pustaka</h2>
+            <ol class="references">
+                <li><a href="https://www.osha.gov/laws-regs/regulations/standardnumber/1910/1910.146" target="_blank" rel="noopener noreferrer"><strong>Occupational Safety and Health Administration (OSHA)</strong>. (2015). <em>29 CFR 1910.146 - Permit-required confined spaces</em>. United States Department of Labor.</a></li>
+                <li><a href="https://peraturan.bpk.go.id/Details/282464/permenaker-no-11-tahun-2023" target="_blank" rel="noopener noreferrer"><strong>Kementerian Ketenagakerjaan Republik Indonesia</strong>. (2023). <em>Peraturan Menteri Ketenagakerjaan No. 11 Tahun 2023 tentang Keselamatan dan Kesehatan Kerja di Ruang Terbatas</em>.</a></li>
+                <li><a href="https://www.cdc.gov/niosh/docs/87-113/" target="_blank" rel="noopener noreferrer"><strong>National Institute for Occupational Safety and Health (NIOSH)</strong>. (1987). <em>Publication No. 87-113: A Guide to Safety in Confined Spaces</em>. U.S. Department of Health and Human Services.</a></li>
+                <li><a href="https://www.webvent.tv/uploads/assets/1240/document/NFPA350GuideforSafeConfinedSpaceEntryandWork.pdf" target="_blank" rel="noopener noreferrer"><strong>National Fire Protection Association (NFPA)</strong>. (2021). <em>NFPA 350: Guide for Safe Confined Space Entry and Work</em>.</a></li>
+            </ol>
+        </div>
+
         <div class="footer">
             <div>Designed by <a href="https://id.linkedin.com/in/mokhamadabrar" target="_blank" rel="noopener">Mokhamad Abrar</a></div>
-            <div>Reviewed by <a href="https://id.linkedin.com/in/avior-qhse" target="_blank" rel="noopener">Ratu Avior, MSc.</a> and <a href="https://id.linkedin.com/in/raniannisaroyani" target="_blank" rel="noopener noreferrer">Ir. Rani Anisa Royani, MSc.</a></div>
+            <div>Reviewed by <a href="https://id.linkedin.com/in/avior-qhse" target="_blank" rel="noopener">Ratu Avior, MSc.</a> and <a href="https://id.linkedin.com/in/raniannisaroyani" target="_blank" rel="noopener noreferrer">Ir. Rani A. Royani, MSc.</a></div>
             <div>Sustainable Apps Development @ Aug 2025</div>
         </div>
     </div>
@@ -66,7 +174,7 @@
 
         function resizeCanvas() {
             const { clientWidth } = canvas;
-            const clientHeight = clientWidth * 0.8; // Aspek rasio disesuaikan agar lebih lebar
+            const clientHeight = clientWidth * 0.8; 
 
             if (canvas.width !== clientWidth || canvas.height !== clientHeight) {
                 canvas.width = clientWidth;
@@ -140,7 +248,7 @@
 
         function drawTank() { const { x, y, width, height } = layout.tank; ctx.fillStyle = config.colors.tank; ctx.strokeStyle = config.colors.tankBorder; ctx.lineWidth = 5; ctx.beginPath(); ctx.rect(x, y, width, height); ctx.fill(); ctx.stroke(); ctx.strokeStyle = 'rgba(0,0,0,0.2)'; ctx.lineWidth = 2; ctx.setLineDash([5, 5]); ctx.beginPath(); ctx.moveTo(x, y + height / 3); ctx.lineTo(x + width, y + height / 3); ctx.moveTo(x, y + (2 * height / 3)); ctx.lineTo(x + width, y + (2 * height / 3)); ctx.stroke(); ctx.setLineDash([]); }
         function drawProbe() { if (state.probeHeight > 0) { const { x } = layout.tank; ctx.fillStyle = '#333'; ctx.fillRect(x + (layout.tank.width * 0.1), layout.tank.y, 8, state.probeHeight); } }
-        function drawGasIcons() { const floatOffset = Math.sin(state.iconAnimationPhase) * (canvas.height * 0.008); const scaleEffect = 1 + Math.abs(Math.sin(state.iconAnimationPhase)) * 0.15; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; const tankCenterX = layout.tank.x + layout.tank.width / 2; function wrapText(text, x, y, maxWidth, lineHeight) { const words = text.split(' '); let line = ''; for(let n = 0; n < words.length; n++) { const testLine = line + words[n] + ' '; const metrics = ctx.measureText(testLine); const testWidth = metrics.width; if (testWidth > maxWidth && n > 0) { ctx.fillText(line, x, y); line = words[n] + ' '; y += lineHeight; } else { line = testLine; } } ctx.fillText(line, x, y); } if (state.showCH4) { ctx.font = `bold ${canvas.width * 0.03 * scaleEffect}px Segoe UI`; ctx.fillStyle = config.colors.danger; const yPos = layout.tank.y + (layout.tank.height * 0.15) + floatOffset; ctx.fillText('CH₄', tankCenterX, yPos); ctx.font = `${canvas.width * 0.018}px Segoe UI`; ctx.fillStyle = config.colors.text; wrapText("Lakukan Pengujian Gas pada Lapisan Atas untuk memastikan tidak adanya gas methane", tankCenterX, yPos + 30, layout.tank.width * 0.8, 20); } if (state.showCO) { ctx.font = `bold ${canvas.width * 0.03 * scaleEffect}px Segoe UI`; ctx.fillStyle = config.colors.warning; const yPos = layout.tank.y + layout.tank.height / 2 + floatOffset; ctx.fillText('CO', tankCenterX, yPos); ctx.font = `${canvas.width * 0.018}px Segoe UI`; ctx.fillStyle = config.colors.text; wrapText("Uji Lapisan Tengah untuk gas seperti Karbon Monoksida yang beratnya sama dengan udara", tankCenterX, yPos + 30, layout.tank.width * 0.8, 20); } if (state.showH2S) { ctx.font = `bold ${canvas.width * 0.03 * scaleEffect}px Segoe UI`; ctx.fillStyle = config.colors.danger; const yPos = layout.tank.y + (layout.tank.height * 0.85) + floatOffset; ctx.fillText('H₂S', tankCenterX, yPos); ctx.font = `${canvas.width * 0.018}px Segoe UI`; ctx.fillStyle = config.colors.text; wrapText("Gas Hidrogen Sulfida sangat beracun dan lebih berat dari udara, uji Lapisan Bawah", tankCenterX, yPos - 70, layout.tank.width * 0.8, 20); } }
+        function drawGasIcons() { const floatOffset = Math.sin(state.iconAnimationPhase) * (canvas.height * 0.008); const scaleEffect = 1 + Math.abs(Math.sin(state.iconAnimationPhase)) * 0.15; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; const tankCenterX = layout.tank.x + layout.tank.width / 2; function wrapText(text, x, y, maxWidth, lineHeight) { const words = text.split(' '); let line = ''; for(let n = 0; n < words.length; n++) { const testLine = line + words[n] + ' '; const metrics = ctx.measureText(testLine); const testWidth = metrics.width; if (testWidth > maxWidth && n > 0) { ctx.fillText(line, x, y); line = words[n] + ' '; y += lineHeight; } else { line = testLine; } } ctx.fillText(line, x, y); } if (state.showCH4) { const layerCenterY = layout.tank.y + layout.tank.height / 6; const iconY = layerCenterY - (20 * 0.8) + floatOffset; const textY = layerCenterY + (20 * 0.8); ctx.font = `bold ${canvas.width * 0.03 * scaleEffect}px Segoe UI`; ctx.fillStyle = config.colors.danger; ctx.fillText('CH₄', tankCenterX, iconY); ctx.font = `${canvas.width * 0.018}px Segoe UI`; ctx.fillStyle = config.colors.text; wrapText("Lakukan Pengujian Gas pada Lapisan Atas untuk memastikan tidak adanya gas methane", tankCenterX, textY, layout.tank.width * 0.8, 20); } if (state.showCO) { const layerCenterY = layout.tank.y + layout.tank.height / 2; const iconY = layerCenterY - (20 * 0.8) + floatOffset; const textY = layerCenterY + (20 * 0.8); ctx.font = `bold ${canvas.width * 0.03 * scaleEffect}px Segoe UI`; ctx.fillStyle = config.colors.warning; ctx.fillText('CO', tankCenterX, iconY); ctx.font = `${canvas.width * 0.018}px Segoe UI`; ctx.fillStyle = config.colors.text; wrapText("Uji Lapisan Tengah untuk gas seperti Karbon Monoksida yang beratnya sama dengan udara", tankCenterX, textY, layout.tank.width * 0.8, 20); } if (state.showH2S) { const layerCenterY = layout.tank.y + layout.tank.height * 5 / 6; const iconY = layerCenterY + (20 * 1.2) + floatOffset; const textY = layerCenterY - (20 * 1.2); ctx.font = `bold ${canvas.width * 0.03 * scaleEffect}px Segoe UI`; ctx.fillStyle = config.colors.danger; ctx.fillText('H₂S', tankCenterX, iconY); ctx.font = `${canvas.width * 0.018}px Segoe UI`; ctx.fillStyle = config.colors.text; wrapText("Gas Hidrogen Sulfida sangat beracun dan lebih berat dari udara, uji Lapisan Bawah", tankCenterX, textY, layout.tank.width * 0.8, 20); } }
         function drawVentilationTimeInTank() { if (!state.showVentilationTimeInTank) return; const tank = layout.tank; const x = tank.x + tank.width / 2; const y = tank.y + tank.height / 2; ctx.font = `bold ${canvas.width * 0.022}px Segoe UI`; ctx.fillStyle = config.colors.danger; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; const text = `Rekomendasi Waktu Ventilasi:\n${state.calculator.ventilationTime.toFixed(0)} menit`; const lines = text.split('\n'); lines.forEach((line, index) => { ctx.fillText(line, x, y + (index * canvas.height * 0.03)); }); }
         function drawVentilationArrows() { if (!state.isVentilating) return; ctx.fillStyle = config.colors.arrow; ctx.font = `bold ${canvas.width * 0.03}px Segoe UI`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; state.ventilationArrows.forEach(arrow => { ctx.fillText(arrow.char, arrow.x, arrow.y); }); }
         function drawDisplay() { const { x, y, width, height } = layout.display; ctx.fillStyle = config.colors.displayBg; ctx.fillRect(x, y, width, height); ctx.font = `${canvas.width * 0.02}px Segoe UI`; ctx.textBaseline = 'middle'; let yPos = y + height * 0.22; const labels = ['O₂', 'LEL', 'H₂S', 'CO']; const values = [state.readings.o2, state.readings.lel, state.readings.h2s, state.readings.co]; const xLabel = x + (width * 0.08); const xBar = x + (width * 0.25); const barWidth = width * 0.4; const barHeight = height * 0.1; const xValueText = x + (width * 0.92); labels.forEach((label, i) => { ctx.fillStyle = config.colors.displayText; ctx.textAlign = 'left'; ctx.fillText(label, xLabel, yPos); ctx.fillStyle = values[i].color; ctx.fillRect(xBar, yPos - barHeight / 2, barWidth, barHeight); ctx.fillStyle = config.colors.displayText; ctx.textAlign = 'right'; ctx.fillText(values[i].value, xValueText, yPos); yPos += height * 0.19; }); }
@@ -154,10 +262,27 @@
         function animate() { let needsRender = false; if (state.isVentilating) { state.ventilatorAngle += 0.1; updateVentilationArrows(); needsRender = true; } if (state.showCH4 || state.showCO || state.showH2S) { state.iconAnimationPhase += 0.1; needsRender = true; } if (needsRender) { render(); } requestAnimationFrame(animate); }
         function updateCalculations() { const p = parseFloat(state.calculator.panjang) || 0; const l = parseFloat(state.calculator.lebar) || 0; const t = parseFloat(state.calculator.tinggi) || 0; const volume = p * l * t; const ach_rec = 10; const ach_min = 5; const purge_cycles = 7; const flowM3 = volume * ach_rec; const flowM3_min = volume * ach_min; const hypotheticalBlowerFlow = 600; let ventilationTime = 0; if (volume > 0) { const timePerChange = (volume / hypotheticalBlowerFlow) * 60; ventilationTime = timePerChange * purge_cycles; } state.calculator.volume = volume; state.calculator.flowM3 = flowM3; state.calculator.flowM3_min = flowM3_min; state.calculator.ventilationTime = ventilationTime; }
         
-        function doTestTop() { state.probeHeight = layout.tank.height * 0.15; state.showCH4 = true; state.readings.lel = { value: '15 %', color: config.colors.danger }; state.explanation = 'LAPISAN ATAS: Terdeteksi Metana (CH₄) berbahaya!'; render(); }
-        function doTestMiddle() { state.probeHeight = layout.tank.height * 0.5; state.showCO = true; state.readings.o2 = { value: '18.5 %', color: config.colors.warning }; state.readings.co = { value: '50 ppm', color: config.colors.warning }; state.explanation = 'LAPISAN TENGAH: Oksigen menurun & CO terdeteksi.'; render(); }
-        function doTestBottom() { state.probeHeight = layout.tank.height * 0.9; state.showH2S = true; state.readings.h2s = { value: '25 ppm', color: config.colors.danger }; state.explanation = 'LAPISAN BAWAH: Terdeteksi Hidrogen Sulfida (H₂S) beracun.'; render(); }
-        function doResetAndStopDemo() { clearTimeout(state.demoTimeoutId); state.isDemoRunning = false; layout.buttons.find(b => b.id === 'demo').text = 'Mulai Demo Otomatis'; state = getInitialState(); updateCalculations(); render(); }
+        function doTestTop() { if (!state.isDemoRunning) return; state.probeHeight = layout.tank.height * 0.15; state.showCH4 = true; state.readings.lel = { value: '15 %', color: config.colors.danger }; state.explanation = 'LAPISAN ATAS: Terdeteksi Metana (CH₄) berbahaya!'; render(); }
+        function doTestMiddle() { if (!state.isDemoRunning) return; state.probeHeight = layout.tank.height * 0.5; state.showCO = true; state.readings.o2 = { value: '18.5 %', color: config.colors.warning }; state.readings.co = { value: '50 ppm', color: config.colors.warning }; state.explanation = 'LAPISAN TENGAH: Oksigen menurun & CO terdeteksi.'; render(); }
+        function doTestBottom() { if (!state.isDemoRunning) return; state.probeHeight = layout.tank.height * 0.9; state.showH2S = true; state.readings.h2s = { value: '25 ppm', color: config.colors.danger }; state.explanation = 'LAPISAN BAWAH: Terdeteksi Hidrogen Sulfida (H₂S) beracun.'; render(); }
+        
+        function doResetAndStopDemo() { 
+            clearTimeout(state.demoTimeoutId); 
+            state.isDemoRunning = false; 
+            layout.buttons.find(b => b.id === 'demo').text = 'Mulai Demo Otomatis'; 
+            
+            const currentCalcInputs = { ...state.calculator };
+            
+            state = getInitialState(); 
+            
+            state.calculator.panjang = currentCalcInputs.panjang;
+            state.calculator.lebar = currentCalcInputs.lebar;
+            state.calculator.tinggi = currentCalcInputs.tinggi;
+            
+            updateCalculations(); 
+            render(); 
+        }
+
         function doVentilate(onComplete) { if (state.showCH4 || state.showCO || state.showH2S) { if (state.isVentilating) return; state.isVentilating = true; state.explanation = 'VENTILASI DIMULAI: Membersihkan gas berbahaya...'; state.ventilationArrows = []; const { x, y, width, height } = layout.tank; const entryX = x + width * 0.8; const entryY = y - (canvas.height * 0.05); const numArrows = 12; const pathLength = (canvas.height * 0.05) + height + (width * 0.6) + height + (canvas.height * 0.05); for (let i = 0; i < numArrows; i++) { let currentPath = (i / numArrows) * pathLength; let arrow = { entryX, entryY, x: entryX, y: entryY, phase: 'down', char: '↓' }; if (currentPath <= height + (canvas.height * 0.05)) { arrow.y += currentPath; } else if (currentPath <= height + (canvas.height * 0.05) + (width * 0.6)) { arrow.y = y + height; arrow.x -= (currentPath - (height + (canvas.height * 0.05))); arrow.phase = 'left'; arrow.char = '←'; } else { arrow.y = y + height - (currentPath - (height + (canvas.height * 0.05) + (width * 0.6))); arrow.x = x + width * 0.2; arrow.phase = 'up'; arrow.char = '↑'; } state.ventilationArrows.push(arrow); } setTimeout(() => { if (state.isVentilating || state.isDemoRunning) { state.showCH4 = false; state.showCO = false; state.showH2S = false; state.readings = getInitialState().readings; state.probeHeight = 0; if(onComplete) onComplete(); } }, 5000); } else { state.explanation = 'Uji semua lapisan terlebih dahulu sebelum ventilasi.'; } render(); }
 
         function runDemoStep(step) {
@@ -176,16 +301,27 @@
             const btn = layout.buttons.find(b => x >= b.x && x <= b.x + b.width && y >= b.y && y <= b.y + b.height);
             if (btn && btn.id === 'demo') { state.isDemoRunning ? doResetAndStopDemo() : startDemo(); return; }
             if (btn && btn.id === 'reset') { doResetAndStopDemo(); return; }
-            if (state.isDemoRunning) return;
-
+            
             const { x: calcX, width: calcWidth, inputs } = layout.calculator; const inputX = calcX + calcWidth * 0.3; const inputWidth = calcWidth * 0.65; const inputHeight = canvas.height * 0.04;
             const clickedInput = inputs.find(input => x >= inputX && x <= inputX + inputWidth && y >= input.y - inputHeight/2 && y <= input.y + inputHeight/2);
-            if(clickedInput) { if (state.calculator.activeInput !== clickedInput.id) { state.calculator[clickedInput.id] = ''; } state.calculator.activeInput = clickedInput.id; render();
-            } else if (!btn) { state.calculator.activeInput = null; render(); }
+            if(clickedInput) { 
+                if (state.calculator.activeInput !== clickedInput.id) { state.calculator[clickedInput.id] = ''; } 
+                state.calculator.activeInput = clickedInput.id; 
+                render();
+            } else if (!btn) { 
+                state.calculator.activeInput = null; 
+                render(); 
+            }
         }
 
-        function handleMouseMove(e) { const rect = canvas.getBoundingClientRect(); const x = e.clientX - rect.left; const y = e.clientY - rect.top; const hoveredBtn = layout.buttons.find(b => x >= b.x && x <= b.x + b.width && y >= b.y && y <= b.y + b.height); const isDisabled = state.isDemoRunning && hoveredBtn && hoveredBtn.id !== 'reset' && hoveredBtn.id !== 'demo'; canvas.style.cursor = hoveredBtn && !isDisabled ? 'pointer' : 'default'; if (state.hoverButtonId !== (hoveredBtn?.id || null)) { state.hoverButtonId = hoveredBtn?.id || null; render(); } }
-        function handleKeyPress(e) { const activeInput = state.calculator.activeInput; if (!activeInput || state.isDemoRunning) return; if (e.key >= '0' && e.key <= '9' || e.key === '.') { if(state.calculator[activeInput].length < 6) state.calculator[activeInput] += e.key; } else if (e.key === 'Backspace') { state.calculator[activeInput] = state.calculator[activeInput].slice(0, -1); } else if (e.key === 'Enter' || e.key === 'Escape') { state.calculator.activeInput = null; } updateCalculations(); render(); }
+        function handleMouseMove(e) { const rect = canvas.getBoundingClientRect(); const x = e.clientX - rect.left; const y = e.clientY - rect.top; const hoveredBtn = layout.buttons.find(b => x >= b.x && x <= b.x + b.width && y >= b.y && y <= b.y + b.height); canvas.style.cursor = hoveredBtn ? 'pointer' : 'default'; if (state.hoverButtonId !== (hoveredBtn?.id || null)) { state.hoverButtonId = hoveredBtn?.id || null; render(); } }
+        function handleKeyPress(e) { 
+            const activeInput = state.calculator.activeInput; 
+            if (!activeInput) return; 
+            if (e.key >= '0' && e.key <= '9' || e.key === '.') { if(state.calculator[activeInput].length < 6) state.calculator[activeInput] += e.key; } else if (e.key === 'Backspace') { state.calculator[activeInput] = state.calculator[activeInput].slice(0, -1); } else if (e.key === 'Enter' || e.key === 'Escape') { state.calculator.activeInput = null; } 
+            updateCalculations(); 
+            render(); 
+        }
         
         window.addEventListener('resize', resizeCanvas);
         window.addEventListener('keydown', handleKeyPress);
