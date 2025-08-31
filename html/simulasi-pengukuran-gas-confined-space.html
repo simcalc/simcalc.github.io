@@ -20,9 +20,9 @@
             width: 100%;
             max-width: 900px;
             text-align: center;
+            position: relative; /* Diperlukan untuk input overlay */
         }
         
-        /* -- Style untuk Header Visual -- */
         .header-visual {
             background-color: #ffffff;
             border-radius: 15px;
@@ -42,7 +42,6 @@
             font-weight: 600;
             transition: transform 0.2s ease-in-out;
             cursor: pointer;
-            /* Menambahkan lebar agar teks tidak tumpang tindih */
             width: 20%; 
         }
         .header-icon-group svg {
@@ -53,14 +52,14 @@
         .header-icon-group:hover {
             transform: scale(1.1);
         }
-        /* ------------------------------------ */
-
+        
         canvas {
             background-color: #ffffff;
             border-radius: 15px; 
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             width: 100%;
             height: auto;
+            display: block;
         }
         .footer {
             margin-top: 15px;
@@ -133,16 +132,15 @@
             vertical-align: super;
         }
 
-        /* --- Perbaikan untuk Tampilan Seluler --- */
         @media (max-width: 500px) {
             .header-visual {
-                flex-wrap: wrap; /* Izinkan ikon untuk turun ke baris baru */
+                flex-wrap: wrap; 
                 padding: 15px 10px;
             }
             .header-icon-group {
-                flex-basis: 45%; /* Setiap ikon mengambil setengah lebar */
+                flex-basis: 45%; 
                 margin-bottom: 15px;
-                width: auto; /* Hapus width tetap */
+                width: auto; 
             }
             .header-icon-group svg {
                 width: 40px;
@@ -157,7 +155,6 @@
 <body>
     <div class="simulation-container">
         
-        <!-- Header Visual yang Baru Ditambahkan -->
         <div class="header-visual">
             <div id="icon-bahaya" class="header-icon-group">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#e76f51" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L3.41 13.41a2 2 0 0 1 0-2.83l7.17-7.17a2 2 0 0 1 2.83 0l7.17 7.17a2 2 0 0 1 0 2.83z"></path><line x1="12" y1="3" x2="12" y2="21"></line></svg>
@@ -176,11 +173,9 @@
                 <span>Ventilasi Udara</span>
             </div>
         </div>
-        <!-- Akhir dari Header Visual -->
 
         <canvas id="simulationCanvas"></canvas>
         
-        <!-- Bagian Pembahasan dan Daftar Pustaka -->
         <div class="discussion-section">
             <h2>Pembahasan</h2>
             <p>
@@ -247,26 +242,8 @@
 
     <script>
         // --- SIMULASI INTERAKTIF K3 CONFined SPACE ---
-        // Dibuat dengan HTML Canvas dan JavaScript murni.
-        // Skrip ini sepenuhnya responsif dan akan menyesuaikan tata letak
-        // untuk Desktop, iPad, Tablet, dan perangkat Selular.
-        // ---------------------------------------------
-
         const canvas = document.getElementById('simulationCanvas');
         const ctx = canvas.getContext('2d');
-
-        function resizeCanvas() {
-            const { clientWidth } = canvas;
-            const clientHeight = clientWidth * 0.8; 
-
-            if (canvas.width !== clientWidth || canvas.height !== clientHeight) {
-                canvas.width = clientWidth;
-                canvas.height = clientHeight;
-                
-                layout = config.getLayout(canvas.width, canvas.height);
-                render(); 
-            }
-        }
 
         const config = {
             colors: {
@@ -277,37 +254,104 @@
                 arrow: '#005f73', inputBg: '#e9ecef', inputActiveBorder: '#007bff'
             },
             getLayout: (width, height) => {
-                const display = { x: width * 0.5, y: height * 0.15, width: width * 0.45, height: height * 0.2 };
-                const buttons = [
-                    { id: 'demo', text: 'Mulai Demo', x: width * 0.5, y: height * 0.38, width: width * 0.22, height: height * 0.06 },
-                    { id: 'reset', text: 'Reset', x: width * 0.73, y: height * 0.38, width: width * 0.22, height: height * 0.06 },
-                ];
-                const calculator = {
-                    x: width * 0.5, y: height * 0.47, width: width * 0.45, height: height * 0.48,
-                    inputs: [
-                        { id: 'panjang', label: 'Panjang', y: height * 0.54 },
-                        { id: 'lebar', label: 'Lebar', y: height * 0.59 },
-                        { id: 'tinggi', label: 'Tinggi', y: height * 0.64 },
-                    ]
-                };
+                // Conditional layout for mobile
+                if (width < 500) {
+                    const display = { 
+                        x: width * 0.05, 
+                        y: height * 0.03,
+                        width: width * 0.9, 
+                        height: height * 0.18
+                    };
 
-                const rightColumnTop = display.y;
-                const rightColumnBottom = calculator.y + calculator.height;
-                const rightColumnHeight = rightColumnBottom - rightColumnTop;
+                    const buttons = [
+                        { id: 'demo', text: 'Mulai Demo', x: width * 0.05, y: display.y + display.height + (height * 0.02), width: width * 0.44, height: height * 0.06 },
+                        { id: 'reset', text: 'Reset', x: width * 0.51, y: display.y + display.height + (height * 0.02), width: width * 0.44, height: height * 0.06 },
+                    ];
 
-                return {
-                    titleY: height * 0.05,
-                    explanationY: height * 0.1,
-                    tank: { x: width * 0.05, y: rightColumnTop, width: width * 0.4, height: rightColumnHeight },
-                    display: display,
-                    buttons: buttons,
-                    calculator: calculator
+                    const tank = {
+                        x: width * 0.05,
+                        y: buttons[0].y + buttons[0].height + (height * 0.06), 
+                        width: width * 0.9,
+                        height: height * 0.32
+                    };
+                    
+                    const calculator = {
+                        x: width * 0.05, 
+                        y: tank.y + tank.height + (height * 0.06), 
+                        width: width * 0.9, 
+                        height: height - (tank.y + tank.height + (height * 0.06)),
+                        inputs: [
+                            { id: 'panjang', label: 'Panjang', y_offset: height * 0.08 },
+                            { id: 'lebar', label: 'Lebar', y_offset: height * 0.13 },
+                            { id: 'tinggi', label: 'Tinggi', y_offset: height * 0.18 },
+                        ]
+                    };
+
+                     return {
+                        isMobile: true,
+                        tank: tank,
+                        display: display,
+                        buttons: buttons,
+                        calculator: calculator
+                    };
+
+                } else {
+                    // Desktop layout
+                    const display = { x: width * 0.5, y: height * 0.15, width: width * 0.45, height: height * 0.2 };
+                    const buttons = [
+                        { id: 'demo', text: 'Mulai Demo', x: width * 0.5, y: height * 0.38, width: width * 0.22, height: height * 0.06 },
+                        { id: 'reset', text: 'Reset', x: width * 0.73, y: height * 0.38, width: width * 0.22, height: height * 0.06 },
+                    ];
+                    const calculator = {
+                        x: width * 0.5, y: height * 0.47, width: width * 0.45, height: height * 0.48,
+                        inputs: [
+                            { id: 'panjang', label: 'Panjang', y: height * 0.54 },
+                            { id: 'lebar', label: 'Lebar', y: height * 0.59 },
+                            { id: 'tinggi', label: 'Tinggi', y: height * 0.64 },
+                        ]
+                    };
+
+                    const rightColumnTop = display.y;
+                    const rightColumnBottom = calculator.y + calculator.height;
+                    const rightColumnHeight = rightColumnBottom - rightColumnTop;
+
+                    return {
+                        isMobile: false,
+                        titleY: height * 0.05,
+                        explanationY: height * 0.1,
+                        tank: { x: width * 0.05, y: rightColumnTop, width: width * 0.4, height: rightColumnHeight },
+                        display: display,
+                        buttons: buttons,
+                        calculator: calculator
+                    };
                 }
             }
         };
 
         let state = {};
-        let layout = config.getLayout(canvas.width, canvas.height);
+        let layout = {};
+
+        // --- FUNCTIONS ---
+        function resizeCanvas() {
+            const dpr = window.devicePixelRatio || 1;
+            const rect = canvas.getBoundingClientRect();
+            
+            const displayWidth = rect.width;
+            const displayHeight = (displayWidth < 500) ? displayWidth * 2.1 : displayWidth * 0.8; 
+
+            if (canvas.width !== Math.round(displayWidth * dpr) || canvas.height !== Math.round(displayHeight * dpr)) {
+                canvas.width = Math.round(displayWidth * dpr);
+                canvas.height = Math.round(displayHeight * dpr);
+                
+                canvas.style.width = `${displayWidth}px`;
+                canvas.style.height = `${displayHeight}px`;
+
+                ctx.scale(dpr, dpr);
+                
+                layout = config.getLayout(displayWidth, displayHeight);
+                render(); 
+            }
+        }
 
         function getInitialState() {
             return {
@@ -324,25 +368,247 @@
                     panjang: '4', lebar: '3', tinggi: '5',
                     volume: 0, 
                     flowM3: 0, flowM3_min: 0,
-                    flowCFM: 0, flowCFM_min: 0, // Tambahan untuk CFM
+                    flowCFM: 0, flowCFM_min: 0,
                     ventilationTime: 0 
                 }
             };
         }
+        
+        function removeInputOverlay() {
+            const existingInput = document.getElementById('temp-input-overlay');
+            if (existingInput) {
+                existingInput.remove();
+            }
+        }
+
+        function createInputOverlay(inputConfig, currentValue) {
+            removeInputOverlay(); 
+            
+            const canvasRect = canvas.getBoundingClientRect();
+            const { x: calcX, width: calcWidth } = layout.calculator;
+            const inputY_abs = layout.isMobile ? layout.calculator.y + inputConfig.y_offset : inputConfig.y;
+            const inputX = calcX + calcWidth * 0.3;
+            const inputWidth = calcWidth * 0.65;
+            const inputHeight = canvas.height * 0.04 / (window.devicePixelRatio || 1);
+
+
+            const input = document.createElement('input');
+            input.id = 'temp-input-overlay';
+            input.type = 'number';
+            input.pattern = "[0-9.]*"; 
+            input.value = currentValue;
+            
+            input.style.position = 'absolute';
+            input.style.left = `${canvasRect.left + inputX}px`;
+            input.style.top = `${canvasRect.top + inputY_abs - (inputHeight/2)}px`;
+            input.style.width = `${inputWidth}px`;
+            input.style.height = `${inputHeight}px`;
+            input.style.opacity = '0';
+            input.style.zIndex = '100';
+            
+            document.body.appendChild(input);
+            input.focus();
+            input.select();
+
+            input.addEventListener('input', () => {
+                state.calculator[inputConfig.id] = input.value;
+                updateCalculations();
+                render();
+            });
+
+            input.addEventListener('blur', () => {
+                state.calculator.activeInput = null;
+                removeInputOverlay();
+                render();
+            });
+        }
 
         function drawTank() { const { x, y, width, height } = layout.tank; ctx.fillStyle = config.colors.tank; ctx.strokeStyle = config.colors.tankBorder; ctx.lineWidth = 5; ctx.beginPath(); ctx.rect(x, y, width, height); ctx.fill(); ctx.stroke(); ctx.strokeStyle = 'rgba(0,0,0,0.2)'; ctx.lineWidth = 2; ctx.setLineDash([5, 5]); ctx.beginPath(); ctx.moveTo(x, y + height / 3); ctx.lineTo(x + width, y + height / 3); ctx.moveTo(x, y + (2 * height / 3)); ctx.lineTo(x + width, y + (2 * height / 3)); ctx.stroke(); ctx.setLineDash([]); }
         function drawProbe() { if (state.probeHeight > 0) { const { x } = layout.tank; ctx.fillStyle = '#333'; ctx.fillRect(x + (layout.tank.width * 0.1), layout.tank.y, 8, state.probeHeight); } }
-        function drawGasIcons() { const floatOffset = Math.sin(state.iconAnimationPhase) * (canvas.height * 0.008); const scaleEffect = 1 + Math.abs(Math.sin(state.iconAnimationPhase)) * 0.15; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; const tankCenterX = layout.tank.x + layout.tank.width / 2; function wrapText(text, x, y, maxWidth, lineHeight) { const words = text.split(' '); let line = ''; for(let n = 0; n < words.length; n++) { const testLine = line + words[n] + ' '; const metrics = ctx.measureText(testLine); const testWidth = metrics.width; if (testWidth > maxWidth && n > 0) { ctx.fillText(line, x, y); line = words[n] + ' '; y += lineHeight; } else { line = testLine; } } ctx.fillText(line, x, y); } const dynamicLineHeight = canvas.width * 0.025; if (state.showCH4) { const layerCenterY = layout.tank.y + layout.tank.height / 6; const iconY = layerCenterY - (20 * 0.8) + floatOffset; const textY = layerCenterY + canvas.height * 0.02; ctx.font = `bold ${canvas.width * 0.03 * scaleEffect}px Segoe UI`; ctx.fillStyle = config.colors.danger; ctx.fillText('CH₄', tankCenterX, iconY); ctx.font = `${canvas.width * 0.018}px Segoe UI`; ctx.fillStyle = config.colors.text; wrapText("Lakukan Pengujian Gas pada Lapisan Atas untuk memastikan tidak adanya gas methane", tankCenterX, textY, layout.tank.width * 0.8, dynamicLineHeight); } if (state.showCO) { const layerCenterY = layout.tank.y + layout.tank.height / 2; const iconY = layerCenterY - (20 * 0.8) + floatOffset; const textY = layerCenterY + canvas.height * 0.02; ctx.font = `bold ${canvas.width * 0.03 * scaleEffect}px Segoe UI`; ctx.fillStyle = config.colors.warning; ctx.fillText('CO', tankCenterX, iconY); ctx.font = `${canvas.width * 0.018}px Segoe UI`; ctx.fillStyle = config.colors.text; wrapText("Uji Lapisan Tengah untuk gas seperti Karbon Monoksida yang beratnya sama dengan udara", tankCenterX, textY, layout.tank.width * 0.8, dynamicLineHeight); } if (state.showH2S) { const layerCenterY = layout.tank.y + layout.tank.height * 5 / 6; const iconY = layerCenterY + (20 * 1.2) + floatOffset; const textY = layerCenterY - canvas.height * 0.06; ctx.font = `bold ${canvas.width * 0.03 * scaleEffect}px Segoe UI`; ctx.fillStyle = config.colors.danger; ctx.fillText('H₂S', tankCenterX, iconY); ctx.font = `${canvas.width * 0.018}px Segoe UI`; ctx.fillStyle = config.colors.text; wrapText("Gas Hidrogen Sulfida sangat beracun dan lebih berat dari udara, uji Lapisan Bawah", tankCenterX, textY, layout.tank.width * 0.8, dynamicLineHeight); } }
-        function drawVentilationTimeInTank() { if (!state.showVentilationTimeInTank) return; const tank = layout.tank; const x = tank.x + tank.width / 2; const y = tank.y + tank.height / 2; ctx.font = `bold ${canvas.width * 0.022}px Segoe UI`; ctx.fillStyle = config.colors.danger; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; const text = `Rekomendasi Waktu Ventilasi:\n${state.calculator.ventilationTime.toFixed(0)} menit`; const lines = text.split('\n'); lines.forEach((line, index) => { ctx.fillText(line, x, y + (index * canvas.height * 0.03)); }); }
-        function drawVentilationArrows() { if (!state.isVentilating) return; ctx.fillStyle = config.colors.arrow; ctx.font = `bold ${canvas.width * 0.03}px Segoe UI`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; state.ventilationArrows.forEach(arrow => { ctx.fillText(arrow.char, arrow.x, arrow.y); }); }
-        function drawDisplay() { const { x, y, width, height } = layout.display; ctx.fillStyle = config.colors.displayBg; ctx.fillRect(x, y, width, height); ctx.font = `${canvas.width * 0.02}px Segoe UI`; ctx.textBaseline = 'middle'; let yPos = y + height * 0.22; const labels = ['O₂', 'LEL', 'H₂S', 'CO']; const values = [state.readings.o2, state.readings.lel, state.readings.h2s, state.readings.co]; const xLabel = x + (width * 0.08); const xBar = x + (width * 0.25); const barWidth = width * 0.4; const barHeight = height * 0.1; const xValueText = x + (width * 0.92); labels.forEach((label, i) => { ctx.fillStyle = config.colors.displayText; ctx.textAlign = 'left'; ctx.fillText(label, xLabel, yPos); ctx.fillStyle = values[i].color; ctx.fillRect(xBar, yPos - barHeight / 2, barWidth, barHeight); ctx.fillStyle = config.colors.displayText; ctx.textAlign = 'right'; ctx.fillText(values[i].value, xValueText, yPos); yPos += height * 0.19; }); }
-        function drawButtons() { layout.buttons.forEach(btn => { const buttonColor = state.hoverButtonId === btn.id ? config.colors.buttonHover : config.colors.buttonBg; ctx.fillStyle = buttonColor; ctx.fillRect(btn.x, btn.y, btn.width, btn.height); ctx.font = `bold ${canvas.width * 0.019}px Segoe UI`; ctx.fillStyle = 'white'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(btn.text, btn.x + btn.width / 2, btn.y + btn.height / 2); }); }
-        function drawHeader() { ctx.font = `bold ${canvas.width * 0.028}px Segoe UI`; ctx.fillStyle = config.colors.text; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('Simulasi Pengukuran Gas Confined Space dan Pertukaran Udara', canvas.width / 2, layout.titleY); ctx.font = `${canvas.width * 0.02}px Segoe UI`; ctx.fillStyle = config.colors.text; ctx.fillText(state.explanation, canvas.width / 2, layout.explanationY); }
-        function drawVentilator() { if (state.isVentilating) { const x = layout.tank.x + layout.tank.width - (layout.tank.width * 0.15); const y = layout.tank.y - (layout.tank.height * 0.05); ctx.save(); ctx.translate(x, y); ctx.rotate(state.ventilatorAngle); ctx.font = `bold ${canvas.width * 0.05}px Segoe UI`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('⚙️', 0, 0); ctx.restore(); } }
-        function drawCalculator() { const { x, y, width, height, inputs } = layout.calculator; const calc = state.calculator; const isSmall = canvas.width < 450; let lineHeight = canvas.height * 0.03; ctx.font = `bold ${isSmall ? canvas.width * 0.024 : canvas.width * 0.022}px Segoe UI`; ctx.fillStyle = config.colors.text; ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.fillText('Simulasi Perhitungan Blower', x, y); inputs.forEach(input => { ctx.font = `${isSmall ? canvas.width * 0.022 : canvas.width * 0.018}px Segoe UI`; ctx.fillStyle = config.colors.text; ctx.fillText(`${input.label}:`, x, input.y); const inputX = x + width * 0.3; const inputWidth = width * 0.65; const inputHeight = canvas.height * 0.04; ctx.fillStyle = config.colors.inputBg; ctx.fillRect(inputX, input.y - inputHeight/2, inputWidth, inputHeight); ctx.strokeStyle = calc.activeInput === input.id ? config.colors.inputActiveBorder : '#ced4da'; ctx.lineWidth = 2; ctx.strokeRect(inputX, input.y - inputHeight/2, inputWidth, inputHeight); ctx.fillStyle = config.colors.text; ctx.fillText(`${calc[input.id]} meter`, inputX + 10, input.y); }); let outputY = inputs[inputs.length - 1].y + (canvas.height * 0.07); if(isSmall) { lineHeight = canvas.height * 0.028; } ctx.font = `bold ${isSmall ? canvas.width * 0.022 : canvas.width * 0.018}px Segoe UI`; ctx.fillText(`Volume: ${calc.volume.toFixed(2)} m³`, x, outputY); outputY += lineHeight; ctx.font = `${isSmall ? canvas.width * 0.020 : canvas.width * 0.016}px Segoe UI`; ctx.fillText(`Std. ACH (OSHA): min 5x, rek. 10x`, x, outputY); outputY += lineHeight * 1.2; ctx.font = `bold ${isSmall ? canvas.width * 0.022 : canvas.width * 0.018}px Segoe UI`; if (isSmall) { ctx.fillText(`Blower (Rek):`, x, outputY); outputY += lineHeight; ctx.fillText(`${calc.flowM3.toFixed(2)} m³/jam`, x, outputY); } else { ctx.fillText(`Blower (Rekomendasi): ${calc.flowM3.toFixed(2)} m³/jam`, x, outputY); } outputY += lineHeight; ctx.fillStyle = '#5a6a7b'; ctx.font = `${isSmall ? canvas.width * 0.021 : canvas.width * 0.017}px Segoe UI`; ctx.fillText(`(setara ${calc.flowCFM.toFixed(1)} CFM)`, x, outputY); outputY += lineHeight * 1.2; ctx.fillStyle = config.colors.text; ctx.font = `bold ${isSmall ? canvas.width * 0.022 : canvas.width * 0.018}px Segoe UI`; if (isSmall) { ctx.fillText(`Blower (Min):`, x, outputY); outputY += lineHeight; ctx.fillText(`${calc.flowM3_min.toFixed(2)} m³/jam`, x, outputY); } else { ctx.fillText(`Blower (Minimum): ${calc.flowM3_min.toFixed(2)} m³/jam`, x, outputY); } outputY += lineHeight; ctx.fillStyle = '#5a6a7b'; ctx.font = `${isSmall ? canvas.width * 0.021 : canvas.width * 0.017}px Segoe UI`; ctx.fillText(`(setara ${calc.flowCFM_min.toFixed(1)} CFM)`, x, outputY); }
+        
+        function drawGasIcons() { 
+            const floatOffset = Math.sin(state.iconAnimationPhase) * (canvas.height * 0.008); 
+            const scaleEffect = 1 + Math.abs(Math.sin(state.iconAnimationPhase)) * 0.15; 
+            ctx.textAlign = 'center'; 
+            ctx.textBaseline = 'middle'; 
+            const tankCenterX = layout.tank.x + layout.tank.width / 2; 
 
-        function render() { layout = config.getLayout(canvas.width, canvas.height); ctx.clearRect(0, 0, canvas.width, canvas.height); ctx.fillStyle = 'white'; ctx.fillRect(0, 0, canvas.width, canvas.height); drawHeader(); drawTank(); drawVentilationArrows(); drawVentilationTimeInTank(); drawProbe(); drawGasIcons(); drawDisplay(); drawButtons(); drawVentilator(); drawCalculator(); }
-        function updateVentilationArrows() { if (!state.isVentilating) return; const speed = canvas.height * 0.003; const tank = layout.tank; const turnZoneY = tank.y + tank.height * 0.85; const turnZoneX = tank.x + tank.width * 0.2; const exitY = tank.y - (canvas.height * 0.05); state.ventilationArrows.forEach(arrow => { switch (arrow.phase) { case 'down': arrow.y += speed; if (arrow.y >= turnZoneY) { arrow.phase = 'left'; arrow.char = '←'; } break; case 'left': arrow.x -= speed; if (arrow.x <= turnZoneX) { arrow.phase = 'up'; arrow.char = '↑'; } break; case 'up': arrow.y -= speed; if (arrow.y <= exitY) { arrow.x = arrow.entryX; arrow.y = arrow.entryY; arrow.phase = 'down'; arrow.char = '↓'; } break; } }); }
+            function wrapText(text, x, y, maxWidth, lineHeight) { 
+                const words = text.split(' '); 
+                let line = ''; 
+                for(let n = 0; n < words.length; n++) { 
+                    const testLine = line + words[n] + ' '; 
+                    const metrics = ctx.measureText(testLine); 
+                    const testWidth = metrics.width; 
+                    if (testWidth > maxWidth && n > 0) { 
+                        ctx.fillText(line, x, y); 
+                        line = words[n] + ' '; 
+                        y += lineHeight; 
+                    } else { 
+                        line = testLine; 
+                    } 
+                } 
+                ctx.fillText(line, x, y); 
+            } 
+            
+            const cssWidth = canvas.getBoundingClientRect().width;
+            const cssHeight = canvas.getBoundingClientRect().height;
+
+            const dynamicLineHeight = cssWidth * (layout.isMobile ? 0.035 : 0.025);
+            const iconFont = `bold ${cssWidth * (layout.isMobile ? 0.04 : 0.03) * scaleEffect}px Segoe UI`;
+            const textFont = `${cssWidth * (layout.isMobile ? 0.03 : 0.018)}px Segoe UI`;
+            
+            if (state.showCH4) { 
+                const layerCenterY = layout.tank.y + layout.tank.height / 6; 
+                const iconY = layerCenterY - (layout.isMobile ? 0 : 20 * 0.8) + floatOffset; 
+                const textY = iconY + (layout.isMobile ? (cssHeight * 0.03) : (cssHeight * 0.045));
+                ctx.font = iconFont;
+                ctx.fillStyle = config.colors.danger; 
+                ctx.fillText('CH₄', tankCenterX, iconY); 
+                ctx.font = textFont;
+                ctx.fillStyle = config.colors.text; 
+                wrapText("Lakukan Pengujian Gas pada Lapisan Atas untuk memastikan tidak adanya gas methane", tankCenterX, textY, layout.tank.width * 0.8, dynamicLineHeight); 
+            } 
+            if (state.showCO) { 
+                const layerCenterY = layout.tank.y + layout.tank.height / 2; 
+                const iconY = layerCenterY - (layout.isMobile ? 0 : 20 * 0.8) + floatOffset; 
+                const textY = iconY + (layout.isMobile ? (cssHeight * 0.03) : (cssHeight * 0.045));
+                ctx.font = iconFont; 
+                ctx.fillStyle = config.colors.warning; 
+                ctx.fillText('CO', tankCenterX, iconY); 
+                ctx.font = textFont;
+                ctx.fillStyle = config.colors.text; 
+                wrapText("Uji Lapisan Tengah untuk gas seperti Karbon Monoksida yang beratnya sama dengan udara", tankCenterX, textY, layout.tank.width * 0.8, dynamicLineHeight); 
+            } 
+            if (state.showH2S) { 
+                const layerCenterY = layout.tank.y + layout.tank.height * 5 / 6; 
+                const iconY = layerCenterY + (layout.isMobile ? -(cssHeight * 0.04) : 20 * 1.2) + floatOffset; 
+                const textY = iconY + (layout.isMobile ? (cssHeight * 0.045) : -(cssHeight * 0.09));
+                ctx.font = iconFont;
+                ctx.fillStyle = config.colors.danger; 
+                ctx.fillText('H₂S', tankCenterX, iconY); 
+                ctx.font = textFont; 
+                ctx.fillStyle = config.colors.text; 
+                wrapText("Gas Hidrogen Sulfida sangat beracun dan lebih berat dari udara, uji Lapisan Bawah", tankCenterX, textY, layout.tank.width * 0.8, dynamicLineHeight); 
+            } 
+        }
+
+        function drawVentilationTimeInTank() { if (!state.showVentilationTimeInTank) return; const tank = layout.tank; const x = tank.x + tank.width / 2; const y = tank.y + tank.height / 2; ctx.font = `bold ${canvas.getBoundingClientRect().width * 0.022}px Segoe UI`; ctx.fillStyle = config.colors.danger; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; const text = `Rekomendasi Waktu Ventilasi:\n${state.calculator.ventilationTime.toFixed(0)} menit`; const lines = text.split('\n'); lines.forEach((line, index) => { ctx.fillText(line, x, y + (index * canvas.getBoundingClientRect().height * 0.03)); }); }
+        function drawVentilationArrows() { if (!state.isVentilating) return; ctx.fillStyle = config.colors.arrow; ctx.font = `bold ${canvas.getBoundingClientRect().width * 0.03}px Segoe UI`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; state.ventilationArrows.forEach(arrow => { ctx.fillText(arrow.char, arrow.x, arrow.y); }); }
+        function drawDisplay() { const { x, y, width, height } = layout.display; ctx.fillStyle = config.colors.displayBg; ctx.fillRect(x, y, width, height); const cssWidth = canvas.getBoundingClientRect().width; ctx.font = `${cssWidth * 0.02}px Segoe UI`; ctx.textBaseline = 'middle'; let yPos = y + height * 0.22; const labels = ['O₂', 'LEL', 'H₂S', 'CO']; const values = [state.readings.o2, state.readings.lel, state.readings.h2s, state.readings.co]; const xLabel = x + (width * 0.08); const xBar = x + (width * 0.25); const barWidth = width * 0.4; const barHeight = height * 0.1; const xValueText = x + (width * 0.92); labels.forEach((label, i) => { ctx.fillStyle = config.colors.displayText; ctx.textAlign = 'left'; ctx.fillText(label, xLabel, yPos); ctx.fillStyle = values[i].color; ctx.fillRect(xBar, yPos - barHeight / 2, barWidth, barHeight); ctx.fillStyle = config.colors.displayText; ctx.textAlign = 'right'; ctx.fillText(values[i].value, xValueText, yPos); yPos += height * 0.19; }); }
+        function drawButtons() { const cssWidth = canvas.getBoundingClientRect().width; layout.buttons.forEach(btn => { const buttonColor = state.hoverButtonId === btn.id ? config.colors.buttonHover : config.colors.buttonBg; ctx.fillStyle = buttonColor; ctx.fillRect(btn.x, btn.y, btn.width, btn.height); ctx.font = `bold ${cssWidth * 0.03}px Segoe UI`; ctx.fillStyle = 'white'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(btn.text, btn.x + btn.width / 2, btn.y + btn.height / 2); }); }
+        
+        function drawHeader() {
+            if (!layout.isMobile) {
+                const cssWidth = canvas.getBoundingClientRect().width;
+                ctx.font = `bold ${cssWidth * 0.028}px Segoe UI`;
+                ctx.fillStyle = config.colors.text;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('Simulasi Pengukuran Gas Confined Space dan Pertukaran Udara', cssWidth / 2, layout.titleY);
+                ctx.font = `${cssWidth * 0.02}px Segoe UI`;
+                ctx.fillStyle = config.colors.text;
+                ctx.fillText(state.explanation, cssWidth / 2, layout.explanationY);
+            }
+        }
+        
+        function drawVentilator() { if (state.isVentilating) { const x = layout.tank.x + layout.tank.width - (layout.tank.width * 0.15); const y = layout.tank.y - (layout.tank.height * 0.05); ctx.save(); ctx.translate(x, y); ctx.rotate(state.ventilatorAngle); ctx.font = `bold ${canvas.getBoundingClientRect().width * 0.05}px Segoe UI`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('⚙️', 0, 0); ctx.restore(); } }
+        
+        function drawCalculator() {
+            const { x, y, width, inputs } = layout.calculator;
+            const calc = state.calculator;
+            const cssWidth = canvas.getBoundingClientRect().width;
+            const cssHeight = canvas.getBoundingClientRect().height;
+
+            const titleFont = layout.isMobile ? `bold ${cssWidth * 0.05}px Segoe UI` : `bold ${cssWidth * 0.022}px Segoe UI`;
+            ctx.font = titleFont;
+            ctx.fillStyle = config.colors.text;
+            ctx.textAlign = 'left';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('Simulasi Perhitungan Blower', x, y);
+
+            const labelFont = layout.isMobile ? `${cssWidth * 0.04}px Segoe UI` : `${cssWidth * 0.018}px Segoe UI`;
+            const valueFont = labelFont;
+            inputs.forEach(input => {
+                const inputY = layout.isMobile ? y + input.y_offset : input.y;
+                ctx.font = labelFont;
+                ctx.fillStyle = config.colors.text;
+                ctx.fillText(`${input.label}:`, x, inputY);
+                
+                const inputX = x + width * 0.3;
+                const inputWidth = width * 0.65;
+                const inputHeight = cssHeight * 0.04;
+                ctx.fillStyle = config.colors.inputBg;
+                ctx.fillRect(inputX, inputY - inputHeight / 2, inputWidth, inputHeight);
+                ctx.strokeStyle = calc.activeInput === input.id ? config.colors.inputActiveBorder : '#ced4da';
+                ctx.lineWidth = 2;
+                ctx.strokeRect(inputX, inputY - inputHeight / 2, inputWidth, inputHeight);
+                ctx.fillStyle = config.colors.text;
+                ctx.font = valueFont;
+                ctx.fillText(`${calc[input.id]} meter`, inputX + 10, inputY);
+            });
+
+            const lastInputY = layout.isMobile ? y + inputs[inputs.length - 1].y_offset : inputs[inputs.length - 1].y;
+            let outputY = lastInputY + (cssHeight * 0.06);
+            const lineHeight = layout.isMobile ? cssHeight * 0.035 : cssHeight * 0.03;
+            
+            const outputBoldFont = layout.isMobile ? `bold ${cssWidth * 0.035}px Segoe UI` : `bold ${cssWidth * 0.018}px Segoe UI`;
+            const outputRegularFont = layout.isMobile ? `${cssWidth * 0.03}px Segoe UI` : `${cssWidth * 0.016}px Segoe UI`;
+            const outputSmallFont = layout.isMobile ? `${cssWidth * 0.032}px Segoe UI` : `${cssWidth * 0.017}px Segoe UI`;
+
+            ctx.font = outputBoldFont;
+            ctx.fillStyle = config.colors.text;
+            ctx.fillText(`Volume: ${calc.volume.toFixed(2)} m³`, x, outputY);
+            outputY += lineHeight;
+
+            ctx.font = outputRegularFont;
+            ctx.fillText(`Std. ACH (OSHA): min 5x, rek. 10x`, x, outputY);
+            outputY += lineHeight * 1.2;
+
+            ctx.font = outputBoldFont;
+            ctx.fillText(`Blower (Rekomendasi): ${calc.flowM3.toFixed(2)} m³/jam`, x, outputY);
+            outputY += lineHeight;
+
+            ctx.fillStyle = '#5a6a7b';
+            ctx.font = outputSmallFont;
+            ctx.fillText(`(setara ${calc.flowCFM.toFixed(1)} CFM)`, x, outputY);
+            outputY += lineHeight * 1.2;
+
+            ctx.fillStyle = config.colors.text;
+            ctx.font = outputBoldFont;
+            ctx.fillText(`Blower (Minimum): ${calc.flowM3_min.toFixed(2)} m³/jam`, x, outputY);
+            outputY += lineHeight;
+
+            ctx.fillStyle = '#5a6a7b';
+            ctx.font = outputSmallFont;
+            ctx.fillText(`(setara ${calc.flowCFM_min.toFixed(1)} CFM)`, x, outputY);
+        }
+
+        function render() { 
+            const dpr = window.devicePixelRatio || 1;
+            const cssWidth = canvas.getBoundingClientRect().width;
+            const cssHeight = canvas.getBoundingClientRect().height;
+
+            layout = config.getLayout(cssWidth, cssHeight); 
+            ctx.save();
+            ctx.clearRect(0, 0, canvas.width, canvas.height); 
+            ctx.fillStyle = 'white'; 
+            ctx.fillRect(0, 0, canvas.width, canvas.height); 
+            ctx.restore();
+            
+            drawHeader(); 
+            drawTank(); 
+            drawVentilationArrows(); 
+            drawVentilationTimeInTank(); 
+            drawProbe(); 
+            drawGasIcons(); 
+            drawDisplay(); 
+            drawButtons(); 
+            drawVentilator(); 
+            drawCalculator(); 
+        }
+
+        function updateVentilationArrows() { if (!state.isVentilating) return; const speed = canvas.getBoundingClientRect().height * 0.003; const tank = layout.tank; const turnZoneY = tank.y + tank.height * 0.85; const turnZoneX = tank.x + tank.width * 0.2; const exitY = tank.y - (canvas.getBoundingClientRect().height * 0.05); state.ventilationArrows.forEach(arrow => { switch (arrow.phase) { case 'down': arrow.y += speed; if (arrow.y >= turnZoneY) { arrow.phase = 'left'; arrow.char = '←'; } break; case 'left': arrow.x -= speed; if (arrow.x <= turnZoneX) { arrow.phase = 'up'; arrow.char = '↑'; } break; case 'up': arrow.y -= speed; if (arrow.y <= exitY) { arrow.x = arrow.entryX; arrow.y = arrow.entryY; arrow.phase = 'down'; arrow.char = '↓'; } break; } }); }
         function animate() { let needsRender = false; if (state.isVentilating) { state.ventilatorAngle += 0.1; updateVentilationArrows(); needsRender = true; } if (state.showCH4 || state.showCO || state.showH2S) { state.iconAnimationPhase += 0.1; needsRender = true; } if (needsRender) { render(); } requestAnimationFrame(animate); }
         function updateCalculations() { const p = parseFloat(state.calculator.panjang) || 0; const l = parseFloat(state.calculator.lebar) || 0; const t = parseFloat(state.calculator.tinggi) || 0; const volume = p * l * t; const ach_rec = 10; const ach_min = 5; const purge_cycles = 7; const flowM3 = volume * ach_rec; const flowM3_min = volume * ach_min; const hypotheticalBlowerFlow = 600; let ventilationTime = 0; if (volume > 0) { const timePerChange = (volume / hypotheticalBlowerFlow) * 60; ventilationTime = timePerChange * purge_cycles; } const cfmConversionFactor = 0.588578; state.calculator.volume = volume; state.calculator.flowM3 = flowM3; state.calculator.flowM3_min = flowM3_min; state.calculator.flowCFM = flowM3 * cfmConversionFactor; state.calculator.flowCFM_min = flowM3_min * cfmConversionFactor; state.calculator.ventilationTime = ventilationTime; }
         
@@ -354,6 +620,7 @@
             clearTimeout(state.demoTimeoutId); 
             state.isDemoRunning = false; 
             layout.buttons.find(b => b.id === 'demo').text = 'Mulai Demo'; 
+            removeInputOverlay(); 
             
             const currentCalcInputs = { ...state.calculator };
             
@@ -367,7 +634,7 @@
             render(); 
         }
 
-        function doVentilate(onComplete) { if (state.showCH4 || state.showCO || state.showH2S) { if (state.isVentilating) return; state.isVentilating = true; state.explanation = 'VENTILASI DIMULAI: Membersihkan gas berbahaya...'; state.ventilationArrows = []; const { x, y, width, height } = layout.tank; const entryX = x + width * 0.8; const entryY = y - (canvas.height * 0.05); const numArrows = 12; const pathLength = (canvas.height * 0.05) + height + (width * 0.6) + height + (canvas.height * 0.05); for (let i = 0; i < numArrows; i++) { let currentPath = (i / numArrows) * pathLength; let arrow = { entryX, entryY, x: entryX, y: entryY, phase: 'down', char: '↓' }; if (currentPath <= height + (canvas.height * 0.05)) { arrow.y += currentPath; } else if (currentPath <= height + (canvas.height * 0.05) + (width * 0.6)) { arrow.y = y + height; arrow.x -= (currentPath - (height + (canvas.height * 0.05))); arrow.phase = 'left'; arrow.char = '←'; } else { arrow.y = y + height - (currentPath - (height + (canvas.height * 0.05) + (width * 0.6))); arrow.x = x + width * 0.2; arrow.phase = 'up'; arrow.char = '↑'; } state.ventilationArrows.push(arrow); } setTimeout(() => { if (state.isVentilating || state.isDemoRunning) { state.showCH4 = false; state.showCO = false; state.showH2S = false; state.readings = getInitialState().readings; state.probeHeight = 0; if(onComplete) onComplete(); } }, 5000); } else { state.explanation = 'Uji semua lapisan terlebih dahulu sebelum ventilasi.'; } render(); }
+        function doVentilate(onComplete) { if (state.showCH4 || state.showCO || state.showH2S) { if (state.isVentilating) return; state.isVentilating = true; state.explanation = 'VENTILASI DIMULAI: Membersihkan gas berbahaya...'; state.ventilationArrows = []; const { x, y, width, height } = layout.tank; const entryX = x + width * 0.8; const entryY = y - (canvas.getBoundingClientRect().height * 0.05); const numArrows = 12; const pathLength = (canvas.getBoundingClientRect().height * 0.05) + height + (width * 0.6) + height + (canvas.getBoundingClientRect().height * 0.05); for (let i = 0; i < numArrows; i++) { let currentPath = (i / numArrows) * pathLength; let arrow = { entryX, entryY, x: entryX, y: entryY, phase: 'down', char: '↓' }; if (currentPath <= height + (canvas.getBoundingClientRect().height * 0.05)) { arrow.y += currentPath; } else if (currentPath <= height + (canvas.getBoundingClientRect().height * 0.05) + (width * 0.6)) { arrow.y = y + height; arrow.x -= (currentPath - (height + (canvas.getBoundingClientRect().height * 0.05))); arrow.phase = 'left'; arrow.char = '←'; } else { arrow.y = y + height - (currentPath - (height + (canvas.getBoundingClientRect().height * 0.05) + (width * 0.6))); arrow.x = x + width * 0.2; arrow.phase = 'up'; arrow.char = '↑'; } state.ventilationArrows.push(arrow); } setTimeout(() => { if (state.isVentilating || state.isDemoRunning) { state.showCH4 = false; state.showCO = false; state.showH2S = false; state.readings = getInitialState().readings; state.probeHeight = 0; if(onComplete) onComplete(); } }, 5000); } else { state.explanation = 'Uji semua lapisan terlebih dahulu sebelum ventilasi.'; } render(); }
 
         function runDemoStep(step) {
             if (!state.isDemoRunning) return;
@@ -382,42 +649,74 @@
         function startDemo() { state.isDemoRunning = true; layout.buttons.find(b => b.id === 'demo').text = 'Hentikan Demo'; runDemoStep(1); render(); }
         
         function handleButtonClick(x, y) {
+            if (!layout || !layout.buttons || !layout.calculator) return; // FIX: Guard clause
+            removeInputOverlay();
             const btn = layout.buttons.find(b => x >= b.x && x <= b.x + b.width && y >= b.y && y <= b.y + b.height);
             if (btn && btn.id === 'demo') { state.isDemoRunning ? doResetAndStopDemo() : startDemo(); return; }
             if (btn && btn.id === 'reset') { doResetAndStopDemo(); return; }
             
-            const { x: calcX, width: calcWidth, inputs } = layout.calculator; const inputX = calcX + calcWidth * 0.3; const inputWidth = calcWidth * 0.65; const inputHeight = canvas.height * 0.04;
-            const clickedInput = inputs.find(input => x >= inputX && x <= inputX + inputWidth && y >= input.y - inputHeight/2 && y <= input.y + inputHeight/2);
+            const { x: calcX, width: calcWidth, inputs } = layout.calculator; 
+            const inputX = calcX + calcWidth * 0.3; 
+            const inputWidth = calcWidth * 0.65; 
+            const cssHeight = canvas.getBoundingClientRect().height;
+            const inputHeight = cssHeight * 0.04;
+            
+            const clickedInput = inputs.find(input => {
+                const inputY_abs = layout.isMobile ? layout.calculator.y + input.y_offset : input.y;
+                return (
+                    x >= inputX && x <= inputX + inputWidth && 
+                    y >= inputY_abs - inputHeight/2 && y <= inputY_abs + inputHeight/2
+                )
+            });
+            
             if(clickedInput) { 
-                if (state.calculator.activeInput !== clickedInput.id) { state.calculator[clickedInput.id] = ''; } 
-                state.calculator.activeInput = clickedInput.id; 
+                state.calculator.activeInput = clickedInput.id;
+                createInputOverlay(clickedInput, state.calculator[clickedInput.id]);
                 render();
-            } else if (!btn) { 
-                state.calculator.activeInput = null; 
-                render(); 
+            } else {
+                 if (state.calculator.activeInput) {
+                    state.calculator.activeInput = null; 
+                    render();
+                }
             }
         }
 
-        function handleMouseMove(e) { const rect = canvas.getBoundingClientRect(); const x = e.clientX - rect.left; const y = e.clientY - rect.top; const hoveredBtn = layout.buttons.find(b => x >= b.x && x <= b.x + b.width && y >= b.y && y <= b.y + b.height); canvas.style.cursor = hoveredBtn ? 'pointer' : 'default'; if (state.hoverButtonId !== (hoveredBtn?.id || null)) { state.hoverButtonId = hoveredBtn?.id || null; render(); } }
-        function handleKeyPress(e) { 
-            const activeInput = state.calculator.activeInput; 
-            if (!activeInput) return; 
-            if (e.key >= '0' && e.key <= '9' || e.key === '.') { if(state.calculator[activeInput].length < 6) state.calculator[activeInput] += e.key; } else if (e.key === 'Backspace') { state.calculator[activeInput] = state.calculator[activeInput].slice(0, -1); } else if (e.key === 'Enter' || e.key === 'Escape') { state.calculator.activeInput = null; } 
-            updateCalculations(); 
-            render(); 
+        function handleMouseMove(e) { 
+            if (!layout || !layout.buttons) return; // FIX: Guard clause
+            const rect = canvas.getBoundingClientRect(); 
+            const x = e.clientX - rect.left; 
+            const y = e.clientY - rect.top; 
+            const hoveredBtn = layout.buttons.find(b => x >= b.x && x <= b.x + b.width && y >= b.y && y <= b.y + b.height); 
+            canvas.style.cursor = hoveredBtn ? 'pointer' : 'default'; 
+            if (state.hoverButtonId !== (hoveredBtn?.id || null)) { 
+                state.hoverButtonId = hoveredBtn?.id || null; 
+                render(); 
+            } 
         }
         
-        window.addEventListener('resize', resizeCanvas);
-        window.addEventListener('keydown', handleKeyPress);
-        canvas.addEventListener('click', (e) => { const rect = canvas.getBoundingClientRect(); const x = e.clientX - rect.left; const y = e.clientY - rect.top; handleButtonClick(x, y); });
+        // --- Event Listeners and Initialisation ---
+        window.addEventListener('resize', () => {
+            resizeCanvas();
+            removeInputOverlay();
+        });
+        
+        canvas.addEventListener('click', (e) => { 
+            const rect = canvas.getBoundingClientRect();
+            const dpr = window.devicePixelRatio || 1;
+            const x = (e.clientX - rect.left); 
+            const y = (e.clientY - rect.top); 
+            handleButtonClick(x, y); 
+        });
         canvas.addEventListener('mousemove', handleMouseMove);
         
-        state = getInitialState();
-        updateCalculations();
-        resizeCanvas();
-        animate(); 
+        // Use window.onload to ensure everything is loaded before initialising
+        window.onload = () => {
+            state = getInitialState();
+            updateCalculations();
+            resizeCanvas(); // Initial resize and render
+            animate(); 
+        };
         
-        // --- Skrip untuk Internal Link pada Header ---
         const headerVisual = document.querySelector('.header-visual');
         headerVisual.addEventListener('click', (e) => {
             const iconGroup = e.target.closest('.header-icon-group');
