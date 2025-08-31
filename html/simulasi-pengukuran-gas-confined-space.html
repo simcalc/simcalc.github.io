@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simulasi Gas Confined Space (Versi Canvas)</title>
+    <title>Simulasi Pengukuran Gas Confined Space dan Pertukaran Udara</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -21,9 +21,44 @@
             max-width: 900px;
             text-align: center;
         }
+        
+        /* -- Style untuk Header Visual -- */
+        .header-visual {
+            background-color: #ffffff;
+            /* Memberikan border-radius penuh */
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            /* Mengurangi jarak bawah untuk mendekatkan ke canvas */
+            margin-bottom: 15px; 
+        }
+        .header-icon-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #5a6a7b;
+            font-size: 12px;
+            font-weight: 600;
+            transition: transform 0.2s ease-in-out;
+            cursor: pointer;
+        }
+        .header-icon-group svg {
+            width: 48px;
+            height: 48px;
+            margin-bottom: 8px;
+        }
+        .header-icon-group:hover {
+            transform: scale(1.1);
+        }
+        /* ------------------------------------ */
+
         canvas {
             background-color: #ffffff;
-            border-radius: 15px;
+            /* Memberikan border-radius penuh pada canvas */
+            border-radius: 15px; 
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             width: 100%;
             height: auto;
@@ -44,7 +79,8 @@
         }
         /* Style untuk section pembahasan dan daftar pustaka */
         .discussion-section {
-            margin-top: 30px;
+            /* Mengurangi jarak atas untuk mendekatkan ke canvas */
+            margin-top: 15px;
             padding: 20px;
             background-color: #ffffff;
             border-radius: 15px;
@@ -74,7 +110,6 @@
         .references li {
             margin-bottom: 10px;
         }
-        /* Tambahkan style untuk link di daftar pustaka */
         .references a {
             color: #0056b3;
             text-decoration: none;
@@ -94,7 +129,6 @@
         .example-calc strong {
             color: #0056b3;
         }
-        /* Style baru untuk sitasi */
         .citation {
             font-weight: 600;
             color: #0056b3;
@@ -105,6 +139,28 @@
 </head>
 <body>
     <div class="simulation-container">
+        
+        <!-- Header Visual yang Baru Ditambahkan -->
+        <div class="header-visual">
+            <div class="header-icon-group">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#e76f51" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L3.41 13.41a2 2 0 0 1 0-2.83l7.17-7.17a2 2 0 0 1 2.83 0l7.17 7.17a2 2 0 0 1 0 2.83z"></path><line x1="12" y1="3" x2="12" y2="21"></line></svg>
+                <span>Bahaya Gas</span>
+            </div>
+            <div class="header-icon-group">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#e9c46a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                <span>Ruang Terbatas</span>
+            </div>
+            <div class="header-icon-group">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#2a9d8f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19l-7-7 7-7 7 7-7 7z"></path><path d="M12 12l-4-4 4-4 4 4-4 4z"></path></svg>
+                <span>Pengukuran</span>
+            </div>
+            <div class="header-icon-group">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#005f73" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"></path><path d="M12 8v4l2 2"></path><path d="M16.24 7.76l-1.41 1.41"></path><path d="M7.76 16.24l-1.41 1.41"></path></svg>
+                <span>Ventilasi Udara</span>
+            </div>
+        </div>
+        <!-- Akhir dari Header Visual -->
+
         <canvas id="simulationCanvas"></canvas>
         
         <!-- Bagian Pembahasan dan Daftar Pustaka -->
@@ -114,7 +170,17 @@
                 Simulasi ini dirancang untuk memberikan pemahaman visual mengenai prosedur keselamatan kerja di ruang terbatas (confined space), yang merupakan salah satu area kerja dengan risiko paling tinggi. Dua aspek krusial yang disimulasikan adalah teknik pengukuran gas yang benar dan cara menghitung kebutuhan pertukaran udara untuk ventilasi.
             </p>
 
-            <h3>1. Pengukuran Gas Berdasarkan Stratifikasi</h3>
+            <h3>1. Definisi Ruang Terbatas dan Bahaya Utamanya</h3>
+            <p>
+                Menurut standar keselamatan internasional (OSHA) dan Peraturan Menteri Ketenagakerjaan RI, ruang terbatas (confined space) didefinisikan sebagai ruangan yang cukup besar untuk dimasuki pekerja, memiliki akses keluar-masuk yang terbatas, dan tidak dirancang untuk menjadi tempat kerja secara berkelanjutan<sup class="citation">[1, 2]</sup>. Bahaya utama di dalamnya sering kali tidak terlihat, yaitu atmosfer berbahaya yang dapat menyebabkan konsekuensi fatal. Tiga kategori utama bahaya gas di ruang terbatas adalah:
+            </p>
+            <ul>
+                <li><strong>Atmosfer Miskin Oksigen (Asfiksia):</strong> Kadar oksigen di bawah 19.5% dapat menyebabkan kesulitan bernapas, kehilangan kesadaran, hingga kematian.</li>
+                <li><strong>Atmosfer Mudah Terbakar atau Meledak:</strong> Kehadiran gas seperti metana (CH₄) atau uap pelarut dapat menciptakan risiko kebakaran atau ledakan jika bertemu sumber pemicu.</li>
+                <li><strong>Atmosfer Beracun (Toksik):</strong> Gas seperti Hidrogen Sulfida (H₂S) dan Karbon Monoksida (CO) dapat meracuni tubuh bahkan pada konsentrasi rendah.</li>
+            </ul>
+
+            <h3>2. Pengukuran Gas Berdasarkan Stratifikasi</h3>
             <p>
                 Atmosfer di dalam ruang terbatas jarang sekali homogen. Berbagai jenis gas berbahaya dapat terkumpul pada lapisan (strata) yang berbeda tergantung pada berat molekul (BM) atau densitasnya dibandingkan dengan udara (BM ≈ 29 g/mol). Fenomena ini disebut stratifikasi gas<sup class="citation">[3]</sup>. Karena itu, pengujian atmosfer tidak cukup hanya dilakukan pada satu titik. Standar keselamatan internasional seperti OSHA secara eksplisit mengharuskan pengujian dilakukan pada beberapa interval kedalaman, umumnya setiap 1.2 meter (4 kaki), untuk mendeteksi semua potensi bahaya<sup class="citation">[1]</sup>.
             </p>
@@ -124,7 +190,7 @@
                 <li><strong>Lapisan Bawah (Gas Berat):</strong> Gas seperti Hidrogen Sulfida (H₂S, BM=34) lebih berat dari udara, sehingga akan tenggelam dan terkonsentrasi di dasar tangki. Ini adalah gas yang sangat beracun dan mematikan.</li>
             </ul>
 
-            <h3>2. Perhitungan Kebutuhan Ventilasi dan Blower</h3>
+            <h3>3. Perhitungan Kebutuhan Ventilasi dan Blower</h3>
             <p>
                 Setelah atmosfer berbahaya terdeteksi, ventilasi paksa menggunakan blower adalah langkah mitigasi yang wajib dilakukan sebelum izin masuk diberikan<sup class="citation">[2, 4]</sup>. Tujuannya adalah untuk mengganti udara terkontaminasi dengan udara bersih. Efektivitas ventilasi diukur dengan standar <strong>Air Changes per Hour (ACH)</strong>, yaitu berapa kali total volume udara di dalam ruang diganti dalam satu jam.
             </p>
@@ -196,7 +262,7 @@
             getLayout: (width, height) => {
                 const display = { x: width * 0.5, y: height * 0.15, width: width * 0.45, height: height * 0.2 };
                 const buttons = [
-                    { id: 'demo', text: 'Mulai Demo Otomatis', x: width * 0.5, y: height * 0.38, width: width * 0.22, height: height * 0.06 },
+                    { id: 'demo', text: 'Mulai Demo', x: width * 0.5, y: height * 0.38, width: width * 0.22, height: height * 0.06 },
                     { id: 'reset', text: 'Reset', x: width * 0.73, y: height * 0.38, width: width * 0.22, height: height * 0.06 },
                 ];
                 const calculator = {
@@ -241,6 +307,7 @@
                     panjang: '4', lebar: '3', tinggi: '5',
                     volume: 0, 
                     flowM3: 0, flowM3_min: 0,
+                    flowCFM: 0, flowCFM_min: 0, // Tambahan untuk CFM
                     ventilationTime: 0 
                 }
             };
@@ -255,12 +322,12 @@
         function drawButtons() { layout.buttons.forEach(btn => { const buttonColor = state.hoverButtonId === btn.id ? config.colors.buttonHover : config.colors.buttonBg; ctx.fillStyle = buttonColor; ctx.fillRect(btn.x, btn.y, btn.width, btn.height); ctx.font = `bold ${canvas.width * 0.019}px Segoe UI`; ctx.fillStyle = 'white'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(btn.text, btn.x + btn.width / 2, btn.y + btn.height / 2); }); }
         function drawHeader() { ctx.font = `bold ${canvas.width * 0.028}px Segoe UI`; ctx.fillStyle = config.colors.text; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('Simulasi Pengukuran Gas Confined Space dan Pertukaran Udara', canvas.width / 2, layout.titleY); ctx.font = `${canvas.width * 0.02}px Segoe UI`; ctx.fillStyle = config.colors.text; ctx.fillText(state.explanation, canvas.width / 2, layout.explanationY); }
         function drawVentilator() { if (state.isVentilating) { const x = layout.tank.x + layout.tank.width - (layout.tank.width * 0.15); const y = layout.tank.y - (layout.tank.height * 0.05); ctx.save(); ctx.translate(x, y); ctx.rotate(state.ventilatorAngle); ctx.font = `bold ${canvas.width * 0.05}px Segoe UI`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('⚙️', 0, 0); ctx.restore(); } }
-        function drawCalculator() { const { x, y, width, height, inputs } = layout.calculator; const calc = state.calculator; ctx.font = `bold ${canvas.width * 0.022}px Segoe UI`; ctx.fillStyle = config.colors.text; ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.fillText('Simulasi Perhitungan Blower', x, y); inputs.forEach(input => { ctx.font = `${canvas.width * 0.018}px Segoe UI`; ctx.fillStyle = config.colors.text; ctx.fillText(`${input.label}:`, x, input.y); const inputX = x + width * 0.3; const inputWidth = width * 0.65; const inputHeight = canvas.height * 0.04; ctx.fillStyle = config.colors.inputBg; ctx.fillRect(inputX, input.y - inputHeight/2, inputWidth, inputHeight); ctx.strokeStyle = calc.activeInput === input.id ? config.colors.inputActiveBorder : '#ced4da'; ctx.lineWidth = 2; ctx.strokeRect(inputX, input.y - inputHeight/2, inputWidth, inputHeight); ctx.fillStyle = config.colors.text; ctx.fillText(`${calc[input.id]} meter`, inputX + 10, input.y); }); let outputY = inputs[inputs.length - 1].y + (canvas.height * 0.07); const lineHeight = canvas.height * 0.03; ctx.font = `bold ${canvas.width * 0.018}px Segoe UI`; ctx.fillText(`Volume: ${calc.volume.toFixed(2)} m³`, x, outputY); outputY += lineHeight; ctx.font = `${canvas.width * 0.016}px Segoe UI`; ctx.fillText(`Std. ACH (OSHA): min 5x, rek. 10x`, x, outputY); outputY += lineHeight * 1.2; ctx.font = `bold ${canvas.width * 0.018}px Segoe UI`; ctx.fillText(`Blower (Rekomendasi): ${calc.flowM3.toFixed(2)} m³/jam`, x, outputY); outputY += lineHeight; ctx.fillText(`Blower (Minimum): ${calc.flowM3_min.toFixed(2)} m³/jam`, x, outputY); }
+        function drawCalculator() { const { x, y, width, height, inputs } = layout.calculator; const calc = state.calculator; ctx.font = `bold ${canvas.width * 0.022}px Segoe UI`; ctx.fillStyle = config.colors.text; ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.fillText('Simulasi Perhitungan Blower', x, y); inputs.forEach(input => { ctx.font = `${canvas.width * 0.018}px Segoe UI`; ctx.fillStyle = config.colors.text; ctx.fillText(`${input.label}:`, x, input.y); const inputX = x + width * 0.3; const inputWidth = width * 0.65; const inputHeight = canvas.height * 0.04; ctx.fillStyle = config.colors.inputBg; ctx.fillRect(inputX, input.y - inputHeight/2, inputWidth, inputHeight); ctx.strokeStyle = calc.activeInput === input.id ? config.colors.inputActiveBorder : '#ced4da'; ctx.lineWidth = 2; ctx.strokeRect(inputX, input.y - inputHeight/2, inputWidth, inputHeight); ctx.fillStyle = config.colors.text; ctx.fillText(`${calc[input.id]} meter`, inputX + 10, input.y); }); let outputY = inputs[inputs.length - 1].y + (canvas.height * 0.07); const lineHeight = canvas.height * 0.03; ctx.font = `bold ${canvas.width * 0.018}px Segoe UI`; ctx.fillText(`Volume: ${calc.volume.toFixed(2)} m³`, x, outputY); outputY += lineHeight; ctx.font = `${canvas.width * 0.016}px Segoe UI`; ctx.fillText(`Std. ACH (OSHA): min 5x, rek. 10x`, x, outputY); outputY += lineHeight * 1.2; ctx.font = `bold ${canvas.width * 0.018}px Segoe UI`; ctx.fillText(`Blower (Rekomendasi): ${calc.flowM3.toFixed(2)} m³/jam`, x, outputY); outputY += lineHeight; ctx.fillStyle = '#5a6a7b'; ctx.font = `${canvas.width * 0.017}px Segoe UI`; ctx.fillText(`(setara ${calc.flowCFM.toFixed(1)} CFM)`, x, outputY); outputY += lineHeight * 1.2; ctx.fillStyle = config.colors.text; ctx.font = `bold ${canvas.width * 0.018}px Segoe UI`; ctx.fillText(`Blower (Minimum): ${calc.flowM3_min.toFixed(2)} m³/jam`, x, outputY); outputY += lineHeight; ctx.fillStyle = '#5a6a7b'; ctx.font = `${canvas.width * 0.017}px Segoe UI`; ctx.fillText(`(setara ${calc.flowCFM_min.toFixed(1)} CFM)`, x, outputY); }
 
         function render() { layout = config.getLayout(canvas.width, canvas.height); ctx.clearRect(0, 0, canvas.width, canvas.height); ctx.fillStyle = 'white'; ctx.fillRect(0, 0, canvas.width, canvas.height); drawHeader(); drawTank(); drawVentilationArrows(); drawVentilationTimeInTank(); drawProbe(); drawGasIcons(); drawDisplay(); drawButtons(); drawVentilator(); drawCalculator(); }
         function updateVentilationArrows() { if (!state.isVentilating) return; const speed = canvas.height * 0.003; const tank = layout.tank; const turnZoneY = tank.y + tank.height * 0.85; const turnZoneX = tank.x + tank.width * 0.2; const exitY = tank.y - (canvas.height * 0.05); state.ventilationArrows.forEach(arrow => { switch (arrow.phase) { case 'down': arrow.y += speed; if (arrow.y >= turnZoneY) { arrow.phase = 'left'; arrow.char = '←'; } break; case 'left': arrow.x -= speed; if (arrow.x <= turnZoneX) { arrow.phase = 'up'; arrow.char = '↑'; } break; case 'up': arrow.y -= speed; if (arrow.y <= exitY) { arrow.x = arrow.entryX; arrow.y = arrow.entryY; arrow.phase = 'down'; arrow.char = '↓'; } break; } }); }
         function animate() { let needsRender = false; if (state.isVentilating) { state.ventilatorAngle += 0.1; updateVentilationArrows(); needsRender = true; } if (state.showCH4 || state.showCO || state.showH2S) { state.iconAnimationPhase += 0.1; needsRender = true; } if (needsRender) { render(); } requestAnimationFrame(animate); }
-        function updateCalculations() { const p = parseFloat(state.calculator.panjang) || 0; const l = parseFloat(state.calculator.lebar) || 0; const t = parseFloat(state.calculator.tinggi) || 0; const volume = p * l * t; const ach_rec = 10; const ach_min = 5; const purge_cycles = 7; const flowM3 = volume * ach_rec; const flowM3_min = volume * ach_min; const hypotheticalBlowerFlow = 600; let ventilationTime = 0; if (volume > 0) { const timePerChange = (volume / hypotheticalBlowerFlow) * 60; ventilationTime = timePerChange * purge_cycles; } state.calculator.volume = volume; state.calculator.flowM3 = flowM3; state.calculator.flowM3_min = flowM3_min; state.calculator.ventilationTime = ventilationTime; }
+        function updateCalculations() { const p = parseFloat(state.calculator.panjang) || 0; const l = parseFloat(state.calculator.lebar) || 0; const t = parseFloat(state.calculator.tinggi) || 0; const volume = p * l * t; const ach_rec = 10; const ach_min = 5; const purge_cycles = 7; const flowM3 = volume * ach_rec; const flowM3_min = volume * ach_min; const hypotheticalBlowerFlow = 600; let ventilationTime = 0; if (volume > 0) { const timePerChange = (volume / hypotheticalBlowerFlow) * 60; ventilationTime = timePerChange * purge_cycles; } const cfmConversionFactor = 0.588578; state.calculator.volume = volume; state.calculator.flowM3 = flowM3; state.calculator.flowM3_min = flowM3_min; state.calculator.flowCFM = flowM3 * cfmConversionFactor; state.calculator.flowCFM_min = flowM3_min * cfmConversionFactor; state.calculator.ventilationTime = ventilationTime; }
         
         function doTestTop() { if (!state.isDemoRunning) return; state.probeHeight = layout.tank.height * 0.15; state.showCH4 = true; state.readings.lel = { value: '15 %', color: config.colors.danger }; state.explanation = 'LAPISAN ATAS: Terdeteksi Metana (CH₄) berbahaya!'; render(); }
         function doTestMiddle() { if (!state.isDemoRunning) return; state.probeHeight = layout.tank.height * 0.5; state.showCO = true; state.readings.o2 = { value: '18.5 %', color: config.colors.warning }; state.readings.co = { value: '50 ppm', color: config.colors.warning }; state.explanation = 'LAPISAN TENGAH: Oksigen menurun & CO terdeteksi.'; render(); }
@@ -269,7 +336,7 @@
         function doResetAndStopDemo() { 
             clearTimeout(state.demoTimeoutId); 
             state.isDemoRunning = false; 
-            layout.buttons.find(b => b.id === 'demo').text = 'Mulai Demo Otomatis'; 
+            layout.buttons.find(b => b.id === 'demo').text = 'Mulai Demo'; 
             
             const currentCalcInputs = { ...state.calculator };
             
@@ -335,4 +402,7 @@
     </script>
 </body>
 </html>
+
+
+
 
