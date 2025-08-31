@@ -256,27 +256,15 @@
         const ctx = canvas.getContext('2d');
 
         function resizeCanvas() {
-            // FIX: Menangani HiDPI/Retina display untuk mencegah tulisan kabur
-            const ratio = window.devicePixelRatio || 1;
-            // Gunakan parentElement untuk mendapatkan lebar yang stabil
-            const clientWidth = canvas.parentElement.clientWidth;
-            const clientHeight = clientWidth * 0.8;
+            const { clientWidth } = canvas;
+            const clientHeight = clientWidth * 0.8; 
 
-            // Atur ukuran buffer canvas sesuai dengan rasio piksel
-            const bufferWidth = Math.round(clientWidth * ratio);
-            const bufferHeight = Math.round(clientHeight * ratio);
-
-            if (canvas.width !== bufferWidth || canvas.height !== bufferHeight) {
-                canvas.width = bufferWidth;
-                canvas.height = bufferHeight;
-
-                // Atur ukuran tampilan CSS canvas
-                canvas.style.width = clientWidth + 'px';
-                canvas.style.height = clientHeight + 'px';
+            if (canvas.width !== clientWidth || canvas.height !== clientHeight) {
+                canvas.width = clientWidth;
+                canvas.height = clientHeight;
                 
-                // Hitung ulang layout berdasarkan piksel CSS, bukan piksel buffer
-                layout = config.getLayout(clientWidth, clientHeight); 
-                render(); // Render ulang sekali setelah ukuran diubah
+                layout = config.getLayout(canvas.width, canvas.height);
+                render(); 
             }
         }
 
@@ -353,39 +341,7 @@
         function drawVentilator() { if (state.isVentilating) { const x = layout.tank.x + layout.tank.width - (layout.tank.width * 0.15); const y = layout.tank.y - (layout.tank.height * 0.05); ctx.save(); ctx.translate(x, y); ctx.rotate(state.ventilatorAngle); ctx.font = `bold ${canvas.width * 0.05}px Segoe UI`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('⚙️', 0, 0); ctx.restore(); } }
         function drawCalculator() { const { x, y, width, height, inputs } = layout.calculator; const calc = state.calculator; const isSmall = canvas.width < 450; let lineHeight = canvas.height * 0.03; ctx.font = `bold ${isSmall ? canvas.width * 0.024 : canvas.width * 0.022}px Segoe UI`; ctx.fillStyle = config.colors.text; ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.fillText('Simulasi Perhitungan Blower', x, y); inputs.forEach(input => { ctx.font = `${isSmall ? canvas.width * 0.022 : canvas.width * 0.018}px Segoe UI`; ctx.fillStyle = config.colors.text; ctx.fillText(`${input.label}:`, x, input.y); const inputX = x + width * 0.3; const inputWidth = width * 0.65; const inputHeight = canvas.height * 0.04; ctx.fillStyle = config.colors.inputBg; ctx.fillRect(inputX, input.y - inputHeight/2, inputWidth, inputHeight); ctx.strokeStyle = calc.activeInput === input.id ? config.colors.inputActiveBorder : '#ced4da'; ctx.lineWidth = 2; ctx.strokeRect(inputX, input.y - inputHeight/2, inputWidth, inputHeight); ctx.fillStyle = config.colors.text; ctx.fillText(`${calc[input.id]} meter`, inputX + 10, input.y); }); let outputY = inputs[inputs.length - 1].y + (canvas.height * 0.07); if(isSmall) { lineHeight = canvas.height * 0.028; } ctx.font = `bold ${isSmall ? canvas.width * 0.022 : canvas.width * 0.018}px Segoe UI`; ctx.fillText(`Volume: ${calc.volume.toFixed(2)} m³`, x, outputY); outputY += lineHeight; ctx.font = `${isSmall ? canvas.width * 0.020 : canvas.width * 0.016}px Segoe UI`; ctx.fillText(`Std. ACH (OSHA): min 5x, rek. 10x`, x, outputY); outputY += lineHeight * 1.2; ctx.font = `bold ${isSmall ? canvas.width * 0.022 : canvas.width * 0.018}px Segoe UI`; if (isSmall) { ctx.fillText(`Blower (Rek):`, x, outputY); outputY += lineHeight; ctx.fillText(`${calc.flowM3.toFixed(2)} m³/jam`, x, outputY); } else { ctx.fillText(`Blower (Rekomendasi): ${calc.flowM3.toFixed(2)} m³/jam`, x, outputY); } outputY += lineHeight; ctx.fillStyle = '#5a6a7b'; ctx.font = `${isSmall ? canvas.width * 0.021 : canvas.width * 0.017}px Segoe UI`; ctx.fillText(`(setara ${calc.flowCFM.toFixed(1)} CFM)`, x, outputY); outputY += lineHeight * 1.2; ctx.fillStyle = config.colors.text; ctx.font = `bold ${isSmall ? canvas.width * 0.022 : canvas.width * 0.018}px Segoe UI`; if (isSmall) { ctx.fillText(`Blower (Min):`, x, outputY); outputY += lineHeight; ctx.fillText(`${calc.flowM3_min.toFixed(2)} m³/jam`, x, outputY); } else { ctx.fillText(`Blower (Minimum): ${calc.flowM3_min.toFixed(2)} m³/jam`, x, outputY); } outputY += lineHeight; ctx.fillStyle = '#5a6a7b'; ctx.font = `${isSmall ? canvas.width * 0.021 : canvas.width * 0.017}px Segoe UI`; ctx.fillText(`(setara ${calc.flowCFM_min.toFixed(1)} CFM)`, x, outputY); }
 
-        function render() {
-            const ratio = window.devicePixelRatio || 1;
-
-            // Simpan state konteks yang belum diskalakan
-            ctx.save();
-            
-            // Hapus seluruh area buffer sebelum melakukan transformasi
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            // Skalakan konteks sesuai rasio piksel perangkat
-            ctx.scale(ratio, ratio);
-
-            // Gambar latar belakang berdasarkan ukuran CSS
-            const { clientWidth } = canvas.parentElement;
-            const clientHeight = clientWidth * 0.8;
-            ctx.fillStyle = 'white'; 
-            ctx.fillRect(0, 0, clientWidth, clientHeight);
-
-            // Semua fungsi gambar sekarang akan merender dengan tajam
-            drawHeader(); 
-            drawTank(); 
-            drawVentilationArrows(); 
-            drawVentilationTimeInTank(); 
-            drawProbe(); 
-            drawGasIcons(); 
-            drawDisplay(); 
-            drawButtons(); 
-            drawVentilator(); 
-            drawCalculator();
-
-            // Kembalikan konteks ke keadaan semula
-            ctx.restore();
-        }
+        function render() { layout = config.getLayout(canvas.width, canvas.height); ctx.clearRect(0, 0, canvas.width, canvas.height); ctx.fillStyle = 'white'; ctx.fillRect(0, 0, canvas.width, canvas.height); drawHeader(); drawTank(); drawVentilationArrows(); drawVentilationTimeInTank(); drawProbe(); drawGasIcons(); drawDisplay(); drawButtons(); drawVentilator(); drawCalculator(); }
         function updateVentilationArrows() { if (!state.isVentilating) return; const speed = canvas.height * 0.003; const tank = layout.tank; const turnZoneY = tank.y + tank.height * 0.85; const turnZoneX = tank.x + tank.width * 0.2; const exitY = tank.y - (canvas.height * 0.05); state.ventilationArrows.forEach(arrow => { switch (arrow.phase) { case 'down': arrow.y += speed; if (arrow.y >= turnZoneY) { arrow.phase = 'left'; arrow.char = '←'; } break; case 'left': arrow.x -= speed; if (arrow.x <= turnZoneX) { arrow.phase = 'up'; arrow.char = '↑'; } break; case 'up': arrow.y -= speed; if (arrow.y <= exitY) { arrow.x = arrow.entryX; arrow.y = arrow.entryY; arrow.phase = 'down'; arrow.char = '↓'; } break; } }); }
         function animate() { let needsRender = false; if (state.isVentilating) { state.ventilatorAngle += 0.1; updateVentilationArrows(); needsRender = true; } if (state.showCH4 || state.showCO || state.showH2S) { state.iconAnimationPhase += 0.1; needsRender = true; } if (needsRender) { render(); } requestAnimationFrame(animate); }
         function updateCalculations() { const p = parseFloat(state.calculator.panjang) || 0; const l = parseFloat(state.calculator.lebar) || 0; const t = parseFloat(state.calculator.tinggi) || 0; const volume = p * l * t; const ach_rec = 10; const ach_min = 5; const purge_cycles = 7; const flowM3 = volume * ach_rec; const flowM3_min = volume * ach_min; const hypotheticalBlowerFlow = 600; let ventilationTime = 0; if (volume > 0) { const timePerChange = (volume / hypotheticalBlowerFlow) * 60; ventilationTime = timePerChange * purge_cycles; } const cfmConversionFactor = 0.588578; state.calculator.volume = volume; state.calculator.flowM3 = flowM3; state.calculator.flowM3_min = flowM3_min; state.calculator.flowCFM = flowM3 * cfmConversionFactor; state.calculator.flowCFM_min = flowM3_min * cfmConversionFactor; state.calculator.ventilationTime = ventilationTime; }
@@ -494,5 +450,4 @@
     </script>
 </body>
 </html>
-
 
