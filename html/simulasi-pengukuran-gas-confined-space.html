@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Simulasi Pengukuran Gas dan Pertukaran Udara</title>
+    <meta name="description" content="Membangun masa depan bangsa! dengan simulasi pengukuran gas dan pertukaran udara kami mendorong konstruksi untuk pencerahan dan pengembangan intelektual yang berkelanjutan untuk generasi mendatang.">
     <style>
         :root {
             --bg-light: #f0f4f8;
@@ -36,37 +37,88 @@
             width: 100%;
             max-width: 900px;
             text-align: center;
+            position: relative;
         }
         .header-visual {
-            background-color: var(--bg-card);
+            background-color: #000;
             border-radius: 15px;
-            padding: 20px;
+            padding: 0;
             box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            margin-bottom: 15px;
+            overflow: hidden;
+            position: relative;
+            height: 200px;
+        }
+        .header-visual video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+        .header-visual::after { /* Overlay for better text readability */
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.6), transparent 50%, rgba(0,0,0,0.6));
+            z-index: 2;
+            border-radius: 15px;
+        }
+        .header-title {
+            position: absolute;
+            top: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 3;
+            color: white;
+            font-size: 1.5rem;
+            text-shadow: 1px 1px 5px rgba(0,0,0,0.5);
+            width: 90%;
+        }
+        .language-toggle {
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+            z-index: 3;
             display: flex;
-            justify-content: space-around;
-            align-items: center;
-            margin-bottom: 15px; 
+            gap: 8px;
         }
-        .header-icon-group {
-            display: flex; flex-direction: column; align-items: center;
-            color: var(--text-light); font-size: 12px; font-weight: 600;
-            transition: transform 0.2s ease-in-out; cursor: pointer; width: 20%; 
+        .language-btn {
+            width: 36px;
+            height: 36px;
+            cursor: pointer;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            transition: all 0.2s ease;
+            padding: 2px;
+            background-color: white;
         }
-        .header-icon-group svg { width: 48px; height: 48px; margin-bottom: 8px; }
-        .header-icon-group:hover { transform: scale(1.1); }
+        .language-btn:hover {
+            transform: scale(1.1);
+        }
+        .language-btn.active {
+            border-color: var(--primary);
+            box-shadow: 0 0 10px rgba(0, 86, 179, 0.5);
+        }
+        .language-btn img {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
         .simulation-area {
             display: flex;
-            flex-direction: column; /* Mengubah orientasi agar judul di atas */
+            flex-direction: column;
             gap: 15px;
             background-color: var(--bg-card);
             border-radius: 15px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             padding: 20px;
-        }
-        .simulation-title {
-            font-size: 1.75rem;
-            color: var(--text-dark);
-            margin-bottom: 10px;
         }
         .simulation-content {
             display: flex;
@@ -92,7 +144,7 @@
             position: absolute;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 55%;
+            width: 50%;
             color: var(--text-dark);
             text-align: center;
             pointer-events: none;
@@ -103,13 +155,9 @@
             opacity: 1;
         }
         #text-ch4 { top: 30%; }
-        #text-co { top: 59%; }
-        #text-h2s { top: 70%; }
-        .gas-text-overlay p {
-            margin: 0;
-            padding: 0;
-            line-height: 1.4;
-        }
+        #text-co { top: 39%; }
+        #text-h2s { top: 69%; }
+        .gas-text-overlay p { margin: 0; padding: 0; line-height: 1.4; }
         .gas-main-text { font-size: 13px; }
         .gas-sub-text { font-size: 11px; color: var(--text-light); margin-top: 4px; }
         .controls-wrapper {
@@ -150,66 +198,77 @@
         .result-item .sub-value { font-size: 12px; color: var(--text-light); text-align: right; }
         .discussion-section, .footer { margin-top: 15px; }
         .discussion-section { padding: 20px; background-color: var(--bg-card); border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); text-align: left; color: var(--text-dark); }
+        .footer {
+            margin-top: 15px;
+            font-size: 11px;
+            color: var(--text-light);
+            line-height: 1.6;
+        }
         .footer a { color: var(--primary); text-decoration: none; font-weight: 600; }
-        .header-visual .header-icon-group { width: auto; flex-basis: 22%;}
         .discussion-section h3, .discussion-section h2, .discussion-section p, .discussion-section li, .references li { text-align: left; }
         .citation {
-            font-weight: bold;
-            color: var(--danger);
-            font-size: 0.8em;
-            vertical-align: super;
-            text-decoration: none;
+            font-weight: bold; color: var(--danger); font-size: 0.8em;
+            vertical-align: super; text-decoration: none;
         }
         .example-calc {
-            background-color: #f8f9fa;
-            border-left: 4px solid var(--primary);
-            padding: 15px;
-            margin: 20px 0;
-            border-radius: 4px;
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 14px;
+            background-color: #f8f9fa; border-left: 4px solid var(--primary); padding: 15px;
+            margin: 20px 0; border-radius: 4px; font-family: 'Courier New', Courier, monospace; font-size: 14px;
+        }
+        .discussion-image {
+            float: right; width: 220px; margin-left: 20px; margin-bottom: 10px;
+            border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
         @media (max-width: 767px) {
-            .simulation-title { font-size: 1.5rem; }
+            .header-visual { height: 150px; }
+            .header-title { font-size: 1.2rem; top: 15px; }
+            .language-toggle { bottom: 10px; right: 10px; }
             .simulation-content { flex-direction: column; }
             .canvas-wrapper { order: 2; height: 450px; }
             .controls-wrapper { order: 1; }
             .gas-main-text { font-size: 11.5px; }
-            #text-ch4 { top: 32%; }
-            #text-co { top: 62%; }
-            #text-h2s { top: 66%; }
+            #text-ch4 { top: 33%; }
+            #text-co { top: 65%; }
+            #text-h2s { top: 67%; }
+            .discussion-image {
+                float: none; display: block; width: 90%;
+                max-width: 300px; margin: 20px auto;
+            }
         }
     </style>
 </head>
 <body>
     <div class="main-container">
-
+        
         <div class="header-visual">
-            <div class="header-icon-group"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#e76f51" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L3.41 13.41a2 2 0 0 1 0-2.83l7.17-7.17a2 2 0 0 1 2.83 0l7.17 7.17a2 2 0 0 1 0 2.83z"></path><line x1="12" y1="3" x2="12" y2="21"></line></svg><span>Bahaya Gas</span></div>
-            <div class="header-icon-group"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#e9c46a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg><span>Ruang Terbatas</span></div>
-            <div class="header-icon-group"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#2a9d8f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19l-7-7 7-7 7 7-7 7z"></path><path d="M12 12l-4-4 4-4 4 4-4 4z"></path></svg><span>Pengukuran</span></div>
-            <div class="header-icon-group"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#005f73" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"></path><path d="M12 8v4l2 2"></path><path d="M16.24 7.76l-1.41 1.41"></path><path d="M7.76 16.24l-1.41 1.41"></path></svg><span>Ventilasi Udara</span></div>
+            <h1 class="header-title" data-lang-key="mainTitle">Simulasi Pengukuran Gas dan Pertukaran Udara</h1>
+            <video src="https://simcalc.github.io/vid/confined-space-entry.mp4" autoplay loop muted playsinline></video>
+            <div class="language-toggle">
+                <div id="lang-btn-id" class="language-btn">
+                    <img src="https://raw.githubusercontent.com/simcalc/simcalc.github.io/a9d1856cb6598b78cd2f929b57055fb6eaf4432f/img/ID.svg" alt="Ganti ke Bahasa Indonesia">
+                </div>
+                <div id="lang-btn-en" class="language-btn">
+                    <img src="https://raw.githubusercontent.com/simcalc/simcalc.github.io/a9d1856cb6598b78cd2f929b57055fb6eaf4432f/img/EN.svg" alt="Switch to English">
+                </div>
+            </div>
         </div>
 
         <div class="simulation-area">
-            <h1 class="simulation-title">Simulasi Pengukuran Gas dan Pertukaran Udara</h1>
             <div class="simulation-content">
                 <div class="canvas-wrapper">
                     <canvas id="simulationCanvas"></canvas>
                     <div id="text-ch4" class="gas-text-overlay">
-                        <p class="gas-main-text">Pengujian Gas pada Lapisan Atas untuk memastikan tidak adanya gas methane.</p>
+                        <p class="gas-main-text" data-lang-key="textOverlayCH4">Pengujian Gas pada Lapisan Atas untuk memastikan tidak adanya gas methane.</p>
                         <p class="gas-sub-text">(CH₄, BM=16)</p>
                     </div>
                     <div id="text-co" class="gas-text-overlay">
-                         <p class="gas-main-text">Uji Lapisan Tengah untuk gas seperti Karbon Monoksida yang beratnya sama dengan udara.</p>
+                         <p class="gas-main-text" data-lang-key="textOverlayCO">Uji Lapisan Tengah untuk gas seperti Karbon Monoksida yang beratnya sama dengan udara.</p>
                         <p class="gas-sub-text">(CO, BM=28)</p>
                     </div>
                     <div id="text-h2s" class="gas-text-overlay">
-                         <p class="gas-main-text">Gas Hidrogen Sulfida sangat beracun dan lebih berat dari udara, uji Lapisan Bawah.</p>
+                         <p class="gas-main-text" data-lang-key="textOverlayH2S">Gas Hidrogen Sulfida sangat beracun dan lebih berat dari udara, uji Lapisan Bawah.</p>
                         <p class="gas-sub-text">(H₂S, BM=34)</p>
                     </div>
                 </div>
-
                 <div class="controls-wrapper">
                     <div class="gas-display-panel">
                         <div class="gas-reading"><div class="gas-label">O₂</div><div class="gas-bar-container"><div id="o2-bar" class="gas-bar"></div></div><div id="o2-value" class="gas-value">20.9 %</div></div>
@@ -218,22 +277,22 @@
                         <div class="gas-reading"><div class="gas-label">CO</div><div class="gas-bar-container"><div id="co-bar" class="gas-bar"></div></div><div id="co-value" class="gas-value">0 ppm</div></div>
                     </div>
                     <div class="action-buttons">
-                        <button id="start-demo-btn" class="sim-button">Mulai Demo</button>
-                        <button id="reset-btn" class="sim-button">Reset</button>
+                        <button id="start-demo-btn" class="sim-button" data-lang-key="btnStart">Mulai Demo</button>
+                        <button id="reset-btn" class="sim-button" data-lang-key="btnReset">Reset</button>
                     </div>
                     <div class="calculator">
-                        <h3>Simulasi Perhitungan Blower</h3>
-                        <div class="input-group"><label for="input-panjang">Panjang</label><input type="number" id="input-panjang" value="4"></div>
-                        <div class="input-group"><label for="input-lebar">Lebar</label><input type="number" id="input-lebar" value="3"></div>
-                        <div class="input-group"><label for="input-tinggi">Tinggi</label><input type="number" id="input-tinggi" value="5"></div>
+                        <h3 data-lang-key="calcTitle">Simulasi Perhitungan Blower</h3>
+                        <div class="input-group"><label for="input-panjang" data-lang-key="labelLength">Panjang</label><input type="number" id="input-panjang" value="4"></div>
+                        <div class="input-group"><label for="input-lebar" data-lang-key="labelWidth">Lebar</label><input type="number" id="input-lebar" value="3"></div>
+                        <div class="input-group"><label for="input-tinggi" data-lang-key="labelHeight">Tinggi</label><input type="number" id="input-tinggi" value="5"></div>
                         <div class="results-group">
-                            <div class="result-item"><span class="label">Volume:</span><span id="result-volume" class="value">60.00 m³</span></div>
-                            <div class="result-item"><span class="label">Std. ACH (OSHA):</span><span class="value">min 5x, rek. 10x</span></div>
+                            <div class="result-item"><span class="label" data-lang-key="resVolume">Volume:</span><span id="result-volume" class="value">60.00 m³</span></div>
+                            <div class="result-item"><span class="label" data-lang-key="resACH">Std. ACH (OSHA):</span><span class="value">min 5x, rek. 10x</span></div>
                             <hr style="border: none; border-top: 1px solid var(--border-color); margin: 10px 0;">
-                            <div class="result-item"><span class="label">Blower (Rekomendasi):</span><span id="result-flow-rec" class="value">600.00 m³/jam</span></div>
-                            <div class="result-item"><span class="label"></span><span id="result-cfm-rec" class="sub-value">(setara 353.1 CFM)</span></div>
-                            <div class="result-item"><span class="label">Blower (Minimum):</span><span id="result-flow-min" class="value">300.00 m³/jam</span></div>
-                            <div class="result-item"><span class="label"></span><span id="result-cfm-min" class="sub-value">(setara 176.6 CFM)</span></div>
+                            <div class="result-item"><span class="label" data-lang-key="resBlowerRec">Blower (Rekomendasi):</span><span id="result-flow-rec" class="value">600.00 m³/jam</span></div>
+                            <div class="result-item"><span class="label"></span><span id="result-cfm-rec" class="sub-value" data-lang-key="resEquivalent">(setara 353.1 CFM)</span></div>
+                            <div class="result-item"><span class="label" data-lang-key="resBlowerMin">Blower (Minimum):</span><span id="result-flow-min" class="value">300.00 m³/jam</span></div>
+                            <div class="result-item"><span class="label"></span><span id="result-cfm-min" class="sub-value" data-lang-key="resEquivalent">(setara 176.6 CFM)</span></div>
                         </div>
                     </div>
                 </div>
@@ -241,82 +300,74 @@
         </div>
         
         <div class="discussion-section">
-            <h2>Pembahasan</h2>
-            
-            <h3>1. Apa itu Confined Space (Ruang Terbatas)?</h3>
-            <p>
-                Secara definisi, ruang terbatas adalah area yang tidak dirancang untuk pekerjaan berkelanjutan, memiliki akses masuk dan keluar yang terbatas, serta berpotensi memiliki atmosfer berbahaya. Standar internasional seperti OSHA 1910.146 dan peraturan lokal seperti Permenaker No. 11 Tahun 2023 mendefinisikannya sebagai ruangan yang cukup besar untuk dimasuki namun tidak dimaksudkan sebagai tempat kerja rutin.<a href="#ref-1" class="citation">[1]</a><a href="#ref-2" class="citation">[2]</a>
-            </p>
-            <p>
+            <h2 data-lang-key="discussionTitle">Pembahasan</h2>
+            <h3 data-lang-key="discussionH1">1. Apa itu Confined Space (Ruang Terbatas)?</h3>
+            <div data-lang-key="discussionP1_wrapper">
+                <p>
+                    <img src="https://raw.githubusercontent.com/simcalc/simcalc.github.io/refs/heads/main/img/confined-space-entry.webp" alt="Confined Space - Ruang Terbatas" class="discussion-image">
+                    Secara definisi, ruang terbatas adalah area yang tidak dirancang untuk pekerjaan berkelanjutan, memiliki akses masuk dan keluar yang terbatas, serta berpotensi memiliki atmosfer berbahaya. Standar internasional seperti OSHA 1910.146 dan peraturan lokal seperti Permenaker No. 11 Tahun 2023 mendefinisikannya sebagai ruangan yang cukup besar untuk dimasuki namun tidak dimaksudkan sebagai tempat kerja rutin.<a href="#ref-1" class="citation">[1]</a><a href="#ref-2" class="citation">[2]</a>
+                </p>
+            </div>
+            <p data-lang-key="discussionP2">
                 Bahaya di ruang terbatas seringkali tidak terlihat dan mematikan, menjadikannya salah satu area kerja paling berisiko. Bahaya-bahaya ini dapat dikategorikan sebagai berikut:
             </p>
             <ul>
-                <li><strong>Bahaya Atmosfer:</strong> Ini adalah penyebab utama insiden fatal.
+                <li data-lang-key="discussionL1"><strong>Bahaya Atmosfer:</strong> Ini adalah penyebab utama insiden fatal.
                     <ul>
-                        <li><b>Kekurangan atau Kelebihan Oksigen:</b> Kadar oksigen di bawah 19.5% menyebabkan asfiksia, sementara di atas 23.5% meningkatkan risiko kebakaran secara drastis.<a href="#ref-1" class="citation">[1]</a><a href="#ref-4" class="citation">[4]</a></li>
-                        <li><b>Atmosfer Mudah Terbakar (Flammable):</b> Gas seperti metana (CH₄) atau uap dari pelarut dapat terakumulasi dan meledak jika bertemu sumber pemicu api.<a href="#ref-5" class="citation">[5]</a></li>
-                        <li><b>Atmosfer Beracun (Toxic):</b> Gas seperti Hidrogen Sulfida (H₂S) atau Karbon Monoksida (CO) dapat menyebabkan keracunan atau kematian bahkan pada konsentrasi rendah.</li>
+                        <li data-lang-key="discussionL1_1"><b>Kekurangan atau Kelebihan Oksigen:</b> Kadar oksigen di bawah 19.5% menyebabkan asfiksia, sementara di atas 23.5% meningkatkan risiko kebakaran secara drastis.<a href="#ref-1" class="citation">[1]</a><a href="#ref-4" class="citation">[4]</a></li>
+                        <li data-lang-key="discussionL1_2"><b>Atmosfer Mudah Terbakar (Flammable):</b> Gas seperti metana (CH₄) atau uap dari pelarut dapat terakumulasi dan meledak jika bertemu sumber pemicu api.<a href="#ref-5" class="citation">[5]</a></li>
+                        <li data-lang-key="discussionL1_3"><b>Atmosfer Beracun (Toxic):</b> Gas seperti Hidrogen Sulfida (H₂S) atau Karbon Monoksida (CO) dapat menyebabkan keracunan atau kematian bahkan pada konsentrasi rendah.</li>
                     </ul>
                 </li>
-                <li><strong>Bahaya Fisik dan Mekanis:</strong>
+                <li data-lang-key="discussionL2"><strong>Bahaya Fisik dan Mekanis:</strong>
                     <ul>
-                        <li><b>Engulfment (Tenggelam):</b> Risiko tertimbun oleh material curah seperti pasir, biji-bijian, atau cairan.<a href="#ref-3" class="citation">[3]</a></li>
-                        <li><b>Peralatan Bergerak:</b> Risiko terjepit atau tertabrak oleh agitator, auger, atau bagian mesin lain yang tidak diamankan (Lockout/Tagout).<a href="#ref-1" class="citation">[1]</a></li>
-                        <li><b>Bahaya Listrik:</b> Risiko sengatan listrik dari kabel yang rusak atau peralatan yang tidak sesuai standar di lingkungan basah/lembab.</li>
-                        <li><b>Suhu Ekstrem, Kebisingan, dan Pencahayaan Buruk:</b> Faktor-faktor ini meningkatkan stres fisik dan risiko kesalahan kerja.</li>
+                        <li data-lang-key="discussionL2_1"><b>Engulfment (Tenggelam):</b> Risiko tertimbun oleh material curah seperti pasir, biji-bijian, atau cairan.<a href="#ref-3" class="citation">[3]</a></li>
+                        <li data-lang-key="discussionL2_2"><b>Peralatan Bergerak:</b> Risiko terjepit atau tertabrak oleh agitator, auger, atau bagian mesin lain yang tidak diamankan (Lockout/Tagout).<a href="#ref-1" class="citation">[1]</a></li>
+                        <li data-lang-key="discussionL2_3"><b>Bahaya Listrik:</b> Risiko sengatan listrik dari kabel yang rusak atau peralatan yang tidak sesuai standar di lingkungan basah/lembab.</li>
+                        <li data-lang-key="discussionL2_4"><b>Suhu Ekstrem, Kebisingan, dan Pencahayaan Buruk:</b> Faktor-faktor ini meningkatkan stres fisik dan risiko kesalahan kerja.</li>
                     </ul>
                 </li>
             </ul>
-            <p>
+            <p data-lang-key="discussionP3">
                 <b>Mitigasi utama</b> melibatkan sistem izin kerja yang ketat, pengujian atmosfer sebelum dan selama bekerja, isolasi sumber energi (LOTO), ventilasi yang memadai, serta penyediaan tim penyelamat yang siaga.<a href="#ref-1" class="citation">[1]</a><a href="#ref-2" class="citation">[2]</a><a href="#ref-3" class="citation">[3]</a>
             </p>
-
-            <h3>2. Cara Melakukan Pengukuran Gas</h3>
-            <p>
+            <h3 data-lang-key="discussionH2">2. Cara Melakukan Pengukuran Gas</h3>
+            <p data-lang-key="discussionP4">
                 Asumsi bahwa udara di dalam ruang terbatas bersifat homogen adalah kesalahan fatal. Berbagai gas memiliki berat molekul (BM) yang berbeda relatif terhadap udara (BM ≈ 29), menyebabkan mereka terakumulasi pada lapisan atau strata yang berbeda. Fenomena ini disebut <b>stratifikasi gas</b>.<a href="#ref-5" class="citation">[5]</a> Oleh karena itu, OSHA mengharuskan pengujian dilakukan pada interval vertikal, umumnya setiap 1.2 meter (4 kaki), untuk mendapatkan gambaran atmosfer yang akurat.<a href="#ref-1" class="citation">[1]</a>
             </p>
             <ul>
-                <li>
-                    <strong>Lapisan Atas (Gas Ringan):</strong> Gas seperti Metana (CH₄, BM=16) jauh lebih ringan dari udara. Mereka akan naik dan terperangkap di bagian paling atas. Pengujian di area ini krusial untuk mencegah risiko ledakan.
-                </li>
-                <li>
-                    <strong>Lapisan Tengah (Gas Seberat Udara):</strong> Gas seperti Karbon Monoksida (CO, BM=28) memiliki berat yang mirip dengan udara. Gas ini cenderung bercampur dan menyebar, sehingga pengujian di lapisan tengah memberikan pembacaan yang paling representatif.
-                </li>
-                 <li>
-                    <strong>Lapisan Bawah (Gas Berat):</strong> Gas seperti Hidrogen Sulfida (H₂S, BM=34) atau uap pelarut lebih berat dari udara. Mereka akan tenggelam dan terkonsentrasi di dasar, menciptakan zona beracun yang mematikan bagi siapa pun yang masuk.
-                </li>
+                <li data-lang-key="discussionL3"><strong>Lapisan Atas (Gas Ringan):</strong> Gas seperti Metana (CH₄, BM=16) jauh lebih ringan dari udara. Mereka akan naik dan terperangkap di bagian paling atas. Pengujian di area ini krusial untuk mencegah risiko ledakan.</li>
+                <li data-lang-key="discussionL4"><strong>Lapisan Tengah (Gas Seberat Udara):</strong> Gas seperti Karbon Monoksida (CO, BM=28) memiliki berat yang mirip dengan udara. Gas ini cenderung bercampur dan menyebar, sehingga pengujian di lapisan tengah memberikan pembacaan yang paling representatif.</li>
+                <li data-lang-key="discussionL5"><strong>Lapisan Bawah (Gas Berat):</strong> Gas seperti Hidrogen Sulfida (H₂S, BM=34) atau uap pelarut lebih berat dari udara. Mereka akan tenggelam dan terkonsentrasi di dasar, menciptakan zona beracun yang mematikan bagi siapa pun yang masuk.</li>
             </ul>
-
-            <h3>3. Simulasi Perhitungan Kebutuhan Blower</h3>
-            <p>
+            <h3 data-lang-key="discussionH3">3. Simulasi Perhitungan Kebutuhan Blower</h3>
+            <p data-lang-key="discussionP5">
                 Setelah atmosfer berbahaya teridentifikasi, ventilasi paksa adalah langkah mitigasi yang tidak bisa ditawar. Tujuannya adalah untuk mengganti udara terkontaminasi dengan udara bersih hingga mencapai level aman. Standar industri mengukur ini dalam <b>Air Changes per Hour (ACH)</b>, atau berapa kali total volume udara di dalam ruang diganti setiap jamnya.<a href="#ref-1" class="citation">[1]</a><a href="#ref-4" class="citation">[4]</a>
             </p>
-            <p>
+            <p data-lang-key="discussionP6">
                 Rumus dasar yang digunakan untuk menentukan kapasitas (flow rate) blower yang dibutuhkan adalah:
             </p>
             <div class="example-calc" style="text-align: center;">
                 <b>Flow Rate Blower (m³/jam) = Volume Ruang (m³) × Target ACH</b>
             </div>
-            
             <div class="example-calc">
-                <strong>Contoh Kasus Perhitungan:</strong><br>
-                Menggunakan data default dari kalkulator, dimana sebuah tangki memiliki dimensi:
+                <strong data-lang-key="exampleCalcTitle">Contoh Kasus Perhitungan:</strong><br>
+                <span data-lang-key="exampleCalcDesc">Menggunakan data default dari kalkulator, dimana sebuah tangki memiliki dimensi:</span>
                 <ul>
-                    <li>Panjang = 4 m</li>
-                    <li>Lebar = 3 m</li>
-                    <li>Tinggi = 5 m</li>
+                    <li data-lang-key="exampleCalcLength">Panjang = 4 m</li>
+                    <li data-lang-key="exampleCalcWidth">Lebar = 3 m</li>
+                    <li data-lang-key="exampleCalcHeight">Tinggi = 5 m</li>
                 </ul>
-                <b>Langkah 1: Hitung Volume Ruang</b><br>
-                Volume = Panjang × Lebar × Tinggi<br>
+                <b data-lang-key="exampleCalcStep1">Langkah 1: Hitung Volume Ruang</b><br>
+                Volume = <span data-lang-key="labelLength">Panjang</span> × <span data-lang-key="labelWidth">Lebar</span> × <span data-lang-key="labelHeight">Tinggi</span><br>
                 Volume = 4 m × 3 m × 5 m = <b>60 m³</b><br><br>
-                <b>Langkah 2: Hitung Kebutuhan Flow Rate Blower</b><br>
-                Standar OSHA merekomendasikan minimal 5 ACH, dan merekomendasikan 10 ACH untuk praktik yang lebih aman.<a href="#ref-1" class="citation">[1]</a><br>
-                - Kebutuhan Rekomendasi (10 ACH): 60 m³ × 10 = <b>600 m³/jam</b><br>
-                - Kebutuhan Minimum (5 ACH): 60 m³ × 5 = <b>300 m³/jam</b><br><br>
-                Hasil ini menunjukkan bahwa untuk ventilasi yang efektif dan sesuai standar, diperlukan blower dengan kapasitas minimal 300 m³/jam, dan idealnya 600 m³/jam.
+                <b data-lang-key="exampleCalcStep2">Langkah 2: Hitung Kebutuhan Flow Rate Blower</b><br>
+                <span data-lang-key="exampleCalcStd">Standar OSHA merekomendasikan minimal 5 ACH, dan merekomendasikan 10 ACH untuk praktik yang lebih aman.</span><a href="#ref-1" class="citation">[1]</a><br>
+                - <span data-lang-key="resBlowerRec">Kebutuhan Rekomendasi</span> (10 ACH): 60 m³ × 10 = <b>600 m³/jam</b><br>
+                - <span data-lang-key="resBlowerMin">Kebutuhan Minimum</span> (5 ACH): 60 m³ × 5 = <b>300 m³/jam</b><br><br>
+                <span data-lang-key="exampleCalcResult">Hasil ini menunjukkan bahwa untuk ventilasi yang efektif dan sesuai standar, diperlukan blower dengan kapasitas minimal 300 m³/jam, dan idealnya 600 m³/jam.</span>
             </div>
-
-            <h2>Daftar Pustaka</h2>
+            <h2 data-lang-key="referencesTitle">Daftar Pustaka</h2>
             <ol class="references">
                 <li id="ref-1"><b>(Standar Amerika)</b> OSHA. (2015). <i>29 CFR 1910.146 - Permit-required confined spaces</i>. United States Department of Labor. <a href="https://www.osha.gov/laws-regs/regulations/standardnumber/1910/1910.146" target="_blank" rel="noopener noreferrer nofollow">Link</a></li>
                 <li id="ref-2"><b>(Standar Indonesia)</b> Kementerian Ketenagakerjaan RI. (2023). <i>Permenaker No. 11 Tahun 2023 tentang Keselamatan dan Kesehatan Kerja di Ruang Terbatas</i>. <a href="https://peraturan.bpk.go.id/Details/282464/permenaker-no-11-tahun-2023" target="_blank" rel="noopener noreferrer nofollow">Link</a></li>
@@ -327,10 +378,9 @@
                 <li id="ref-7"><b>(Jurnal SINTA 1 Indonesia)</b> I. N. A. Arsana, I. M. D. Adnyana. (2022). "Analisis Risiko Keselamatan dan Kesehatan Kerja (K3) pada Pekerjaan di Ruang Terbatas (Confined Space)." <i>Jurnal Spektran, Vol. 10(2)</i>, pp. 155-164. <a href="https://ejurnal.ppsdmmigas.esdm.go.id/sp/index.php/swarapatra/article/view/58" target="_blank" rel="noopener noreferrer nofollow">Link Jurnal</a></li>
             </ol>
         </div>
-
         <div class="footer">
-            <div>Designed by <a href="https://id.linkedin.com/in/mokhamadabrar" target="_blank" rel="noopener">Mokhamad Abrar</a></div>
-            <div>Reviewed by <a href="https://id.linkedin.com/in/avior-qhse" target="_blank" rel="noopener">Ratu Avior, MSc.</a> and <a href="https://id.linkedin.com/in/raniannisaroyani" target="_blank" rel="noopener noreferrer">Ir. Rani A. Royani, MSc.</a></div>
+            <div data-lang-key="footerDesigned">Designed by <a href="https://id.linkedin.com/in/mokhamadabrar" target="_blank" rel="noopener">Mokhamad Abrar</a></div>
+            <div data-lang-key="footerReviewed">Reviewed by <a href="https://id.linkedin.com/in/avior-qhse" target="_blank" rel="noopener">Ratu Avior, MSc.</a> and <a href="https://id.linkedin.com/in/raniannisaroyani" target="_blank" rel="noopener noreferrer">Ir. Rani A. Royani, MSc.</a></div>
             <div>Sustainable Apps Development @ Aug 2025</div>
         </div>
     </div>
@@ -360,18 +410,113 @@
         const textCH4 = document.getElementById('text-ch4');
         const textCO = document.getElementById('text-co');
         const textH2S = document.getElementById('text-h2s');
-
-        // --- Variabel State & Konfigurasi ---
+        const langBtnId = document.getElementById('lang-btn-id');
+        const langBtnEn = document.getElementById('lang-btn-en');
+        
+        // --- Variabel State & Konfigurasi (Termasuk Terjemahan) ---
         let state = {};
         const colors = {
             tank: '#d0d8e0', tankBorder: '#8d99ae', text: '#2b2d42',
             safe: '#2a9d8f', warning: '#e9c46a', danger: '#e76f51', hose: '#5a6a7b',
             airClean: 'rgba(173, 216, 230, 0.7)', airDirty: 'rgba(169, 169, 169, 0.6)'
         };
+        const translations = {
+            id: {
+                mainTitle: 'Simulasi Pengukuran Gas Confined Space dan Perhitungan Blower',
+                btnStart: 'Mulai Demo',
+                btnReset: 'Reset',
+                calcTitle: 'Simulasi Perhitungan Blower',
+                labelLength: 'Panjang',
+                labelWidth: 'Lebar',
+                labelHeight: 'Tinggi',
+                resVolume: 'Volume:',
+                resACH: 'Std. ACH (OSHA):',
+                resBlowerRec: 'Blower (Rekomendasi):',
+                resBlowerMin: 'Blower (Minimum):',
+                resEquivalent: '(setara {val} CFM)',
+                btnStop: 'Hentikan Demo',
+                textOverlayCH4: 'Pengujian Gas pada Lapisan Atas untuk memastikan tidak adanya gas methane.',
+                textOverlayCO: 'Uji Lapisan Tengah untuk gas seperti Karbon Monoksida yang beratnya sama dengan udara.',
+                textOverlayH2S: 'Gas Hidrogen Sulfida sangat beracun dan lebih berat dari udara, uji Lapisan Bawah.',
+                discussionTitle: 'Pembahasan',
+                discussionH1: '1. Apa itu Confined Space (Ruang Terbatas)?',
+                discussionP1_wrapper: '<p><img src="https://raw.githubusercontent.com/simcalc/simcalc.github.io/refs/heads/main/img/confined-space-entry.webp" alt="Confined Space - Ruang Terbatas" class="discussion-image">Secara definisi, ruang terbatas adalah area yang tidak dirancang untuk pekerjaan berkelanjutan, memiliki akses masuk dan keluar yang terbatas, serta berpotensi memiliki atmosfer berbahaya. Standar internasional seperti OSHA 1910.146 dan peraturan lokal seperti Permenaker No. 11 Tahun 2023 mendefinisikannya sebagai ruangan yang cukup besar untuk dimasuki namun tidak dimaksudkan sebagai tempat kerja rutin.<a href="#ref-1" class="citation">[1]</a><a href="#ref-2" class="citation">[2]</a></p>',
+                discussionP2: 'Bahaya di ruang terbatas seringkali tidak terlihat dan mematikan, menjadikannya salah satu area kerja paling berisiko. Bahaya-bahaya ini dapat dikategorikan sebagai berikut:',
+                discussionL1: '<strong>Bahaya Atmosfer:</strong> Ini adalah penyebab utama insiden fatal.<ul><li><b>Kekurangan atau Kelebihan Oksigen:</b> Kadar oksigen di bawah 19.5% menyebabkan asfiksia, sementara di atas 23.5% meningkatkan risiko kebakaran secara drastis.<a href="#ref-1" class="citation">[1]</a><a href="#ref-4" class="citation">[4]</a></li><li><b>Atmosfer Mudah Terbakar (Flammable):</b> Gas seperti metana (CH₄) atau uap dari pelarut dapat terakumulasi dan meledak jika bertemu sumber pemicu api.<a href="#ref-5" class="citation">[5]</a></li><li><b>Atmosfer Beracun (Toxic):</b> Gas seperti Hidrogen Sulfida (H₂S) atau Karbon Monoksida (CO) dapat menyebabkan keracunan atau kematian bahkan pada konsentrasi rendah.</li></ul>',
+                discussionL2: '<strong>Bahaya Fisik dan Mekanis:</strong><ul><li><b>Engulfment (Tenggelam):</b> Risiko tertimbun oleh material curah seperti pasir, biji-bijian, atau cairan.<a href="#ref-3" class="citation">[3]</a></li><li><b>Peralatan Bergerak:</b> Risiko terjepit atau tertabrak oleh agitator, auger, atau bagian mesin lain yang tidak diamankan (Lockout/Tagout).<a href="#ref-1" class="citation">[1]</a></li><li><b>Bahaya Listrik:</b> Risiko sengatan listrik dari kabel yang rusak atau peralatan yang tidak sesuai standar di lingkungan basah/lembab.</li><li><b>Suhu Ekstrem, Kebisingan, dan Pencahayaan Buruk:</b> Faktor-faktor ini meningkatkan stres fisik dan risiko kesalahan kerja.</li></ul>',
+                discussionP3: '<b>Mitigasi utama</b> melibatkan sistem izin kerja yang ketat, pengujian atmosfer sebelum dan selama bekerja, isolasi sumber energi (LOTO), ventilasi yang memadai, serta penyediaan tim penyelamat yang siaga.<a href="#ref-1" class="citation">[1]</a><a href="#ref-2" class="citation">[2]</a><a href="#ref-3" class="citation">[3]</a>',
+                discussionH2: '2. Cara Melakukan Pengukuran Gas',
+                discussionP4: 'Asumsi bahwa udara di dalam ruang terbatas bersifat homogen adalah kesalahan fatal. Berbagai gas memiliki berat molekul (BM) yang berbeda relatif terhadap udara (BM ≈ 29), menyebabkan mereka terakumulasi pada lapisan atau strata yang berbeda. Fenomena ini disebut <b>stratifikasi gas</b>.<a href="#ref-5" class="citation">[5]</a> Oleh karena itu, OSHA mengharuskan pengujian dilakukan pada interval vertikal, umumnya setiap 1.2 meter (4 kaki), untuk mendapatkan gambaran atmosfer yang akurat.<a href="#ref-1" class="citation">[1]</a>',
+                discussionL3: '<strong>Lapisan Atas (Gas Ringan):</strong> Gas seperti Metana (CH₄, BM=16) jauh lebih ringan dari udara. Mereka akan naik dan terperangkap di bagian paling atas. Pengujian di area ini krusial untuk mencegah risiko ledakan.',
+                discussionL4: '<strong>Lapisan Tengah (Gas Seberat Udara):</strong> Gas seperti Karbon Monoksida (CO, BM=28) memiliki berat yang mirip dengan udara. Gas ini cenderung bercampur dan menyebar, sehingga pengujian di lapisan tengah memberikan pembacaan yang paling representatif.',
+                discussionL5: '<strong>Lapisan Bawah (Gas Berat):</strong> Gas seperti Hidrogen Sulfida (H₂S, BM=34) atau uap pelarut lebih berat dari udara. Mereka akan tenggelam dan terkonsentrasi di dasar, menciptakan zona beracun yang mematikan bagi siapa pun yang masuk.',
+                discussionH3: '3. Simulasi Perhitungan Kebutuhan Blower',
+                discussionP5: 'Setelah atmosfer berbahaya teridentifikasi, ventilasi paksa adalah langkah mitigasi yang tidak bisa ditawar. Tujuannya adalah untuk mengganti udara terkontaminasi dengan udara bersih hingga mencapai level aman. Standar industri mengukur ini dalam <b>Air Changes per Hour (ACH)</b>, atau berapa kali total volume udara di dalam ruang diganti setiap jamnya.<a href="#ref-1" class="citation">[1]</a><a href="#ref-4" class="citation">[4]</a>',
+                discussionP6: 'Rumus dasar yang digunakan untuk menentukan kapasitas (flow rate) blower yang dibutuhkan adalah:',
+                exampleCalcTitle: 'Contoh Kasus Perhitungan:',
+                exampleCalcDesc: 'Menggunakan data default dari kalkulator, dimana sebuah tangki memiliki dimensi:',
+                exampleCalcLength: 'Panjang = 4 m',
+                exampleCalcWidth: 'Lebar = 3 m',
+                exampleCalcHeight: 'Tinggi = 5 m',
+                exampleCalcStep1: 'Langkah 1: Hitung Volume Ruang',
+                exampleCalcStep2: 'Langkah 2: Hitung Kebutuhan Flow Rate Blower',
+                exampleCalcStd: 'Standar OSHA merekomendasikan minimal 5 ACH, dan merekomendasikan 10 ACH untuk praktik yang lebih aman.',
+                exampleCalcResult: 'Hasil ini menunjukkan bahwa untuk ventilasi yang efektif dan sesuai standar, diperlukan blower dengan kapasitas minimal 300 m³/jam, dan idealnya 600 m³/jam.',
+                referencesTitle: 'Daftar Pustaka',
+                footerDesigned: 'Designed by <a href="https://id.linkedin.com/in/mokhamadabrar" target="_blank" rel="noopener">Mokhamad Abrar</a>',
+                footerReviewed: 'Reviewed by <a href="https://id.linkedin.com/in/avior-qhse" target="_blank" rel="noopener">Ratu Avior, MSc.</a> and <a href="https://id.linkedin.com/in/raniannisaroyani" target="_blank" rel="noopener noreferrer">Ir. Rani A. Royani, MSc.</a>'
+            },
+            en: {
+                mainTitle: 'Confined Space Gas Measurement and Blower Calculation Simulation',
+                btnStart: 'Start Demo',
+                btnReset: 'Reset',
+                calcTitle: 'Blower Calculation Simulation',
+                labelLength: 'Length',
+                labelWidth: 'Width',
+                labelHeight: 'Height',
+                resVolume: 'Volume:',
+                resACH: 'Std. ACH (OSHA):',
+                resBlowerRec: 'Blower (Recommended):',
+                resBlowerMin: 'Blower (Minimum):',
+                resEquivalent: '(equivalent to {val} CFM)',
+                btnStop: 'Stop Demo',
+                textOverlayCH4: 'Test the upper stratum to ensure the absence of light gases like methane.',
+                textOverlayCO: 'Test the middle stratum for gases with a similar density to air, such as Carbon Monoxide.',
+                textOverlayH2S: 'Hydrogen Sulfide is highly toxic and heavier than air; test the lower stratum.',
+                discussionTitle: 'Technical Discussion',
+                discussionH1: '1. What is a Confined Space?',
+                discussionP1_wrapper: '<p><img src="https://raw.githubusercontent.com/simcalc/simcalc.github.io/refs/heads/main/img/confined-space-entry.webp" alt="Confined Space Entry" class="discussion-image">By definition, a confined space is an area not designed for continuous occupancy, has limited means of entry and exit, and has the potential to contain a hazardous atmosphere. International standards like OSHA 1910.146 and local regulations such as Permenaker No. 11 Year 2023 define it as a space large enough to enter but not intended for routine work.<a href="#ref-1" class="citation">[1]</a><a href="#ref-2" class="citation">[2]</a></p>',
+                discussionP2: 'Hazards in confined spaces are often invisible and lethal, making them one of the most high-risk work environments. These hazards can be categorized as follows:',
+                discussionL1: '<strong>Atmospheric Hazards:</strong> This is the primary cause of fatal incidents.<ul><li><b>Oxygen Deficiency or Enrichment:</b> Oxygen levels below 19.5% cause asphyxiation, while levels above 23.5% drastically increase the risk of fire.<a href="#ref-1" class="citation">[1]</a><a href="#ref-4" class="citation">[4]</a></li><li><b>Flammable Atmospheres:</b> Gases such as methane (CH₄) or solvent vapors can accumulate and explode if they meet an ignition source.<a href="#ref-5" class="citation">[5]</a></li><li><b>Toxic Atmospheres:</b> Gases like Hydrogen Sulfide (H₂S) or Carbon Monoxide (CO) can cause poisoning or death even at low concentrations.</li></ul>',
+                discussionL2: '<strong>Physical and Mechanical Hazards:</strong><ul><li><b>Engulfment:</b> The risk of being buried by bulk materials such as sand, grain, or liquids.<a href="#ref-3" class="citation">[3]</a></li><li><b>Moving Equipment:</b> The risk of being crushed or struck by agitators, augers, or other machine parts that have not been secured (Lockout/Tagout).<a href="#ref-1" class="citation">[1]</a></li><li><b>Electrical Hazards:</b> The risk of electric shock from damaged cables or non-compliant equipment in wet/damp environments.</li><li><b>Extreme Temperatures, Noise, and Poor Lighting:</b> These factors increase physical stress and the risk of operational errors.</li></ul>',
+                discussionP3: '<b>Primary mitigation</b> involves a strict permit-to-work system, atmospheric testing before and during work, energy source isolation (LOTO), adequate ventilation, and a standby rescue team.<a href="#ref-1" class="citation">[1]</a><a href="#ref-2" class="citation">[2]</a><a href="#ref-3" class="citation">[3]</a>',
+                discussionH2: '2. How to Perform Gas Measurement',
+                discussionP4: 'Assuming the air in a confined space is homogeneous is a fatal mistake. Various gases have different molecular weights (MW) relative to air (MW ≈ 29), causing them to accumulate in different layers or strata. This phenomenon is called <b>gas stratification</b>.<a href="#ref-5" class="citation">[5]</a> Therefore, OSHA requires testing at vertical intervals, typically every 4 feet (1.2 meters), to obtain an accurate atmospheric profile.<a href="#ref-1" class="citation">[1]</a>',
+                discussionL3: '<strong>Upper Stratum (Light Gases):</strong> Gases like Methane (CH₄, MW=16) are significantly lighter than air. They will rise and become trapped at the highest point. Testing this area is crucial to prevent explosion risks.',
+                discussionL4: '<strong>Middle Stratum (Gases with Neutral Buoyancy):</strong> Gases such as Carbon Monoxide (CO, MW=28) have a weight similar to air. These gases tend to mix and diffuse, making the middle layer the most representative sampling point.',
+                discussionL5: '<strong>Lower Stratum (Heavy Gases):</strong> Gases like Hydrogen Sulfide (H₂S, MW=34) or solvent vapors are heavier than air. They will sink and concentrate at the bottom, creating a toxic zone that is deadly to anyone entering.',
+                discussionH3: '3. Blower Requirement Calculation Simulation',
+                discussionP5: 'Once a hazardous atmosphere is identified, forced ventilation is a non-negotiable mitigation step. The objective is to replace the contaminated air with fresh air until safe levels are reached. The industry standard for this is <b>Air Changes per Hour (ACH)</b>, which measures how many times the total air volume is replaced per hour.<a href="#ref-1" class="citation">[1]</a><a href="#ref-4" class="citation">[4]</a>',
+                discussionP6: 'The basic formula used to determine the required blower capacity (flow rate) is:',
+                exampleCalcTitle: 'Calculation Case Study:',
+                exampleCalcDesc: 'Using the default data from the calculator, where a tank has the following dimensions:',
+                exampleCalcLength: 'Length = 4 m',
+                exampleCalcWidth: 'Width = 3 m',
+                exampleCalcHeight: 'Height = 5 m',
+                exampleCalcStep1: 'Step 1: Calculate the Space Volume',
+                exampleCalcStep2: 'Step 2: Calculate the Required Blower Flow Rate',
+                exampleCalcStd: 'OSHA standards require a minimum of 5 ACH, with 10 ACH being the recommended practice for enhanced safety.',
+                exampleCalcResult: 'This result indicates that for effective, compliant ventilation, a blower with a capacity of at least 300 m³/hr is required, with 600 m³/hr being ideal.',
+                referencesTitle: 'References',
+                footerDesigned: 'Designed by <a href="https://id.linkedin.com/in/mokhamadabrar" target="_blank" rel="noopener">Mokhamad Abrar</a>',
+                footerReviewed: 'Reviewed by <a href="https://id.linkedin.com/in/avior-qhse" target="_blank" rel="noopener">Ratu Avior, MSc.</a> and <a href="https://id.linkedin.com/in/raniannisaroyani" target="_blank" rel="noopener noreferrer">Ir. Rani A. Royani, MSc.</a>'
+            }
+        };
 
         // --- FUNGSI UTAMA ---
         function getInitialState() {
             return {
+                currentLanguage: 'id',
                 probeHeight: 0, showCH4: false, showCO: false, showH2S: false,
                 isVentilating: false, ventilatorAngle: 0,
                 particles: [], iconAnimationPhase: 0, isDemoRunning: false, demoTimeoutId: null,
@@ -388,7 +533,43 @@
             };
         }
 
+        function updateLanguage(lang) {
+            state.currentLanguage = lang;
+            
+            if (lang === 'id') {
+                langBtnId.classList.add('active');
+                langBtnEn.classList.remove('active');
+            } else {
+                langBtnEn.classList.add('active');
+                langBtnId.classList.remove('active');
+            }
+            
+            document.querySelectorAll('[data-lang-key]').forEach(el => {
+                const key = el.dataset.langKey;
+                if (translations[lang][key]) {
+                    if (key.startsWith('resEquivalent')) {
+                        const val = key === 'resEquivalent' ? state.calculator.flowCFM.toFixed(1) : state.calculator.flowCFM_min.toFixed(1);
+                        el.textContent = translations[lang][key].replace('{val}', val);
+                    } else {
+                        el.innerHTML = translations[lang][key];
+                    }
+                }
+            });
+
+            const referenceLinks = document.querySelectorAll('.references li a');
+            referenceLinks.forEach(link => {
+                if (lang === 'en') {
+                    link.setAttribute('hreflang', 'en');
+                } else {
+                    link.removeAttribute('hreflang');
+                }
+            });
+
+            updateUI();
+        }
+
         function updateUI() {
+            const lang = state.currentLanguage;
             o2Value.textContent = `${state.readings.o2.value.toFixed(1)} ${state.readings.o2.unit}`;
             o2Bar.style.width = `${state.readings.o2.bar}%`;
             o2Bar.style.backgroundColor = state.readings.o2.color;
@@ -401,12 +582,12 @@
             coValue.textContent = `${state.readings.co.value} ${state.readings.co.unit}`;
             coBar.style.width = `${state.readings.co.bar}%`;
             coBar.style.backgroundColor = state.readings.co.color;
-            startDemoBtn.textContent = state.isDemoRunning ? 'Hentikan Demo' : 'Mulai Demo';
+            startDemoBtn.textContent = state.isDemoRunning ? translations[lang].btnStop : translations[lang].btnStart;
             resultVolume.textContent = `${state.calculator.volume.toFixed(2)} m³`;
             resultFlowRec.textContent = `${state.calculator.flowM3.toFixed(2)} m³/jam`;
-            resultCfmRec.textContent = `(setara ${state.calculator.flowCFM.toFixed(1)} CFM)`;
+            resultCfmRec.textContent = translations[lang].resEquivalent.replace('{val}', state.calculator.flowCFM.toFixed(1));
             resultFlowMin.textContent = `${state.calculator.flowM3_min.toFixed(2)} m³/jam`;
-            resultCfmMin.textContent = `(setara ${state.calculator.flowCFM_min.toFixed(1)} CFM)`;
+            resultCfmMin.textContent = translations[lang].resEquivalent.replace('{val}', state.calculator.flowCFM_min.toFixed(1));
         }
         
         function renderCanvas() {
@@ -562,7 +743,9 @@
         function doResetAndStopDemo() {
             clearTimeout(state.demoTimeoutId);
             const calcState = { ...state.calculator };
+            const currentLang = state.currentLanguage; // Simpan bahasa saat ini
             state = getInitialState();
+            state.currentLanguage = currentLang; // Pulihkan bahasa
             state.calculator = calcState;
             inputPanjang.value = calcState.panjang;
             inputLebar.value = calcState.lebar;
@@ -570,7 +753,7 @@
             textCH4.classList.remove('visible');
             textCO.classList.remove('visible');
             textH2S.classList.remove('visible');
-            updateUI();
+            updateLanguage(state.currentLanguage);
             renderCanvas();
         }
         
@@ -629,14 +812,17 @@
             updateUI();
         }
         
+        // --- Inisialisasi ---
         window.addEventListener('resize', renderCanvas);
         startDemoBtn.addEventListener('click', () => { state.isDemoRunning ? doResetAndStopDemo() : startDemo(); });
         resetBtn.addEventListener('click', doResetAndStopDemo);
         [inputPanjang, inputLebar, inputTinggi].forEach(input => input.addEventListener('input', updateCalculations));
+        langBtnId.addEventListener('click', () => updateLanguage('id'));
+        langBtnEn.addEventListener('click', () => updateLanguage('en'));
         
         state = getInitialState();
         updateCalculations();
-        updateUI();
+        updateLanguage(state.currentLanguage);
         window.onload = () => {
             renderCanvas();
             animate();
@@ -644,5 +830,4 @@
     </script>
 </body>
 </html>
-
 
