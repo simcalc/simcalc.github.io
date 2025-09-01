@@ -18,6 +18,9 @@
             --button-bg: #4a4e69;
             --button-hover: #2b2d42;
         }
+        html {
+            scroll-behavior: smooth;
+        }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: var(--bg-light);
@@ -53,11 +56,22 @@
         .header-icon-group:hover { transform: scale(1.1); }
         .simulation-area {
             display: flex;
+            flex-direction: column; /* Mengubah orientasi agar judul di atas */
             gap: 15px;
             background-color: var(--bg-card);
             border-radius: 15px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             padding: 20px;
+        }
+        .simulation-title {
+            font-size: 1.75rem;
+            color: var(--text-dark);
+            margin-bottom: 10px;
+        }
+        .simulation-content {
+            display: flex;
+            gap: 15px;
+            width: 100%;
         }
         .canvas-wrapper {
             flex: 1 1 45%;
@@ -77,7 +91,7 @@
         .gas-text-overlay {
             position: absolute;
             left: 50%;
-            transform: translate(-50%, -50%); /* Menggunakan transform untuk centering vertikal & horizontal */
+            transform: translate(-50%, -50%);
             width: 85%;
             color: var(--text-dark);
             text-align: center;
@@ -88,7 +102,6 @@
         .gas-text-overlay.visible {
             opacity: 1;
         }
-        /* Posisi default untuk Desktop */
         #text-ch4 { top: 25%; }
         #text-co { top: 50%; }
         #text-h2s { top: 80%; }
@@ -135,27 +148,42 @@
         .result-item .label { color: var(--text-light); }
         .result-item .value { font-weight: bold; color: var(--text-dark); }
         .result-item .sub-value { font-size: 12px; color: var(--text-light); text-align: right; }
-
-        @media (max-width: 770px) {
-            .simulation-area { flex-direction: column; }
-            .canvas-wrapper { order: 2; height: 450px; }
-            .controls-wrapper { order: 1; }
-            .gas-main-text { font-size: 12.0px; } /* FIX: Ukuran font disesuaikan */
-            /* FIX: Posisi vertikal diatur ulang untuk seluler */
-            #text-ch4 { top: 30%; }
-            #text-co { top: 60%; }
-            #text-h2s { top: 67%; }
-        }
         .discussion-section, .footer { margin-top: 15px; }
         .discussion-section { padding: 20px; background-color: var(--bg-card); border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); text-align: left; color: var(--text-dark); }
         .footer a { color: var(--primary); text-decoration: none; font-weight: 600; }
         .header-visual .header-icon-group { width: auto; flex-basis: 22%;}
         .discussion-section h3, .discussion-section h2, .discussion-section p, .discussion-section li, .references li { text-align: left; }
+        .citation {
+            font-weight: bold;
+            color: var(--danger);
+            font-size: 0.8em;
+            vertical-align: super;
+            text-decoration: none;
+        }
+        .example-calc {
+            background-color: #f8f9fa;
+            border-left: 4px solid var(--primary);
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+        }
+        @media (max-width: 767px) {
+            .simulation-title { font-size: 1.5rem; }
+            .simulation-content { flex-direction: column; }
+            .canvas-wrapper { order: 2; height: 450px; }
+            .controls-wrapper { order: 1; }
+            .gas-main-text { font-size: 11.5px; }
+            #text-ch4 { top: 25%; }
+            #text-co { top: 50%; }
+            #text-h2s { top: 80%; }
+        }
     </style>
 </head>
 <body>
     <div class="main-container">
-        
+
         <div class="header-visual">
             <div class="header-icon-group"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#e76f51" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L3.41 13.41a2 2 0 0 1 0-2.83l7.17-7.17a2 2 0 0 1 2.83 0l7.17 7.17a2 2 0 0 1 0 2.83z"></path><line x1="12" y1="3" x2="12" y2="21"></line></svg><span>Bahaya Gas</span></div>
             <div class="header-icon-group"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#e9c46a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg><span>Ruang Terbatas</span></div>
@@ -164,58 +192,146 @@
         </div>
 
         <div class="simulation-area">
-            
-            <div class="canvas-wrapper">
-                <canvas id="simulationCanvas"></canvas>
-                <div id="text-ch4" class="gas-text-overlay">
-                    <p class="gas-main-text">Pengujian Gas pada Lapisan Atas untuk memastikan tidak adanya gas methane.</p>
-                    <p class="gas-sub-text">(CH₄, BM=16)</p>
+            <h1 class="simulation-title">Simulasi Pengukuran Gas Confined Space dan Perhitungan Blower</h1>
+            <div class="simulation-content">
+                <div class="canvas-wrapper">
+                    <canvas id="simulationCanvas"></canvas>
+                    <div id="text-ch4" class="gas-text-overlay">
+                        <p class="gas-main-text">Pengujian Gas pada Lapisan Atas untuk memastikan tidak adanya gas methane.</p>
+                        <p class="gas-sub-text">(CH₄, BM=16)</p>
+                    </div>
+                    <div id="text-co" class="gas-text-overlay">
+                         <p class="gas-main-text">Uji Lapisan Tengah untuk gas seperti Karbon Monoksida yang beratnya sama dengan udara.</p>
+                        <p class="gas-sub-text">(CO, BM=28)</p>
+                    </div>
+                    <div id="text-h2s" class="gas-text-overlay">
+                         <p class="gas-main-text">Gas Hidrogen Sulfida sangat beracun dan lebih berat dari udara, uji Lapisan Bawah.</p>
+                        <p class="gas-sub-text">(H₂S, BM=34)</p>
+                    </div>
                 </div>
-                <div id="text-co" class="gas-text-overlay">
-                     <p class="gas-main-text">Uji Lapisan Tengah untuk gas seperti Karbon Monoksida yang beratnya sama dengan udara.</p>
-                    <p class="gas-sub-text">(CO, BM=28)</p>
-                </div>
-                <div id="text-h2s" class="gas-text-overlay">
-                     <p class="gas-main-text">Gas Hidrogen Sulfida sangat beracun dan lebih berat dari udara, uji Lapisan Bawah.</p>
-                    <p class="gas-sub-text">(H₂S, BM=34)</p>
-                </div>
-            </div>
 
-            <div class="controls-wrapper">
-                <div class="gas-display-panel">
-                    <div class="gas-reading"><div class="gas-label">O₂</div><div class="gas-bar-container"><div id="o2-bar" class="gas-bar"></div></div><div id="o2-value" class="gas-value">20.9 %</div></div>
-                    <div class="gas-reading"><div class="gas-label">LEL</div><div class="gas-bar-container"><div id="lel-bar" class="gas-bar"></div></div><div id="lel-value" class="gas-value">0 %</div></div>
-                    <div class="gas-reading"><div class="gas-label">H₂S</div><div class="gas-bar-container"><div id="h2s-bar" class="gas-bar"></div></div><div id="h2s-value" class="gas-value">0 ppm</div></div>
-                    <div class="gas-reading"><div class="gas-label">CO</div><div class="gas-bar-container"><div id="co-bar" class="gas-bar"></div></div><div id="co-value" class="gas-value">0 ppm</div></div>
-                </div>
-                <div class="action-buttons">
-                    <button id="start-demo-btn" class="sim-button">Mulai Demo</button>
-                    <button id="reset-btn" class="sim-button">Reset</button>
-                </div>
-                <div class="calculator">
-                    <h3>Simulasi Perhitungan Blower</h3>
-                    <div class="input-group"><label for="input-panjang">Panjang</label><input type="number" id="input-panjang" value="4"></div>
-                    <div class="input-group"><label for="input-lebar">Lebar</label><input type="number" id="input-lebar" value="3"></div>
-                    <div class="input-group"><label for="input-tinggi">Tinggi</label><input type="number" id="input-tinggi" value="5"></div>
-                    <div class="results-group">
-                        <div class="result-item"><span class="label">Volume:</span><span id="result-volume" class="value">60.00 m³</span></div>
-                        <div class="result-item"><span class="label">Std. ACH (OSHA):</span><span class="value">min 5x, rek. 10x</span></div>
-                        <hr style="border: none; border-top: 1px solid var(--border-color); margin: 10px 0;">
-                        <div class="result-item"><span class="label">Blower (Rekomendasi):</span><span id="result-flow-rec" class="value">600.00 m³/jam</span></div>
-                        <div class="result-item"><span class="label"></span><span id="result-cfm-rec" class="sub-value">(setara 353.1 CFM)</span></div>
-                        <div class="result-item"><span class="label">Blower (Minimum):</span><span id="result-flow-min" class="value">300.00 m³/jam</span></div>
-                        <div class="result-item"><span class="label"></span><span id="result-cfm-min" class="sub-value">(setara 176.6 CFM)</span></div>
+                <div class="controls-wrapper">
+                    <div class="gas-display-panel">
+                        <div class="gas-reading"><div class="gas-label">O₂</div><div class="gas-bar-container"><div id="o2-bar" class="gas-bar"></div></div><div id="o2-value" class="gas-value">20.9 %</div></div>
+                        <div class="gas-reading"><div class="gas-label">LEL</div><div class="gas-bar-container"><div id="lel-bar" class="gas-bar"></div></div><div id="lel-value" class="gas-value">0 %</div></div>
+                        <div class="gas-reading"><div class="gas-label">H₂S</div><div class="gas-bar-container"><div id="h2s-bar" class="gas-bar"></div></div><div id="h2s-value" class="gas-value">0 ppm</div></div>
+                        <div class="gas-reading"><div class="gas-label">CO</div><div class="gas-bar-container"><div id="co-bar" class="gas-bar"></div></div><div id="co-value" class="gas-value">0 ppm</div></div>
+                    </div>
+                    <div class="action-buttons">
+                        <button id="start-demo-btn" class="sim-button">Mulai Demo</button>
+                        <button id="reset-btn" class="sim-button">Reset</button>
+                    </div>
+                    <div class="calculator">
+                        <h3>Simulasi Perhitungan Blower</h3>
+                        <div class="input-group"><label for="input-panjang">Panjang</label><input type="number" id="input-panjang" value="4"></div>
+                        <div class="input-group"><label for="input-lebar">Lebar</label><input type="number" id="input-lebar" value="3"></div>
+                        <div class="input-group"><label for="input-tinggi">Tinggi</label><input type="number" id="input-tinggi" value="5"></div>
+                        <div class="results-group">
+                            <div class="result-item"><span class="label">Volume:</span><span id="result-volume" class="value">60.00 m³</span></div>
+                            <div class="result-item"><span class="label">Std. ACH (OSHA):</span><span class="value">min 5x, rek. 10x</span></div>
+                            <hr style="border: none; border-top: 1px solid var(--border-color); margin: 10px 0;">
+                            <div class="result-item"><span class="label">Blower (Rekomendasi):</span><span id="result-flow-rec" class="value">600.00 m³/jam</span></div>
+                            <div class="result-item"><span class="label"></span><span id="result-cfm-rec" class="sub-value">(setara 353.1 CFM)</span></div>
+                            <div class="result-item"><span class="label">Blower (Minimum):</span><span id="result-flow-min" class="value">300.00 m³/jam</span></div>
+                            <div class="result-item"><span class="label"></span><span id="result-cfm-min" class="sub-value">(setara 176.6 CFM)</span></div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
         
         <div class="discussion-section">
-           <!-- Pembahasan -->
+            <h2>Pembahasan</h2>
+            
+            <h3>1. Apa itu Confined Space (Ruang Terbatas)?</h3>
+            <p>
+                Secara definisi, ruang terbatas adalah area yang tidak dirancang untuk pekerjaan berkelanjutan, memiliki akses masuk dan keluar yang terbatas, serta berpotensi memiliki atmosfer berbahaya. Standar internasional seperti OSHA 1910.146 dan peraturan lokal seperti Permenaker No. 11 Tahun 2023 mendefinisikannya sebagai ruangan yang cukup besar untuk dimasuki namun tidak dimaksudkan sebagai tempat kerja rutin.<a href="#ref-1" class="citation">[1]</a><a href="#ref-2" class="citation">[2]</a>
+            </p>
+            <p>
+                Bahaya di ruang terbatas seringkali tidak terlihat dan mematikan, menjadikannya salah satu area kerja paling berisiko. Bahaya-bahaya ini dapat dikategorikan sebagai berikut:
+            </p>
+            <ul>
+                <li><strong>Bahaya Atmosfer:</strong> Ini adalah penyebab utama insiden fatal.
+                    <ul>
+                        <li><b>Kekurangan atau Kelebihan Oksigen:</b> Kadar oksigen di bawah 19.5% menyebabkan asfiksia, sementara di atas 23.5% meningkatkan risiko kebakaran secara drastis.<a href="#ref-1" class="citation">[1]</a><a href="#ref-4" class="citation">[4]</a></li>
+                        <li><b>Atmosfer Mudah Terbakar (Flammable):</b> Gas seperti metana (CH₄) atau uap dari pelarut dapat terakumulasi dan meledak jika bertemu sumber pemicu api.<a href="#ref-5" class="citation">[5]</a></li>
+                        <li><b>Atmosfer Beracun (Toxic):</b> Gas seperti Hidrogen Sulfida (H₂S) atau Karbon Monoksida (CO) dapat menyebabkan keracunan atau kematian bahkan pada konsentrasi rendah.</li>
+                    </ul>
+                </li>
+                <li><strong>Bahaya Fisik dan Mekanis:</strong>
+                    <ul>
+                        <li><b>Engulfment (Tenggelam):</b> Risiko tertimbun oleh material curah seperti pasir, biji-bijian, atau cairan.<a href="#ref-3" class="citation">[3]</a></li>
+                        <li><b>Peralatan Bergerak:</b> Risiko terjepit atau tertabrak oleh agitator, auger, atau bagian mesin lain yang tidak diamankan (Lockout/Tagout).<a href="#ref-1" class="citation">[1]</a></li>
+                        <li><b>Bahaya Listrik:</b> Risiko sengatan listrik dari kabel yang rusak atau peralatan yang tidak sesuai standar di lingkungan basah/lembab.</li>
+                        <li><b>Suhu Ekstrem, Kebisingan, dan Pencahayaan Buruk:</b> Faktor-faktor ini meningkatkan stres fisik dan risiko kesalahan kerja.</li>
+                    </ul>
+                </li>
+            </ul>
+            <p>
+                <b>Mitigasi utama</b> melibatkan sistem izin kerja yang ketat, pengujian atmosfer sebelum dan selama bekerja, isolasi sumber energi (LOTO), ventilasi yang memadai, serta penyediaan tim penyelamat yang siaga.<a href="#ref-1" class="citation">[1]</a><a href="#ref-2" class="citation">[2]</a><a href="#ref-3" class="citation">[3]</a>
+            </p>
+
+            <h3>2. Cara Melakukan Pengukuran Gas</h3>
+            <p>
+                Asumsi bahwa udara di dalam ruang terbatas bersifat homogen adalah kesalahan fatal. Berbagai gas memiliki berat molekul (BM) yang berbeda relatif terhadap udara (BM ≈ 29), menyebabkan mereka terakumulasi pada lapisan atau strata yang berbeda. Fenomena ini disebut <b>stratifikasi gas</b>.<a href="#ref-5" class="citation">[5]</a> Oleh karena itu, OSHA mengharuskan pengujian dilakukan pada interval vertikal, umumnya setiap 1.2 meter (4 kaki), untuk mendapatkan gambaran atmosfer yang akurat.<a href="#ref-1" class="citation">[1]</a>
+            </p>
+            <ul>
+                <li>
+                    <strong>Lapisan Atas (Gas Ringan):</strong> Gas seperti Metana (CH₄, BM=16) jauh lebih ringan dari udara. Mereka akan naik dan terperangkap di bagian paling atas. Pengujian di area ini krusial untuk mencegah risiko ledakan.
+                </li>
+                <li>
+                    <strong>Lapisan Tengah (Gas Seberat Udara):</strong> Gas seperti Karbon Monoksida (CO, BM=28) memiliki berat yang mirip dengan udara. Gas ini cenderung bercampur dan menyebar, sehingga pengujian di lapisan tengah memberikan pembacaan yang paling representatif.
+                </li>
+                 <li>
+                    <strong>Lapisan Bawah (Gas Berat):</strong> Gas seperti Hidrogen Sulfida (H₂S, BM=34) atau uap pelarut lebih berat dari udara. Mereka akan tenggelam dan terkonsentrasi di dasar, menciptakan zona beracun yang mematikan bagi siapa pun yang masuk.
+                </li>
+            </ul>
+
+            <h3>3. Simulasi Perhitungan Kebutuhan Blower</h3>
+            <p>
+                Setelah atmosfer berbahaya teridentifikasi, ventilasi paksa adalah langkah mitigasi yang tidak bisa ditawar. Tujuannya adalah untuk mengganti udara terkontaminasi dengan udara bersih hingga mencapai level aman. Standar industri mengukur ini dalam <b>Air Changes per Hour (ACH)</b>, atau berapa kali total volume udara di dalam ruang diganti setiap jamnya.<a href="#ref-1" class="citation">[1]</a><a href="#ref-4" class="citation">[4]</a>
+            </p>
+            <p>
+                Rumus dasar yang digunakan untuk menentukan kapasitas (flow rate) blower yang dibutuhkan adalah:
+            </p>
+            <div class="example-calc" style="text-align: center;">
+                <b>Flow Rate Blower (m³/jam) = Volume Ruang (m³) × Target ACH</b>
+            </div>
+            
+            <div class="example-calc">
+                <strong>Contoh Kasus Perhitungan:</strong><br>
+                Menggunakan data default dari kalkulator, dimana sebuah tangki memiliki dimensi:
+                <ul>
+                    <li>Panjang = 4 m</li>
+                    <li>Lebar = 3 m</li>
+                    <li>Tinggi = 5 m</li>
+                </ul>
+                <b>Langkah 1: Hitung Volume Ruang</b><br>
+                Volume = Panjang × Lebar × Tinggi<br>
+                Volume = 4 m × 3 m × 5 m = <b>60 m³</b><br><br>
+                <b>Langkah 2: Hitung Kebutuhan Flow Rate Blower</b><br>
+                Standar OSHA merekomendasikan minimal 5 ACH, dan merekomendasikan 10 ACH untuk praktik yang lebih aman.<a href="#ref-1" class="citation">[1]</a><br>
+                - Kebutuhan Rekomendasi (10 ACH): 60 m³ × 10 = <b>600 m³/jam</b><br>
+                - Kebutuhan Minimum (5 ACH): 60 m³ × 5 = <b>300 m³/jam</b><br><br>
+                Hasil ini menunjukkan bahwa untuk ventilasi yang efektif dan sesuai standar, diperlukan blower dengan kapasitas minimal 300 m³/jam, dan idealnya 600 m³/jam.
+            </div>
+
+            <h2>Daftar Pustaka</h2>
+            <ol class="references">
+                <li id="ref-1"><b>(Standar Amerika)</b> OSHA. (2015). <i>29 CFR 1910.146 - Permit-required confined spaces</i>. United States Department of Labor. <a href="https://www.osha.gov/laws-regs/regulations/standardnumber/1910/1910.146" target="_blank" rel="noopener noreferrer nofollow">Link</a></li>
+                <li id="ref-2"><b>(Standar Indonesia)</b> Kementerian Ketenagakerjaan RI. (2023). <i>Permenaker No. 11 Tahun 2023 tentang Keselamatan dan Kesehatan Kerja di Ruang Terbatas</i>. <a href="https://peraturan.bpk.go.id/Details/282464/permenaker-no-11-tahun-2023" target="_blank" rel="noopener noreferrer nofollow">Link</a></li>
+                <li id="ref-3"><b>(Standar Amerika)</b> ANSI/ASSP. (2017). <i>Z117.1-2017 - Safety Requirements for Confined Spaces</i>. American National Standards Institute / American Society of Safety Professionals. <a href="https://www.assp.org/standards/standards-topics/confined-spaces-z117-1" target="_blank" rel="noopener noreferrer nofollow">Link</a></li>
+                <li id="ref-4"><b>(Standar Eropa/UK)</b> HSE UK. (2014). <i>L101 - Safe work in confined spaces</i>. Health and Safety Executive. <a href="https://www.hse.gov.uk/pubns/priced/l101.pdf" target="_blank" rel="noopener noreferrer nofollow">Link</a></li>
+                <li id="ref-5"><b>(Lembaga Internasional)</b> NIOSH. (1987). <i>Publication No. 87-113: A Guide to Safety in Confined Spaces</i>. U.S. Department of Health and Human Services. <a href="https://www.cdc.gov/niosh/docs/87-113/" target="_blank" rel="noopener noreferrer nofollow">Link</a></li>
+                <li id="ref-6"><b>(Jurnal Q1 Internasional)</b> P. K. Marhavilas, D. K. Filippidis, et al. (2021). "A comprehensive risk assessment of confined spaces: A review and a proposed new methodology." <i>Journal of Loss Prevention in the Process Industries, Vol. 71</i>. <a href="https://www.sciencedirect.com/journal/journal-of-loss-prevention-in-the-process-industries" target="_blank" rel="noopener noreferrer nofollow">Link Jurnal</a></li>
+                <li id="ref-7"><b>(Jurnal SINTA 1 Indonesia)</b> I. N. A. Arsana, I. M. D. Adnyana. (2022). "Analisis Risiko Keselamatan dan Kesehatan Kerja (K3) pada Pekerjaan di Ruang Terbatas (Confined Space)." <i>Jurnal Spektran, Vol. 10(2)</i>, pp. 155-164. <a href="https://ejurnal.ppsdmmigas.esdm.go.id/sp/index.php/swarapatra/article/view/58" target="_blank" rel="noopener noreferrer nofollow">Link Jurnal</a></li>
+            </ol>
         </div>
 
         <div class="footer">
-            <!-- Footer -->
+            <div>Designed by <a href="https://id.linkedin.com/in/mokhamadabrar" target="_blank" rel="noopener">Mokhamad Abrar</a></div>
+            <div>Reviewed by <a href="https://id.linkedin.com/in/avior-qhse" target="_blank" rel="noopener">Ratu Avior, MSc.</a> and <a href="https://id.linkedin.com/in/raniannisaroyani" target="_blank" rel="noopener noreferrer">Ir. Rani A. Royani, MSc.</a></div>
+            <div>Sustainable Apps Development @ Aug 2025</div>
         </div>
     </div>
 
@@ -528,4 +644,5 @@
     </script>
 </body>
 </html>
+
 
