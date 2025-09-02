@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulasi Siklus Air, Erosi & Sedimentasi (Model RUSLE)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            overflow: hidden; /* Prevent scrolling */
+        }
+        .slider-container {
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            align-items: center;
+            gap: 1rem;
+        }
+        canvas {
+            background: linear-gradient(to bottom, #87CEEB 0%, #d3eaf2 70%);
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800 flex flex-col h-screen">
+
+    <header class="bg-white shadow-md p-4">
+        <h1 class="text-2xl font-bold text-center text-gray-700">Simulasi Erosi & Sedimentasi Berbasis Model RUSLE</h1>
+    </header>
+
+    <div class="flex-grow flex flex-col md:flex-row p-4 gap-4 overflow-hidden">
+        
+        <!-- Kolom Kontrol & Data -->
+        <div class="w-full md:w-1/3 bg-white p-6 rounded-lg shadow-lg flex flex-col gap-4 overflow-y-auto">
+            <div>
+                <h2 class="text-xl font-bold mb-4 border-b pb-2">Panel Kontrol Simulasi</h2>
+                <div class="flex justify-center gap-4 mb-4">
+                    <button id="startStopBtn" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300 w-1/2">Mulai</button>
+                    <button id="resetBtn" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300 w-1/2">Reset</button>
+                </div>
+            </div>
+
+            <!-- Parameter RUSLE -->
+            <div>
+                <h3 class="text-lg font-semibold mb-3">Parameter RUSLE (A = R·K·LS·C·P)</h3>
+                <div class="space-y-4">
+                    <!-- R Factor -->
+                    <div class="slider-container">
+                        <label for="rFactor" class="font-medium" title="Faktor Erosivitas Hujan (MJ·mm/ha·jam·th)">R</label>
+                        <input type="range" id="rFactor" min="50" max="1000" value="350" class="w-full">
+                        <span id="rValue" class="font-mono text-blue-600 w-12 text-center">350</span>
+                    </div>
+                    <!-- K Factor -->
+                    <div class="slider-container">
+                        <label for="kFactor" class="font-medium" title="Faktor Erodibilitas Tanah (ton·ha·jam/ha·MJ·mm)">K</label>
+                        <input type="range" id="kFactor" min="0.05" max="0.6" value="0.25" step="0.01" class="w-full">
+                        <span id="kValue" class="font-mono text-blue-600 w-12 text-center">0.25</span>
+                    </div>
+                    <!-- LS Factor -->
+                    <div class="slider-container">
+                        <label for="lsFactor" class="font-medium" title="Faktor Panjang & Kemiringan Lereng">LS</label>
+                        <input type="range" id="lsFactor" min="0.1" max="20" value="5" step="0.1" class="w-full">
+                        <span id="lsValue" class="font-mono text-blue-600 w-12 text-center">5.0</span>
+                    </div>
+                    <!-- C Factor -->
+                    <div class="slider-container">
+                        <label for="cFactor" class="font-medium" title="Faktor Pengelolaan Tanaman/Penutup Lahan">C</label>
+                        <input type="range" id="cFactor" min="0.01" max="1.0" value="0.4" step="0.01" class="w-full">
+                        <span id="cValue" class="font-mono text-blue-600 w-12 text-center">0.40</span>
+                    </div>
+                    <!-- P Factor -->
+                    <div class="slider-container">
+                        <label for="pFactor" class="font-medium" title="Faktor Tindakan Konservasi">P</label>
+                        <input type="range" id="pFactor" min="0.1" max="1.0" value="1.0" step="0.01" class="w-full">
+                        <span id="pValue" class="font-mono text-blue-600 w-12 text-center">1.00</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Output Data -->
+            <div class="mt-4 border-t pt-4">
+                <h3 class="text-lg font-semibold mb-3">Data Hasil Simulasi</h3>
+                <div class="space-y-3">
+                    <div class="flex justify-between p-2 bg-gray-50 rounded">
+                        <span class="font-medium">Hari Simulasi:</span>
+                        <span id="dayCounter" class="font-mono font-bold text-lg">0</span>
+                    </div>
+                    <div class="flex justify-between p-2 bg-gray-50 rounded">
+                        <span class="font-medium">Erosi Harian (ton):</span>
+                        <span id="dailyErosion" class="font-mono font-bold text-lg text-red-600">0.00</span>
+                    </div>
+                    <div class="flex justify-between p-2 bg-gray-50 rounded">
+                        <span class="font-medium">Total Erosi (ton):</span>
+                        <span id="totalErosion" class="font-mono font-bold text-lg">0.00</span>
+                    </div>
+                     <div class="flex justify-between p-2 bg-gray-50 rounded">
+                        <span class="font-medium">Kejenuhan Tanah:</span>
+                        <span id="saturation" class="font-mono font-bold text-lg">0 %</span>
+                    </div>
+                    <div class="flex justify-between p-2 bg-gray-50 rounded">
+                        <span class="font-medium">Sedimentasi Cekungan:</span>
+                        <span id="sedimentation" class="font-mono font-bold text-lg">0.00 %</span>
+                    </div>
+                    <div id="basinFullMessage" class="hidden text-center p-2 bg-yellow-200 text-yellow-800 font-bold rounded">
+                        CEKUNGAN TELAH PENUH!
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Kolom Animasi -->
+        <div class="w-full md:w-2/3 flex-grow">
+            <canvas id="simulationCanvas"></canvas>
+        </div>
+    </div>
+
+<script>
+    // Get Canvas and Context
+    const canvas = document.getElementById('simulationCanvas');
+    const ctx = canvas.getContext('2d');
+    
+    // Set canvas dimensions based on container
+    const canvasContainer = canvas.parentElement;
+    let canvasWidth, canvasHeight;
+
+    function resizeCanvas() {
+        canvas.width = canvasContainer.clientWidth;
+        canvas.height = canvasContainer.clientHeight;
+        canvasWidth = canvas.width;
+        canvasHeight = canvas.height;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    // --- KONTROL UI ---
+    const startStopBtn = document.getElementById('startStopBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const rFactorSlider = document.getElementById('rFactor');
+    const kFactorSlider = document.getElementById('kFactor');
+    const lsFactorSlider = document.getElementById('lsFactor');
+    const cFactorSlider = document.getElementById('cFactor');
+    const pFactorSlider = document.getElementById('pFactor');
+
+    const rValue = document.getElementById('rValue');
+    const kValue = document.getElementById('kValue');
+    const lsValue = document.getElementById('lsValue');
+    const cValue = document.getElementById('cValue');
+    const pValue = document.getElementById('pValue');
+
+    const dayCounterEl = document.getElementById('dayCounter');
+    const dailyErosionEl = document.getElementById('dailyErosion');
+    const totalErosionEl = document.getElementById('totalErosion');
+    const saturationEl = document.getElementById('saturation');
+    const sedimentationEl = document.getElementById('sedimentation');
+    const basinFullMessage = document.getElementById('basinFullMessage');
+
+    // --- VARIABEL SIMULASI ---
+    let isRunning = false;
+    let animationFrameId;
+    let day = 0;
+    let tick = 0; // Counter for animation frames
+    
+    // State variables
+    let soilSaturation = 0; // in percent (0-100)
+    let totalErosion = 0; // in tons
+    let sedimentLevel = 0; // 0 to 1 (percentage of basin height)
+    let isRaining = false;
+    let weatherCycle = 0; //
+    let evaporationActive = false;
+
+    // Simulation Constants
+    const MAX_SATURATION = 100;
+    const INFILTRATION_RATE = 0.2; // How fast water soaks in
+    const EVAPORATION_RATE = 0.05; // How fast water evaporates
+    const BASIN_CAPACITY_TONS = 50000; // Example capacity
+    const AREA_HECTARES = 10; // Example area for calculation
+    const DAY_LENGTH_TICKS = 100; // 100 frames = 1 day
+
+    // Particle arrays
+    let rainParticles = [];
+    let runoffParticles = [];
+    let evapParticles = [];
+
+    // --- FUNGSI KALKULASI ---
+    function calculateRUSLE() {
+        const R = parseFloat(rFactorSlider.value);
+        const K = parseFloat(kFactorSlider.value);
+        const LS = parseFloat(lsFactorSlider.value);
+        const C = parseFloat(cFactorSlider.value);
+        const P = parseFloat(pFactorSlider.value);
+        
+        // RUSLE Formula: A = R * K * LS * C * P
+        // A is annual soil loss in ton/ha/year
+        const annualErosionPerHectare = R * K * LS * C * P;
+        const totalAnnualErosion = annualErosionPerHectare * AREA_HECTARES;
+        
+        // We simulate daily, so divide by 365
+        return totalAnnualErosion / 365;
+    }
+
+    // --- PARTICLE CLASSES (simple objects) ---
+    function createRainParticle() {
+        return {
+            x: Math.random() * canvasWidth,
+            y: -10,
+            speed: 4 + Math.random() * 2,
+            length: 15 + Math.random() * 5
+        };
+    }
+
+    function createRunoffParticle(x, y) {
+        return {
+            x: x,
+            y: y,
+            speedX: 1 + Math.random() * 2,
+            speedY: 0.5 + Math.random(),
+            opacity: 1
+        };
+    }
+    
+    function createEvapParticle(x, y) {
+        return {
+            x: x,
+            y: y,
+            speedY: -0.5 - Math.random() * 0.5,
+            opacity: 1,
+            radius: Math.random() * 2 + 1
+        }
+    }
+
+    // --- LOGIKA SIMULASI & UPDATE ---
+    function updateSimulation() {
+        tick++;
+        if (tick >= DAY_LENGTH_TICKS) {
+            tick = 0;
+            day++;
+            dayCounterEl.textContent = day;
+
+            // Weather cycle: ~3 days rain, ~2 days clear
+            weatherCycle = (weatherCycle + 1) % 5;
+            isRaining = weatherCycle < 3;
+            evaporationActive = !isRaining;
+        }
+
+        let dailyErosion = 0;
+        
+        if (isRaining) {
+            // Infiltration
+            if (soilSaturation < MAX_SATURATION) {
+                soilSaturation += INFILTRATION_RATE * (parseFloat(rFactorSlider.value)/500); // Rainfall intensity affects infiltration
+                soilSaturation = Math.min(soilSaturation, MAX_SATURATION);
+            }
+        } else {
+             // Evaporation / Drying
+            if(soilSaturation > 0) {
+                soilSaturation -= EVAPORATION_RATE;
+                soilSaturation = Math.max(0, soilSaturation);
+            }
+        }
+        
+        // Runoff and Erosion only happen if soil is saturated and it's raining
+        if (isRaining && soilSaturation >= MAX_SATURATION) {
+            dailyErosion = calculateRUSLE();
+            totalErosion += dailyErosion;
+            
+            // Sediment deposition
+            const sedimentToAdd = dailyErosion / BASIN_CAPACITY_TONS;
+            if (sedimentLevel < 1) {
+                sedimentLevel += sedimentToAdd;
+                if (sedimentLevel >= 1) {
+                    sedimentLevel = 1;
+                    basinFullMessage.classList.remove('hidden');
+                    stopSimulation();
+                }
+            }
+        }
+
+        // Update UI
+        dailyErosionEl.textContent = dailyErosion.toFixed(2);
+        totalErosionEl.textContent = totalErosion.toFixed(2);
+        saturationEl.textContent = `${Math.round(soilSaturation)} %`;
+        sedimentationEl.textContent = (sedimentLevel * 100).toFixed(2) + ' %';
+        
+        // Update particles
+        updateParticles();
+    }
+    
+    function updateParticles() {
+        // Rain
+        if (isRaining) {
+            if (rainParticles.length < 200) {
+                rainParticles.push(createRainParticle());
+            }
+        } else {
+            rainParticles = [];
+        }
+        rainParticles.forEach((p, index) => {
+            p.y += p.speed;
+            if (p.y > canvasHeight) {
+                rainParticles.splice(index, 1);
+            }
+        });
+
+        // Runoff
+        if (isRaining && soilSaturation >= MAX_SATURATION) {
+            const numParticles = Math.ceil(calculateRUSLE() / 10); // More erosion = more particles
+            for(let i = 0; i < numParticles; i++) {
+                // Particles start on the hill slope
+                const startX = canvasWidth * 0.2 + Math.random() * canvasWidth * 0.4;
+                const startY = getHillHeight(startX);
+                runoffParticles.push(createRunoffParticle(startX, startY));
+            }
+        }
+        runoffParticles.forEach((p, index) => {
+            const hillY = getHillHeight(p.x);
+            if (p.y < hillY) { // If above ground, fall down
+                p.y += p.speedY * 2;
+            } else { // Follow the slope
+                const slope = getHillSlope(p.x);
+                p.x += p.speedX;
+                p.y = hillY + slope * p.speedX;
+            }
+
+            p.opacity -= 0.005;
+            if (p.opacity <= 0 || p.x > canvasWidth * 0.8) {
+                runoffParticles.splice(index, 1);
+            }
+        });
+        
+        // Evaporation
+        if(evaporationActive) {
+            if(evapParticles.length < 50) {
+                 const basinWaterY = (canvasHeight * 0.95) - (canvasHeight * 0.3 * sedimentLevel);
+                 const x = canvasWidth * 0.8 + Math.random() * (canvasWidth*0.2 - 20);
+                 const y = basinWaterY - Math.random() * 10;
+                 evapParticles.push(createEvapParticle(x,y));
+            }
+        }
+        evapParticles.forEach((p, index) => {
+            p.y += p.speedY;
+            p.x += Math.sin(p.y * 0.1);
+            p.opacity -= 0.01;
+            if (p.opacity <= 0) {
+                evapParticles.splice(index, 1);
+            }
+        });
+    }
+
+    // --- FUNGSI DRAWING ---
+    function getHillHeight(x) {
+        // A sine wave function to represent the hill shape
+        const amplitude = canvasHeight * 0.3;
+        const frequency = Math.PI / (canvasWidth * 0.8);
+        const verticalOffset = canvasHeight * 0.4;
+        if (x < canvasWidth * 0.8) {
+            return -amplitude * Math.cos(frequency * x) + verticalOffset + amplitude;
+        }
+        return canvasHeight * 0.95; // Flat ground for the basin
+    }
+    
+    function getHillSlope(x) {
+        const amplitude = canvasHeight * 0.3;
+        const frequency = Math.PI / (canvasWidth * 0.8);
+        return amplitude * frequency * Math.sin(frequency * x);
+    }
+    
+    function drawScene() {
+        // Clear canvas
+        ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+        ctx.fillStyle = isRaining ? '#a3b1bc' : '#87CEEB';
+        ctx.globalAlpha = 0.5;
+        ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+        ctx.globalAlpha = 1;
+
+
+        // Draw hill
+        ctx.beginPath();
+        ctx.moveTo(0, canvasHeight);
+        for (let x = 0; x <= canvasWidth; x++) {
+            ctx.lineTo(x, getHillHeight(x));
+        }
+        ctx.lineTo(canvasWidth, canvasHeight);
+        ctx.closePath();
+        
+        const saturationColor = 100 - Math.floor(soilSaturation * 0.6);
+        ctx.fillStyle = `rgb(139, ${saturationColor}, 19)`; // Becomes darker as it gets saturated
+        ctx.fill();
+
+        // Draw basin and sediment
+        const basinStartY = canvasHeight * 0.95;
+        const basinBottom = canvasHeight;
+        const sedimentHeight = (basinBottom - basinStartY) * sedimentLevel;
+        
+        // Sediment
+        ctx.fillStyle = '#967969'; // Muddy color
+        ctx.fillRect(canvasWidth * 0.8, basinBottom - sedimentHeight, canvasWidth * 0.2, sedimentHeight);
+        
+        // Water in basin (simple representation)
+        ctx.fillStyle = 'rgba(24, 98, 161, 0.7)';
+        ctx.fillRect(canvasWidth * 0.8, basinBottom - sedimentHeight - 5, canvasWidth * 0.2, 5); // Just a little water on top
+
+        // Draw Clouds
+        drawClouds();
+        
+        // Draw Particles
+        drawParticles();
+    }
+    
+    const clouds = [
+        { x: 100, y: 80, size: 50, speed: 0.2 },
+        { x: 300, y: 120, size: 70, speed: 0.15 },
+        { x: 550, y: 90, size: 60, speed: 0.25 },
+        { x: 800, y: 110, size: 80, speed: 0.18 },
+    ];
+
+    function drawClouds() {
+        clouds.forEach(cloud => {
+            ctx.beginPath();
+            ctx.globalAlpha = isRaining ? 0.8 : 0.6;
+            ctx.fillStyle = isRaining ? '#B0C4DE' : '#FFFFFF';
+            
+            // simple cloud shape
+            ctx.arc(cloud.x, cloud.y, cloud.size * 0.6, Math.PI * 0.5, Math.PI * 1.5);
+            ctx.arc(cloud.x + cloud.size * 0.7, cloud.y - cloud.size * 0.2, cloud.size * 0.8, Math.PI * 1, Math.PI * 2);
+            ctx.arc(cloud.x + cloud.size * 1.5, cloud.y, cloud.size * 0.6, Math.PI * 1.5, Math.PI * 0.5);
+            ctx.closePath();
+            ctx.fill();
+            
+            ctx.globalAlpha = 1;
+
+            // Move cloud
+            cloud.x += cloud.speed;
+            if (cloud.x > canvasWidth + cloud.size * 2) {
+                cloud.x = -cloud.size * 2;
+            }
+        });
+    }
+
+    function drawParticles() {
+        // Draw rain
+        ctx.strokeStyle = 'rgba(174,194,224,0.5)';
+        ctx.lineWidth = 1.5;
+        rainParticles.forEach(p => {
+            ctx.beginPath();
+            ctx.moveTo(p.x, p.y);
+            ctx.lineTo(p.x, p.y + p.length);
+            ctx.stroke();
+        });
+        
+        // Draw runoff
+        runoffParticles.forEach(p => {
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, 2, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(101, 67, 33, ${p.opacity})`; // Muddy runoff
+            ctx.fill();
+        });
+        
+        // Draw evaporation
+         evapParticles.forEach(p => {
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(200, 220, 255, ${p.opacity})`;
+            ctx.fill();
+        });
+    }
+
+    // --- LOOP UTAMA & KONTROL ---
+    function gameLoop() {
+        if (!isRunning) return;
+        
+        updateSimulation();
+        drawScene();
+        
+        animationFrameId = requestAnimationFrame(gameLoop);
+    }
+    
+    function startSimulation() {
+        if (isRunning) return;
+        isRunning = true;
+        startStopBtn.textContent = 'Jeda';
+        startStopBtn.classList.remove('bg-blue-500', 'hover:bg-blue-600');
+        startStopBtn.classList.add('bg-yellow-500', 'hover:bg-yellow-600');
+        gameLoop();
+    }
+
+    function stopSimulation() {
+        isRunning = false;
+        startStopBtn.textContent = 'Lanjutkan';
+        startStopBtn.classList.remove('bg-yellow-500', 'hover:bg-yellow-600');
+        startStopBtn.classList.add('bg-blue-500', 'hover:bg-blue-600');
+        if (animationFrameId) {
+            cancelAnimationFrame(animationFrameId);
+        }
+    }
+    
+    function resetSimulation() {
+        stopSimulation();
+        day = 0;
+        tick = 0;
+        soilSaturation = 0;
+        totalErosion = 0;
+        sedimentLevel = 0;
+        isRaining = false;
+        weatherCycle = 0;
+        rainParticles = [];
+        runoffParticles = [];
+        evapParticles = [];
+        
+        // Update UI
+        dayCounterEl.textContent = day;
+        dailyErosionEl.textContent = '0.00';
+        totalErosionEl.textContent = '0.00';
+        saturationEl.textContent = '0 %';
+        sedimentationEl.textContent = '0.00 %';
+        basinFullMessage.classList.add('hidden');
+        startStopBtn.textContent = 'Mulai';
+
+        drawScene(); // Draw initial state
+    }
+
+    // Event Listeners
+    startStopBtn.addEventListener('click', () => {
+        if (isRunning) {
+            stopSimulation();
+        } else {
+            startSimulation();
+        }
+    });
+    
+    resetBtn.addEventListener('click', resetSimulation);
+    
+    rFactorSlider.addEventListener('input', (e) => rValue.textContent = parseFloat(e.target.value).toFixed(0));
+    kFactorSlider.addEventListener('input', (e) => kValue.textContent = parseFloat(e.target.value).toFixed(2));
+    lsFactorSlider.addEventListener('input', (e) => lsValue.textContent = parseFloat(e.target.value).toFixed(1));
+    cFactorSlider.addEventListener('input', (e) => cValue.textContent = parseFloat(e.target.value).toFixed(2));
+    pFactorSlider.addEventListener('input', (e) => pValue.textContent = parseFloat(e.target.value).toFixed(2));
+
+    // Initial draw
+    drawScene();
+</script>
+
+</body>
+</html>
