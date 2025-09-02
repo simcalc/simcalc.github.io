@@ -296,9 +296,9 @@
                     </div>
                     <div class="calculator">
                         <h3 data-lang-key="calcTitle">Simulasi Perhitungan Blower</h3>
-                        <div class="input-group"><label for="input-panjang" data-lang-key="labelLength">Panjang</label><input type="number" id="input-panjang" value="4"></div>
-                        <div class="input-group"><label for="input-lebar" data-lang-key="labelWidth">Lebar</label><input type="number" id="input-lebar" value="3"></div>
-                        <div class="input-group"><label for="input-tinggi" data-lang-key="labelHeight">Tinggi</label><input type="number" id="input-tinggi" value="5"></div>
+                        <div class="input-group"><label for="input-panjang" data-lang-key="labelLength">Panjang</label><input type="number" id="input-panjang" value="4" min="0.1" max="9.9" step="0.1"></div>
+                        <div class="input-group"><label for="input-lebar" data-lang-key="labelWidth">Lebar</label><input type="number" id="input-lebar" value="3" min="0.1" max="9.9" step="0.1"></div>
+                        <div class="input-group"><label for="input-tinggi" data-lang-key="labelHeight">Tinggi</label><input type="number" id="input-tinggi" value="5" min="0.1" max="9.9" step="0.1"></div>
                         <div class="results-group">
                             <div class="result-item"><span class="label" data-lang-key="resVolume">Volume:</span><span id="result-volume" class="value">60.00 m³</span></div>
                             <div class="result-item"><span class="label" data-lang-key="resACH">Std. ACH (OSHA):</span><span class="value">min 5x, rek. 10x</span></div>
@@ -383,13 +383,13 @@
             </div>
             <h2 data-lang-key="referencesTitle">Daftar Pustaka</h2>
             <ol class="references">
-                <li id="ref-1"><b>(Standar Amerika)</b> OSHA. (2015). <i>29 CFR 1910.146 - Permit-required confined spaces</i>. United States Department of Labor. <a href="https://www.osha.gov/laws-regs/regulations/standardnumber/1910/1910.146" target="_blank" rel="noopener noreferrer nofollow">Link</a></li>
-                <li id="ref-2"><b>(Standar Indonesia)</b> Kementerian Ketenagakerjaan RI. (2023). <i>Permenaker No. 11 Tahun 2023 tentang Keselamatan dan Kesehatan Kerja di Ruang Terbatas</i>. <a href="https://peraturan.bpk.go.id/Details/282464/permenaker-no-11-tahun-2023" target="_blank" rel="noopener noreferrer nofollow">Link</a></li>
-                <li id="ref-3"><b>(Standar Amerika)</b> ANSI/ASSP. (2017). <i>Z117.1-2017 - Safety Requirements for Confined Spaces</i>. American National Standards Institute / American Society of Safety Professionals. <a href="https://www.assp.org/standards/standards-topics/confined-spaces-z117-1" target="_blank" rel="noopener noreferrer nofollow">Link</a></li>
-                <li id="ref-4"><b>(Standar Eropa/UK)</b> HSE UK. (2014). <i>L101 - Safe work in confined spaces</i>. Health and Safety Executive. <a href="https://www.hse.gov.uk/pubns/priced/l101.pdf" target="_blank" rel="noopener noreferrer nofollow">Link</a></li>
-                <li id="ref-5"><b>(Lembaga Internasional)</b> NIOSH. (1987). <i>Publication No. 87-113: A Guide to Safety in Confined Spaces</i>. U.S. Department of Health and Human Services. <a href="https://www.cdc.gov/niosh/docs/87-113/" target="_blank" rel="noopener noreferrer nofollow">Link</a></li>
-                <li id="ref-6"><b>(Jurnal Q1 Internasional)</b> P. K. Marhavilas, D. K. Filippidis, et al. (2021). "A comprehensive risk assessment of confined spaces: A review and a proposed new methodology." <i>Journal of Loss Prevention in the Process Industries, Vol. 71</i>. <a href="https://www.sciencedirect.com/journal/journal-of-loss-prevention-in-the-process-industries" target="_blank" rel="noopener noreferrer nofollow">Link Jurnal</a></li>
-                <li id="ref-7"><b>(Jurnal SINTA 1 Indonesia)</b> I. N. A. Arsana, I. M. D. Adnyana. (2022). "Analisis Risiko Keselamatan dan Kesehatan Kerja (K3) pada Pekerjaan di Ruang Terbatas (Confined Space)." <i>Jurnal Spektran, Vol. 10(2)</i>, pp. 155-164. <a href="https://ejurnal.ppsdmmigas.esdm.go.id/sp/index.php/swarapatra/article/view/58" target="_blank" rel="noopener noreferrer nofollow">Link Jurnal</a></li>
+                <li id="ref-1">OSHA. (2015). <i>29 CFR 1910.146 - Permit-required confined spaces</i>. United States Department of Labor. <a href="https://www.osha.gov/laws-regs/regulations/standardnumber/1910/1910.146" target="_blank" rel="noopener noreferrer nofollow">Link</a></li>
+                <li id="ref-2">Kementerian Ketenagakerjaan RI. (2023). <i>Permenaker No. 11 Tahun 2023 tentang Keselamatan dan Kesehatan Kerja di Ruang Terbatas</i>. <a href="https://peraturan.bpk.go.id/Details/282464/permenaker-no-11-tahun-2023" target="_blank" rel="noopener noreferrer nofollow">Link</a></li>
+                <li id="ref-3">ANSI/ASSP. (2017). <i>Z117.1-2017 - Safety Requirements for Confined Spaces</i>. American National Standards Institute / American Society of Safety Professionals. <a href="https://www.assp.org/standards/standards-topics/confined-spaces-z117-1" target="_blank" rel="noopener noreferrer nofollow">Link</a></li>
+                <li id="ref-4">HSE UK. (2014). <i>L101 - Safe work in confined spaces</i>. Health and Safety Executive. <a href="https://www.hse.gov.uk/pubns/priced/l101.pdf" target="_blank" rel="noopener noreferrer nofollow">Link</a></li>
+                <li id="ref-5">NIOSH. (1987). <i>Publication No. 87-113: A Guide to Safety in Confined Spaces</i>. U.S. Department of Health and Human Services. <a href="https://www.cdc.gov/niosh/docs/87-113/" target="_blank" rel="noopener noreferrer nofollow">Link</a></li>
+                <li id="ref-6">P. K. Marhavilas, D. K. Filippidis, et al. (2021). "A comprehensive risk assessment of confined spaces: A review and a proposed new methodology." <i>Journal of Loss Prevention in the Process Industries, Vol. 71</i>. <a href="https://www.sciencedirect.com/journal/journal-of-loss-prevention-in-the-process-industries" target="_blank" rel="noopener noreferrer nofollow">Link Jurnal</a></li>
+                <li id="ref-7">I. N. A. Arsana, I. M. D. Adnyana. (2022). "Analisis Risiko Keselamatan dan Kesehatan Kerja (K3) pada Pekerjaan di Ruang Terbatas (Confined Space)." <i>Jurnal Spektran, Vol. 10(2)</i>, pp. 155-164. <a href="https://ejurnal.ppsdmmigas.esdm.go.id/sp/index.php/swarapatra/article/view/58" target="_blank" rel="noopener noreferrer nofollow">Link Jurnal</a></li>
             </ol>
         </div>
         <div class="footer">
@@ -722,9 +722,18 @@
         }
 
         function updateCalculations() {
-            const p = parseFloat(inputPanjang.value) || 0;
-            const l = parseFloat(inputLebar.value) || 0;
-            const t = parseFloat(inputTinggi.value) || 0;
+            let p = parseFloat(inputPanjang.value);
+            if (p >= 10) { p = 9.9; inputPanjang.value = p; }
+            p = isNaN(p) ? 0 : p;
+
+            let l = parseFloat(inputLebar.value);
+            if (l >= 10) { l = 9.9; inputLebar.value = l; }
+            l = isNaN(l) ? 0 : l;
+
+            let t = parseFloat(inputTinggi.value);
+            if (t >= 10) { t = 9.9; inputTinggi.value = t; }
+            t = isNaN(t) ? 0 : t;
+
             const volume = p * l * t;
             const flowM3 = volume * 10;
             const flowM3_min = volume * 5;
@@ -830,7 +839,17 @@
         window.addEventListener('resize', renderCanvas);
         startDemoBtn.addEventListener('click', () => { state.isDemoRunning ? doResetAndStopDemo() : startDemo(); });
         resetBtn.addEventListener('click', doResetAndStopDemo);
-        [inputPanjang, inputLebar, inputTinggi].forEach(input => input.addEventListener('input', updateCalculations));
+        [inputPanjang, inputLebar, inputTinggi].forEach(input => {
+            input.addEventListener('input', updateCalculations);
+            // Tambahkan event listener untuk blur
+            input.addEventListener('blur', (e) => {
+                const value = parseFloat(e.target.value);
+                if (isNaN(value) || value <= 0) {
+                    e.target.value = 0.1;
+                    updateCalculations();
+                }
+            });
+        });
         langBtnId.addEventListener('click', () => updateLanguage('id'));
         langBtnEn.addEventListener('click', () => updateLanguage('en'));
         
