@@ -4,444 +4,1244 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <!-- Meta Tags untuk SEO & Media Sosial -->
-    <title>Simulasi Erosi & Sedimentasi Interaktif (Model RUSLE)</title>
-    <meta name="description" content="Simulasi interaktif untuk memvisualisasikan proses erosi tanah dan sedimentasi menggunakan model Revised Universal Soil Loss Equation (RUSLE). Pelajari bagaimana faktor hujan, tanah, lereng, tanaman, dan konservasi memengaruhi laju erosi.">
-    <meta name="keywords" content="RUSLE, Erosi, Sedimentasi, Simulasi, Model Tanah, Konservasi, Limpasan Permukaan">
-    <link rel="canonical" href="https://example.com/simulasi-erosi-rusle"> <!-- Ganti dengan URL Anda -->
+    <!-- Meta Tags for SEO -->
+    <title>Platform Simulasi Erosi & Sedimentasi DAS</title>
+    <meta name="description" content="Platform simulasi interaktif untuk analisis erosi dan sedimentasi DAS menggunakan model RUSLE. Unggah data poligon Anda sendiri dan analisis dampaknya.">
+    <meta name="keywords" content="RUSLE, erosi, sedimentasi, Waduk Saguling, simulasi, hidrologi, konservasi tanah, PLTA, GeoJSON, Peta DAS, Analisis DAS">
+    <meta name="author" content="Mokhamad Abrar, Ratu Avior, Rani A. Royani">
 
-    <!-- Open Graph Meta Tags (untuk share di WA, Facebook, dll.) -->
-    <meta property="og:title" content="Simulasi Erosi & Sedimentasi Interaktif (Model RUSLE)">
-    <meta property="og:description" content="Visualisasikan dan pahami dampak berbagai faktor terhadap erosi tanah dengan simulasi berbasis model RUSLE.">
-    <meta property="og:image" content="https://placehold.co/1200x630/87CEEB/333333?text=Simulasi+Erosi+RUSLE"> <!-- Ganti dengan URL gambar preview Anda -->
-    <meta property="og:url" content="https://example.com/simulasi-erosi-rusle"> <!-- Ganti dengan URL Anda -->
+    <!-- Open Graph Meta Tags (for WhatsApp, Facebook, etc.) -->
+    <meta property="og:title" content="Platform Simulasi Erosi & Sedimentasi DAS">
+    <meta property="og:description" content="Simulasi interaktif erosi dan sedimentasi menggunakan model RUSLE, dilengkapi dengan peta DAS interaktif.">
+    <meta property="og:image" content="https://raw.githubusercontent.com/simcalc/simcalc.github.io/refs/heads/main/img/waduksaguling.webp">
+    <meta property="og:url" content="https://simcalc.github.io/">
     <meta property="og:type" content="website">
 
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Platform Simulasi Erosi & Sedimentasi DAS">
+    <meta name="twitter:description" content="Simulasi interaktif erosi dan sedimentasi menggunakan model RUSLE, dilengkapi dengan peta DAS interaktif.">
+    <meta name="twitter:image" content="https://raw.githubusercontent.com/simcalc/simcalc.github.io/refs/heads/main/img/waduksaguling.webp">
+
+    <link rel="icon" href="https://raw.githubusercontent.com/simcalc/simcalc.github.io/refs/heads/main/img/favicon.ico" type="image/x-icon">
+    
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Leaflet.js for Map -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
     <style>
-        html {
-            scroll-behavior: smooth;
-        }
         body {
             font-family: 'Inter', sans-serif;
+            background-color: #1a202c; /* Dark Industrial Blue-Gray */
+            color: #e2e8f0; /* Light Gray Text */
         }
-        .slider-container {
-            display: grid;
-            grid-template-columns: auto 1fr auto;
-            align-items: center;
-            gap: 1rem;
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+        
+        h1 {
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.9);
         }
-        canvas {
-            background: linear-gradient(to bottom, #87CEEB 0%, #d3eaf2 70%);
-            border-radius: 0.5rem;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            width: 100%;
-            height: 100%;
+
+        .rusle-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #d97706; /* Amber-600 */
+            cursor: pointer;
+            border-radius: 50%;
+            border: 2px solid #fefce8; /* yellow-50 */
         }
-        .simulation-container {
-            height: calc(100vh - 5rem); /* Adjust height based on header */
-            max-height: 800px;
+        .rusle-slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            background: #d97706;
+            cursor: pointer;
+            border-radius: 50%;
+             border: 2px solid #fefce8;
+        }
+        .header-bg {
+            background-image: linear-gradient(to bottom, rgba(0,0,0,0.7), rgba(0,0,0,0.4)), url('https://raw.githubusercontent.com/simcalc/simcalc.github.io/refs/heads/main/img/waduksaguling.webp');
+            background-size: cover;
+            background-position: center;
+        }
+        .lang-btn {
+            background-color: transparent;
+            border: 1px solid #d97706; /* Amber-600 */
+            color: #d97706;
+            border-radius: 5px;
+            transition: all 0.2s ease-in-out;
+            width: 40px;
+        }
+        .lang-btn.active, .lang-btn:hover {
+            background-color: #d97706;
+            color: #1a202c;
+            font-weight: bold;
+        }
+        .help-icon {
+            cursor: pointer;
+            color: #94a3b8;
+            margin-left: 8px;
+            display: inline-block;
+            border: 1px solid #94a3b8;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            text-align: center;
+            line-height: 16px;
+            font-size: 12px;
+        }
+        .help-icon:hover {
+            color: #f59e0b;
+            border-color: #f59e0b;
+        }
+
+        #helpModal {
+            transition: opacity 0.3s ease;
+        }
+
+        /* Leaflet Dark Theme Adjustments */
+        .leaflet-control-attribution, .leaflet-control-attribution a {
+            color: #cbd5e1 !important; /* light gray for better readability on satellite */
+            text-shadow: 1px 1px 2px #000;
+        }
+        .leaflet-control-zoom-in, .leaflet-control-zoom-out {
+            background-color: #2d3748 !important;
+            color: #f59e0b !important;
+            border-color: #4a5568 !important;
+        }
+        .leaflet-popup-content-wrapper, .leaflet-popup-tip {
+            background: #2d3748 !important;
+            color: #e2e8f0 !important;
+            border: 1px solid #4a5568;
+        }
+        .leaflet-control-layers {
+            background: #2d3748 !important;
+            border: 1px solid #4a5568 !important;
+            color: #e2e8f0 !important;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 1023px) { /* Apply to tablets and below */
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+            .content-stack {
+                grid-row: 2; /* Move content below simulation */
+            }
+        }
+
+        @media (max-width: 767px) { /* Apply to mobile */
+            .header-bg {
+                position: static;
+            }
+            #simulationCanvas {
+                min-height: 350px;
+            }
+            .control-panel {
+                max-height: none;
+            }
         }
     </style>
 </head>
-<body class="bg-gray-100 text-gray-800">
+<body class="text-gray-200">
 
-    <header class="bg-white shadow-md p-4 sticky top-0 z-10">
-        <h1 class="text-2xl font-bold text-center text-gray-700">Simulasi Erosi & Sedimentasi Berbasis Model RUSLE</h1>
+    <header class="header-bg text-white p-4 md:p-6 text-center shadow-lg sticky top-0 z-20">
+        <div class="flex justify-between items-center container mx-auto">
+            <div></div> <!-- Spacer -->
+            <h1 class="text-xl md:text-4xl font-bold" data-lang-key="mainTitle">Simulasi Erosi & Sedimentasi: Studi Kasus Waduk Saguling</h1>
+            <div class="flex space-x-2">
+                <button id="lang-id" class="lang-btn p-1 md:p-2 text-sm">ID</button>
+                <button id="lang-en" class="lang-btn p-1 md:p-2 text-sm">EN</button>
+            </div>
+        </div>
     </header>
 
-    <main class="p-4">
-        <div class="simulation-container flex flex-col md:flex-row gap-4">
-            <!-- Kolom Kontrol & Data -->
-            <div class="w-full md:w-1/3 bg-white p-6 rounded-lg shadow-lg flex flex-col gap-4 overflow-y-auto">
-                <div>
-                    <h2 class="text-xl font-bold mb-4 border-b pb-2">Panel Kontrol Simulasi</h2>
-                    <div class="flex justify-center gap-4 mb-4">
-                        <button id="startStopBtn" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300 w-1/2">Mulai</button>
-                        <button id="resetBtn" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300 w-1/2">Reset</button>
-                    </div>
+    <main class="container mx-auto p-4 md:p-8">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8 main-grid">
+            
+            <!-- Kolom Animasi & Peta -->
+            <div class="lg:col-span-2 space-y-6 md:space-y-8">
+                <div class="bg-gray-800 rounded-lg shadow-lg overflow-hidden border border-gray-700">
+                    <canvas id="simulationCanvas"></canvas>
                 </div>
-
-                <!-- Parameter RUSLE -->
-                <div>
-                    <h3 class="text-lg font-semibold mb-3">Parameter RUSLE (A = R·K·LS·C·P)</h3>
-                    <div class="space-y-4">
-                        <div class="slider-container">
-                            <label for="rFactor" class="font-medium" title="Faktor Erosivitas Hujan (MJ·mm/ha·jam·th)">R</label>
-                            <input type="range" id="rFactor" min="50" max="1000" value="350" class="w-full">
-                            <span id="rValue" class="font-mono text-blue-600 w-12 text-center">350</span>
-                        </div>
-                        <div class="slider-container">
-                            <label for="kFactor" class="font-medium" title="Faktor Erodibilitas Tanah (ton·ha·jam/ha·MJ·mm)">K</label>
-                            <input type="range" id="kFactor" min="0.05" max="0.6" value="0.25" step="0.01" class="w-full">
-                            <span id="kValue" class="font-mono text-blue-600 w-12 text-center">0.25</span>
-                        </div>
-                        <div class="slider-container">
-                            <label for="lsFactor" class="font-medium" title="Faktor Panjang & Kemiringan Lereng">LS</label>
-                            <input type="range" id="lsFactor" min="0.1" max="20" value="5" step="0.1" class="w-full">
-                            <span id="lsValue" class="font-mono text-blue-600 w-12 text-center">5.0</span>
-                        </div>
-                        <div class="slider-container">
-                            <label for="cFactor" class="font-medium" title="Faktor Pengelolaan Tanaman/Penutup Lahan">C</label>
-                            <input type="range" id="cFactor" min="0.01" max="1.0" value="0.4" step="0.01" class="w-full">
-                            <span id="cValue" class="font-mono text-blue-600 w-12 text-center">0.40</span>
-                        </div>
-                        <div class="slider-container">
-                            <label for="pFactor" class="font-medium" title="Faktor Tindakan Konservasi">P</label>
-                            <input type="range" id="pFactor" min="0.1" max="1.0" value="1.0" step="0.01" class="w-full">
-                            <span id="pValue" class="font-mono text-blue-600 w-12 text-center">1.00</span>
-                        </div>
+                 <!-- Peta Lokasi -->
+                <section id="map-section">
+                    <div class="bg-gray-800 p-4 md:p-8 rounded-lg shadow-lg border border-gray-700">
+                        <h3 class="text-xl md:text-2xl font-bold text-amber-400 mb-4 border-b border-gray-600 pb-2" data-lang-key="mapTitle">Peta Lokasi & Estimasi Tingkat Erosi DAS</h3>
+                        <div id="map" class="h-96 rounded-lg border border-gray-600 z-10"></div>
                     </div>
-                </div>
-                
-                <!-- Output Data -->
-                <div class="mt-4 border-t pt-4">
-                    <h3 class="text-lg font-semibold mb-3">Data Hasil Simulasi</h3>
-                    <div class="space-y-3">
-                        <div class="flex justify-between p-2 bg-gray-50 rounded"><span class="font-medium">Hari Simulasi:</span><span id="dayCounter" class="font-mono font-bold text-lg">0</span></div>
-                        <div class="flex justify-between p-2 bg-gray-50 rounded"><span class="font-medium">Erosi Harian (ton):</span><span id="dailyErosion" class="font-mono font-bold text-lg text-red-600">0.00</span></div>
-                        <div class="flex justify-between p-2 bg-gray-50 rounded"><span class="font-medium">Total Erosi (ton):</span><span id="totalErosion" class="font-mono font-bold text-lg">0.00</span></div>
-                        <div class="flex justify-between p-2 bg-gray-50 rounded"><span class="font-medium">Kejenuhan Tanah:</span><span id="saturation" class="font-mono font-bold text-lg">0 %</span></div>
-                        <div class="flex justify-between p-2 bg-gray-50 rounded"><span class="font-medium">Sedimentasi Cekungan:</span><span id="sedimentation" class="font-mono font-bold text-lg">0.00 %</span></div>
-                        <div id="basinFullMessage" class="hidden text-center p-2 bg-yellow-200 text-yellow-800 font-bold rounded">CEKUNGAN TELAH PENUH!</div>
-                    </div>
-                </div>
+                </section>
             </div>
 
-            <!-- Kolom Animasi -->
-            <div class="w-full md:w-2/3 flex-grow">
-                <canvas id="simulationCanvas"></canvas>
+            <!-- Kolom Kontrol dan Data -->
+            <div class="lg:col-span-1 space-y-6 md:space-y-8 content-stack">
+                <!-- Control Panel -->
+                <div class="bg-gray-800 p-4 md:p-6 rounded-lg shadow-lg border border-gray-700 control-panel">
+                    <h2 class="text-lg md:text-xl font-bold mb-4 border-b border-gray-600 pb-2 text-amber-400" data-lang-key="simulationControls">Kontrol Simulasi</h2>
+                    <div class="grid grid-cols-2 gap-2 mb-6">
+                        <button id="startStopBtn" class="bg-gradient-to-b from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 border border-amber-700 text-gray-900 font-bold py-2 px-4 rounded transition-all duration-200 text-sm md:text-base" data-lang-key="startBtn">Mulai</button>
+                        <button id="resetBtn" class="bg-gradient-to-b from-gray-600 to-gray-800 hover:from-gray-700 hover:to-gray-900 border border-gray-500 text-white font-bold py-2 px-4 rounded transition-all duration-200 text-sm md:text-base" data-lang-key="resetBtn">Reset</button>
+                        <button id="exportCsvBtn" class="col-span-2 bg-gradient-to-b from-gray-600 to-gray-800 hover:from-gray-700 hover:to-gray-900 border border-gray-500 text-white font-bold py-2 px-4 rounded transition-all duration-200 text-sm md:text-base" data-lang-key="exportBtn">Ekspor Data (CSV)</button>
+                    </div>
+
+                    <!-- Data Kustom -->
+                     <div class="space-y-3 mb-6 p-4 border border-dashed border-gray-600 rounded-lg">
+                        <h4 class="text-base md:text-lg font-bold text-amber-400" data-lang-key="customDataTitle">Data DAS Kustom</h4>
+                        <div>
+                            <label for="csvFileInput" class="block text-sm font-medium text-gray-400" data-lang-key="uploadLabel">Unggah Poligon DAS (.csv)</label>
+                            <input type="file" id="csvFileInput" accept=".csv" class="mt-1 block w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-amber-500 file:text-amber-900 hover:file:bg-amber-600">
+                             <p class="text-xs text-gray-500 mt-1" data-lang-key="csvFormat">Format: 2 kolom (latitude, longitude), tanpa header.</p>
+                        </div>
+                    </div>
+
+
+                    <!-- Parameter Input Manual -->
+                    <h3 class="text-base md:text-lg font-bold mb-3 text-amber-400 flex items-center" data-lang-key="reservoirParams">Parameter Dasar Waduk <span class="help-icon" data-help-topic="reservoirParams">?</span></h3>
+                     <div class="space-y-3 mb-6">
+                        <div>
+                            <label for="annualRainfall" class="block text-sm font-medium text-gray-400" data-lang-key="annualRainfall">Curah Hujan Tahunan (mm)</label>
+                            <input type="number" id="annualRainfall" value="3175" class="mt-1 block w-full rounded-md bg-gray-700 border-gray-600 text-gray-200 shadow-sm focus:border-amber-500 focus:ring-amber-500 sm:text-sm">
+                        </div>
+                        <div>
+                            <label for="watershedArea" class="block text-sm font-medium text-gray-400" data-lang-key="watershedArea">Luas DAS (Ha)</label>
+                            <input type="number" id="watershedArea" value="55700" class="mt-1 block w-full rounded-md bg-gray-700 border-gray-600 text-gray-200 shadow-sm focus:border-amber-500 focus:ring-amber-500 sm:text-sm">
+                        </div>
+                        <div>
+                            <label for="reservoirVolume" class="block text-sm font-medium text-gray-400" data-lang-key="sedimentVolume">Total Volume Tampungan Sedimen (Juta m³)</label>
+                            <input type="number" id="reservoirVolume" value="40.3" class="mt-1 block w-full rounded-md bg-gray-700 border-gray-600 text-gray-200 shadow-sm focus:border-amber-500 focus:ring-amber-500 sm:text-sm">
+                        </div>
+                    </div>
+                    
+                    <!-- Parameter RUSLE -->
+                    <h3 class="text-base md:text-lg font-bold mb-3 text-amber-400 flex items-center" data-lang-key="rusleParams">Parameter RUSLE <span class="help-icon" data-help-topic="rusleParams">?</span></h3>
+                    <div id="rusle-controls" class="space-y-4">
+                        <!-- Sliders will be dynamically inserted here -->
+                    </div>
+                </div>
+
+                <!-- Data Panel -->
+                <div class="bg-gray-800 p-4 md:p-6 rounded-lg shadow-lg border border-gray-700">
+                    <h2 class="text-lg md:text-xl font-bold mb-4 border-b border-gray-600 pb-2 text-amber-400" data-lang-key="simulationData">Data Hasil Simulasi</h2>
+                    <div id="simulationData" class="space-y-2 text-sm">
+                        <p><strong class="text-gray-100" data-lang-key="simDay">Hari Simulasi:</strong> <span id="dayCount" class="text-gray-300">0</span></p>
+                        <p><strong class="text-gray-100" data-lang-key="estimatedLifespan">Perkiraan Umur Waduk:</strong> <span id="estimatedLife" class="text-amber-300">Menghitung...</span> tahun</p>
+                        <p><strong class="text-gray-100" data-lang-key="dailyErosion">Erosi Harian (ton):</strong> <span id="dailyErosion" class="text-gray-300">0.00</span></p>
+                        <p><strong class="text-gray-100" data-lang-key="totalErosion">Total Erosi (ton):</strong> <span id="totalErosion" class="text-gray-300">0.00</span></p>
+                        <p><strong class="text-gray-100" data-lang-key="soilSaturation">Kejenuhan Tanah:</strong> <span id="soilSaturation" class="text-gray-300">0</span>%</p>
+                        <p><strong class="text-gray-100" data-lang-key="basinSedimentation">Sedimentasi Cekungan:</strong> <span id="sedimentationLevel" class="text-gray-300">0.00</span>%</p>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <!-- Bagian Literatur dan Referensi -->
-        <div class="mt-8 bg-white p-6 md:p-8 rounded-lg shadow-lg">
-            <h2 class="text-2xl font-bold mb-4 border-b pb-2">Landasan Teori: Model RUSLE</h2>
-            <div class="prose max-w-none text-justify">
-                <p>
-                    Simulasi ini didasarkan pada <i>Revised Universal Soil Loss Equation</i> (RUSLE), sebuah model empiris yang digunakan secara luas untuk memprediksi rata-rata erosi tanah jangka panjang oleh air. <sup><a href="#ref1" class="text-blue-600 hover:underline">[1]</a></sup> Model ini merupakan pengembangan dari <i>Universal Soil Loss Equation</i> (USLE) yang pertama kali dikembangkan oleh Wischmeier dan Smith. <sup><a href="#ref2" class="text-blue-600 hover:underline">[2]</a></sup> Persamaan dasar dari RUSLE adalah:
-                </p>
-                <p class="text-center font-mono bg-gray-100 p-4 rounded-md my-4">
-                    A = R · K · LS · C · P
-                </p>
-                <p>
-                    Dimana <strong>A</strong> adalah perkiraan rata-rata erosi tanah tahunan (dalam ton per hektar per tahun). Setiap faktor dalam persamaan merepresentasikan pengaruh kondisi spesifik terhadap erosi: 
-                    <strong>R</strong> (Faktor Erosivitas Hujan) mengukur energi kinetik dari hujan yang berpotensi menyebabkan erosi. 
-                    <strong>K</strong> (Faktor Erodibilitas Tanah) menunjukkan kerentanan partikel tanah untuk terlepas dan terbawa oleh aliran air, yang dipengaruhi oleh tekstur dan struktur tanah. <sup><a href="#ref3" class="text-blue-600 hover:underline">[3]</a></sup> 
-                    <strong>LS</strong> (Faktor Topografi) adalah gabungan dari panjang lereng (L) dan kemiringan lereng (S), dimana lereng yang lebih panjang dan curam akan meningkatkan kecepatan dan volume aliran permukaan, sehingga meningkatkan erosi. <sup><a href="#ref1" class="text-blue-600 hover:underline">[1]</a></sup> 
-                    <strong>C</strong> (Faktor Pengelolaan Tanaman dan Vegetasi) membandingkan erosi dari lahan dengan tutupan vegetasi tertentu terhadap lahan kosong. Vegetasi yang rapat dapat secara signifikan mengurangi dampak erosi. 
-                    <strong>P</strong> (Faktor Praktik Konservasi) merefleksikan efektivitas praktik pengelolaan lahan seperti terasering atau pembajakan kontur dalam mengurangi erosi. <sup><a href="#ref4" class="text-blue-600 hover:underline">[4]</a></sup>
-                </p>
-                <p>
-                    Dengan menyesuaikan nilai-nilai ini dalam simulasi, kita dapat secara visual mengamati bagaimana perubahan dalam pengelolaan lahan atau kondisi lingkungan dapat mempercepat atau memperlambat proses erosi dan sedimentasi di suatu daerah tangkapan air.
-                </p>
-            </div>
+        <!-- Bagian Penjelasan Tambahan -->
+        <div class="mt-8 space-y-6 md:space-y-8">
+            <section id="rusle-explanation">
+                <div class="bg-gray-800 p-4 md:p-8 rounded-lg shadow-lg border border-gray-700">
+                    <h3 class="text-xl md:text-2xl font-bold text-amber-400 mb-4 border-b border-gray-600 pb-2" data-lang-key="rusleTheoryTitle">Landasan Teori: Model RUSLE</h3>
+                    <p class="text-gray-300 mb-4" data-lang-key="rusleTheoryDesc">
+                        The Revised Universal Soil Loss Equation (RUSLE) adalah model empiris yang digunakan secara luas untuk memprediksi erosi tanah jangka panjang rata-rata oleh air. Model ini merupakan pengembangan dari USLE (Universal Soil Loss Equation) dengan penyempurnaan pada beberapa faktornya [1]. Persamaan RUSLE dihitung sebagai:
+                    </p>
+                    <div class="bg-gray-900 p-4 rounded-lg text-center my-4 border border-gray-700">
+                        <code class="text-lg font-mono text-amber-300">A = R × K × LS × C × P</code>
+                    </div>
+                    <ul class="list-disc list-inside space-y-2 text-gray-300">
+                        <li><b class="text-amber-400">A</b> = <span data-lang-key="rusleFactorA">Rata-rata Erosi Tanah Tahunan (ton/hektar/tahun).</span></li>
+                        <li><b class="text-amber-400">R</b> = <span data-lang-key="rusleFactorR">Faktor Erosivitas Curah Hujan, yang mengukur energi kinetik dan intensitas hujan [2].</span></li>
+                        <li><b class="text-amber-400">K</b> = <span data-lang-key="rusleFactorK">Faktor Erodibilitas Tanah, yang mengukur kerentanan partikel tanah terhadap erosi.</span></li>
+                        <li><b class="text-amber-400">LS</b> = <span data-lang-key="rusleFactorLS">Faktor Panjang dan Kemiringan Lereng, yang merepresentasikan pengaruh topografi.</span></li>
+                        <li><b class="text-amber-400">C</b> = <span data-lang-key="rusleFactorC">Faktor Pengelolaan Tanaman dan Vegetasi, yang menunjukkan pengaruh tutupan lahan.</span></li>
+                        <li><b class="text-amber-400">P</b> = <span data-lang-key="rusleFactorP">Faktor Tindakan Konservasi, yang merepresentasikan praktik pengelolaan lahan untuk mengendalikan erosi [3].</span></li>
+                    </ul>
+                </div>
+            </section>
+            
+            <section id="case-study">
+                <div class="bg-gray-800 p-4 md:p-8 rounded-lg shadow-lg border border-gray-700">
+                     <h3 class="text-xl md:text-2xl font-bold text-amber-400 mb-4 border-b border-gray-600 pb-2" data-lang-key="caseStudyTitle">Studi Kasus: Waduk Saguling (berdasarkan Tesis Rani Annisa Royani)</h3>
+                    <p class="text-gray-300 mb-4" data-lang-key="caseStudyP1">
+                        Waduk Saguling, yang berlokasi di Jawa Barat, merupakan salah satu infrastruktur vital untuk Pembangkit Listrik Tenaga Air (PLTA). Namun, seperti banyak waduk lainnya, Saguling menghadapi ancaman serius dari laju sedimentasi yang tinggi akibat erosi di Daerah Aliran Sungai (DAS) Citarum Hulu. Tingginya laju erosi ini disebabkan oleh kombinasi faktor alam (curah hujan tinggi, tanah rentan) dan aktivitas manusia (perubahan tata guna lahan, praktik pertanian yang kurang tepat) [4].
+                    </p>
+                    <p class="text-gray-300" data-lang-key="caseStudyP2">
+                        Penelitian yang dilakukan oleh Rani Annisa Royani (2014) menggunakan model RUSLE untuk menganalisis laju erosi dan sedimentasi di DAS Waduk Saguling. Studi ini mengintegrasikan data curah hujan, jenis tanah, topografi, dan tata guna lahan untuk memetakan area-area kritis yang menjadi sumber utama erosi. Hasilnya digunakan untuk mengestimasi laju sedimentasi tahunan dan memprediksi sisa umur fungsional waduk. Simulasi ini menggunakan parameter dan temuan dari penelitian tersebut sebagai dasar untuk memvisualisasikan proses dan dampak erosi secara dinamis [4].
+                    </p>
+                </div>
+            </section>
 
-            <h3 class="text-xl font-bold mt-8 mb-4 border-b pb-2">Daftar Pustaka</h3>
-            <ul class="list-none space-y-4">
-                <li id="ref1">
-                    <strong>[1]</strong> Renard, K. G., Foster, G. R., Weesies, G. A., McCool, D. K., & Yoder, D. C. (1997). <i>Predicting soil erosion by water: A guide to conservation planning with the Revised Universal Soil Loss Equation (RUSLE).</i> U.S. Department of Agriculture, Agriculture Handbook No. 703.
-                </li>
-                <li id="ref2">
-                    <strong>[2]</strong> Wischmeier, W. H., & Smith, D. D. (1978). <i>Predicting rainfall erosion losses: A guide to conservation planning.</i> U.S. Department of Agriculture, Agriculture Handbook No. 537.
-                </li>
-                <li id="ref3">
-                    <strong>[3]</strong> Morgan, R. P. C. (2005). <i>Soil Erosion and Conservation (3rd ed.).</i> Blackwell Publishing.
-                </li>
-                 <li id="ref4">
-                    <strong>[4]</strong> Prasannakumar, V., Vijith, H., Abinod, S., & Geetha, N. (2012). Estimation of soil erosion risk within a small mountainous watershed in Kerala, India, using Revised Universal Soil Loss Equation (RUSLE) and geo-information technology. <i>Geoscience Frontiers, 3</i>(2), 209-215.
-                </li>
-            </ul>
+            <!-- Metode Penelitian Section -->
+            <section id="methodology">
+                <div class="bg-gray-800 p-4 md:p-8 rounded-lg shadow-lg border border-gray-700">
+                    <h3 class="text-xl md:text-2xl font-bold text-amber-400 mb-4 border-b border-gray-600 pb-2" data-lang-key="methodologyTitle">Metode Penelitian (Berdasarkan Tesis Rani Annisa Royani)</h3>
+                    <p class="text-gray-300 mb-4" data-lang-key="methodologyDesc">
+                        Metodologi yang diadopsi dalam penelitian Rani Annisa Royani untuk menganalisis erosi dan sedimentasi di DAS Waduk Saguling merupakan pendekatan kuantitatif yang sistematis dengan menggunakan model RUSLE. Pendekatan ini, yang menjadi dasar bagi simulasi yang Anda lihat, memiliki tahapan sebagai berikut [4]:
+                    </p>
+                    <ol class="list-decimal list-inside space-y-3 text-gray-300">
+                        <li>
+                            <strong class="text-gray-100" data-lang-key="methodStep1">Pengumpulan Data Sekunder:</strong>
+                            <span data-lang-key="methodStep1Desc">Tahap awal melibatkan pengumpulan data-data krusial yang menjadi input bagi setiap faktor dalam model RUSLE. Data ini meliputi:</span>
+                            <ul class="list-disc list-inside ml-5 mt-2 space-y-1">
+                                <li data-lang-key="methodStep1_1"><strong>Data Curah Hujan:</strong> Data historis dari beberapa stasiun cuaca di sekitar DAS untuk menghitung nilai erosivitas hujan (Faktor R).</li>
+                                <li data-lang-key="methodStep1_2"><strong>Data Tanah:</strong> Peta jenis tanah untuk menentukan nilai erodibilitas tanah (Faktor K).</li>
+                                <li data-lang-key="methodStep1_3"><strong>Data Topografi:</strong> Peta kontur atau data Digital Elevation Model (DEM) untuk menurunkan faktor panjang dan kemiringan lereng (Faktor LS).</li>
+                                <li data-lang-key="methodStep1_4"><strong>Data Penggunaan Lahan:</strong> Peta tutupan lahan untuk menentukan faktor pengelolaan tanaman (Faktor C).</li>
+                                <li data-lang-key="methodStep1_5"><strong>Data Konservasi:</strong> Informasi mengenai praktik konservasi tanah dan air yang diterapkan di area tersebut (Faktor P).</li>
+                            </ul>
+                        </li>
+                        <li>
+                            <strong class="text-gray-100" data-lang-key="methodStep2">Analisis Spasial dan Perhitungan Faktor:</strong>
+                             <span data-lang-key="methodStep2Desc">Setiap data diolah menggunakan perangkat lunak Sistem Informasi Geografis (SIG) untuk menghitung nilai masing-masing faktor RUSLE secara spasial (per unit lahan) di seluruh area DAS.</span>
+                        </li>
+                        <li>
+                            <strong class="text-gray-100" data-lang-key="methodStep3">Estimasi Laju Erosi:</strong>
+                            <span data-lang-key="methodStep3Desc">Nilai dari kelima faktor tersebut (R, K, LS, C, dan P) dikalikan sesuai dengan persamaan RUSLE (A = R × K × LS × C × P) untuk mendapatkan laju erosi potensial tahunan (A) dalam satuan ton/ha/tahun untuk setiap unit lahan.</span>
+                        </li>
+                        <li>
+                            <strong class="text-gray-100" data-lang-key="methodStep4">Perhitungan Laju Sedimentasi:</strong>
+                            <span data-lang-key="methodStep4Desc">Laju erosi yang didapat kemudian dikonversi menjadi laju sedimen yang masuk ke waduk (Sediment Yield) dengan mengalikannya dengan <em>Sediment Delivery Ratio</em> (SDR). SDR adalah rasio sedimen yang sampai ke muara sungai terhadap total erosi yang terjadi di DAS.</span>
+                        </li>
+                        <li>
+                            <strong class="text-gray-100" data-lang-key="methodStep5">Analisis Umur Waduk:</strong>
+                            <span data-lang-key="methodStep5Desc">Dengan membandingkan laju sedimentasi tahunan dengan total kapasitas tampungan sedimen waduk, penelitian ini mengestimasi sisa umur fungsional Waduk Saguling hingga tampungan tersebut penuh oleh sedimen.</span>
+                        </li>
+                    </ol>
+                </div>
+            </section>
+
+            <section id="mitigation">
+                <div class="bg-gray-800 p-4 md:p-8 rounded-lg shadow-lg border border-gray-700">
+                    <h3 class="text-xl md:text-2xl font-bold text-amber-400 mb-4 border-b border-gray-600 pb-2" data-lang-key="mitigationTitle">Rekomendasi Mitigasi</h3>
+                    <div class="md:flex md:space-x-8 items-center">
+                        <div class="md:w-2/3">
+                            <p class="text-gray-300 mb-4" data-lang-key="mitigationDesc">
+                                Berdasarkan simulasi dan analisis, prediksi umur waduk sangat sensitif terhadap Faktor C (Pengelolaan Tanaman) dan Faktor P (Tindakan Konservasi). Ini menunjukkan bahwa tindakan mitigasi di hulu, seperti yang dijelaskan dalam berbagai literatur konservasi tanah, adalah kunci untuk memperjang umur Waduk Saguling [3].
+                            </p>
+                            <h4 class="text-lg font-bold text-gray-100 mt-4 mb-2" data-lang-key="mitigationHuluTitle">Rekomendasi Mitigasi Hulu:</h4>
+                            <ul class="list-disc list-inside space-y-2 text-gray-300">
+                                <li data-lang-key="mitigationItem1"><b>Reboisasi dan Agroforestri:</b> Menanam kembali vegetasi di lahan kritis untuk meningkatkan tutupan lahan (menurunkan Faktor C).</li>
+                                <li data-lang-key="mitigationItem2"><b>Pembuatan Terasering:</b> Membangun teras pada lahan miring untuk memperlambat aliran permukaan dan mengurangi erosi (meningkatkan Faktor P).</li>
+                                <li data-lang-key="mitigationItem3"><b>Pola Tanam Kontur:</b> Menanam sejajar dengan garis kontur untuk menahan air dan tanah.</li>
+                                <li data-lang-key="mitigationItem4"><b>Penyuluhan kepada Masyarakat:</b> Edukasi mengenai praktik pertanian berkelanjutan untuk mengurangi erosi tanah.</li>
+                            </ul>
+                        </div>
+                        <div class="md:w-1/3 mt-6 md:mt-0">
+                             <figure>
+                                <img src="https://raw.githubusercontent.com/simcalc/simcalc.github.io/refs/heads/main/img/Saguling.webp" alt="Ilustrasi tindakan konservasi di DAS Waduk Saguling" class="rounded-lg shadow-md mx-auto">
+                                <figcaption class="text-center text-sm text-gray-500 mt-2" data-lang-key="mitigationFigcaption">Tindakan konservasi di hulu adalah kunci keberlanjutan waduk.</figcaption>
+                            </figure>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="references">
+                 <div class="bg-gray-800 p-4 md:p-8 rounded-lg shadow-lg border border-gray-700">
+                    <h3 class="text-xl md:text-2xl font-bold text-amber-400 mb-4 border-b border-gray-600 pb-2" data-lang-key="referencesTitle">Daftar Pustaka</h3>
+                    <ol class="list-decimal list-inside space-y-2 text-gray-400 text-sm">
+                        <li>Renard, K. G., Foster, G. R., Weesies, G. A., McCool, D. K., & Yoder, D. C. (1997). <em>Predicting soil erosion by water: a guide to conservation planning with the Revised Universal Soil Loss Equation (RUSLE)</em>. U.S. Department of Agriculture, Agriculture Handbook No. 703. <a href="https://www.ars.usda.gov/ARSUserFiles/20902500/DonMcCool/EstimatingWaterErosionandSedimentYieldwithGis,Rusle,andSedd.pdf" target="_blank" rel="noopener noreferrer" class="text-amber-500 hover:underline">[Link]</a></li>
+                        <li>Wischmeier, W. H., & Smith, D. D. (1978). <em>Predicting rainfall erosion losses: a guide to conservation planning</em>. U.S. Department of Agriculture, Agriculture Handbook No. 537. <a href="https://www.ars.usda.gov/ARSUserFiles/60600505/RUSLE/AH_537%20Predicting%20Rainfall%20Soil%20Losses.pdf" target="_blank" rel="noopener noreferrer" class="text-amber-500 hover:underline">[Link]</a></li>
+                        <li>Morgan, R. P. C. (2005). <em>Soil Erosion and Conservation</em>. Blackwell Publishing. <a href="https://svgaos.nl/wp-content/uploads/2017/02/Morgan_2005_Soil_Erosion_and_Conservation.pdf" target="_blank" rel="noopener noreferrer" class="text-amber-500 hover:underline">[Link]</a></li>
+                        <li>Royani, R. A. (2014). <em>Analisis Laju Erosi, Sedimentasi, dan Umur Waduk (Studi Kasus Waduk Saguling Jawa Barat)</em>. Tesis, Institut Teknologi Bandung. <a href="https://digilib.it.id/gdl/view/68525/" target="_blank" rel="noopener noreferrer" class="text-amber-500 hover:underline">[Link]</a></li>
+                    </ol>
+                </div>
+            </section>
         </div>
     </main>
 
-<script>
-    // Get Canvas and Context
-    const canvas = document.getElementById('simulationCanvas');
-    const ctx = canvas.getContext('2d');
-    
-    // Set canvas dimensions based on container
-    const canvasContainer = canvas.parentElement;
-    function resizeCanvas() {
-        canvas.width = canvasContainer.clientWidth;
-        canvas.height = canvasContainer.clientHeight;
-        drawScene(); // Redraw scene on resize
-    }
-    window.addEventListener('resize', resizeCanvas);
-    
-    // --- KONTROL UI ---
-    const startStopBtn = document.getElementById('startStopBtn');
-    const resetBtn = document.getElementById('resetBtn');
-    const rFactorSlider = document.getElementById('rFactor');
-    const kFactorSlider = document.getElementById('kFactor');
-    const lsFactorSlider = document.getElementById('lsFactor');
-    const cFactorSlider = document.getElementById('cFactor');
-    const pFactorSlider = document.getElementById('pFactor');
+    <footer class="bg-black text-white text-center p-6 mt-8">
+        <div class="space-y-2 text-sm">
+             <div data-lang-key="footerDesigned">Designed by <a href="https://id.linkedin.com/in/mokhamadabrar" target="_blank" rel="noopener" class="text-amber-400 hover:underline">Mokhamad Abrar</a></div>
+             <div data-lang-key="footerReviewed">Reviewed by <a href="https://id.linkedin.com/in/avior-qhse" target="_blank" rel="noopener" class="text-amber-400 hover:underline">Ratu Avior, MSc.</a> and <a href="https://id.linkedin.com/in/raniannisaroyani" target="_blank" rel="noopener noreferrer" class="text-amber-400 hover:underline">Ir. Rani A. Royani, MSc.</a></div>
+             <div data-lang-key="footerDate">Sustainable Apps Development @ Aug 2025</div>
+        </div>
+    </footer>
 
-    const rValue = document.getElementById('rValue');
-    const kValue = document.getElementById('kValue');
-    const lsValue = document.getElementById('lsValue');
-    const cValue = document.getElementById('cValue');
-    const pValue = document.getElementById('pValue');
+    <!-- Help Modal -->
+    <div id="helpModal" class="fixed inset-0 bg-black bg-opacity-70 z-50 hidden items-center justify-center p-4" style="transition: opacity 0.3s ease;">
+        <div class="bg-gray-800 rounded-lg shadow-xl p-6 border border-gray-700 w-full max-w-lg relative">
+            <button id="closeHelpModal" class="absolute top-3 right-3 text-gray-400 hover:text-white">&times;</button>
+            <h3 id="helpModalTitle" class="text-xl font-bold text-amber-400 mb-4"></h3>
+            <div id="helpModalContent" class="text-gray-300 text-sm space-y-3"></div>
+        </div>
+    </div>
 
-    const dayCounterEl = document.getElementById('dayCounter');
-    const dailyErosionEl = document.getElementById('dailyErosion');
-    const totalErosionEl = document.getElementById('totalErosion');
-    const saturationEl = document.getElementById('saturation');
-    const sedimentationEl = document.getElementById('sedimentation');
-    const basinFullMessage = document.getElementById('basinFullMessage');
 
-    // --- VARIABEL SIMULASI ---
-    let isRunning = false;
-    let animationFrameId;
-    let day = 0;
-    let tick = 0; // Counter for animation frames
-    
-    // State variables
-    let soilSaturation = 0;
-    let totalErosion = 0;
-    let sedimentLevel = 0;
-    let isRaining = false;
-    let weatherCycle = 0;
-    let evaporationActive = false;
-
-    // Simulation Constants
-    const MAX_SATURATION = 100;
-    const INFILTRATION_RATE = 0.2;
-    const EVAPORATION_RATE = 0.05;
-    const BASIN_CAPACITY_TONS = 50000;
-    const AREA_HECTARES = 10;
-    const DAY_LENGTH_TICKS = 100;
-
-    // Particle arrays
-    let rainParticles = [];
-    let runoffParticles = [];
-    let evapParticles = [];
-
-    // --- FUNGSI KALKULASI ---
-    function calculateRUSLE() {
-        const R = parseFloat(rFactorSlider.value);
-        const K = parseFloat(kFactorSlider.value);
-        const LS = parseFloat(lsFactorSlider.value);
-        const C = parseFloat(cFactorSlider.value);
-        const P = parseFloat(pFactorSlider.value);
-        const annualErosionPerHectare = R * K * LS * C * P;
-        const totalAnnualErosion = annualErosionPerHectare * AREA_HECTARES;
-        return totalAnnualErosion / 365;
-    }
-
-    // --- PARTICLE FACTORIES ---
-    function createRainParticle() { return { x: Math.random() * canvas.width, y: -10, speed: 4 + Math.random() * 2, length: 15 + Math.random() * 5 }; }
-    function createRunoffParticle(x, y) { return { x: x, y: y, speedX: 1 + Math.random() * 2, speedY: 0.5 + Math.random(), opacity: 1 }; }
-    function createEvapParticle(x, y) { return { x: x, y: y, speedY: -0.5 - Math.random() * 0.5, opacity: 1, radius: Math.random() * 2 + 1 }; }
-
-    // --- LOGIKA SIMULASI & UPDATE ---
-    function updateSimulation() {
-        tick++;
-        if (tick >= DAY_LENGTH_TICKS) {
-            tick = 0;
-            day++;
-            dayCounterEl.textContent = day;
-            weatherCycle = (weatherCycle + 1) % 5;
-            isRaining = weatherCycle < 3;
-            evaporationActive = !isRaining;
-        }
-
-        let dailyErosion = 0;
+    <script>
+        const canvas = document.getElementById('simulationCanvas');
+        const ctx = canvas.getContext('2d');
         
-        if (isRaining) {
-            if (soilSaturation < MAX_SATURATION) {
-                soilSaturation += INFILTRATION_RATE * (parseFloat(rFactorSlider.value) / 500);
-                soilSaturation = Math.min(soilSaturation, MAX_SATURATION);
-            }
-        } else {
-            if (soilSaturation > 0) {
-                soilSaturation -= EVAPORATION_RATE;
-                soilSaturation = Math.max(0, soilSaturation);
-            }
-        }
+        // Buttons and Data Displays
+        const startStopBtn = document.getElementById('startStopBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const exportCsvBtn = document.getElementById('exportCsvBtn');
+        const dayCountEl = document.getElementById('dayCount');
+        const dailyErosionEl = document.getElementById('dailyErosion');
+        const totalErosionEl = document.getElementById('totalErosion');
+        const soilSaturationEl = document.getElementById('soilSaturation');
+        const sedimentationLevelEl = document.getElementById('sedimentationLevel');
+        const estimatedLifeEl = document.getElementById('estimatedLife');
         
-        if (isRaining && soilSaturation >= MAX_SATURATION) {
-            dailyErosion = calculateRUSLE();
-            totalErosion += dailyErosion;
-            
-            const sedimentToAdd = dailyErosion / BASIN_CAPACITY_TONS;
-            if (sedimentLevel < 1) {
-                sedimentLevel += sedimentToAdd;
-                if (sedimentLevel >= 1) {
-                    sedimentLevel = 1;
-                    basinFullMessage.classList.remove('hidden');
-                    stopSimulation();
+        // Manual Input Fields
+        const annualRainfallInput = document.getElementById('annualRainfall');
+        const watershedAreaInput = document.getElementById('watershedArea');
+        const reservoirVolumeInput = document.getElementById('reservoirVolume');
+        const csvFileInput = document.getElementById('csvFileInput');
+        
+        // Language Buttons
+        const langIdBtn = document.getElementById('lang-id');
+        const langEnBtn = document.getElementById('lang-en');
+
+        // Help Modal Elements
+        const helpModal = document.getElementById('helpModal');
+        const helpModalTitle = document.getElementById('helpModalTitle');
+        const helpModalContent = document.getElementById('helpModalContent');
+        const closeHelpModalBtn = document.getElementById('closeHelpModal');
+
+
+        let isRunning = false;
+        let animationFrameId;
+        let simulationLog = [];
+        let map;
+        let watershedLayer;
+        let assessmentMarker;
+        let currentWatershedGeoJson; // FIX: To store the current GeoJSON data
+
+        // --- Simulation Parameters ---
+        let day = 0;
+        let soilSaturation = 0; // 0 to 100
+        let totalErosion = 0; // in tons
+        let totalSediment = 0; // in cubic meters
+
+        // Weather cycle
+        let daysOfRain = 0;
+        let daysOfSun = 0;
+        const maxRainDays = 5;
+        const maxSunDays = 3;
+        let isRaining = true;
+
+        // Particles
+        let rainParticles = [];
+        let runoffParticles = [];
+        let evaporationParticles = [];
+        let splashParticles = [];
+        let clouds = [];
+        let lightning = { alpha: 0, path: [] };
+
+        // --- Language & Translations ---
+        let currentLanguage = 'id';
+        const translations = {
+            en: {
+                mainTitle: "Watershed Erosion & Sedimentation Simulation Platform",
+                simulationControls: "Simulation Controls",
+                startBtn: "Start", continueBtn: "Continue", pauseBtn: "Pause", resetBtn: "Reset", exportBtn: "Export Data (CSV)",
+                customDataTitle: "Custom Watershed Data",
+                uploadLabel: "Upload Watershed Polygon (.csv)",
+                csvFormat: "Format: 2 columns (latitude, longitude), no header.",
+                reservoirParams: "Basic Reservoir Parameters",
+                annualRainfall: "Annual Rainfall (mm)", watershedArea: "Watershed Area (Ha)", sedimentVolume: "Total Sediment Storage Volume (Million m³)",
+                rusleParams: "RUSLE Parameters",
+                simulationData: "Simulation Results Data",
+                simDay: "Simulation Day:", estimatedLifespan: "Estimated Reservoir Lifespan:", dailyErosion: "Daily Erosion (tons):",
+                totalErosion: "Total Erosion (tons):", soilSaturation: "Soil Saturation:", basinSedimentation: "Basin Sedimentation:",
+                rusleTheoryTitle: "Theoretical Basis: RUSLE Model",
+                rusleTheoryDesc: "The Revised Universal Soil Loss Equation (RUSLE) is a widely used empirical model to predict the long-term average annual rate of erosion by water. This model is an evolution of the USLE (Universal Soil Loss Equation) with improvements to several of its factors [1]. The RUSLE equation is calculated as:",
+                rusleFactorA: "Average Annual Soil Loss (tons/hectare/year).",
+                rusleFactorR: "Rainfall-Runoff Erosivity Factor, which measures the kinetic energy and intensity of rain [2].",
+                rusleFactorK: "Soil Erodibility Factor, which measures the susceptibility of soil particles to erosion.",
+                rusleFactorLS: "Slope Length and Steepness Factor, which represents the effect of topography.",
+                rusleFactorC: "Cover-Management Factor, which reflects the effect of land cover.",
+                rusleFactorP: "Support Practice Factor, which represents land management practices to control erosion [3].",
+                caseStudyTitle: "Case Study: Saguling Reservoir (based on the Thesis of Rani Annisa Royani)",
+                caseStudyP1: "Saguling Reservoir, located in West Java, is a vital infrastructure for a Hydroelectric Power Plant (PLTA). However, like many other reservoirs, Saguling faces a serious threat from high sedimentation rates due to erosion in the Upper Citarum Watershed. This high erosion rate is caused by a combination of natural factors (high rainfall, vulnerable soil) and human activities (land-use change, improper agricultural practices) [4].",
+                caseStudyP2: "The research conducted by Rani Annisa Royani (2014) used the RUSLE model to analyze the rate of erosion and sedimentation in the Saguling Reservoir Watershed. This study integrated data on rainfall, soil type, topography, and land use to map critical areas that are the main sources of erosion. The results were used to estimate the annual sedimentation rate and predict the remaining functional life of the reservoir. This simulation uses parameters and findings from that research as a basis for dynamically visualizing the process and impact of erosion [4].",
+                methodologyTitle: "Research Methodology (Based on the Thesis of Rani Annisa Royani)",
+                methodologyDesc: "The methodology adopted in Rani Annisa Royani's research to analyze erosion and sedimentation in the Saguling Reservoir Watershed is a systematic quantitative approach using the RUSLE model. This approach, which forms the basis for the simulation you see, has the following stages [4]:",
+                methodStep1: "Secondary Data Collection:", methodStep1Desc: "The initial stage involves collecting crucial data that serve as input for each factor in the RUSLE model. This data includes:",
+                methodStep1_1: "<strong>Rainfall Data:</strong> Historical data from several weather stations around the watershed to calculate rainfall erosivity (R Factor).",
+                methodStep1_2: "<strong>Soil Data:</strong> Soil type maps to determine soil erodibility (K Factor).",
+                methodStep1_3: "<strong>Topography Data:</strong> Contour maps or Digital Elevation Model (DEM) data to derive the slope length and steepness factor (LS Factor).",
+                methodStep1_4: "<strong>Land Use Data:</strong> Land cover maps to determine the cover-management factor (C Factor).",
+                methodStep1_5: "<strong>Conservation Data:</strong> Information on soil and water conservation practices implemented in the area (P Factor).",
+                methodStep2: "Spatial Analysis and Factor Calculation:", methodStep2Desc: "Each dataset is processed using Geographic Information System (GIS) software to spatially calculate the value of each RUSLE factor (per land unit) across the entire watershed area.",
+                methodStep3: "Erosion Rate Estimation:", methodStep3Desc: "The values of the five factors (R, K, LS, C, and P) are multiplied according to the RUSLE equation (A = R × K × LS × C × P) to obtain the potential annual erosion rate (A) in tons/ha/year for each land unit.",
+                methodStep4: "Sedimentation Rate Calculation:", methodStep4Desc: "The resulting erosion rate is then converted into the sediment yield entering the reservoir by multiplying it by the <em>Sediment Delivery Ratio</em> (SDR). SDR is the ratio of sediment that reaches the river mouth to the total erosion occurring in the watershed.",
+                methodStep5: "Reservoir Lifespan Analysis:", methodStep5Desc: "By comparing the annual sedimentation rate with the total sediment storage capacity of the reservoir, the research estimates the remaining functional life of Saguling Reservoir until the storage is filled with sediment.",
+                mitigationTitle: "Mitigation Recommendations",
+                mitigationDesc: "Based on simulation and analysis, the predicted reservoir lifespan is highly sensitive to the C Factor (Cover Management) and P Factor (Support Practices). This indicates that upstream mitigation measures, as described in various soil conservation literature, are key to extending the life of Saguling Reservoir [3].",
+                mitigationHuluTitle: "Upstream Mitigation Recommendations:",
+                mitigationItem1: "<b>Reforestation and Agroforestry:</b> Replanting vegetation on critical lands to increase land cover (lowering the C Factor).",
+                mitigationItem2: "<b>Terracing:</b> Building terraces on sloping land to slow surface runoff and reduce erosion (improving the P Factor).",
+                mitigationItem3: "<b>Contour Farming:</b> Planting parallel to contour lines to retain water and soil.",
+                mitigationItem4: "<b>Community Outreach:</b> Educating the community on sustainable agricultural practices to reduce soil erosion.",
+                mitigationFigcaption: "Upstream conservation measures are key to reservoir sustainability.",
+                referencesTitle: "References",
+                footerDesigned: 'Designed by <a href="https://id.linkedin.com/in/mokhamadabrar" target="_blank" rel="noopener" class="text-amber-400 hover:underline">Mokhamad Abrar</a>',
+                footerReviewed: 'Reviewed by <a href="https://id.linkedin.com/in/avior-qhse" target="_blank" rel="noopener" class="text-amber-400 hover:underline">Ratu Avior, MSc.</a> and <a href="https://id.linkedin.com/in/raniannisaroyani" target="_blank" rel="noopener noreferrer" class="text-amber-400 hover:underline">Ir. Rani A. Royani, MSc.</a>',
+                footerDate: "Sustainable Apps Development @ Aug 2025",
+                alertFull: "Simulation stopped: Sedimentation basin is full.",
+                mapTitle: "Location Map & Watershed Erosion Estimation",
+                helpReservoirTitle: "Help: Basic Reservoir Parameters",
+                helpReservoirContent: `<p>These parameters define the fundamental characteristics of the reservoir and its watershed, which are used as the basis for calculating erosion and lifespan.</p>
+                                       <ul>
+                                           <li><b>Annual Rainfall:</b> Directly influences the Rainfall Erosivity Factor (R). Higher rainfall generally leads to a higher potential for erosion.</li>
+                                           <li><b>Watershed Area (DAS):</b> The total land area that drains water and sediment into the reservoir. A larger area means more potential for total erosion.</li>
+                                           <li><b>Total Sediment Storage Volume:</b> The maximum capacity of the reservoir to hold sediment. This value, combined with the annual sedimentation rate, determines the reservoir's lifespan.</li>
+                                       </ul>`,
+                helpRusleTitle: "Help: RUSLE Parameters",
+                helpRusleContent: `<p>These parameters are the core of the RUSLE model. Adjust them to simulate different scenarios of land management and conservation.</p>
+                                   <ul>
+                                       <li><b>R (Rainfall Erosivity):</b> Automatically calculated from Annual Rainfall. It represents the potential of rain to cause erosion.</li>
+                                       <li><b>K (Soil Erodibility):</b> The soil's inherent resistance to erosion. Clay soils have low K values, while silty soils have high K values.</li>
+                                       <li><b>LS (Slope Length & Steepness):</b> Represents topography. Longer and steeper slopes result in higher erosion rates.</li>
+                                       <li><b>C (Cover-Management):</b> Represents land cover. Low values indicate dense vegetation (like forests), while high values indicate bare land. <b>This is a key factor for mitigation.</b></li>
+                                       <li><b>P (Support Practice):</b> Represents conservation practices like terracing or contour farming. A value of 1 means no practices, while lower values indicate effective conservation. <b>This is a key factor for mitigation.</b></li>
+                                   </ul>`
+            },
+            id: {
+                mainTitle: "Platform Simulasi Erosi & Sedimentasi DAS",
+                simulationControls: "Kontrol Simulasi",
+                startBtn: "Mulai", continueBtn: "Lanjutkan", pauseBtn: "Jeda", resetBtn: "Reset", exportBtn: "Ekspor Data (CSV)",
+                customDataTitle: "Data DAS Kustom",
+                uploadLabel: "Unggah Poligon DAS (.csv)",
+                csvFormat: "Format: 2 kolom (latitude, longitude), tanpa header.",
+                reservoirParams: "Parameter Dasar Waduk",
+                annualRainfall: "Curah Hujan Tahunan (mm)", watershedArea: "Luas DAS (Ha)", sedimentVolume: "Total Volume Tampungan Sedimen (Juta m³)",
+                rusleParams: "Parameter RUSLE",
+                simulationData: "Data Hasil Simulasi",
+                simDay: "Hari Simulasi:", estimatedLifespan: "Perkiraan Umur Waduk:", dailyErosion: "Erosi Harian (ton):",
+                totalErosion: "Total Erosi (ton):", soilSaturation: "Kejenuhan Tanah:", basinSedimentation: "Sedimentasi Cekungan:",
+                rusleTheoryTitle: "Landasan Teori: Model RUSLE",
+                rusleTheoryDesc: "The Revised Universal Soil Loss Equation (RUSLE) adalah model empiris yang digunakan secara luas untuk memprediksi erosi tanah jangka panjang rata-rata oleh air. Model ini merupakan pengembangan dari USLE (Universal Soil Loss Equation) dengan penyempurnaan pada beberapa faktornya [1]. Persamaan RUSLE dihitung sebagai:",
+                rusleFactorA: "Rata-rata Erosi Tanah Tahunan (ton/hektar/tahun).",
+                rusleFactorR: "Faktor Erosivitas Curah Hujan, yang mengukur energi kinetik dan intensitas hujan [2].",
+                rusleFactorK: "Faktor Erodibilitas Tanah, yang mengukur kerentanan partikel tanah terhadap erosi.",
+                rusleFactorLS: "Faktor Panjang dan Kemiringan Lereng, yang merepresentasikan pengaruh topografi.",
+                rusleFactorC: "Faktor Pengelolaan Tanaman dan Vegetasi, yang menunjukkan pengaruh tutupan lahan.",
+                rusleFactorP: "Faktor Tindakan Konservasi, yang merepresentasikan praktik pengelolaan lahan untuk mengendalikan erosi [3].",
+                caseStudyTitle: "Studi Kasus: Waduk Saguling (berdasarkan Tesis Rani Annisa Royani)",
+                caseStudyP1: "Waduk Saguling, yang berlokasi di Jawa Barat, merupakan salah satu infrastruktur vital untuk Pembangkit Listrik Tenaga Air (PLTA). Namun, seperti banyak waduk lainnya, Saguling menghadapi ancaman serius dari laju sedimentasi yang tinggi akibat erosi di Daerah Aliran Sungai (DAS) Citarum Hulu. Tingginya laju erosi ini disebabkan oleh kombinasi faktor alam (curah hujan tinggi, tanah rentan) dan aktivitas manusia (perubahan tata guna lahan, praktik pertanian yang kurang tepat) [4].",
+                caseStudyP2: "Penelitian yang dilakukan oleh Rani Annisa Royani (2014) menggunakan model RUSLE untuk menganalisis laju erosi dan sedimentasi di DAS Waduk Saguling. Studi ini mengintegrasikan data curah hujan, jenis tanah, topografi, dan tata guna lahan untuk memetakan area-area kritis yang menjadi sumber utama erosi. Hasilnya digunakan untuk mengestimasi laju sedimentasi tahunan dan memprediksi sisa umur fungsional waduk. Simulasi ini menggunakan parameter dan temuan dari penelitian tersebut sebagai dasar untuk memvisualisasikan proses dan dampak erosi secara dinamis [4].",
+                methodologyTitle: "Metode Penelitian (Berdasarkan Tesis Rani Annisa Royani)",
+                methodologyDesc: "Metodologi yang diadopsi dalam penelitian Rani Annisa Royani untuk menganalisis erosi dan sedimentasi di DAS Waduk Saguling merupakan pendekatan kuantitatif yang sistematis dengan menggunakan model RUSLE. Pendekatan ini, yang menjadi dasar bagi simulasi yang Anda lihat, memiliki tahapan sebagai berikut [4]:",
+                methodStep1: "Pengumpulan Data Sekunder:", methodStep1Desc: "Tahap awal melibatkan pengumpulan data-data krusial yang menjadi input bagi setiap faktor dalam model RUSLE. Data ini meliputi:",
+                methodStep1_1: "<strong>Data Curah Hujan:</strong> Data historis dari beberapa stasiun cuaca di sekitar DAS untuk menghitung nilai erosivitas hujan (Faktor R).",
+                methodStep1_2: "<strong>Data Tanah:</strong> Peta jenis tanah untuk menentukan nilai erodibilitas tanah (Faktor K).",
+                methodStep1_3: "<strong>Data Topografi:</strong> Peta kontur atau data Digital Elevation Model (DEM) untuk menurunkan faktor panjang dan kemiringan lereng (Faktor LS).",
+                methodStep1_4: "<strong>Data Penggunaan Lahan:</strong> Peta tutupan lahan untuk menentukan faktor pengelolaan tanaman (Faktor C).",
+                methodStep1_5: "<strong>Data Konservasi:</strong> Informasi mengenai praktik konservasi tanah dan air yang diterapkan di area tersebut (Faktor P).",
+                methodStep2: "Analisis Spasial dan Perhitungan Faktor:", methodStep2Desc: "Setiap data diolah menggunakan perangkat lunak Sistem Informasi Geografis (SIG) untuk menghitung nilai masing-masing faktor RUSLE secara spasial (per unit lahan) di seluruh area DAS.",
+                methodStep3: "Estimasi Laju Erosi:", methodStep3Desc: "Nilai dari kelima faktor tersebut (R, K, LS, C, dan P) dikalikan sesuai dengan persamaan RUSLE (A = R × K × LS × C × P) untuk mendapatkan laju erosi potensial tahunan (A) dalam satuan ton/ha/tahun untuk setiap unit lahan.",
+                methodStep4: "Perhitungan Laju Sedimentasi:", methodStep4Desc: "Laju erosi yang didapat kemudian dikonversi menjadi laju sedimen yang masuk ke waduk (Sediment Yield) dengan mengalikannya dengan <em>Sediment Delivery Ratio</em> (SDR). SDR adalah rasio sedimen yang sampai ke muara sungai terhadap total erosi yang terjadi di DAS.",
+                methodStep5: "Analisis Umur Waduk:", methodStep5Desc: "Dengan membandingkan laju sedimentasi tahunan dengan total kapasitas tampungan sedimen waduk, penelitian ini mengestimasi sisa umur fungsional Waduk Saguling hingga tampungan tersebut penuh oleh sedimen.",
+                mitigationTitle: "Rekomendasi Mitigasi",
+                mitigationDesc: "Berdasarkan simulasi dan analisis, prediksi umur waduk sangat sensitif terhadap Faktor C (Pengelolaan Tanaman) dan Faktor P (Tindakan Konservasi). Ini menunjukkan bahwa tindakan mitigasi di hulu, seperti yang dijelaskan dalam berbagai literatur konservasi tanah, adalah kunci untuk memperpanjang umur Waduk Saguling [3].",
+                mitigationHuluTitle: "Rekomendasi Mitigasi Hulu:",
+                mitigationItem1: "<b>Reboisasi dan Agroforestri:</b> Menanam kembali vegetasi di lahan kritis untuk meningkatkan tutupan lahan (menurunkan Faktor C).",
+                mitigationItem2: "<b>Pembuatan Terasering:</b> Membangun teras pada lahan miring untuk memperlambat aliran permukaan dan mengurangi erosi (meningkatkan Faktor P).",
+                mitigationItem3: "<b>Pola Tanam Kontur:</b> Menanam sejajar dengan garis kontur untuk menahan air dan tanah.",
+                mitigationItem4: "<b>Penyuluhan kepada Masyarakat:</b> Edukasi mengenai praktik pertanian berkelanjutan untuk mengurangi erosi tanah.",
+                mitigationFigcaption: "Tindakan konservasi di hulu adalah kunci keberlanjutan waduk.",
+                referencesTitle: "Daftar Pustaka",
+                footerDesigned: 'Designed by <a href="https://id.linkedin.com/in/mokhamadabrar" target="_blank" rel="noopener" class="text-amber-400 hover:underline">Mokhamad Abrar</a>',
+                footerReviewed: 'Reviewed by <a href="https://id.linkedin.com/in/avior-qhse" target="_blank" rel="noopener" class="text-amber-400 hover:underline">Ratu Avior, MSc.</a> and <a href="https://id.linkedin.com/in/raniannisaroyani" target="_blank" rel="noopener noreferrer" class="text-amber-400 hover:underline">Ir. Rani A. Royani, MSc.</a>',
+                footerDate: "Sustainable Apps Development @ Aug 2025",
+                alertFull: "Simulasi berhenti: Cekungan sedimentasi sudah penuh.",
+                mapTitle: "Peta Lokasi & Estimasi Tingkat Erosi DAS",
+                helpReservoirTitle: "Bantuan: Parameter Dasar Waduk",
+                helpReservoirContent: `<p>Parameter ini mendefinisikan karakteristik fundamental dari waduk dan DAS-nya, yang digunakan sebagai dasar perhitungan erosi dan umur waduk.</p>
+                                       <ul>
+                                           <li><b>Curah Hujan Tahunan:</b> Berpengaruh langsung pada Faktor Erosivitas Hujan (R). Curah hujan yang lebih tinggi umumnya menyebabkan potensi erosi yang lebih besar.</li>
+                                           <li><b>Luas DAS:</b> Total area lahan yang mengalirkan air dan sedimen ke dalam waduk. Area yang lebih luas berarti potensi total erosi yang lebih besar.</li>
+                                           <li><b>Total Volume Tampungan Sedimen:</b> Kapasitas maksimum waduk untuk menampung sedimen. Nilai ini, dikombinasikan dengan laju sedimentasi tahunan, menentukan umur pakai waduk.</li>
+                                       </ul>`,
+                helpRusleTitle: "Bantuan: Parameter RUSLE",
+                helpRusleContent: `<p>Parameter ini adalah inti dari model RUSLE. Sesuaikan nilai-nilai ini untuk menyimulasikan berbagai skenario pengelolaan lahan dan konservasi.</p>
+                                   <ul>
+                                       <li><b>R (Erosivitas Hujan):</b> Dihitung otomatis dari Curah Hujan Tahunan. Merepresentasikan potensi hujan untuk menyebabkan erosi.</li>
+                                       <li><b>K (Erodibilitas Tanah):</b> Resistansi inheren tanah terhadap erosi. Tanah liat memiliki nilai K rendah, sedangkan tanah lanau (silt) memiliki nilai K tinggi.</li>
+                                       <li><b>LS (Panjang & Kemiringan Lereng):</b> Merepresentasikan topografi. Lereng yang lebih panjang dan curam menghasilkan laju erosi yang lebih tinggi.</li>
+                                       <li><b>C (Pengelolaan Tanaman):</b> Merepresentasikan tutupan lahan. Nilai rendah mengindikasikan vegetasi padat (seperti hutan), sementara nilai tinggi mengindikasikan lahan gundul. <b>Ini adalah faktor kunci untuk mitigasi.</b></li>
+                                       <li><b>P (Tindakan Konservasi):</b> Merepresentasikan praktik konservasi seperti terasering atau penanaman kontur. Nilai 1 berarti tidak ada praktik konservasi, sementara nilai yang lebih rendah menunjukkan konservasi yang efektif. <b>Ini adalah faktor kunci untuk mitigasi.</b></li>
+                                   </ul>`
+            }
+        };
+
+        // Fundamental Parameters (Default values based on Saguling case)
+        const defaultParams = {
+            annualRainfall: 3175, // mm
+            watershedArea: 55700, // Ha
+            reservoirVolume: 40.3, // million m³
+            rusle: {
+                R: { value: 1500, min: 500, max: 4000, label: 'R', descKey: 'rusleFactorR' },
+                K: { value: 0.28, min: 0.05, max: 0.6, step: 0.01, label: 'K', descKey: 'rusleFactorK' },
+                LS: { value: 15, min: 1, max: 50, label: 'LS', descKey: 'rusleFactorLS' },
+                C: { value: 0.15, min: 0.001, max: 1, step: 0.001, label: 'C', descKey: 'rusleFactorC' },
+                P: { value: 0.8, min: 0.1, max: 1, step: 0.01, label: 'P', descKey: 'rusleFactorP' }
+            }
+        };
+        
+        let currentParams = JSON.parse(JSON.stringify(defaultParams));
+
+        function setupRusleControls() {
+            const container = document.getElementById('rusle-controls');
+            container.innerHTML = '';
+            for (const key in currentParams.rusle) {
+                const param = currentParams.rusle[key];
+                const sliderId = `slider-${key}`;
+                const valueId = `value-${key}`;
+                const isFactorR = key === 'R';
+
+                const controlHTML = `
+                    <div class="rusle-control-item">
+                        <label for="${sliderId}" class="flex justify-between text-sm font-medium text-gray-400">
+                            <span>${param.label}</span>
+                            <span id="${valueId}">${param.value}</span>
+                        </label>
+                        <input type="range" id="${sliderId}" min="${param.min}" max="${param.max}" value="${param.value}" 
+                               step="${param.step || 1}" class="w-full h-2 bg-gray-600 rounded-lg appearance-none cursor-pointer rusle-slider"
+                               ${isFactorR ? 'disabled' : ''}>
+                    </div>
+                `;
+                container.innerHTML += controlHTML;
+            }
+
+            updateRusleParamDescriptions();
+
+            for (const key in currentParams.rusle) {
+                 if (key !== 'R') {
+                    const slider = document.getElementById(`slider-${key}`);
+                    slider.addEventListener('input', (e) => {
+                        const valueEl = document.getElementById(`value-${key}`);
+                        currentParams.rusle[key].value = parseFloat(e.target.value);
+                        valueEl.textContent = parseFloat(e.target.value).toFixed(key === 'C' ? 3 : 2);
+                        calculateEstimatedLife();
+                        if(!isRunning) drawLandscape(); // Redraw static landscape
+                    });
                 }
             }
         }
 
-        dailyErosionEl.textContent = dailyErosion.toFixed(2);
-        totalErosionEl.textContent = totalErosion.toFixed(2);
-        saturationEl.textContent = `${Math.round(soilSaturation)} %`;
-        sedimentationEl.textContent = (sedimentLevel * 100).toFixed(2) + ' %';
-        
-        updateParticles();
-    }
-    
-    function updateParticles() {
-        if (isRaining) { if (rainParticles.length < 200) rainParticles.push(createRainParticle()); } else { rainParticles = []; }
-        rainParticles.forEach((p, i) => { p.y += p.speed; if (p.y > canvas.height) rainParticles.splice(i, 1); });
-
-        if (isRaining && soilSaturation >= MAX_SATURATION) {
-            const numParticles = Math.ceil(calculateRUSLE() / 10);
-            for(let i=0; i<numParticles; i++) {
-                const startX = canvas.width * 0.2 + Math.random() * canvas.width * 0.4;
-                runoffParticles.push(createRunoffParticle(startX, getHillHeight(startX)));
+        function setupClouds() {
+            clouds = [];
+            const numClouds = 3;
+            for (let i = 0; i < numClouds; i++) {
+                clouds.push({
+                    x: (canvas.width / numClouds) * i + Math.random() * 50 - 25,
+                    y: canvas.height * 0.15 + (Math.random() - 0.5) * 20,
+                    radius: Math.random() * 20 + 35,
+                    speed: Math.random() * 0.1 + 0.05
+                });
             }
         }
-        runoffParticles.forEach((p, i) => {
-            const hillY = getHillHeight(p.x);
-            if (p.y < hillY) { p.y += p.speedY * 2; } else { const slope = getHillSlope(p.x); p.x += p.speedX; p.y = hillY + slope * p.speedX; }
-            p.opacity -= 0.005;
-            if (p.opacity <= 0 || p.x > canvas.width * 0.8) runoffParticles.splice(i, 1);
-        });
-        
-        if(evaporationActive) {
-            if(evapParticles.length < 50) {
-                 const basinWaterY = (canvas.height * 0.95) - (canvas.height * 0.3 * sedimentLevel);
-                 const x = canvas.width * 0.8 + Math.random() * (canvas.width * 0.2 - 20);
-                 evapParticles.push(createEvapParticle(x, basinWaterY - Math.random() * 10));
-            }
+
+        function resizeCanvas() {
+            const container = canvas.parentElement;
+            canvas.width = container.clientWidth;
+            canvas.height = Math.max(container.clientHeight, 350); 
         }
-        evapParticles.forEach((p, i) => { p.y += p.speedY; p.x += Math.sin(p.y * 0.1); p.opacity -= 0.01; if (p.opacity <= 0) evapParticles.splice(i, 1); });
-    }
 
-    // --- FUNGSI DRAWING ---
-    function getHillHeight(x) {
-        const amplitude = canvas.height * 0.3;
-        const frequency = Math.PI / (canvas.width * 0.8);
-        const verticalOffset = canvas.height * 0.4;
-        if (x < canvas.width * 0.8) return -amplitude * Math.cos(frequency * x) + verticalOffset + amplitude;
-        return canvas.height * 0.95;
-    }
-    
-    function getHillSlope(x) {
-        const amplitude = canvas.height * 0.3;
-        const frequency = Math.PI / (canvas.width * 0.8);
-        return amplitude * frequency * Math.sin(frequency * x);
-    }
-    
-    function drawScene() {
-        if (!canvas.getContext) return;
-        const canvasWidth = canvas.width;
-        const canvasHeight = canvas.height;
-
-        ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-        ctx.fillStyle = isRaining ? '#a3b1bc' : '#87CEEB';
-        ctx.globalAlpha = 0.5;
-        ctx.fillRect(0, 0, canvasWidth, canvasHeight);
-        ctx.globalAlpha = 1;
-
-        ctx.beginPath();
-        ctx.moveTo(0, canvasHeight);
-        for (let x = 0; x <= canvasWidth; x++) ctx.lineTo(x, getHillHeight(x));
-        ctx.lineTo(canvasWidth, canvasHeight);
-        ctx.closePath();
-        const saturationColor = 100 - Math.floor(soilSaturation * 0.6);
-        ctx.fillStyle = `rgb(139, ${saturationColor}, 19)`;
-        ctx.fill();
-
-        const basinStartY = canvasHeight * 0.95;
-        const basinBottom = canvasHeight;
-        const sedimentHeight = (basinBottom - basinStartY) * sedimentLevel;
-        ctx.fillStyle = '#967969';
-        ctx.fillRect(canvasWidth * 0.8, basinBottom - sedimentHeight, canvasWidth * 0.2, sedimentHeight);
-        ctx.fillStyle = 'rgba(24, 98, 161, 0.7)';
-        ctx.fillRect(canvasWidth * 0.8, basinBottom - sedimentHeight - 5, canvasWidth * 0.2, 5);
-
-        drawClouds();
-        drawParticles();
-    }
-    
-    const clouds = [ { x: 100, y: 80, size: 50, speed: 0.2 }, { x: 300, y: 120, size: 70, speed: 0.15 }, { x: 550, y: 90, size: 60, speed: 0.25 }, { x: 800, y: 110, size: 80, speed: 0.18 }, ];
-
-    function drawClouds() {
-        clouds.forEach(cloud => {
+        function drawLightning() {
+            if (lightning.alpha <= 0) return;
+            ctx.fillStyle = `rgba(251, 191, 36, ${lightning.alpha * 0.5})`;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.strokeStyle = `rgba(253, 224, 71, ${lightning.alpha})`;
+            ctx.lineWidth = 3;
             ctx.beginPath();
-            ctx.globalAlpha = isRaining ? 0.8 : 0.6;
-            ctx.fillStyle = isRaining ? '#B0C4DE' : '#FFFFFF';
-            ctx.arc(cloud.x, cloud.y, cloud.size * 0.6, Math.PI * 0.5, Math.PI * 1.5);
-            ctx.arc(cloud.x + cloud.size * 0.7, cloud.y - cloud.size * 0.2, cloud.size * 0.8, Math.PI * 1, Math.PI * 2);
-            ctx.arc(cloud.x + cloud.size * 1.5, cloud.y, cloud.size * 0.6, Math.PI * 1.5, Math.PI * 0.5);
+            ctx.moveTo(lightning.path[0].x, lightning.path[0].y);
+            for (let i = 1; i < lightning.path.length; i++) {
+                ctx.lineTo(lightning.path[i].x, lightning.path[i].y);
+            }
+            ctx.stroke();
+            lightning.alpha -= 0.05;
+        }
+
+        function drawClouds() {
+            clouds.forEach(cloud => {
+                cloud.x += cloud.speed;
+                if (cloud.x - cloud.radius > canvas.width) cloud.x = -cloud.radius * 2;
+                ctx.fillStyle = 'rgba(113, 128, 150, 0.8)';
+                ctx.beginPath();
+                ctx.arc(cloud.x, cloud.y, cloud.radius * 0.6, 0, Math.PI * 2);
+                ctx.arc(cloud.x + cloud.radius * 0.4, cloud.y + cloud.radius * 0.2, cloud.radius * 0.7, 0, Math.PI * 2);
+                ctx.arc(cloud.x - cloud.radius * 0.5, cloud.y + cloud.radius * 0.1, cloud.radius * 0.5, 0, Math.PI * 2);
+                ctx.closePath();
+                ctx.fill();
+            });
+        }
+        
+        function getHillY(x, p0, p1, p2) {
+             const t = x / p2.x;
+             if (t < 0 || t > 1) return canvas.height;
+             return Math.pow(1 - t, 2) * p0.y + 2 * (1 - t) * t * p1.y + Math.pow(t, 2) * p2.y;
+        }
+
+        function drawConservationVisuals(p0, p1, p2) {
+            // Visualize Factor P (Terraces)
+            const pValue = currentParams.rusle.P.value;
+            const numTerraces = Math.floor(10 * (1 - pValue));
+            if (numTerraces > 1) {
+                ctx.strokeStyle = 'rgba(0, 0, 0, 0.15)';
+                ctx.lineWidth = 2;
+                for (let i = 1; i <= numTerraces; i++) {
+                    const terraceY = p0.y + (p2.y - p0.y) * (i / (numTerraces + 1));
+                    ctx.beginPath();
+                    let started = false;
+                    for (let x = 0; x < p2.x; x++) {
+                        const hillY = getHillY(x, p0, p1, p2);
+                        if (Math.abs(hillY - terraceY) < 1) {
+                           if (!started) { ctx.moveTo(x, hillY); started = true; } 
+                           else { ctx.lineTo(x, hillY); }
+                        }
+                    }
+                    ctx.stroke();
+                }
+            }
+            
+            // Visualize Factor C (Vegetation)
+            const cValue = currentParams.rusle.C.value;
+            const vegetationDensity = Math.floor(150 * (1 - cValue));
+            ctx.fillStyle = 'rgba(34, 197, 94, 0.2)'; // Green
+            for(let i = 0; i < vegetationDensity; i++) {
+                const x = Math.random() * p2.x * 0.9;
+                const y = getHillY(x, p0, p1, p2);
+                const size = Math.random() * 4 + 2;
+                ctx.beginPath();
+                ctx.arc(x, y, size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function drawLandscape() {
+            const skyGradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+            skyGradient.addColorStop(0, '#2d3748'); skyGradient.addColorStop(1, '#4a5568');
+            ctx.fillStyle = skyGradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            drawLightning();
+            drawClouds();
+
+            const damWidth = canvas.width * 0.1, damX = canvas.width - damWidth;
+            const waterLevelY = canvas.height * 0.6, basinBottomY = canvas.height * 0.95;
+            const p0 = { x: 0, y: canvas.height * 0.3 };
+            const p1 = { x: canvas.width * 0.2, y: canvas.height * 0.4 };
+            const p2 = { x: canvas.width * 0.6, y: basinBottomY };
+
+            const hillColor = `rgb(${100 - soilSaturation * 0.5}, ${70 - soilSaturation * 0.4}, ${30 - soilSaturation * 0.2})`;
+            const waterColor = '#2c5282', damColor = '#4a5568', sedimentColor = '#78350f';
+
+            ctx.fillStyle = hillColor;
+            ctx.beginPath();
+            ctx.moveTo(p0.x, p0.y);
+            ctx.quadraticCurveTo(p1.x, p1.y, p2.x, p2.y);
+            ctx.lineTo(damX, basinBottomY);
+            ctx.lineTo(damX, waterLevelY - 10);
+            ctx.lineTo(canvas.width, waterLevelY - 20);
+            ctx.lineTo(canvas.width, canvas.height);
+            ctx.lineTo(0, canvas.height);
             ctx.closePath();
             ctx.fill();
-            ctx.globalAlpha = 1;
-            cloud.x += cloud.speed;
-            if (cloud.x > canvas.width + cloud.size * 2) cloud.x = -cloud.size * 2;
-        });
-    }
 
-    function drawParticles() {
-        ctx.strokeStyle = 'rgba(174,194,224,0.5)';
-        ctx.lineWidth = 1.5;
-        rainParticles.forEach(p => { ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(p.x, p.y + p.length); ctx.stroke(); });
-        runoffParticles.forEach(p => { ctx.beginPath(); ctx.arc(p.x, p.y, 2, 0, Math.PI * 2); ctx.fillStyle = `rgba(101, 67, 33, ${p.opacity})`; ctx.fill(); });
-        evapParticles.forEach(p => { ctx.beginPath(); ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2); ctx.fillStyle = `rgba(200, 220, 255, ${p.opacity})`; ctx.fill(); });
-    }
+            drawConservationVisuals(p0, p1, p2);
 
-    // --- LOOP UTAMA & KONTROL ---
-    function gameLoop() {
-        if (!isRunning) return;
-        updateSimulation();
-        drawScene();
-        animationFrameId = requestAnimationFrame(gameLoop);
-    }
-    
-    function startSimulation() {
-        if (isRunning) return;
-        isRunning = true;
-        startStopBtn.textContent = 'Jeda';
-        startStopBtn.classList.remove('bg-blue-500', 'hover:bg-blue-600');
-        startStopBtn.classList.add('bg-yellow-500', 'hover:bg-yellow-600');
-        gameLoop();
-    }
+            const sedimentPercentage = totalSediment / (currentParams.reservoirVolume * 1e6);
+            const maxSedimentHeight = basinBottomY - waterLevelY;
+            const currentSedimentHeight = maxSedimentHeight * sedimentPercentage;
+            
+            if (currentSedimentHeight > 0) {
+                ctx.fillStyle = sedimentColor;
+                ctx.beginPath();
+                ctx.moveTo(p2.x, basinBottomY);
+                ctx.lineTo(damX, basinBottomY);
+                ctx.lineTo(damX, basinBottomY - currentSedimentHeight);
+                ctx.quadraticCurveTo(damX * 0.9, basinBottomY - currentSedimentHeight, p2.x, basinBottomY - currentSedimentHeight * 0.8);
+                ctx.closePath();
+                ctx.fill();
+            }
 
-    function stopSimulation() {
-        isRunning = false;
-        startStopBtn.textContent = 'Lanjutkan';
-        startStopBtn.classList.remove('bg-yellow-500', 'hover:bg-yellow-600');
-        startStopBtn.classList.add('bg-blue-500', 'hover:bg-blue-600');
-        if (animationFrameId) cancelAnimationFrame(animationFrameId);
-    }
-    
-    function resetSimulation() {
-        stopSimulation();
-        day = 0; tick = 0; soilSaturation = 0; totalErosion = 0; sedimentLevel = 0; isRaining = false; weatherCycle = 0;
-        rainParticles = []; runoffParticles = []; evapParticles = [];
+            ctx.fillStyle = waterColor; ctx.globalAlpha = 0.8;
+            ctx.beginPath();
+            ctx.moveTo(p2.x, basinBottomY - currentSedimentHeight * 0.8);
+            ctx.quadraticCurveTo(damX * 0.9, basinBottomY - currentSedimentHeight, damX, basinBottomY - currentSedimentHeight);
+            ctx.lineTo(damX, waterLevelY);
+            ctx.lineTo(0, waterLevelY * 1.1);
+            ctx.closePath();
+            ctx.fill();
+            ctx.globalAlpha = 1.0;
+            
+            ctx.fillStyle = damColor;
+            ctx.beginPath();
+            ctx.moveTo(damX, basinBottomY);
+            ctx.lineTo(damX, waterLevelY - 10);
+            ctx.lineTo(canvas.width, waterLevelY - 20);
+            ctx.lineTo(canvas.width, canvas.height);
+            ctx.lineTo(damX, canvas.height);
+            ctx.closePath();
+            ctx.fill();
+        }
+
+        function createSplash(x, y) {
+            for (let i = 0; i < 3; i++) {
+                splashParticles.push({
+                    x: x, y: y, vx: (Math.random() - 0.5) * 2, vy: -Math.random() * 1.5,
+                    radius: Math.random() * 1 + 0.5, alpha: 1
+                });
+            }
+        }
+
+        function createParticles() {
+            if (isRaining && clouds.length > 0) {
+                for (let i = 0; i < 5; i++) {
+                    const cloud = clouds[Math.floor(Math.random() * clouds.length)];
+                    rainParticles.push({
+                        x: cloud.x + (Math.random() - 0.5) * cloud.radius,
+                        y: cloud.y + cloud.radius * 0.3,
+                        length: Math.random() * 20 + 10, speed: Math.random() * 5 + 5
+                    });
+                }
+            } else if (daysOfSun > 0) {
+                 for (let i = 0; i < 1; i++) {
+                    evaporationParticles.push({
+                        x: canvas.width * (0.5 + Math.random() * 0.4), y: canvas.height * 0.6,
+                        radius: Math.random() * 2 + 1, speed: Math.random() * 0.5 + 0.2, alpha: 1
+                    });
+                }
+            }
+        }
+
+        function updateAndDrawParticles() {
+            const p0 = { x: 0, y: canvas.height * 0.3 };
+            const p1 = { x: canvas.width * 0.2, y: canvas.height * 0.4 };
+            const p2 = { x: canvas.width * 0.6, y: canvas.height * 0.95 };
+            
+            ctx.strokeStyle = 'rgba(160, 174, 192, 0.7)'; ctx.lineWidth = 2; 
+            rainParticles.forEach((p, index) => {
+                p.y += p.speed;
+                const groundY = getHillY(p.x, p0, p1, p2);
+                ctx.beginPath(); ctx.moveTo(p.x, p.y);
+                const endY = Math.min(p.y + p.length, groundY);
+                ctx.lineTo(p.x, endY); ctx.stroke();
+                if (p.y >= groundY) {
+                    createSplash(p.x, groundY);
+                    rainParticles.splice(index, 1);
+                }
+            });
+
+            ctx.fillStyle = 'rgba(160, 174, 192, 0.7)';
+            splashParticles.forEach((p, index) => {
+                p.x += p.vx; p.y += p.vy; p.vy += 0.1; p.alpha -= 0.04;
+                ctx.globalAlpha = p.alpha;
+                ctx.beginPath(); ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2); ctx.fill();
+                ctx.globalAlpha = 1.0;
+                if (p.alpha <= 0) { splashParticles.splice(index, 1); }
+            });
+
+            ctx.fillStyle = 'rgba(204, 137, 51, 0.7)';
+            runoffParticles.forEach((p, index) => {
+                p.x += p.vx; p.y += p.vy; p.vy += 0.1; 
+                const groundY = getHillY(p.x, p0, p1, p2);
+                if (p.y >= groundY) { p.y = groundY; p.vx = 2; }
+                ctx.beginPath(); ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2); ctx.fill();
+                if (p.x > canvas.width * 0.6) { runoffParticles.splice(index, 1); }
+            });
+            
+            evaporationParticles.forEach((p, index) => {
+                p.y -= p.speed; p.alpha -= 0.01;
+                ctx.fillStyle = `rgba(200, 210, 225, ${p.alpha})`;
+                ctx.beginPath(); ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2); ctx.fill();
+                if(p.alpha <= 0){ evaporationParticles.splice(index, 1); }
+            });
+        }
+
+        function triggerLightning() {
+            if (clouds.length === 0) return;
+            const cloud = clouds[Math.floor(Math.random() * clouds.length)];
+            const p0 = { x: 0, y: canvas.height * 0.3 }, p1 = { x: canvas.width * 0.2, y: canvas.height * 0.4 }, p2 = { x: canvas.width * 0.6, y: canvas.height * 0.95 };
+            lightning.path = [];
+            let currentPoint = { x: cloud.x, y: cloud.y + cloud.radius * 0.3 };
+            lightning.path.push(currentPoint);
+            let targetY = getHillY(cloud.x, p0, p1, p2);
+            while (currentPoint.y < targetY) {
+                let nextX = currentPoint.x + (Math.random() - 0.5) * 20;
+                let nextY = currentPoint.y + Math.random() * 20 + 10;
+                if (nextY > targetY) nextY = targetY;
+                currentPoint = { x: nextX, y: nextY };
+                lightning.path.push(currentPoint);
+            }
+            lightning.alpha = 1;
+        }
         
-        dayCounterEl.textContent = day;
-        dailyErosionEl.textContent = '0.00';
-        totalErosionEl.textContent = '0.00';
-        saturationEl.textContent = '0 %';
-        sedimentationEl.textContent = '0.00 %';
-        basinFullMessage.classList.add('hidden');
-        startStopBtn.textContent = 'Mulai';
+        function calculateErosion() {
+            const { R, K, LS, C, P } = currentParams.rusle;
+            const annualErosionPerHa = R.value * K.value * LS.value * C.value * P.value;
+            const totalAnnualErosion = annualErosionPerHa * currentParams.watershedArea;
+            return totalAnnualErosion / 365;
+        }
+        
+        function calculateEstimatedLife() {
+            currentParams.annualRainfall = parseFloat(annualRainfallInput.value) || 0;
+            currentParams.watershedArea = parseFloat(watershedAreaInput.value) || 0;
+            currentParams.reservoirVolume = parseFloat(reservoirVolumeInput.value) || 0;
+            const dailyErosionTon = calculateErosion();
+            const totalAnnualErosionTon = dailyErosionTon * 365;
+            const SDR = 0.2, bulkDensity = 1.4;
+            const annualSedimentVolume = (totalAnnualErosionTon * SDR) / bulkDensity;
+            const reservoirCapacityM3 = currentParams.reservoirVolume * 1e6;
+            if (annualSedimentVolume > 0 && reservoirCapacityM3 > 0) {
+                const years = reservoirCapacityM3 / annualSedimentVolume;
+                estimatedLifeEl.textContent = `${years.toFixed(1)}`;
+            } else {
+                estimatedLifeEl.textContent = "∞";
+            }
+             return { dailyErosionTon, annualSedimentVolume };
+        }
 
-        drawScene();
-    }
+        function updateSimulationState() {
+            if (isRaining) {
+                daysOfRain++;
+                if (daysOfRain >= maxRainDays) { isRaining = false; daysOfSun = 0; rainParticles = []; }
+                if (Math.random() < 0.01 && lightning.alpha <= 0) { triggerLightning(); }
+            } else {
+                daysOfSun++;
+                if (daysOfSun >= maxSunDays) { isRaining = true; daysOfRain = 0; evaporationParticles = []; }
+            }
+            if (isRaining) { soilSaturation = Math.min(100, soilSaturation + 5); } 
+            else { soilSaturation = Math.max(0, soilSaturation - 2); }
+            let dailyErosion = 0;
+            if (isRaining && soilSaturation >= 100) {
+                 const calcs = calculateEstimatedLife();
+                 dailyErosion = calcs.dailyErosionTon;
+                 totalErosion += dailyErosion;
+                 const dailySedimentVolume = calcs.annualSedimentVolume / 365;
+                 totalSediment += dailySedimentVolume;
+                 const numParticles = Math.min(Math.ceil(dailyErosion / 5000), 20);
+                 for(let i = 0; i < numParticles; i++) {
+                     const startX = Math.random() * canvas.width * 0.5;
+                     const p0 = { x: 0, y: canvas.height * 0.3 }, p1 = { x: canvas.width * 0.2, y: canvas.height * 0.4 }, p2 = { x: canvas.width * 0.6, y: canvas.height * 0.95 };
+                     runoffParticles.push({
+                         x: startX, y: getHillY(startX, p0, p1, p2), radius: Math.random() * 2 + 1.5, vx: 1, vy: 1
+                     });
+                 }
+            }
+            day++;
+            dayCountEl.textContent = day;
+            dailyErosionEl.textContent = dailyErosion.toFixed(2);
+            totalErosionEl.textContent = totalErosion.toFixed(2);
+            soilSaturationEl.textContent = Math.round(soilSaturation);
+            const sedimentPercentage = (totalSediment / (currentParams.reservoirVolume * 1e6)) * 100;
+            sedimentationLevelEl.textContent = sedimentPercentage.toFixed(2);
+            
+            simulationLog.push({
+                day: day,
+                dailyErosion: dailyErosion.toFixed(2),
+                totalErosion: totalErosion.toFixed(2),
+                soilSaturation: Math.round(soilSaturation),
+                sedimentationLevel: sedimentPercentage.toFixed(2)
+            });
+            updateMapData();
 
-    // Event Listeners
-    startStopBtn.addEventListener('click', () => { isRunning ? stopSimulation() : startSimulation(); });
-    resetBtn.addEventListener('click', resetSimulation);
-    rFactorSlider.addEventListener('input', (e) => rValue.textContent = parseFloat(e.target.value).toFixed(0));
-    kFactorSlider.addEventListener('input', (e) => kValue.textContent = parseFloat(e.target.value).toFixed(2));
-    lsFactorSlider.addEventListener('input', (e) => lsValue.textContent = parseFloat(e.target.value).toFixed(1));
-    cFactorSlider.addEventListener('input', (e) => cValue.textContent = parseFloat(e.target.value).toFixed(2));
-    pFactorSlider.addEventListener('input', (e) => pValue.textContent = parseFloat(e.target.value).toFixed(2));
+            if(sedimentPercentage >= 100){
+                stopSimulation();
+                alert(translations[currentLanguage].alertFull);
+            }
+        }
+        
+        function gameLoop() {
+            if (!isRunning) return;
+            updateSimulationState();
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawLandscape();
+            createParticles();
+            updateAndDrawParticles();
+            animationFrameId = requestAnimationFrame(gameLoop);
+        }
 
-    // Initial setup
-    resizeCanvas();
-</script>
+        function startSimulation() {
+            if (isRunning) return;
+            isRunning = true;
+            updateStartStopButtonText();
+            startStopBtn.classList.remove('from-amber-400', 'to-amber-600');
+            startStopBtn.classList.add('from-yellow-400', 'to-yellow-600');
+            gameLoop();
+        }
 
+        function stopSimulation() {
+            if (!isRunning) return;
+            isRunning = false;
+            updateStartStopButtonText();
+            startStopBtn.classList.remove('from-yellow-400', 'to-yellow-600');
+            startStopBtn.classList.add('from-amber-400', 'to-amber-600');
+            cancelAnimationFrame(animationFrameId);
+        }
+        
+        function resetSimulationState() {
+            day = 0; soilSaturation = 0; totalErosion = 0; totalSediment = 0;
+            isRaining = true; daysOfRain = 0; daysOfSun = 0;
+            rainParticles = []; runoffParticles = []; evaporationParticles = []; splashParticles = [];
+            lightning.alpha = 0; simulationLog = [];
+            dayCountEl.textContent = '0'; dailyErosionEl.textContent = '0.00';
+            totalErosionEl.textContent = '0.00'; soilSaturationEl.textContent = '0';
+            sedimentationLevelEl.textContent = '0.00';
+            resetMapData();
+            drawLandscape();
+        }
+        
+        function fullResetToDefaults() {
+            stopSimulation();
+            updateStartStopButtonText();
+            startStopBtn.classList.remove('from-yellow-400', 'to-yellow-600');
+            startStopBtn.classList.add('from-amber-400', 'to-amber-600');
+            currentParams = JSON.parse(JSON.stringify(defaultParams));
+            annualRainfallInput.value = defaultParams.annualRainfall;
+            watershedAreaInput.value = defaultParams.watershedArea;
+            reservoirVolumeInput.value = defaultParams.reservoirVolume;
+            for (const key in currentParams.rusle) {
+                const slider = document.getElementById(`slider-${key}`);
+                const valueEl = document.getElementById(`value-${key}`);
+                if (slider) { slider.value = currentParams.rusle[key].value; }
+                if (valueEl) { valueEl.textContent = slider.value; }
+            }
+            applyParamsAndReset();
+        }
+        
+        function applyParamsAndReset() {
+            const newR = (parseFloat(annualRainfallInput.value) || 0) * 0.5;
+            currentParams.rusle.R.value = newR;
+            const rValueEl = document.getElementById('value-R');
+            const rSliderEl = document.getElementById('slider-R');
+            if(rValueEl && rSliderEl){
+                rValueEl.textContent = newR.toFixed(0);
+                rSliderEl.value = newR;
+            }
+            calculateEstimatedLife();
+            resetSimulationState();
+        }
+
+        function setLanguage(lang) {
+            currentLanguage = lang;
+            document.documentElement.lang = lang;
+            document.querySelectorAll('[data-lang-key]').forEach(el => {
+                const key = el.dataset.langKey;
+                if (translations[lang][key]) {
+                    el.innerHTML = translations[lang][key];
+                }
+            });
+            langIdBtn.classList.toggle('active', lang === 'id');
+            langEnBtn.classList.toggle('active', lang === 'en');
+            updateRusleParamDescriptions();
+            updateStartStopButtonText();
+        }
+
+        function updateRusleParamDescriptions() {
+            for (const key in defaultParams.rusle) {
+                const param = defaultParams.rusle[key];
+                const labelElement = document.querySelector(`label[for="slider-${key}"]`);
+                if (labelElement) {
+                    labelElement.title = translations[currentLanguage][param.descKey] || '';
+                }
+            }
+        }
+        
+        function updateStartStopButtonText() {
+            if (!isRunning) {
+                startStopBtn.innerHTML = (day > 0) ? translations[currentLanguage].continueBtn : translations[currentLanguage].startBtn;
+            } else {
+                startStopBtn.innerHTML = translations[currentLanguage].pauseBtn;
+            }
+        }
+
+        function exportToCSV() {
+            let csvContent = "data:text/csv;charset=utf-8,";
+            csvContent += "Day,Daily Erosion (ton),Total Erosion (ton),Soil Saturation (%),Sedimentation Level (%)\r\n";
+            simulationLog.forEach(row => {
+                let csvRow = `${row.day},${row.dailyErosion},${row.totalErosion},${row.soilSaturation},${row.sedimentationLevel}`;
+                csvContent += csvRow + "\r\n";
+            });
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "erosion_simulation_data.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+        
+        function showHelpModal(topic) {
+            if (topic === 'reservoirParams') {
+                helpModalTitle.innerHTML = translations[currentLanguage].helpReservoirTitle;
+                helpModalContent.innerHTML = translations[currentLanguage].helpReservoirContent;
+            } else if (topic === 'rusleParams') {
+                helpModalTitle.innerHTML = translations[currentLanguage].helpRusleTitle;
+                helpModalContent.innerHTML = translations[currentLanguage].helpRusleContent;
+            }
+            helpModal.classList.remove('hidden');
+            helpModal.classList.add('flex');
+        }
+
+        function hideHelpModal() {
+            helpModal.classList.add('hidden');
+            helpModal.classList.remove('flex');
+        }
+
+        // --- Map Functions ---
+        const defaultWatershedGeoJson = {
+            "type": "Feature", "properties": { "name": "DAS Citarum Hulu" },
+            "geometry": { "type": "Polygon", "coordinates": [
+                [
+                    [107.576, -6.883], [107.594, -6.903], [107.615, -6.938], [107.620, -6.983],
+                    [107.613, -7.026], [107.589, -7.060], [107.545, -7.085], [107.500, -7.088],
+                    [107.452, -7.070], [107.408, -7.045], [107.369, -7.032], [107.340, -7.005],
+                    [107.327, -6.972], [107.331, -6.936], [107.349, -6.907], [107.382, -6.884],
+                    [107.424, -6.873], [107.479, -6.869], [107.529, -6.871], [107.576, -6.883]
+                ]
+            ]}
+        };
+
+        function getErosionColor(erosionTon) {
+            const annualErosion = erosionTon * (365/day) || 0;
+            // Adjusted thresholds for better color scaling based on expected values
+            if (annualErosion > 10000000) return '#ef4444'; // red-500 for very high erosion
+            if (annualErosion > 2000000) return '#f59e0b'; // amber-500 for high erosion
+            return '#22c55e'; // green-500 for low/moderate erosion
+        }
+
+        function updateMapWithGeoJSON(geoJSON, fileName) {
+            if (watershedLayer) map.removeLayer(watershedLayer);
+            if (assessmentMarker) map.removeLayer(assessmentMarker);
+            
+            geoJSON.properties.name = fileName.replace('.csv', '');
+            currentWatershedGeoJson = geoJSON; // FIX: Store the raw GeoJSON
+
+            const style = {
+                color: "#f59e0b", weight: 2, opacity: 0.9,
+                fillOpacity: 0.3, fillColor: getErosionColor(0)
+            };
+
+            watershedLayer = L.geoJSON(geoJSON, { style: style }).addTo(map);
+            map.fitBounds(watershedLayer.getBounds());
+
+            const center = watershedLayer.getBounds().getCenter();
+            assessmentMarker = L.marker(center, { draggable: true }).addTo(map)
+                .bindPopup("Titik Asesmen (Dapat Digeser)").openPopup();
+            
+            resetMapData();
+        }
+
+        function parseCSVToGeoJSON(csvText, fileName) {
+            try {
+                const lines = csvText.trim().split('\n');
+                const coordinates = [];
+                for (const line of lines) {
+                    const parts = line.split(',');
+                    if (parts.length >= 2) {
+                        const lat = parseFloat(parts[0].trim());
+                        const lon = parseFloat(parts[1].trim());
+                        if (!isNaN(lat) && !isNaN(lon)) {
+                            coordinates.push([lon, lat]); // GeoJSON format is [lon, lat]
+                        }
+                    }
+                }
+                if (coordinates.length < 3) throw new Error("Data CSV tidak cukup untuk membentuk poligon.");
+                
+                // Close the polygon loop if it's not closed
+                if (coordinates[0][0] !== coordinates[coordinates.length - 1][0] || coordinates[0][1] !== coordinates[coordinates.length - 1][1]) {
+                    coordinates.push(coordinates[0]);
+                }
+
+                return {
+                    "type": "Feature", "properties": { "name": fileName },
+                    "geometry": { "type": "Polygon", "coordinates": [coordinates] }
+                };
+            } catch (error) {
+                alert("Gagal memproses file CSV. Pastikan formatnya benar (latitude, longitude) dan tidak ada header. Error: " + error.message);
+                return null;
+            }
+        }
+
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const geoJSON = parseCSVToGeoJSON(e.target.result, file.name);
+                if (geoJSON) {
+                    updateMapWithGeoJSON(geoJSON, file.name);
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function initMap() {
+            map = L.map('map').setView([-6.96, 107.48], 11);
+            
+            const satellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+                attribution: 'Tiles &copy; Esri'
+            });
+
+            const topo = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+                attribution: 'Map data: &copy; OpenStreetMap contributors, SRTM | &copy; OpenTopoMap'
+            });
+
+            satellite.addTo(map);
+
+            const baseMaps = {"Satelit": satellite, "Topografi": topo};
+
+            updateMapWithGeoJSON(defaultWatershedGeoJson, "DAS Citarum Hulu");
+            L.control.layers(baseMaps, { "Batas DAS": watershedLayer }).addTo(map);
+        }
+        
+        function updateMapData(){
+            if (!watershedLayer || !currentWatershedGeoJson) return;
+            const color = getErosionColor(totalErosion);
+            watershedLayer.setStyle({ fillColor: color });
+            
+            const popupContent = `<b>${currentWatershedGeoJson.properties.name}</b><br>Estimasi Akumulasi Erosi:<br>${totalErosion.toFixed(2)} ton`;
+            watershedLayer.bindPopup(popupContent);
+        }
+        
+        function resetMapData(){
+            if (!watershedLayer || !currentWatershedGeoJson) return;
+            watershedLayer.setStyle({ fillColor: getErosionColor(0) });
+            const popupContent = `<b>${currentWatershedGeoJson.properties.name}</b><br>Estimasi Akumulasi Erosi:<br>0.00 ton`;
+            watershedLayer.bindPopup(popupContent);
+        }
+
+        // --- Event Listeners ---
+        startStopBtn.addEventListener('click', () => {
+            if(isRunning) { stopSimulation(); } else { startSimulation(); }
+        });
+        resetBtn.addEventListener('click', fullResetToDefaults);
+        exportCsvBtn.addEventListener('click', exportToCSV);
+        csvFileInput.addEventListener('change', handleFileUpload);
+        window.addEventListener('resize', () => { resizeCanvas(); setupClouds(); drawLandscape(); });
+        [annualRainfallInput, watershedAreaInput, reservoirVolumeInput].forEach(input => {
+            input.addEventListener('input', () => { if(isRunning) stopSimulation(); applyParamsAndReset(); });
+        });
+        langIdBtn.addEventListener('click', () => setLanguage('id'));
+        langEnBtn.addEventListener('click', () => setLanguage('en'));
+        document.querySelectorAll('.help-icon').forEach(icon => {
+            icon.addEventListener('click', (e) => {
+                showHelpModal(e.target.dataset.helpTopic);
+            });
+        });
+        closeHelpModalBtn.addEventListener('click', hideHelpModal);
+        helpModal.addEventListener('click', (e) => {
+            if (e.target === helpModal) hideHelpModal(); // Close on overlay click
+        });
+
+
+        // --- Initial Setup ---
+        function init() {
+            setupRusleControls();
+            resizeCanvas();
+            setupClouds();
+            initMap();
+            applyParamsAndReset();
+            setLanguage('id');
+        }
+
+        init();
+    </script>
 </body>
 </html>
 
