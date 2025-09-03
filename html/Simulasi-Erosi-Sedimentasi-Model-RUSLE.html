@@ -404,7 +404,7 @@
         let map;
         let watershedLayer;
         let assessmentMarker;
-        let currentWatershedGeoJson; // FIX: To store the current GeoJSON data
+        let currentWatershedGeoJson; 
 
         // --- Simulation Parameters ---
         let day = 0;
@@ -1000,6 +1000,7 @@
                 if (slider) { slider.value = currentParams.rusle[key].value; }
                 if (valueEl) { valueEl.textContent = slider.value; }
             }
+            updateMapWithGeoJSON(defaultWatershedGeoJson, "DAS Citarum");
             applyParamsAndReset();
         }
         
@@ -1084,14 +1085,14 @@
 
         // --- Map Functions ---
         const defaultWatershedGeoJson = {
-            "type": "Feature", "properties": { "name": "DAS Citarum Hulu" },
+            "type": "Feature", "properties": { "name": "DAS Citarum" },
             "geometry": { "type": "Polygon", "coordinates": [
                 [
-                    [107.576, -6.883], [107.594, -6.903], [107.615, -6.938], [107.620, -6.983],
-                    [107.613, -7.026], [107.589, -7.060], [107.545, -7.085], [107.500, -7.088],
-                    [107.452, -7.070], [107.408, -7.045], [107.369, -7.032], [107.340, -7.005],
-                    [107.327, -6.972], [107.331, -6.936], [107.349, -6.907], [107.382, -6.884],
-                    [107.424, -6.873], [107.479, -6.869], [107.529, -6.871], [107.576, -6.883]
+                    [107.476, -7.253], [107.728, -7.348], [107.910, -7.202],
+                    [107.989, -7.025], [107.882, -6.840], [107.781, -6.721],
+                    [107.808, -6.591], [107.641, -6.501], [107.420, -6.495],
+                    [107.240, -6.529], [107.098, -6.671], [107.062, -6.842],
+                    [107.218, -6.994], [107.351, -7.159], [107.476, -7.253]
                 ]
             ]}
         };
@@ -1103,13 +1104,26 @@
             if (annualErosion > 2000000) return '#f59e0b'; // amber-500 for high erosion
             return '#22c55e'; // green-500 for low/moderate erosion
         }
+        
+        function calculatePolygonArea(latlngs) {
+            if (!latlngs || latlngs.length < 3) return 0;
+            let area = 0;
+            const earthRadius = 6378137; // meters
+            for (let i = 0; i < latlngs.length; i++) {
+                let p1 = latlngs[i];
+                let p2 = latlngs[(i + 1) % latlngs.length];
+                area += (p2[1] * Math.PI / 180 - p1[1] * Math.PI / 180) *
+                        (2 + Math.sin(p1[0] * Math.PI / 180) + Math.sin(p2[0] * Math.PI / 180));
+            }
+            return Math.abs(area * earthRadius * earthRadius / 2.0);
+        }
 
         function updateMapWithGeoJSON(geoJSON, fileName) {
             if (watershedLayer) map.removeLayer(watershedLayer);
             if (assessmentMarker) map.removeLayer(assessmentMarker);
             
             geoJSON.properties.name = fileName.replace('.csv', '');
-            currentWatershedGeoJson = geoJSON; // FIX: Store the raw GeoJSON
+            currentWatershedGeoJson = geoJSON;
 
             const style = {
                 color: "#f59e0b", weight: 2, opacity: 0.9,
@@ -1123,7 +1137,11 @@
             assessmentMarker = L.marker(center, { draggable: true }).addTo(map)
                 .bindPopup("Titik Asesmen (Dapat Digeser)").openPopup();
             
-            resetMapData();
+            const latLngsForArea = geoJSON.geometry.coordinates[0].map(c => [c[1], c[0]]); // [[lat, lon]]
+            const areaM2 = calculatePolygonArea(latLngsForArea);
+            const areaHa = areaM2 / 10000;
+            watershedAreaInput.value = areaHa.toFixed(2);
+            applyParamsAndReset();
         }
 
         function parseCSVToGeoJSON(csvText, fileName) {
@@ -1133,8 +1151,8 @@
                 for (const line of lines) {
                     const parts = line.split(',');
                     if (parts.length >= 2) {
-                        const lat = parseFloat(parts[0].trim());
-                        const lon = parseFloat(parts[1].trim());
+                        const lat = parseFloat(parts[0].trim().replace(/"/g, ''));
+                        const lon = parseFloat(parts[1].trim().replace(/"/g, ''));
                         if (!isNaN(lat) && !isNaN(lon)) {
                             coordinates.push([lon, lat]); // GeoJSON format is [lon, lat]
                         }
@@ -1172,7 +1190,7 @@
         }
 
         function initMap() {
-            map = L.map('map').setView([-6.96, 107.48], 11);
+            map = L.map('map').setView([-6.92, 107.52], 9);
             
             const satellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
                 attribution: 'Tiles &copy; Esri'
@@ -1186,7 +1204,7 @@
 
             const baseMaps = {"Satelit": satellite, "Topografi": topo};
 
-            updateMapWithGeoJSON(defaultWatershedGeoJson, "DAS Citarum Hulu");
+            updateMapWithGeoJSON(defaultWatershedGeoJson, "DAS Citarum");
             L.control.layers(baseMaps, { "Batas DAS": watershedLayer }).addTo(map);
         }
         
