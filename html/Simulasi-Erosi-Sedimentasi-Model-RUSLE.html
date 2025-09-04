@@ -5,22 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <!-- Meta Tags for SEO -->
-    <title>Platform Simulasi Erosi & Sedimentasi DAS</title>
-    <meta name="description" content="Platform simulasi interaktif untuk analisis erosi dan sedimentasi DAS menggunakan model RUSLE. Unggah data poligon Anda sendiri dan analisis dampaknya.">
-    <meta name="keywords" content="RUSLE, erosi, sedimentasi, Waduk Saguling, simulasi, hidrologi, konservasi tanah, PLTA, GeoJSON, Peta DAS, Analisis DAS">
+    <title>Pemodelan Numerik dan Simulasi Sedimentasi Waduk Akibat Proses Erosi</title>
+    <meta name="description" content="Platform simulasi interaktif untuk pemodelan numerik dan simulasi erosi DAS dan sedimentasi waduk menggunakan model RUSLE. Unggah data poligon Anda sendiri untuk analisis kustom.">
+    <meta name="keywords" content="RUSLE, erosi, sedimentasi, Waduk Saguling, simulasi, hidrologi, konservasi tanah, PLTA, GeoJSON, Peta DAS, Analisis DAS, Pemodelan Numerik">
     <meta name="author" content="Mokhamad Abrar, Ratu Avior, Rani A. Royani">
 
     <!-- Open Graph Meta Tags (for WhatsApp, Facebook, etc.) -->
-    <meta property="og:title" content="Platform Simulasi Erosi & Sedimentasi DAS">
-    <meta property="og:description" content="Simulasi interaktif erosi dan sedimentasi menggunakan model RUSLE, dilengkapi dengan peta DAS interaktif.">
+    <meta property="og:title" content="Pemodelan Numerik dan Simulasi Sedimentasi Waduk">
+    <meta property="og:description" content="Pemodelan numerik interaktif untuk sedimentasi waduk akibat erosi, dilengkapi dengan peta DAS yang dinamis.">
     <meta property="og:image" content="https://raw.githubusercontent.com/simcalc/simcalc.github.io/refs/heads/main/img/waduksaguling.webp">
     <meta property="og:url" content="https://simcalc.github.io/">
     <meta property="og:type" content="website">
 
     <!-- Twitter Card Meta Tags -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Platform Simulasi Erosi & Sedimentasi DAS">
-    <meta name="twitter:description" content="Simulasi interaktif erosi dan sedimentasi menggunakan model RUSLE, dilengkapi dengan peta DAS interaktif.">
+    <meta name="twitter:title" content="Pemodelan Numerik dan Simulasi Sedimentasi Waduk">
+    <meta name="twitter:description" content="Pemodelan numerik interaktif untuk sedimentasi waduk akibat erosi, dilengkapi dengan peta DAS yang dinamis.">
     <meta name="twitter:image" content="https://raw.githubusercontent.com/simcalc/simcalc.github.io/refs/heads/main/img/waduksaguling.webp">
 
     <link rel="icon" href="https://raw.githubusercontent.com/simcalc/simcalc.github.io/refs/heads/main/img/favicon.ico" type="image/x-icon">
@@ -149,7 +149,7 @@
     <header class="header-bg text-white p-4 md:p-6 text-center shadow-lg sticky top-0 z-20">
         <div class="flex justify-between items-center container mx-auto">
             <div></div> <!-- Spacer -->
-            <h1 class="text-xl md:text-4xl font-bold" data-lang-key="mainTitle">Simulasi Erosi & Sedimentasi: Studi Kasus Waduk Saguling</h1>
+            <h1 class="text-xl md:text-3xl font-bold" data-lang-key="mainTitle">Pemodelan Numerik dan Simulasi Sedimentasi Waduk Akibat Proses Erosi</h1>
             <div class="flex space-x-2">
                 <button id="lang-id" class="lang-btn p-1 md:p-2 text-sm">ID</button>
                 <button id="lang-en" class="lang-btn p-1 md:p-2 text-sm">EN</button>
@@ -162,12 +162,12 @@
             
             <!-- Kolom Animasi & Peta -->
             <div class="lg:col-span-2 space-y-6 md:space-y-8">
-                <div class="bg-gray-800 rounded-lg shadow-lg overflow-hidden border border-gray-700">
+                <div id="canvas-container" class="bg-gray-800 rounded-lg shadow-lg overflow-hidden border border-gray-700">
                     <canvas id="simulationCanvas"></canvas>
                 </div>
                  <!-- Peta Lokasi -->
-                <section id="map-section">
-                    <div class="bg-gray-800 p-4 md:p-8 rounded-lg shadow-lg border border-gray-700">
+                <section id="map-section" class="flex flex-col">
+                    <div class="bg-gray-800 p-4 md:p-8 rounded-lg shadow-lg border border-gray-700 flex-grow flex flex-col">
                         <h3 class="text-xl md:text-2xl font-bold text-amber-400 mb-4 border-b border-gray-600 pb-2" data-lang-key="mapTitle">Peta Lokasi & Estimasi Tingkat Erosi DAS</h3>
                         <div id="map" class="h-96 rounded-lg border border-gray-600 z-10"></div>
                     </div>
@@ -182,7 +182,6 @@
                     <div class="grid grid-cols-2 gap-2 mb-6">
                         <button id="startStopBtn" class="bg-gradient-to-b from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 border border-amber-700 text-gray-900 font-bold py-2 px-4 rounded transition-all duration-200 text-sm md:text-base" data-lang-key="startBtn">Mulai</button>
                         <button id="resetBtn" class="bg-gradient-to-b from-gray-600 to-gray-800 hover:from-gray-700 hover:to-gray-900 border border-gray-500 text-white font-bold py-2 px-4 rounded transition-all duration-200 text-sm md:text-base" data-lang-key="resetBtn">Reset</button>
-                        <button id="exportCsvBtn" class="col-span-2 bg-gradient-to-b from-gray-600 to-gray-800 hover:from-gray-700 hover:to-gray-900 border border-gray-500 text-white font-bold py-2 px-4 rounded transition-all duration-200 text-sm md:text-base" data-lang-key="exportBtn">Ekspor Data (CSV)</button>
                     </div>
 
                     <!-- Data Kustom -->
@@ -259,7 +258,7 @@
             
             <section id="case-study">
                 <div class="bg-gray-800 p-4 md:p-8 rounded-lg shadow-lg border border-gray-700">
-                     <h3 class="text-xl md:text-2xl font-bold text-amber-400 mb-4 border-b border-gray-600 pb-2" data-lang-key="caseStudyTitle">Studi Kasus: Waduk Saguling (berdasarkan Tesis Rani Annisa Royani)</h3>
+                     <h3 class="text-xl md:text-2xl font-bold text-amber-400 mb-4 border-b border-gray-600 pb-2" data-lang-key="caseStudyTitle">Studi Kasus: Waduk Saguling</h3>
                     <p class="text-gray-300 mb-4" data-lang-key="caseStudyP1">
                         Waduk Saguling, yang berlokasi di Jawa Barat, merupakan salah satu infrastruktur vital untuk Pembangkit Listrik Tenaga Air (PLTA). Namun, seperti banyak waduk lainnya, Saguling menghadapi ancaman serius dari laju sedimentasi yang tinggi akibat erosi di Daerah Aliran Sungai (DAS) Citarum Hulu. Tingginya laju erosi ini disebabkan oleh kombinasi faktor alam (curah hujan tinggi, tanah rentan) dan aktivitas manusia (perubahan tata guna lahan, praktik pertanian yang kurang tepat) [4].
                     </p>
@@ -272,7 +271,7 @@
             <!-- Metode Penelitian Section -->
             <section id="methodology">
                 <div class="bg-gray-800 p-4 md:p-8 rounded-lg shadow-lg border border-gray-700">
-                    <h3 class="text-xl md:text-2xl font-bold text-amber-400 mb-4 border-b border-gray-600 pb-2" data-lang-key="methodologyTitle">Metode Penelitian (Berdasarkan Tesis Rani Annisa Royani)</h3>
+                    <h3 class="text-xl md:text-2xl font-bold text-amber-400 mb-4 border-b border-gray-600 pb-2" data-lang-key="methodologyTitle">Metode Penelitian</h3>
                     <p class="text-gray-300 mb-4" data-lang-key="methodologyDesc">
                         Metodologi yang diadopsi dalam penelitian Rani Annisa Royani untuk menganalisis erosi dan sedimentasi di DAS Waduk Saguling merupakan pendekatan kuantitatif yang sistematis dengan menggunakan model RUSLE. Pendekatan ini, yang menjadi dasar bagi simulasi yang Anda lihat, memiliki tahapan sebagai berikut [4]:
                     </p>
@@ -373,7 +372,6 @@
         // Buttons and Data Displays
         const startStopBtn = document.getElementById('startStopBtn');
         const resetBtn = document.getElementById('resetBtn');
-        const exportCsvBtn = document.getElementById('exportCsvBtn');
         const dayCountEl = document.getElementById('dayCount');
         const dailyErosionEl = document.getElementById('dailyErosion');
         const totalErosionEl = document.getElementById('totalErosion');
@@ -431,9 +429,9 @@
         let currentLanguage = 'id';
         const translations = {
             en: {
-                mainTitle: "Watershed Erosion & Sedimentation Simulation Platform",
+                mainTitle: "Numerical Modeling and Simulation of Reservoir Sedimentation Due to Erosion",
                 simulationControls: "Simulation Controls",
-                startBtn: "Start", continueBtn: "Continue", pauseBtn: "Pause", resetBtn: "Reset", exportBtn: "Export Data (CSV)",
+                startBtn: "Start", continueBtn: "Start", pauseBtn: "Pause", resetBtn: "Reset", exportBtn: "Export Data (CSV)",
                 customDataTitle: "Custom Watershed Data",
                 uploadLabel: "Upload Watershed Polygon (.csv)",
                 csvFormat: "Format: 2 columns (latitude, longitude), no header.",
@@ -451,10 +449,10 @@
                 rusleFactorLS: "Slope Length and Steepness Factor, which represents the effect of topography.",
                 rusleFactorC: "Cover-Management Factor, which reflects the effect of land cover.",
                 rusleFactorP: "Support Practice Factor, which represents land management practices to control erosion [3].",
-                caseStudyTitle: "Case Study: Saguling Reservoir (based on the Thesis of Rani Annisa Royani)",
+                caseStudyTitle: "Case Study: Saguling Reservoir",
                 caseStudyP1: "Saguling Reservoir, located in West Java, is a vital infrastructure for a Hydroelectric Power Plant (PLTA). However, like many other reservoirs, Saguling faces a serious threat from high sedimentation rates due to erosion in the Upper Citarum Watershed. This high erosion rate is caused by a combination of natural factors (high rainfall, vulnerable soil) and human activities (land-use change, improper agricultural practices) [4].",
                 caseStudyP2: "The research conducted by Rani Annisa Royani (2014) used the RUSLE model to analyze the rate of erosion and sedimentation in the Saguling Reservoir Watershed. This study integrated data on rainfall, soil type, topography, and land use to map critical areas that are the main sources of erosion. The results were used to estimate the annual sedimentation rate and predict the remaining functional life of the reservoir. This simulation uses parameters and findings from that research as a basis for dynamically visualizing the process and impact of erosion [4].",
-                methodologyTitle: "Research Methodology (Based on the Thesis of Rani Annisa Royani)",
+                methodologyTitle: "Research Methodology",
                 methodologyDesc: "The methodology adopted in Rani Annisa Royani's research to analyze erosion and sedimentation in the Saguling Reservoir Watershed is a systematic quantitative approach using the RUSLE model. This approach, which forms the basis for the simulation you see, has the following stages [4]:",
                 methodStep1: "Secondary Data Collection:", methodStep1Desc: "The initial stage involves collecting crucial data that serve as input for each factor in the RUSLE model. This data includes:",
                 methodStep1_1: "<strong>Rainfall Data:</strong> Historical data from several weather stations around the watershed to calculate rainfall erosivity (R Factor).",
@@ -498,9 +496,9 @@
                                    </ul>`
             },
             id: {
-                mainTitle: "Platform Simulasi Erosi & Sedimentasi DAS",
+                mainTitle: "Pemodelan Numerik dan Simulasi Sedimentasi Waduk Akibat Proses Erosi",
                 simulationControls: "Kontrol Simulasi",
-                startBtn: "Mulai", continueBtn: "Lanjutkan", pauseBtn: "Jeda", resetBtn: "Reset", exportBtn: "Ekspor Data (CSV)",
+                startBtn: "Mulai", continueBtn: "Mulai", pauseBtn: "Jeda", resetBtn: "Reset", exportBtn: "Ekspor Data (CSV)",
                 customDataTitle: "Data DAS Kustom",
                 uploadLabel: "Unggah Poligon DAS (.csv)",
                 csvFormat: "Format: 2 kolom (latitude, longitude), tanpa header.",
@@ -518,10 +516,10 @@
                 rusleFactorLS: "Faktor Panjang dan Kemiringan Lereng, yang merepresentasikan pengaruh topografi.",
                 rusleFactorC: "Faktor Pengelolaan Tanaman dan Vegetasi, yang menunjukkan pengaruh tutupan lahan.",
                 rusleFactorP: "Faktor Tindakan Konservasi, yang merepresentasikan praktik pengelolaan lahan untuk mengendalikan erosi [3].",
-                caseStudyTitle: "Studi Kasus: Waduk Saguling (berdasarkan Tesis Rani Annisa Royani)",
+                caseStudyTitle: "Studi Kasus: Waduk Saguling",
                 caseStudyP1: "Waduk Saguling, yang berlokasi di Jawa Barat, merupakan salah satu infrastruktur vital untuk Pembangkit Listrik Tenaga Air (PLTA). Namun, seperti banyak waduk lainnya, Saguling menghadapi ancaman serius dari laju sedimentasi yang tinggi akibat erosi di Daerah Aliran Sungai (DAS) Citarum Hulu. Tingginya laju erosi ini disebabkan oleh kombinasi faktor alam (curah hujan tinggi, tanah rentan) dan aktivitas manusia (perubahan tata guna lahan, praktik pertanian yang kurang tepat) [4].",
                 caseStudyP2: "Penelitian yang dilakukan oleh Rani Annisa Royani (2014) menggunakan model RUSLE untuk menganalisis laju erosi dan sedimentasi di DAS Waduk Saguling. Studi ini mengintegrasikan data curah hujan, jenis tanah, topografi, dan tata guna lahan untuk memetakan area-area kritis yang menjadi sumber utama erosi. Hasilnya digunakan untuk mengestimasi laju sedimentasi tahunan dan memprediksi sisa umur fungsional waduk. Simulasi ini menggunakan parameter dan temuan dari penelitian tersebut sebagai dasar untuk memvisualisasikan proses dan dampak erosi secara dinamis [4].",
-                methodologyTitle: "Metode Penelitian (Berdasarkan Tesis Rani Annisa Royani)",
+                methodologyTitle: "Metode Penelitian",
                 methodologyDesc: "Metodologi yang diadopsi dalam penelitian Rani Annisa Royani untuk menganalisis erosi dan sedimentasi di DAS Waduk Saguling merupakan pendekatan kuantitatif yang sistematis dengan menggunakan model RUSLE. Pendekatan ini, yang menjadi dasar bagi simulasi yang Anda lihat, memiliki tahapan sebagai berikut [4]:",
                 methodStep1: "Pengumpulan Data Sekunder:", methodStep1Desc: "Tahap awal melibatkan pengumpulan data-data krusial yang menjadi input bagi setiap faktor dalam model RUSLE. Data ini meliputi:",
                 methodStep1_1: "<strong>Data Curah Hujan:</strong> Data historis dari beberapa stasiun cuaca di sekitar DAS untuk menghitung nilai erosivitas hujan (Faktor R).",
@@ -581,6 +579,24 @@
         };
         
         let currentParams = JSON.parse(JSON.stringify(defaultParams));
+        
+        function updateStartStopButtonText() {
+            if (!isRunning) {
+                startStopBtn.innerHTML = (day > 0) ? translations[currentLanguage].continueBtn : translations[currentLanguage].startBtn;
+            } else {
+                startStopBtn.innerHTML = translations[currentLanguage].pauseBtn;
+            }
+        }
+        
+        function updateRusleParamDescriptions() {
+            for (const key in defaultParams.rusle) {
+                const param = defaultParams.rusle[key];
+                const labelElement = document.querySelector(`label[for="slider-${key}"]`);
+                if (labelElement) {
+                    labelElement.title = translations[currentLanguage][param.descKey] || '';
+                }
+            }
+        }
 
         function setupRusleControls() {
             const container = document.getElementById('rusle-controls');
@@ -1001,7 +1017,6 @@
                 if (valueEl) { valueEl.textContent = slider.value; }
             }
             updateMapWithGeoJSON(defaultWatershedGeoJson, "DAS Citarum");
-            applyParamsAndReset();
         }
         
         function applyParamsAndReset() {
@@ -1048,22 +1063,6 @@
             } else {
                 startStopBtn.innerHTML = translations[currentLanguage].pauseBtn;
             }
-        }
-
-        function exportToCSV() {
-            let csvContent = "data:text/csv;charset=utf-8,";
-            csvContent += "Day,Daily Erosion (ton),Total Erosion (ton),Soil Saturation (%),Sedimentation Level (%)\r\n";
-            simulationLog.forEach(row => {
-                let csvRow = `${row.day},${row.dailyErosion},${row.totalErosion},${row.soilSaturation},${row.sedimentationLevel}`;
-                csvContent += csvRow + "\r\n";
-            });
-            const encodedUri = encodeURI(csvContent);
-            const link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", "erosion_simulation_data.csv");
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
         }
         
         function showHelpModal(topic) {
@@ -1229,7 +1228,6 @@
             if(isRunning) { stopSimulation(); } else { startSimulation(); }
         });
         resetBtn.addEventListener('click', fullResetToDefaults);
-        exportCsvBtn.addEventListener('click', exportToCSV);
         csvFileInput.addEventListener('change', handleFileUpload);
         window.addEventListener('resize', () => { resizeCanvas(); setupClouds(); drawLandscape(); });
         [annualRainfallInput, watershedAreaInput, reservoirVolumeInput].forEach(input => {
