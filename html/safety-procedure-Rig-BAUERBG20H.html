@@ -4,6 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Prosedur Keselamatan: Unloading & Operasi Rig BAUER BG 20 H</title>
+
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Prosedur Keselamatan Kerja (JSA/Risk Assessment) yang detail untuk aktivitas unloading dan operasi pengeboran menggunakan rig BAUER BG 20 H. Termasuk checklist, analisis risiko, dan peran verifikasi.">
+    <meta name="keywords" content="Risk Assessment, JSA, HIRADC, Keselamatan Kerja, K3, Bauer BG 20 H, Prosedur Unloading, Alat Berat, Pengeboran">
+    <meta name="author" content="Safety Department">
+    <link rel="canonical" href="https://simcalc.github.io/html/safety-procedure-Rig-BAUERBG20H.html" />
+
+    <!-- Open Graph Meta Tags (for WhatsApp, Facebook, etc.) -->
+    <meta property="og:title" content="Prosedur Keselamatan: Unloading Rig BAUER BG 20 H" />
+    <meta property="og:type" content="article" />
+    <meta property="og:image" content="https://raw.githubusercontent.com/simcalc/simcalc.github.io/refs/heads/main/img/Drilling-Rig-BG-20-H-BT-50.webp" />
+    <meta property="og:url" content="https://simcalc.github.io/html/safety-procedure-Rig-BAUERBG20H.html" />
+    <meta property="og:description" content="Dokumen Risk Assessment interaktif untuk aktivitas unloading alat berat Bauer BG 20 H, lengkap dengan checklist dan prosedur K3." />
+
     <style>
         /* CSS Reset and Basic Setup */
         :root {
@@ -60,6 +74,25 @@
             font-size: 1.5em;
         }
 
+        .header-controls {
+            display: flex;
+            align-items: center;
+        }
+
+        .lang-switcher button {
+            background-color: transparent;
+            border: 1px solid white;
+            color: white;
+            padding: 5px 10px;
+            margin-left: 5px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        .lang-switcher button.active {
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+        }
+
         nav ul {
             list-style: none;
             display: flex;
@@ -70,7 +103,7 @@
             text-decoration: none;
             padding: 15px;
             display: block;
-            transition: background-color 0.3s;
+            transition: background-color: 0.3s;
         }
 
         nav ul li a:hover, nav ul li a.active {
@@ -104,12 +137,26 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.08);
         }
 
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid var(--accent-color);
+            margin-bottom: 20px;
+        }
+
+        .subsection-header {
+             display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
         h2 {
             color: var(--primary-color);
-            border-bottom: 3px solid var(--accent-color);
             padding-bottom: 10px;
-            margin-bottom: 20px;
             font-size: 1.8em;
+            border: none;
+            margin: 0;
         }
         
         h3 {
@@ -117,6 +164,21 @@
             margin-top: 20px;
             margin-bottom: 10px;
             font-size: 1.4em;
+        }
+
+        .add-item-btn {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            font-size: 1.5em;
+            line-height: 30px;
+            cursor: pointer;
+            text-align: center;
+            flex-shrink: 0;
+            margin-left: 15px;
         }
 
         .action-buttons {
@@ -211,10 +273,7 @@
             border: 1px solid #eee;
             border-radius: 5px;
             transition: background-color 0.2s;
-            cursor: pointer;
-        }
-        .checklist-item:hover {
-            background-color: #f9f9f9;
+            position: relative;
         }
         .checklist-box {
             -webkit-appearance: none;
@@ -246,6 +305,52 @@
         ul, ol {
             padding-left: 20px;
         }
+        ul li, ol li {
+            position: relative;
+        }
+
+        [contenteditable]:focus {
+            outline: 2px solid var(--accent-color);
+            background-color: #fffbe6;
+        }
+        
+        .delete-row-btn, .delete-item-btn {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.2s;
+        }
+        .delete-row-btn {
+            padding: 5px 10px;
+        }
+        .delete-row-btn:hover {
+            background-color: #c0392b;
+        }
+        .actions-cell {
+            width: 60px;
+            text-align: center;
+        }
+
+        .delete-item-btn {
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            transform: translateY(-50%);
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            font-size: 14px;
+            line-height: 24px;
+            padding: 0;
+            opacity: 0;
+        }
+        li:hover .delete-item-btn, .checklist-item:hover .delete-item-btn {
+            opacity: 1;
+        }
+
 
         /* Modal Styling */
         .modal-overlay {
@@ -279,184 +384,154 @@
             padding-bottom: 10px;
             margin-bottom: 15px;
         }
-        .modal-header h3 {
-            margin: 0;
-        }
-        .close-btn {
-            font-size: 2em;
-            font-weight: bold;
-            cursor: pointer;
-            color: #888;
-        }
-        .risk-matrix-table {
-            border-collapse: collapse;
-        }
-        .risk-matrix-table th, .risk-matrix-table td {
-            border: 1px solid #ccc;
-            width: 80px;
-            height: 50px;
-            text-align: center;
-            vertical-align: middle;
-        }
-        .risk-matrix-table td[data-value] {
-            cursor: pointer;
-            font-weight: bold;
-            transition: background-color 0.3s, transform 0.2s;
-        }
-        .risk-matrix-table td[data-value]:hover {
-            transform: scale(1.1);
-        }
+        .modal-header h3 { margin: 0; }
+        .close-btn { font-size: 2em; font-weight: bold; cursor: pointer; color: #888; }
+        .risk-matrix-table { border-collapse: collapse; }
+        .risk-matrix-table th, .risk-matrix-table td { border: 1px solid #ccc; width: 80px; height: 50px; text-align: center; vertical-align: middle; }
+        .risk-matrix-table td[data-value] { cursor: pointer; font-weight: bold; transition: background-color 0.3s, transform 0.2s; }
+        .risk-matrix-table td[data-value]:hover { transform: scale(1.1); }
         .matrix-header { background-color: white; font-weight: bold; color: #333; }
-        .m-extreme { background-color: #c0392b; color: white; }    /* Dark Red */
-        .m-high { background-color: #e74c3c; color: white; }       /* Red */
-        .m-medium { background-color: #f1c40f; color: #333; }    /* Yellow */
-        .m-low { background-color: #1E8449; color: white; }       /* Dark Green */
-
-        .add-row-btn {
-            background-color: var(--secondary-color);
-            color: white;
-            border: none;
-            padding: 10px 18px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1em;
-            margin-top: 10px;
-            transition: background-color 0.3s;
+        .m-extreme { background-color: #c0392b; color: white; }
+        .m-high { background-color: #e74c3c; color: white; }
+        .m-medium { background-color: #f1c40f; color: #333; }
+        .m-low { background-color: #1E8449; color: white; }
+        .add-row-btn { background-color: var(--secondary-color); color: white; border: none; padding: 10px 18px; border-radius: 5px; cursor: pointer; font-size: 1em; margin-top: 10px; transition: background-color 0.3s; }
+        .add-row-btn:hover { background-color: var(--primary-color); }
+        
+        /* Cover Page Styles - COMPACT VERSION */
+        #coverPage {
+            display: none; /* Hidden on screen by default */
+            width: 100%;
+            height: 100%;
+            padding: 20px;
+            border: 2px solid var(--primary-color);
+            line-height: 1.4;
         }
-        .add-row-btn:hover {
-            background-color: var(--primary-color);
-        }
+        .cover-title { text-align: center; font-size: 2em; font-weight: bold; color: var(--primary-color); margin-bottom: 10px; }
+        .cover-table { width: 100%; margin-top: 10px; border-collapse: collapse; }
+        .cover-table td { padding: 4px 6px; vertical-align: top; }
+        .cover-table .label { font-weight: bold; width: 15%; }
+        .cover-table .colon { width: 5%; }
+        .cover-table .value { border-bottom: 1px solid #ccc; }
+        .cover-image { width: 100%; max-height: 250px; object-fit: cover; margin: 15px 0; }
+        .cover-section-title { font-weight: bold; font-size: 1.05em; color: var(--primary-color); margin-top: 15px; }
 
 
         /* Responsive Design */
         @media (max-width: 992px) {
-            header h1 {
-                font-size: 1.2em;
-            }
-             .header-image-container {
-                height: 250px;
-            }
+            header h1 { font-size: 1.2em; }
+            .header-image-container { height: 250px; }
         }
-        
         @media (max-width: 768px) {
-            nav ul {
-                display: none;
-                flex-direction: column;
-                position: absolute;
-                top: var(--header-height);
-                left: 0;
-                width: 100%;
-                background-color: var(--primary-color);
-            }
-            
-            nav ul.active {
-                display: flex;
-            }
-            
-            .menu-toggle {
-                display: flex;
-            }
-             .risk-matrix-table th, .risk-matrix-table td {
-                width: 50px;
-                height: 40px;
-                font-size: 0.8em;
-            }
-            .header-image-container {
-                height: 200px;
-            }
+            .header-controls { flex-direction: column-reverse; align-items: flex-end;}
+            nav ul { display: none; flex-direction: column; position: absolute; top: var(--header-height); left: 0; width: 100%; background-color: var(--primary-color); }
+            nav ul.active { display: flex; }
+            .menu-toggle { display: flex; }
+            .risk-matrix-table th, .risk-matrix-table td { width: 50px; height: 40px; font-size: 0.8em; }
+            .header-image-container { height: 200px; }
         }
         
         /* Print Styles */
+        @page {
+            size: A4 portrait;
+            margin: 20mm;
+        }
         @media print {
-            body {
-                background-color: white;
-                color: black;
-            }
-            header, nav, .action-buttons, .menu-toggle, .modal-overlay, .modal, .add-row-btn, .header-image-container {
-                display: none;
-            }
-            main {
-                padding-top: 0;
-            }
-            .container {
-                padding: 0;
-                max-width: 100%;
-            }
-            section {
-                box-shadow: none;
-                border: 1px solid #ccc;
-                margin-bottom: 20px;
-                padding: 15px;
-                page-break-inside: avoid;
-            }
-            h2 {
-                font-size: 16pt;
-                color: black;
-                border-color: black;
-            }
-            h3 {
-                font-size: 14pt;
-                color: black;
-            }
-            table, th, td {
-                border: 1px solid #666;
-                font-size: 9pt;
-                padding: 6px;
-            }
-            th {
-                background-color: #ddd !important;
-                color: black !important;
-            }
-            tbody tr:nth-child(even) {
-                background-color: #f2f2f2 !important;
-            }
-            .risk-level {
-                -webkit-print-color-adjust: exact;
-                color-adjust: exact;
-                color: black !important;
-                border: 1px solid black;
-            }
-            .risk-extreme { background-color: #777 !important; }
-            .risk-high { background-color: #aaa !important; }
-            .risk-medium { background-color: #ccc !important; }
-            .risk-low { background-color: #eee !important; }
-
-            .checklist-box {
-                border: 2px solid black;
-            }
-            .checklist-box:checked {
-                background-color: #ccc !important;
-            }
-            .checklist-box:checked::after {
-                color: black;
-            }
+            body { background-color: white; color: black; }
+            header, nav, .action-buttons, .menu-toggle, .modal-overlay, .modal, .add-row-btn, .header-image-container, .add-item-btn, .delete-row-btn, .delete-item-btn { display: none; }
+            main { padding-top: 0; }
+            .container { padding: 0; max-width: 100%; }
+            #coverPage { display: block; border: none; page-break-after: always; }
+            section { box-shadow: none; border: 1px solid #ccc; margin-bottom: 20px; padding: 15px; page-break-inside: avoid; }
+            h2, h3, .cover-title, .cover-section-title { color: black !important; }
+            .section-header { border-color: black; }
+            table, th, td { border: 1px solid #666; font-size: 9pt; padding: 6px; }
+            th { background-color: #ddd !important; color: black !important; }
+            tbody tr:nth-child(even) { background-color: #f2f2f2 !important; }
+            .risk-level { -webkit-print-color-adjust: exact; color-adjust: exact; }
+            .risk-extreme { background-color: #c0392b !important; }
+            .risk-high { background-color: #e74c3c !important; }
+            .risk-medium { background-color: #f1c40f !important; color: #333 !important;}
+            .risk-low { background-color: #1E8449 !important; }
+            .checklist-box { border: 2px solid black; }
+            .checklist-box:checked { background-color: #ccc !important; }
+            .checklist-box:checked::after { color: black; }
+            .actions-cell { display: none; }
         }
     </style>
 </head>
 <body>
+    <div id="coverPage">
+        <div class="cover-title translatable">RISK ASSESSMENT</div>
+        <table class="cover-table">
+            <tr>
+                <td class="label translatable">Pekerjaan</td><td class="colon">:</td><td class="value" contenteditable="true">Unloading dan Operasi Pengeboran Rig BAUER BG 20 H</td>
+            </tr>
+            <tr>
+                <td class="label translatable">Date Review</td><td class="colon">:</td><td class="value" contenteditable="true"></td>
+            </tr>
+            <tr>
+                <td class="label translatable">Revision No.</td><td class="colon">:</td><td class="value" contenteditable="true"></td>
+            </tr>
+        </table>
+        <img src="https://raw.githubusercontent.com/simcalc/simcalc.github.io/refs/heads/main/img/Drilling-Rig-BG-20-H-BT-50.webp" alt="Drilling Rig BAUER BG 20 H" class="cover-image">
+        
+        <div class="cover-section-title translatable">Submitted by</div>
+        <table class="cover-table">
+            <tr><td class="label translatable">Company</td><td class="colon">:</td><td class="value" contenteditable="true"></td></tr>
+            <tr><td class="label translatable">Name</td><td class="colon">:</td><td class="value" contenteditable="true"></td><td class="label translatable">Signed</td><td class="colon">:</td><td class="value"></td></tr>
+            <tr><td class="label translatable">Position</td><td class="colon">:</td><td class="value" contenteditable="true"></td></tr>
+        </table>
+        
+        <div class="cover-section-title translatable">Reviewed by</div>
+         <table class="cover-table">
+            <tr><td class="label translatable">Company</td><td class="colon">:</td><td class="value" contenteditable="true"></td></tr>
+            <tr><td class="label translatable">Name</td><td class="colon">:</td><td class="value" contenteditable="true"></td><td class="label translatable">Signed</td><td class="colon">:</td><td class="value"></td></tr>
+            <tr><td class="label translatable">Position</td><td class="colon">:</td><td class="value" contenteditable="true"></td></tr>
+        </table>
+        
+        <div class="cover-section-title translatable">Approved by</div>
+        <table class="cover-table">
+            <tr><td class="label translatable">Company</td><td class="colon">:</td><td class="value" contenteditable="true"></td></tr>
+            <tr><td class="label translatable">Name</td><td class="colon">:</td><td class="value" contenteditable="true"></td><td class="label translatable">Signed</td><td class="colon">:</td><td class="value"></td></tr>
+            <tr><td class="label translatable">Position</td><td class="colon">:</td><td class="value" contenteditable="true"></td></tr>
+        </table>
+
+        <div class="cover-section-title translatable">Risk Assessment Team Member:</div>
+        <div contenteditable="true">
+            <p>1. .....................................</p>
+            <p>2. .....................................</p>
+            <p>3. .....................................</p>
+        </div>
+    </div>
+
 
     <header>
-        <h1>Prosedur Keselamatan: Rig BAUER BG 20 H</h1>
-        <nav id="navbar">
-            <ul id="nav-menu">
-                <li><a href="#prasyarat">A) Prasyarat</a></li>
-                <li><a href="#metode">B) Metode Kerja</a></li>
-                <li><a href="#risk-assessment">C) Risk Assessment</a></li>
-                <li><a href="#peran">D) Peran & Verifikasi</a></li>
-                <li><a href="#checklist">E) Checklist</a></li>
-            </ul>
-        </nav>
-        <div class="menu-toggle" id="menu-toggle">
-            <div class="bar"></div>
-            <div class="bar"></div>
-            <div class="bar"></div>
+        <h1 class="translatable">Prosedur Keselamatan: Rig BAUER BG 20 H</h1>
+        <div class="header-controls">
+            <nav id="navbar">
+                <ul id="nav-menu">
+                    <li><a href="#prasyarat" class="translatable">A) Prasyarat</a></li>
+                    <li><a href="#metode" class="translatable">B) Metode Kerja</a></li>
+                    <li><a href="#risk-assessment" class="translatable">C) Risk Assessment</a></li>
+                    <li><a href="#peran" class="translatable">D) Peran & Verifikasi</a></li>
+                    <li><a href="#checklist" class="translatable">E) Checklist</a></li>
+                </ul>
+            </nav>
+            <div class="lang-switcher">
+                <button id="lang-id" class="active">ID</button>
+                <button id="lang-en">EN</button>
+            </div>
+            <div class="menu-toggle" id="menu-toggle">
+                <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+            </div>
         </div>
     </header>
 
     <main>
         <div class="container">
             <div class="action-buttons">
-                <button class="print-btn" onclick="window.print()">Cetak / Simpan ke PDF</button>
+                <button class="print-btn translatable" onclick="window.print()">Cetak / Simpan ke PDF</button>
             </div>
 
             <div class="header-image-container">
@@ -464,305 +539,116 @@
             </div>
 
             <section id="prasyarat">
-                <h2>A) Prasyarat Sebelum Unloading</h2>
-                <!-- Konten Prasyarat disini -->
-                <h3>1. Verifikasi Dokumen & Izin Kerja</h3>
-                <ul>
-                    <li><strong>Surat Izin Kerja Aman (SIKA) / Permit to Work (PTW):</strong> Telah diterbitkan dan disetujui oleh otoritas site yang berwenang.</li>
-                    <li><strong>Job Safety Analysis (JSA) / HIRADC:</strong> Spesifik untuk aktivitas unloading, telah disosialisasikan, dan ditandatangani oleh seluruh tim.</li>
-                    <li><strong>Sertifikasi Personel:</strong> Operator rig memiliki SIO yang valid. Rigger/Banksman memiliki sertifikat kompetensi.</li>
-                    <li><strong>Inspeksi Alat:</strong> Dokumen P2H (Pemeriksaan Harian) untuk unit rig dan lowboy lengkap dan menyatakan kondisi layak pakai.</li>
+                <div class="section-header">
+                    <h2 class="translatable">A) Prasyarat Sebelum Unloading</h2>
+                </div>
+                <div class="subsection-header">
+                    <h3 class="translatable">1. Verifikasi Dokumen & Izin Kerja</h3>
+                    <button class="add-item-btn" data-target-list="#prasyarat-list-1">+</button>
+                </div>
+                <ul id="prasyarat-list-1">
+                    <li class="translatable"><strong>Permit to Work (PTW):</strong> Telah diterbitkan (jika disyaratkan) dan disetujui oleh otoritas site yang berwenang. Jalankan readiness checklist<button class="delete-item-btn">&times;</button></li>
+                    <li class="translatable"><strong>Job Safety Analysis (JSA) / HIRADC:</strong> Spesifik untuk aktivitas unloading, telah disosialisasikan, dan ditandatangani oleh seluruh tim.<button class="delete-item-btn">&times;</button></li>
+                    <li class="translatable"><strong>Sertifikasi Personel:</strong> Operator rig memiliki SIO yang valid. Rigger/Banksman memiliki sertifikat kompetensi.<button class="delete-item-btn">&times;</button></li>
+                    <li class="translatable"><strong>Inspeksi Alat:</strong> Dokumen P2H (Pemeriksaan Harian) untuk unit rig dan lowboy lengkap dan menyatakan kondisi layak pakai.<button class="delete-item-btn">&times;</button></li>
                 </ul>
 
-                <h3>2. Penyiapan Area Kerja</h3>
-                <ul>
-                    <li><strong>Pemilihan Lokasi:</strong> Area penurunan harus rata, stabil, dan padat untuk menahan beban rig (sekitar 60-70 ton) tanpa amblas.</li>
-                    <li><strong>Manajemen Jarak Aman (Clearance):</strong> Area harus bebas dari penghalang atas seperti kabel listrik udara (OHL). Jarak aman minimum harus ditaati.</li>
-                    <li><strong>Barikade & Rambu:</strong> Pasang barikade fisik untuk membuat zona eksklusi (exclusion zone). Hanya personel yang terlibat langsung yang boleh masuk.</li>
-                    <li><strong>Kondisi Cuaca:</strong> Dilarang melakukan pekerjaan saat hujan lebat, angin kencang, atau jarak pandang terbatas.</li>
+                <div class="subsection-header">
+                    <h3 class="translatable">2. Penyiapan Area Kerja</h3>
+                    <button class="add-item-btn" data-target-list="#prasyarat-list-2">+</button>
+                </div>
+                <ul id="prasyarat-list-2">
+                    <li class="translatable"><strong>Pemilihan Lokasi:</strong> Area penurunan harus rata, stabil, dan padat untuk menahan beban rig (sekitar 60-70 ton) tanpa amblas.<button class="delete-item-btn">&times;</button></li>
+                    <li class="translatable"><strong>Manajemen Jarak Aman (Clearance):</strong> Area harus bebas dari penghalang atas seperti kabel listrik udara (OHL). Jarak aman minimum harus ditaati.<button class="delete-item-btn">&times;</button></li>
+                    <li class="translatable"><strong>Barikade & Rambu:</strong> Pasang barikade fisik untuk membuat zona eksklusi (exclusion zone). Hanya personel yang terlibat langsung yang boleh masuk.<button class="delete-item-btn">&times;</button></li>
+                    <li class="translatable"><strong>Kondisi Cuaca:</strong> Dilarang melakukan pekerjaan saat hujan lebat, angin kencang, atau jarak pandang terbatas.<button class="delete-item-btn">&times;</button></li>
                 </ul>
 
-                <h3>3. Kesiapan Tim & Peralatan</h3>
-                <ul>
-                    <li><strong>Toolbox Meeting (P5M):</strong> Lakukan briefing keselamatan sebelum pekerjaan. Bahas JSA, metode kerja, peran, sinyal komunikasi, dan prosedur darurat.</li>
-                    <li><strong>Alat Pelindung Diri (APD):</strong> Seluruh personel wajib menggunakan helm, sepatu keselamatan, rompi visibilitas tinggi, dan sarung tangan.</li>
-                    <li><strong>Komunikasi:</strong> Siapkan radio komunikasi dua arah yang berfungsi baik dan tetapkan sinyal tangan sebagai cadangan.</li>
-                    <li><strong>Peralatan Darurat:</strong> Pastikan APAR dan kotak P3K mudah dijangkau.</li>
+                 <div class="subsection-header">
+                    <h3 class="translatable">3. Kesiapan Tim & Peralatan</h3>
+                    <button class="add-item-btn" data-target-list="#prasyarat-list-3">+</button>
+                </div>
+                <ul id="prasyarat-list-3">
+                    <li class="translatable"><strong>Toolbox Meeting (P5M):</strong> Lakukan briefing keselamatan sebelum pekerjaan. Bahas JSA, metode kerja, peran, sinyal komunikasi, dan prosedur darurat.<button class="delete-item-btn">&times;</button></li>
+                    <li class="translatable"><strong>Alat Pelindung Diri (APD):</strong> Seluruh personel wajib menggunakan helm, sepatu keselamatan, rompi visibilitas tinggi, dan sarung tangan.<button class="delete-item-btn">&times;</button></li>
+                    <li class="translatable"><strong>Komunikasi:</strong> Siapkan radio komunikasi dua arah yang berfungsi baik dan tetapkan sinyal tangan sebagai cadangan.<button class="delete-item-btn">&times;</button></li>
+                    <li class="translatable"><strong>Peralatan Darurat:</strong> Pastikan APAR dan kotak P3K mudah dijangkau.<button class="delete-item-btn">&times;</button></li>
                 </ul>
             </section>
 
             <section id="metode">
-                <h2>B) Metode Kerja Ringkas (Step-by-Step)</h2>
-                 <ol>
-                    <li><strong>Manajemen Lalu Lintas:</strong> Sebelum lowboy memasuki area, pasang rambu-rambu keselamatan lalu lintas yang relevan (misalnya "Pekerjaan Konstruksi di Depan", "Kurangi Kecepatan"). Buat exclusion zone yang jelas menggunakan pagar keras dan diperkuat dengan <em>traffic cone</em>.</li>
-                    <li><strong>Posisi Kendaraan:</strong> Pengemudi lowboy memposisikan truk di area yang telah ditentukan, diarahkan oleh banksman.</li>
-                    <li><strong>Stabilisasi Lowboy:</strong> Aktifkan rem parkir dan pasang ganjal roda (wheel chocks).</li>
-                    <li><strong>Persiapan Ramp:</strong> Turunkan ramp, pastikan terkunci dengan aman dan berada pada sudut yang tidak terlalu curam. Permukaan ramp harus bersih.</li>
-                    <li><strong>Inspeksi Akhir:</strong> Operator rig naik ke unit dan melakukan inspeksi fungsi kontrol. Banksman memposisikan diri di lokasi yang aman dan terlihat jelas.</li>
-                    <li><strong>Proses Penurunan:</strong> Atas instruksi HANYA dari satu banksman, operator menggerakkan rig secara sangat perlahan menuruni ramp. Banksman fokus memandu kelurusan track.</li>
-                    <li><strong>Selesai Penurunan:</strong> Setelah rig sepenuhnya di tanah, parkirkan di lokasi aman yang telah ditentukan.</li>
-                    <li><strong>Pengamanan Area:</strong> Naikkan kembali ramp lowboy. Truk lowboy meninggalkan area kerja. Barikade dan rambu lalu lintas dilepas setelah situasi benar-benar aman.</li>
+                 <div class="section-header">
+                    <h2 class="translatable">B) Metode Kerja Ringkas (Step-by-Step)</h2>
+                    <button class="add-item-btn" data-target-list="#metode-list">+</button>
+                </div>
+                 <ol id="metode-list">
+                    <li class="translatable"><strong>Manajemen Lalu Lintas:</strong> Sebelum lowboy memasuki area, pasang rambu-rambu keselamatan lalu lintas yang relevan. Buat exclusion zone yang jelas menggunakan pagar keras dan <em>traffic cone</em>.<button class="delete-item-btn">&times;</button></li>
+                    <li class="translatable"><strong>Posisi Kendaraan:</strong> Pengemudi lowboy memposisikan truk di area yang telah ditentukan, diarahkan oleh banksman.<button class="delete-item-btn">&times;</button></li>
+                    <li class="translatable"><strong>Stabilisasi Lowboy:</strong> Aktifkan rem parkir dan pasang ganjal roda (wheel chocks).<button class="delete-item-btn">&times;</button></li>
+                    <li class="translatable"><strong>Persiapan Ramp:</strong> Turunkan ramp, pastikan terkunci dengan aman dan berada pada sudut yang tidak terlalu curam.<button class="delete-item-btn">&times;</button></li>
+                    <li class="translatable"><strong>Inspeksi Akhir:</strong> Operator rig naik ke unit dan melakukan inspeksi fungsi kontrol. Banksman memposisikan diri di lokasi yang aman.<button class="delete-item-btn">&times;</button></li>
+                    <li class="translatable"><strong>Proses Penurunan:</strong> Atas instruksi HANYA dari satu banksman, operator menggerakkan rig secara sangat perlahan menuruni ramp.<button class="delete-item-btn">&times;</button></li>
+                    <li class="translatable"><strong>Selesai Penurunan:</strong> Setelah rig sepenuhnya di tanah, parkirkan di lokasi aman yang telah ditentukan.<button class="delete-item-btn">&times;</button></li>
+                    <li class="translatable"><strong>Pengamanan Area:</strong> Naikkan kembali ramp lowboy dan kendaraan meninggalkan area kerja.<button class="delete-item-btn">&times;</button></li>
                 </ol>
             </section>
 
             <section id="risk-assessment">
-                <h2>C) Risk Assessment Gabungan (Lengkap 13 Poin)</h2>
-                 <p>Dokumen ini menggabungkan analisis risiko awal dengan risk register teknis. Klik pada angka risiko untuk mengubah nilainya. Legenda Tingkat Risiko: <strong>Merah Tua</strong> (Ekstrem), <strong>Merah</strong> (Tinggi), <strong>Kuning</strong> (Sedang), <strong>Hijau Tua</strong> (Rendah).</p>
+                <div class="section-header">
+                    <h2 class="translatable">C) Risk Assessment Gabungan</h2>
+                </div>
+                 <p class="translatable">Klik pada angka risiko untuk mengubah nilainya. Legenda: <strong>Merah Tua</strong> (Ekstrem), <strong>Merah</strong> (Tinggi), <strong>Kuning</strong> (Sedang), <strong>Hijau Tua</strong> (Rendah).</p>
                 <div class="risk-table-container">
                     <table id="mainRiskTable">
                         <thead>
                             <tr>
-                                <th>No</th>
-                                <th>Bahaya & Skenario Rinci</th>
-                                <th>Potensi Konsekuensi Utama</th>
-                                <th>Tindakan Pengendalian</th>
-                                <th>Risiko Awal (R)</th>
-                                <th>Risiko Residual (R)</th>
+                                <th class="translatable">No</th>
+                                <th class="translatable">Bahaya & Skenario Rinci</th>
+                                <th class="translatable">Potensi Konsekuensi Utama</th>
+                                <th class="translatable">Tindakan Pengendalian</th>
+                                <th class="translatable">Risiko Awal (R)</th>
+                                <th class="translatable">Risiko Residual (R)</th>
+                                <th class="actions-cell translatable">Aksi</th>
                             </tr>
                         </thead>
                         <tbody id="riskTableBody">
-                            <tr>
-                                <td>1</td>
-                                <td><strong>Platform Kerja Gagal</strong> (Tanah tidak stabil/amblas)</td>
-                                <td>Trailer/rig terguling (tipping). Kerusakan masif & fatal.</td>
-                                <td>Wajibkan WPC (Working Platform Certificate). Gunakan steel plates atau crane mats. Hentikan kerja & inspeksi ulang pasca hujan.</td>
-                                <td><div class="risk-level" data-editable="true">15</div></td>
-                                <td><div class="risk-level" data-editable="true">6</div></td>
-                            </tr>
-                            <tr>
-                                <td>2</td>
-                                <td><strong>Interaksi Alat-Manusia</strong> (Personel tertabrak/terjepit)</td>
-                                <td>Cedera serius, crush injury, fatal.</td>
-                                <td>Buat zona eksklusi berpagar keras, diperjelas dengan <em>traffic cone</em> dan rambu peringatan lalu lintas. Tunjuk 1 banksman dengan radio sebagai satu-satunya pemberi komando.</td>
-                                <td><div class="risk-level" data-editable="true">15</div></td>
-                                <td><div class="risk-level" data-editable="true">6</div></td>
-                            </tr>
-                             <tr>
-                                <td>3</td>
-                                <td><strong>Halangan Atas / OHL</strong> (Mast menyentuh kabel listrik)</td>
-                                <td>Sengatan listrik (electrocution), fatal.</td>
-                                <td>Survei utilitas. Terapkan panduan HSE GS6 (pasang goalposts). Terbitkan PTW khusus pekerjaan dekat OHL.</td>
-                                <td><div class="risk-level" data-editable="true">10</div></td>
-                                <td><div class="risk-level" data-editable="true">4</div></td>
-                            </tr>
-                            <tr>
-                                <td>4</td>
-                                <td><strong>Kegagalan Ramp atau Selip</strong> (Ramp patah/licin)</td>
-                                <td>Rig jatuh dari trailer, terguling, fatal bagi operator.</td>
-                                <td>Inspeksi visual ramp. Pastikan rating kapasitas > berat rig. Dilarang unloading saat hujan deras. Opsi winch-assist.</td>
-                                <td><div class="risk-level" data-editable="true">15</div></td>
-                                <td><div class="risk-level" data-editable="true">6</div></td>
-                            </tr>
-                            <tr>
-                                <td>5</td>
-                                <td><strong>Pelepasan Tie-Down Salah</strong> (Lecutan rantai/energi tersimpan)</td>
-                                <td>"Chain whip", crush injury.</td>
-                                <td>Ikuti prosedur pelepasan (release plan) yang aman dan simetris. Personel berdiri di posisi aman (tidak di jalur rekoil).</td>
-                                <td><div class="risk-level" data-editable="true">12</div></td>
-                                <td><div class="risk-level" data-editable="true">5</div></td>
-                            </tr>
-                             <tr>
-                                <td>6</td>
-                                <td><strong>Trailer Tidak Stabil</strong> (Lowboy bergerak saat unloading)</td>
-                                <td>Rig jatuh atau terguling.</td>
-                                <td>Wajib pasang ganjal roda (wheel chocks). Pastikan landing gear menapak sempurna di tanah rata. Konfirmasi verbal driver-banksman.</td>
-                                <td><div class="risk-level" data-editable="true">10</div></td>
-                                <td><div class="risk-level" data-editable="true">4</div></td>
-                            </tr>
-                            <tr>
-                                <td>7</td>
-                                <td><strong>Kegagalan Komunikasi</strong> (Perintah salah, sinyal tidak terlihat)</td>
-                                <td>Pergerakan rig yang tidak diinginkan, tabrakan, near-miss.</td>
-                                <td>Gunakan radio UHF yang dites. 1 banksman sebagai satu-satunya komando. Prosedur Stop-Look-Communicate.</td>
-                                <td><div class="risk-level" data-editable="true">9</div></td>
-                                <td><div class="risk-level" data-editable="true">4</div></td>
-                            </tr>
-                             <tr>
-                                <td>8</td>
-                                <td><strong>Visibilitas Buruk</strong> (Malam, debu, hujan)</td>
-                                <td>Salah manuver, menabrak orang atau objek.</td>
-                                <td>Sediakan menara lampu. Lakukan penyiraman debu. Wajibkan APD Hi-Viz Kelas 3.</td>
-                                <td><div class="risk-level" data-editable="true">12</div></td>
-                                <td><div class="risk-level" data-editable="true">5</div></td>
-                            </tr>
-                             <tr>
-                                <td>9</td>
-                                <td><strong>Kegagalan Sistem Alat</strong> (Rem, hidrolik gagal)</td>
-                                <td>Runaway rig (rig meluncur tanpa kendali).</td>
-                                <td>Lakukan tes fungsi rem & E-stop sebelum rilis. Siapkan wheel-stops di kaki ramp sebagai barikade darurat.</td>
-                                <td><div class="risk-level" data-editable="true">10</div></td>
-                                <td><div class="risk-level" data-editable="true">4</div></td>
-                            </tr>
-                             <tr>
-                                <td>10</td>
-                                <td><strong>Pusat Gravitasi (COG) Bergeser</strong> (Attachment tidak aman)</td>
-                                <td>Kehilangan kontrol, terguling (tipping).</td>
-                                <td>Verifikasi semua attachment & mast terkunci sesuai konfigurasi transport. Review data berat & dimensi.</td>
-                                <td><div class="risk-level" data-editable="true">10</div></td>
-                                <td><div class="risk-level" data-editable="true">4</div></td>
-                            </tr>
-                             <tr>
-                                <td>11</td>
-                                <td><strong>Titik Jepit & Remuk</strong> (Saat lepas gooseneck/penyangga ramp)</td>
-                                <td>Cedera serius pada tangan atau kaki.</td>
-                                <td>Ciptakan zona steril. Gunakan alat bantu (tuas), hindari menempatkan tangan secara langsung.</td>
-                                <td><div class="risk-level" data-editable="true">12</div></td>
-                                <td><div class="risk-level" data-editable="true">6</div></td>
-                            </tr>
-                            <tr>
-                                <td>12</td>
-                                <td><strong>Tumpahan & Kebocoran</strong> (BBM atau oli hidrolik bocor)</td>
-                                <td>Risiko kebakaran, pencemaran lingkungan.</td>
-                                <td>Siapkan spill-kit. Jika bocor, matikan mesin segera. Lakukan inspeksi visual pada selang hidrolik.</td>
-                                <td><div class="risk-level" data-editable="true">8</div></td>
-                                <td><div class="risk-level" data-editable="true">4</div></td>
-                            </tr>
-                            <tr>
-                                <td>13</td>
-                                <td><strong>Pihak Ketiga Mendekat</strong> (Pekerja lain/publik masuk area bahaya)</td>
-                                <td>Mengekspos orang yang tidak terlatih pada bahaya.</td>
-                                <td>Gunakan pagar keras yang dilengkapi rambu "DILARANG MASUK - AREA KERJA ALAT BERAT". Tempatkan penjaga di akses masuk. Jadwalkan unloading pada jam sepi.</td>
-                                <td><div class="risk-level" data-editable="true">12</div></td>
-                                <td><div class="risk-level" data-editable="true">5</div></td>
-                            </tr>
+                            <!-- Rows are generated dynamically by JS -->
                         </tbody>
                     </table>
                 </div>
-                <button id="addRowBtn" class="add-row-btn">Tambah Baris Baru</button>
+                <button id="addRowBtn" class="add-row-btn translatable">Tambah Baris Baru</button>
             </section>
 
             <section id="peran">
-                 <h2>D) Peran & Verifikasi</h2>
+                <div class="section-header">
+                    <h2 class="translatable">D) Peran & Verifikasi</h2>
+                </div>
                  <div class="risk-table-container">
-                    <table>
+                    <table id="rolesTable">
                         <thead>
                             <tr>
-                                <th>Peran</th>
-                                <th>Tugas & Tanggung Jawab Utama</th>
-                                <th>Verifikasi yang Dilakukan</th>
+                                <th class="translatable">Peran</th>
+                                <th class="translatable">Tugas & Tanggung Jawab Utama</th>
+                                <th class="translatable">Verifikasi yang Dilakukan</th>
+                                <th class="actions-cell translatable">Aksi</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr>
-                                <td><strong>Project Manager</strong></td>
-                                <td>
-                                    <ul>
-                                        <li>Memastikan ketersediaan sumber daya dan memberikan briefing awal mengenai scope & target keselamatan.</li>
-                                        <li>Bertanggung jawab atas keberhasilan proyek, termasuk aspek K3.</li>
-                                        <li><strong>Memiliki wewenang untuk menghentikan pekerjaan (Stop Work Authority) jika melihat kondisi tidak aman.</strong></li>
-                                    </ul>
-                                </td>
-                                <td>Menyetujui JSA/HIRADC final. Memastikan semua izin prinsip dari klien telah diamankan.</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Pengawas Lapangan (Site Supervisor)</strong></td>
-                                 <td>
-                                    <ul>
-                                        <li>Memastikan semua prasyarat terpenuhi dan memimpin Toolbox Meeting.</li>
-                                        <li>Memberi otorisasi final untuk memulai pekerjaan dan mengawasi proses.</li>
-                                        <li><strong>Memiliki wewenang dan kewajiban untuk menghentikan pekerjaan (Stop Work Authority) jika melihat kondisi atau tindakan tidak aman.</strong></li>
-                                    </ul>
-                                </td>
-                                <td>Memeriksa dan menandatangani Izin Kerja & JSA. Memastikan area kerja sudah disiapkan.</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Petugas K3 (Safety Officer)</strong></td>
-                                <td>
-                                    <ul>
-                                        <li>Memberikan masukan K3 dan memastikan semua prosedur diikuti.</li>
-                                        <li>Melakukan intervensi dan observasi K3 selama pekerjaan berlangsung.</li>
-                                        <li><strong>Secara proaktif menggunakan wewenang menghentikan pekerjaan (Stop Work Authority) jika menemukan pelanggaran K3 atau kondisi berbahaya.</strong></li>
-                                    </ul>
-                                </td>
-                                <td>Mengaudit pelaksanaan Toolbox Meeting. Memeriksa kelengkapan APD dan pemasangan barikade.</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Operator Rig (Alat Berat)</strong></td>
-                                <td>
-                                    <ul>
-                                        <li>Melakukan inspeksi P2H dan memastikan alat dalam kondisi aman.</li>
-                                        <li>Mengoperasikan alat HANYA berdasarkan instruksi dari banksman.</li>
-                                        <li><strong>Memiliki wewenang dan kewajiban untuk menolak melanjutkan pekerjaan dan mengaktifkan Stop Work Authority jika merasa instruksi tidak aman.</strong></li>
-                                    </ul>
-                                </td>
-                                <td>Menunjukkan SIO yang valid. Mengkonfirmasi pemahaman atas sinyal yang akan digunakan.</td>
-                            </tr>
-                             <tr>
-                                <td><strong>Banksman / Rigger (Pemandu)</strong></td>
-                                <td>
-                                     <ul>
-                                        <li>Menjadi "mata dan telinga" operator dan memberikan sinyal yang jelas.</li>
-                                        <li>Memastikan jalur pergerakan aman dan mengawasi zona eksklusi.</li>
-                                        <li><strong>Memiliki wewenang dan kewajiban untuk segera menghentikan pergerakan alat (Stop Work Authority) jika melihat bahaya mendadak.</strong></li>
-                                    </ul>
-                                </td>
-                                <td>Mengkonfirmasi posisi aman dan jalur pandang yang jelas. Memastikan radio berfungsi.</td>
-                            </tr>
+                        <tbody id="rolesTableBody">
+                            <!-- Rows are generated dynamically by JS -->
                         </tbody>
                     </table>
                  </div>
+                 <button id="addRoleBtn" class="add-row-btn translatable">Tambah Peran Baru</button>
             </section>
 
             <section id="checklist">
-                <h2>E) Checklist Pra-Start</h2>
-                <!-- Konten Checklist disini -->
-                 <p>Checklist ini harus diverifikasi oleh Pengawas Lapangan sebelum pekerjaan dimulai. Semua item harus terpenuhi.</p>
-                
-                <h3>Dokumen & Perizinan</h3>
-                <label class="checklist-item">
-                    <input type="checkbox" class="checklist-box">
-                    <span>Izin Kerja (PTW) sudah disetujui.</span>
-                </label>
-                <label class="checklist-item">
-                    <input type="checkbox" class="checklist-box">
-                    <span>JSA sudah dibahas dan dipahami oleh semua tim.</span>
-                </label>
-                <label class="checklist-item">
-                    <input type="checkbox" class="checklist-box">
-                    <span>SIO Operator dan Sertifikat Rigger valid dan sesuai.</span>
-                </label>
-
-                <h3>Area Kerja</h3>
-                <label class="checklist-item">
-                    <input type="checkbox" class="checklist-box">
-                    <span>Lokasi penurunan rata, padat, dan stabil.</span>
-                </label>
-                <label class="checklist-item">
-                    <input type="checkbox" class="checklist-box">
-                    <span>Jarak aman dari kabel listrik (OHL) terpenuhi.</span>
-                </label>
-                <label class="checklist-item">
-                    <input type="checkbox" class="checklist-box">
-                    <span>Zona eksklusi dengan barikade fisik sudah terpasang.</span>
-                </label>
-                
-                 <h3>Peralatan</h3>
-                 <label class="checklist-item">
-                    <input type="checkbox" class="checklist-box">
-                    <span>P2H unit Rig Bauer BG 20 H sudah dilakukan.</span>
-                </label>
-                <label class="checklist-item">
-                    <input type="checkbox" class="checklist-box">
-                    <span>Roda lowboy sudah diganjal (chocked).</span>
-                </label>
-                <label class="checklist-item">
-                    <input type="checkbox" class="checklist-box">
-                    <span>Ramp lowboy sudah diinspeksi (tidak ada retak, pin aman).</span>
-                </label>
-
-                <h3>Personel & Komunikasi</h3>
-                <label class="checklist-item">
-                    <input type="checkbox" class="checklist-box">
-                    <span>Semua anggota tim hadir saat Toolbox Meeting.</span>
-                </label>
-                <label class="checklist-item">
-                    <input type="checkbox" class="checklist-box">
-                    <span>APD lengkap dan dipakai dengan benar.</span>
-                </label>
-                 <label class="checklist-item">
-                    <input type="checkbox" class="checklist-box">
-                    <span>Radio komunikasi sudah dites dan berfungsi baik.</span>
-                </label>
+                <div class="section-header">
+                    <h2 class="translatable">E) Checklist Pra-Start</h2>
+                </div>
+                <p class="translatable">Checklist ini harus diverifikasi oleh Pengawas Lapangan sebelum pekerjaan dimulai.</p>
+                <div id="checklist-container">
+                    <!-- Checklist items are generated dynamically by JS -->
+                </div>
             </section>
         </div>
     </main>
@@ -771,26 +657,26 @@
     <div id="modalOverlay" class="modal-overlay"></div>
     <div id="riskMatrixModal" class="modal">
         <div class="modal-header">
-            <h3>Pilih Tingkat Risiko (5x5 Matrix)</h3>
+            <h3 class="translatable">Pilih Tingkat Risiko (5x5 Matrix)</h3>
             <span id="closeModalBtn" class="close-btn">&times;</span>
         </div>
         <div class="modal-body">
             <table class="risk-matrix-table">
                  <tr>
-                    <td rowspan="6" style="writing-mode: vertical-rl; transform: rotate(180deg);" class="matrix-header">Probability →</td>
+                    <td rowspan="6" style="writing-mode: vertical-rl; transform: rotate(180deg);" class="matrix-header translatable">Probability →</td>
                     <th class="matrix-header"></th>
-                    <th colspan="5" class="matrix-header">Impact →</th>
+                    <th colspan="5" class="matrix-header translatable">Impact →</th>
                 </tr>
                 <tr>
                     <th class="matrix-header"></th>
-                    <th class="matrix-header">Insignificant (1)</th>
-                    <th class="matrix-header">Minor (2)</th>
-                    <th class="matrix-header">Significant (3)</th>
-                    <th class="matrix-header">Major (4)</th>
-                    <th class="matrix-header">Severe (5)</th>
+                    <th class="matrix-header translatable">Insignificant (1)</th>
+                    <th class="matrix-header translatable">Minor (2)</th>
+                    <th class="matrix-header translatable">Significant (3)</th>
+                    <th class="matrix-header translatable">Major (4)</th>
+                    <th class="matrix-header translatable">Severe (5)</th>
                 </tr>
                 <tr>
-                    <th class="matrix-header">Almost Certain (5)</th>
+                    <th class="matrix-header translatable">Almost Certain (5)</th>
                     <td class="m-medium" data-value="5">5</td>
                     <td class="m-medium" data-value="10">10</td>
                     <td class="m-high" data-value="15">15</td>
@@ -798,7 +684,7 @@
                     <td class="m-extreme" data-value="25">25</td>
                 </tr>
                 <tr>
-                    <th class="matrix-header">Likely (4)</th>
+                    <th class="matrix-header translatable">Likely (4)</th>
                     <td class="m-low" data-value="4">4</td>
                     <td class="m-medium" data-value="8">8</td>
                     <td class="m-medium" data-value="12">12</td>
@@ -806,7 +692,7 @@
                     <td class="m-extreme" data-value="20">20</td>
                 </tr>
                 <tr>
-                    <th class="matrix-header">Moderate (3)</th>
+                    <th class="matrix-header translatable">Moderate (3)</th>
                     <td class="m-low" data-value="3">3</td>
                     <td class="m-medium" data-value="6">6</td>
                     <td class="m-medium" data-value="9">9</td>
@@ -814,7 +700,7 @@
                     <td class="m-high" data-value="15">15</td>
                 </tr>
                 <tr>
-                    <th class="matrix-header">Unlikely (2)</th>
+                    <th class="matrix-header translatable">Unlikely (2)</th>
                     <td class="m-low" data-value="2">2</td>
                     <td class="m-low" data-value="4">4</td>
                     <td class="m-medium" data-value="6">6</td>
@@ -823,7 +709,7 @@
                 </tr>
                  <tr>
                      <th class="matrix-header"></th>
-                    <th class="matrix-header">Rarely (1)</th>
+                    <th class="matrix-header translatable">Rarely (1)</th>
                     <td class="m-low" data-value="1">1</td>
                     <td class="m-low" data-value="2">2</td>
                     <td class="m-low" data-value="3">3</td>
@@ -837,25 +723,144 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // --- SIMPLIFIED TRANSLATION LOGIC ---
+            const translations = {
+                // Titles and Headers
+                "Prosedur Keselamatan: Rig BAUER BG 20 H": "Safety Procedure: BAUER BG 20 H Rig",
+                "A) Prasyarat": "A) Prerequisites",
+                "B) Metode Kerja": "B) Work Method",
+                "C) Risk Assessment": "C) Risk Assessment",
+                "D) Peran & Verifikasi": "D) Roles & Verification",
+                "E) Checklist": "E) Checklist",
+                "Cetak / Simpan ke PDF": "Print / Save to PDF",
+                "A) Prasyarat Sebelum Unloading": "A) Prerequisites Before Unloading",
+                "1. Verifikasi Dokumen & Izin Kerja": "1. Document & Permit Verification",
+                "2. Penyiapan Area Kerja": "2. Work Area Preparation",
+                "3. Kesiapan Tim & Peralatan": "3. Team & Equipment Readiness",
+                "B) Metode Kerja Ringkas (Step-by-Step)": "B) Brief Work Method (Step-by-Step)",
+                "C) Risk Assessment Gabungan": "C) Combined Risk Assessment",
+                "Klik pada angka risiko untuk mengubah nilainya. Legenda: <strong>Merah Tua</strong> (Ekstrem), <strong>Merah</strong> (Tinggi), <strong>Kuning</strong> (Sedang), <strong>Hijau Tua</strong> (Rendah).": "Click on the risk value to change it. Legend: <strong>Dark Red</strong> (Extreme), <strong>Red</strong> (High), <strong>Yellow</strong> (Medium), <strong>Dark Green</strong> (Low).",
+                "No": "No",
+                "Bahaya & Skenario Rinci": "Hazard & Detailed Scenario",
+                "Potensi Konsekuensi Utama": "Potential Main Consequence",
+                "Tindakan Pengendalian": "Control Measures",
+                "Risiko Awal (R)": "Initial Risk (R)",
+                "Risiko Residual (R)": "Residual Risk (R)",
+                "Aksi": "Action",
+                "Tambah Baris Baru": "Add New Row",
+                "Tambah Peran Baru": "Add New Role",
+                "E) Checklist Pra-Start": "E) Pre-Start Checklist",
+                "Checklist ini harus diverifikasi oleh Pengawas Lapangan sebelum pekerjaan dimulai.": "This checklist must be verified by the Site Supervisor before work commences.",
+                "Pilih Tingkat Risiko (5x5 Matrix)": "Select Risk Level (5x5 Matrix)",
+                "Probability →": "Probability →",
+                "Impact →": "Impact →",
+                "Insignificant (1)": "Insignificant (1)",
+                "Minor (2)": "Minor (2)",
+                "Significant (3)": "Significant (3)",
+                "Major (4)": "Major (4)",
+                "Severe (5)": "Severe (5)",
+                "Almost Certain (5)": "Almost Certain (5)",
+                "Likely (4)": "Likely (4)",
+                "Moderate (3)": "Moderate (3)",
+                "Unlikely (2)": "Unlikely (2)",
+                "Rarely (1)": "Rarely (1)",
+                "RISK ASSESSMENT": "RISK ASSESSMENT",
+                "Pekerjaan": "Activity / Work",
+                "Date Review": "Date Review",
+                "Revision No.": "Revision No.",
+                "Submitted by": "Submitted by",
+                "Company": "Company",
+                "Name": "Name",
+                "Signed": "Signed",
+                "Position": "Position",
+                "Reviewed by": "Reviewed by",
+                "Approved by": "Approved by",
+                "Risk Assessment Team Member:": "Risk Assessment Team Member:",
+                "Permit to Work (PTW): Telah diterbitkan (jika disyaratkan) dan disetujui oleh otoritas site yang berwenang. Jalankan readiness checklist": "Permit to Work (PTW): Issued (if required) and approved by the authorized site authority. Execute readiness checklist",
+                "Job Safety Analysis (JSA) / HIRADC: Spesifik untuk aktivitas unloading, telah disosialisasikan, dan ditandatangani oleh seluruh tim.": "Job Safety Analysis (JSA) / HIRADC: Specific to the unloading activity, has been socialized, and signed by the entire team.",
+                "Sertifikasi Personel: Operator rig memiliki SIO yang valid. Rigger/Banksman memiliki sertifikat kompetensi.": "Personnel Certification: Rig operator possesses a valid operator's license (SIO). Rigger/Banksman holds a competency certificate.",
+                "Inspeksi Alat: Dokumen P2H (Pemeriksaan Harian) untuk unit rig dan lowboy lengkap dan menyatakan kondisi layak pakai.": "Equipment Inspection: Daily Inspection (P2H) documents for the rig unit and lowboy are complete and state fit-for-use condition.",
+                "Pemilihan Lokasi: Area penurunan harus rata, stabil, dan padat untuk menahan beban rig (sekitar 60-70 ton) tanpa amblas.": "Location Selection: The unloading area must be level, stable, and compacted to support the rig's weight (approx. 60-70 tons) without subsidence.",
+                "Manajemen Jarak Aman (Clearance): Area harus bebas dari penghalang atas seperti kabel listrik udara (OHL). Jarak aman minimum harus ditaati.": "Clearance Management: The area must be free from overhead obstructions such as overhead power lines (OHL). Minimum safe distances must be observed.",
+                "Barikade & Rambu: Pasang barikade fisik untuk membuat zona eksklusi (exclusion zone). Hanya personel yang terlibat langsung yang boleh masuk.": "Barricades & Signage: Install physical barricades to establish an exclusion zone. Only directly involved personnel are permitted entry.",
+                "Kondisi Cuaca: Dilarang melakukan pekerjaan saat hujan lebat, angin kencang, atau jarak pandang terbatas.": "Weather Conditions: Work is prohibited during heavy rain, strong winds, or limited visibility.",
+                "Toolbox Meeting (P5M): Lakukan briefing keselamatan sebelum pekerjaan. Bahas JSA, metode kerja, peran, sinyal komunikasi, dan prosedur darurat.": "Toolbox Meeting (P5M): Conduct a safety briefing before work. Discuss the JSA, work method, roles, communication signals, and emergency procedures.",
+                "Alat Pelindung Diri (APD): Seluruh personel wajib menggunakan helm, sepatu keselamatan, rompi visibilitas tinggi, dan sarung tangan.": "Personal Protective Equipment (PPE): All personnel must wear safety helmets, safety shoes, high-visibility vests, and gloves.",
+                "Komunikasi: Siapkan radio komunikasi dua arah yang berfungsi baik dan tetapkan sinyal tangan sebagai cadangan.": "Communication: Prepare two-way radios in good working condition and establish standard hand signals as a backup.",
+                "Peralatan Darurat: Pastikan APAR dan kotak P3K mudah dijangkau.": "Emergency Equipment: Ensure fire extinguishers (APAR) and first aid kits are readily accessible.",
+                "Manajemen Lalu Lintas: Sebelum lowboy memasuki area, pasang rambu-rambu keselamatan lalu lintas yang relevan. Buat exclusion zone yang jelas menggunakan pagar keras dan traffic cone.": "Traffic Management: Before the lowboy enters the area, install relevant traffic safety signs. Establish a clear exclusion zone using hard barriers and traffic cones.",
+                "Posisi Kendaraan: Pengemudi lowboy memposisikan truk di area yang telah ditentukan, diarahkan oleh banksman.": "Vehicle Positioning: The lowboy driver positions the truck in the designated area, guided by a banksman.",
+                "Stabilisasi Lowboy: Aktifkan rem parkir dan pasang ganjal roda (wheel chocks).": "Lowboy Stabilization: Activate the parking brake and install wheel chocks.",
+                "Persiapan Ramp: Turunkan ramp, pastikan terkunci dengan aman dan berada pada sudut yang tidak terlalu curam.": "Ramp Preparation: Lower the ramp, ensure it is securely locked and at a non-excessive gradient.",
+                "Inspeksi Akhir: Operator rig naik ke unit dan melakukan inspeksi fungsi kontrol. Banksman memposisikan diri di lokasi yang aman.": "Final Inspection: The rig operator boards the unit and performs a functional control check. The banksman positions themself in a safe location.",
+                "Proses Penurunan: Atas instruksi HANYA dari satu banksman, operator menggerakkan rig secara sangat perlahan menuruni ramp.": "Lowering Process: Following instructions ONLY from the designated banksman, the operator moves the rig very slowly down the ramp.",
+                "Selesai Penurunan: Setelah rig sepenuhnya di tanah, parkirkan di lokasi aman yang telah ditentukan.": "Completion of Lowering: Once the rig is fully on the ground, park it in the designated safe location.",
+                "Pengamanan Area: Naikkan kembali ramp lowboy dan kendaraan meninggalkan area kerja.": "Securing the Area: Raise the lowboy ramp, and the vehicle exits the work area.",
+                "Dokumen & Perizinan": "Documents & Permits",
+                "Area Kerja": "Work Area",
+                "Peralatan": "Equipment",
+                "Personel & Komunikasi": "Personnel & Communication",
+                "Izin Kerja (PTW) sudah disetujui.": "Permit to Work (PTW) is approved.",
+                "JSA sudah dibahas dan dipahami oleh semua tim.": "JSA has been discussed and is understood by the entire team.",
+                "SIO Operator dan Sertifikat Rigger valid dan sesuai.": "Operator's License (SIO) and Rigger's Certificate are valid and appropriate.",
+                "Lokasi penurunan rata, padat, dan stabil.": "Unloading location is level, compacted, and stable.",
+                "Jarak aman dari kabel listrik (OHL) terpenuhi.": "Safe distance from overhead power lines (OHL) is maintained.",
+                "Zona eksklusi dengan barikade fisik sudah terpasang.": "Exclusion zone with physical barricades is in place.",
+                "P2H unit Rig Bauer BG 20 H sudah dilakukan.": "Daily Inspection (P2H) of the Bauer BG 20 H Rig unit has been completed.",
+                "Roda lowboy sudah diganjal (chocked).": "Lowboy wheels are chocked.",
+                "Ramp lowboy sudah diinspeksi (tidak ada retak, pin aman).": "Lowboy ramp has been inspected (no cracks, secure pins).",
+                "Semua anggota tim hadir saat Toolbox Meeting.": "All team members are present at the Toolbox Meeting.",
+                "APD lengkap dan dipakai dengan benar.": "Complete PPE is worn correctly.",
+                "Radio komunikasi sudah dites dan berfungsi baik.": "Two-way radios have been tested and are functioning correctly."
+            };
+
+            function setTranslationData(el) {
+                const originalHtml = el.innerHTML;
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = originalHtml;
+                const plainTextKey = tempDiv.textContent.trim();
+                const dictTranslation = translations[plainTextKey];
+
+                if (dictTranslation) {
+                    el.dataset.id = originalHtml;
+                    
+                    const resultClone = tempDiv.cloneNode(true);
+                    const walker = document.createTreeWalker(resultClone, NodeFilter.SHOW_TEXT, null, false);
+                    let node;
+                    while(node = walker.nextNode()) {
+                        if (node.nodeValue.trim() === plainTextKey) {
+                            node.nodeValue = node.nodeValue.replace(plainTextKey, dictTranslation);
+                            break;
+                        }
+                    }
+                    el.dataset.en = resultClone.innerHTML;
+                }
+            }
+
+            function switchLanguage(lang) {
+                document.querySelectorAll('.translatable').forEach(el => {
+                    const content = el.dataset[lang];
+                    if (content) {
+                       el.innerHTML = content;
+                    }
+                });
+
+                document.getElementById('lang-id').classList.toggle('active', lang === 'id');
+                document.getElementById('lang-en').classList.toggle('active', lang === 'en');
+            }
+
+            document.getElementById('lang-id').addEventListener('click', () => switchLanguage('id'));
+            document.getElementById('lang-en').addEventListener('click', () => switchLanguage('en'));
+            
             // Mobile Menu Toggle
             const menuToggle = document.getElementById('menu-toggle');
             const navMenu = document.getElementById('nav-menu');
-
-            menuToggle.addEventListener('click', () => {
-                navMenu.classList.toggle('active');
-            });
+            menuToggle.addEventListener('click', () => { navMenu.classList.toggle('active'); });
 
             // Active Link on Scroll
             const sections = document.querySelectorAll('section');
             const navLinks = document.querySelectorAll('#nav-menu li a');
-
-            const observerOptions = {
-                root: null,
-                rootMargin: '0px',
-                threshold: 0.6 
-            };
-
-            const observer = new IntersectionObserver((entries, observer) => {
+            const observer = new IntersectionObserver(entries => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
                         navLinks.forEach(link => {
@@ -866,68 +871,49 @@
                         });
                     }
                 });
-            }, observerOptions);
-
-            sections.forEach(section => {
-                observer.observe(section);
-            });
+            }, { rootMargin: '0px', threshold: 0.6 });
+            sections.forEach(section => { observer.observe(section); });
             
-             // Close mobile menu when a link is clicked
             navLinks.forEach(link => {
                 link.addEventListener('click', () => {
-                    if (navMenu.classList.contains('active')) {
-                        navMenu.classList.remove('active');
-                    }
+                    if (navMenu.classList.contains('active')) { navMenu.classList.remove('active'); }
                 });
             });
 
             // --- INTERACTIVE RISK ASSESSMENT LOGIC ---
-
             const modal = document.getElementById('riskMatrixModal');
             const overlay = document.getElementById('modalOverlay');
             const closeModalBtn = document.getElementById('closeModalBtn');
-            const addRowBtn = document.getElementById('addRowBtn');
             const riskTableBody = document.getElementById('riskTableBody');
-            
             let currentTargetCell = null;
 
-            // Function to update cell color based on value
             function updateCellColor(cell, value) {
-                cell.classList.remove('risk-low', 'risk-medium', 'risk-high', 'risk-extreme');
-                if (value >= 20) {
-                    cell.classList.add('risk-extreme');
-                } else if (value >= 15) {
-                    cell.classList.add('risk-high');
-                } else if (value >= 5) {
-                    cell.classList.add('risk-medium');
-                } else {
-                    cell.classList.add('risk-low');
-                }
+                cell.className = 'risk-level';
+                if (value >= 20) cell.classList.add('risk-extreme');
+                else if (value >= 15) cell.classList.add('risk-high');
+                else if (value >= 5) cell.classList.add('risk-medium');
+                else cell.classList.add('risk-low');
             }
 
-            // Open Modal
             function openModal(target) {
                 currentTargetCell = target;
                 modal.style.display = 'block';
                 overlay.style.display = 'block';
             }
 
-            // Close Modal
             function closeModal() {
                 modal.style.display = 'none';
                 overlay.style.display = 'none';
                 currentTargetCell = null;
             }
 
-            // Event listener for opening the modal
-            document.getElementById('mainRiskTable').addEventListener('click', function(e) {
-                if (e.target && e.target.matches('div.risk-level[data-editable="true"]')) {
+            document.getElementById('mainRiskTable').addEventListener('click', e => {
+                if (e.target && e.target.matches('div.risk-level')) {
                     openModal(e.target);
                 }
             });
 
-            // Event listener for selecting a value in the modal
-            document.querySelector('.risk-matrix-table').addEventListener('click', function(e) {
+            document.querySelector('.risk-matrix-table').addEventListener('click', e => {
                 if (e.target && e.target.matches('td[data-value]')) {
                     const selectedValue = e.target.getAttribute('data-value');
                     if (currentTargetCell) {
@@ -938,30 +924,177 @@
                 }
             });
 
-            // Event listeners for closing the modal
             closeModalBtn.addEventListener('click', closeModal);
             overlay.addEventListener('click', closeModal);
 
-            // Add new row function
-            addRowBtn.addEventListener('click', function() {
-                const rowCount = riskTableBody.rows.length;
-                const newRow = riskTableTableBody.insertRow();
-                
+            function renumberTableRows(tbody) {
+                const rows = tbody.querySelectorAll('tr');
+                rows.forEach((row, index) => {
+                    row.cells[0].textContent = index + 1;
+                });
+            }
+
+            // --- DATA & POPULATION LOGIC ---
+            const riskData = [
+                { no: 1, hazard: '<strong>Platform Kerja Gagal</strong> (Tanah tidak stabil/amblas)', consequence: 'Trailer/rig terguling (tipping). Kerusakan masif & fatal.', control: 'Wajibkan WPC (Working Platform Certificate). Gunakan steel plates atau crane mats. Hentikan kerja & inspeksi ulang pasca hujan.', initial: 15, residual: 6 },
+                { no: 2, hazard: '<strong>Interaksi Alat-Manusia</strong> (Personel tertabrak/terjepit)', consequence: 'Cedera serius, crush injury, fatal.', control: 'Buat zona eksklusi berpagar keras, diperjelas dengan <em>traffic cone</em> dan rambu peringatan lalu lintas. Tunjuk 1 banksman dengan radio sebagai satu-satunya pemberi komando.', initial: 15, residual: 6 },
+                { no: 3, hazard: '<strong>Halangan Atas / OHL</strong> (Mast menyentuh kabel listrik)', consequence: 'Sengatan listrik (electrocution), fatal.', control: 'Survei utilitas. Terapkan panduan HSE GS6 (pasang goalposts). Terbitkan PTW khusus pekerjaan dekat OHL.', initial: 10, residual: 4 },
+                { no: 4, hazard: '<strong>Kegagalan Ramp atau Selip</strong> (Ramp patah/licin)', consequence: 'Rig jatuh dari trailer, terguling, fatal bagi operator.', control: 'Inspeksi visual ramp. Pastikan rating kapasitas > berat rig. Dilarang unloading saat hujan deras. Opsi winch-assist.', initial: 15, residual: 6 },
+                { no: 5, hazard: '<strong>Pelepasan Tie-Down Salah</strong> (Lecutan rantai/energi tersimpan)', consequence: '"Chain whip", crush injury.', control: 'Ikuti prosedur pelepasan (release plan) yang aman dan simetris. Personel berdiri di posisi aman (tidak di jalur rekoil).', initial: 12, residual: 5 },
+                { no: 6, hazard: '<strong>Trailer Tidak Stabil</strong> (Lowboy bergerak saat unloading)', consequence: 'Rig jatuh atau terguling.', control: 'Wajib pasang ganjal roda (wheel chocks). Pastikan landing gear menapak sempurna di tanah rata. Konfirmasi verbal driver-banksman.', initial: 10, residual: 4 },
+                { no: 7, hazard: '<strong>Kegagalan Komunikasi</strong> (Perintah salah, sinyal tidak terlihat)', consequence: 'Pergerakan rig yang tidak diinginkan, tabrakan, near-miss.', control: 'Gunakan radio UHF yang dites. 1 banksman sebagai satu-satunya komando. Prosedur Stop-Look-Communicate.', initial: 9, residual: 4 },
+                { no: 8, hazard: '<strong>Visibilitas Buruk</strong> (Malam, debu, hujan)', consequence: 'Salah manuver, menabrak orang atau objek.', control: 'Sediakan menara lampu. Lakukan penyiraman debu. Wajibkan APD Hi-Viz Kelas 3.', initial: 12, residual: 5 },
+                { no: 9, hazard: '<strong>Kegagalan Sistem Alat</strong> (Rem, hidrolik gagal)', consequence: 'Runaway rig (rig meluncur tanpa kendali).', control: 'Lakukan tes fungsi rem & E-stop sebelum rilis. Siapkan wheel-stops di kaki ramp sebagai barikade darurat.', initial: 10, residual: 4 },
+                { no: 10, hazard: '<strong>Pusat Gravitasi (COG) Bergeser</strong> (Attachment tidak aman)', consequence: 'Kehilangan kontrol, terguling (tipping).', control: 'Verifikasi semua attachment & mast terkunci sesuai konfigurasi transport. Review data berat & dimensi.', initial: 10, residual: 4 },
+                { no: 11, hazard: '<strong>Titik Jepit & Remuk</strong> (Saat lepas gooseneck/penyangga ramp)', consequence: 'Cedera serius pada tangan atau kaki.', control: 'Ciptakan zona steril. Gunakan alat bantu (tuas), hindari menempatkan tangan secara langsung.', initial: 12, residual: 6 },
+                { no: 12, hazard: '<strong>Tumpahan & Kebocoran</strong> (BBM atau oli hidrolik bocor)', consequence: 'Risiko kebakaran, pencemaran lingkungan.', control: 'Siapkan spill-kit. Jika bocor, matikan mesin segera. Lakukan inspeksi visual pada selang hidrolik.', initial: 8, residual: 4 },
+                { no: 13, hazard: '<strong>Pihak Ketiga Mendekat</strong> (Pekerja lain/publik masuk area bahaya)', consequence: 'Mengekspos orang yang tidak terlatih pada bahaya.', control: 'Gunakan pagar keras yang dilengkapi rambu "DILARANG MASUK - AREA KERJA ALAT BERAT". Tempatkan penjaga di akses masuk. Jadwalkan unloading pada jam sepi.', initial: 12, residual: 5 }
+            ];
+            
+            riskData.forEach(data => {
+                const newRow = riskTableBody.insertRow();
                 newRow.innerHTML = `
-                    <td>${rowCount + 1}</td>
+                    <td class="translatable">${data.no}</td>
+                    <td class="translatable">${data.hazard}</td>
+                    <td class="translatable">${data.consequence}</td>
+                    <td class="translatable">${data.control}</td>
+                    <td><div class="risk-level">${data.initial}</div></td>
+                    <td><div class="risk-level">${data.residual}</div></td>
+                    <td class="actions-cell"><button class="delete-row-btn">🗑️</button></td>
+                `;
+            });
+            document.querySelectorAll('#riskTableBody .risk-level').forEach(cell => {
+                updateCellColor(cell, parseInt(cell.textContent));
+            });
+            document.getElementById('addRowBtn').addEventListener('click', function() {
+                const rowCount = riskTableBody.rows.length;
+                const newRow = riskTableBody.insertRow();
+                newRow.innerHTML = `
+                    <td contenteditable="true">${rowCount + 1}</td>
                     <td contenteditable="true"></td>
                     <td contenteditable="true"></td>
                     <td contenteditable="true"></td>
-                    <td><div class="risk-level risk-low" data-editable="true">1</div></td>
-                    <td><div class="risk-level risk-low" data-editable="true">1</div></td>
+                    <td><div class="risk-level risk-low">1</div></td>
+                    <td><div class="risk-level risk-low">1</div></td>
+                    <td class="actions-cell"><button class="delete-row-btn">🗑️</button></td>
                 `;
             });
 
-            // Initialize colors for existing cells
-            document.querySelectorAll('.risk-level[data-editable="true"]').forEach(cell => {
-                const value = parseInt(cell.textContent);
-                updateCellColor(cell, value);
+            const rolesData = [
+                { role: 'Project Manager', tasks: '<ul><li>Memastikan ketersediaan sumber daya dan memberikan briefing awal mengenai scope & target keselamatan.</li><li>Bertanggung jawab atas keberhasilan proyek, termasuk aspek K3.</li><li><strong>Memiliki wewenang untuk menghentikan pekerjaan (Stop Work Authority) jika melihat kondisi tidak aman.</strong></li></ul>', verification: 'Menyetujui JSA/HIRADC final. Memastikan semua izin prinsip dari klien telah diamankan.' },
+                { role: 'Pengawas Lapangan (Site Supervisor)', tasks: '<ul><li>Memastikan semua prasyarat terpenuhi dan memimpin Toolbox Meeting.</li><li>Memberi otorisasi final untuk memulai pekerjaan dan mengawasi proses.</li><li><strong>Memiliki wewenang dan kewajiban untuk menghentikan pekerjaan (Stop Work Authority) jika melihat kondisi atau tindakan tidak aman.</strong></li></ul>', verification: 'Memeriksa dan menandatangani Izin Kerja & JSA. Memastikan area kerja sudah disiapkan.' },
+                { role: 'Petugas K3 (Safety Officer)', tasks: '<ul><li>Memberikan masukan K3 dan memastikan semua prosedur diikuti.</li><li>Melakukan intervensi dan observasi K3 selama pekerjaan berlangsung.</li><li><strong>Secara proaktif menggunakan wewenang menghentikan pekerjaan (Stop Work Authority) jika menemukan pelanggaran K3 atau kondisi berbahaya.</strong></li></ul>', verification: 'Mengaudit pelaksanaan Toolbox Meeting. Memeriksa kelengkapan APD dan pemasangan barikade.' },
+                { role: 'Operator Rig (Alat Berat)', tasks: '<ul><li>Melakukan inspeksi P2H dan memastikan alat dalam kondisi aman.</li><li>Mengoperasikan alat HANYA berdasarkan instruksi dari banksman.</li><li><strong>Memiliki wewenang dan kewajiban untuk menolak melanjutkan pekerjaan dan mengaktifkan Stop Work Authority jika merasa instruksi tidak aman.</strong></li></ul>', verification: 'Menunjukkan SIO yang valid. Mengkonfirmasi pemahaman atas sinyal yang akan digunakan.' },
+                { role: 'Banksman / Rigger (Pemandu)', tasks: '<ul><li>Menjadi "mata dan telinga" operator dan memberikan sinyal yang jelas.</li><li>Memastikan jalur pergerakan aman dan mengawasi zona eksklusi.</li><li><strong>Memiliki wewenang dan kewajiban untuk segera menghentikan pergerakan alat (Stop Work Authority) jika melihat bahaya mendadak.</strong></li></ul>', verification: 'Mengkonfirmasi posisi aman dan jalur pandang yang jelas. Memastikan radio berfungsi.' }
+            ];
+
+            const rolesTableBody = document.getElementById('rolesTableBody');
+            rolesData.forEach(data => {
+                const newRow = rolesTableBody.insertRow();
+                newRow.innerHTML = `
+                    <td class="translatable">${data.role}</td>
+                    <td class="translatable">${data.tasks}</td>
+                    <td class="translatable">${data.verification}</td>
+                    <td class="actions-cell"><button class="delete-row-btn">🗑️</button></td>
+                `;
             });
+
+            document.getElementById('addRoleBtn').addEventListener('click', () => {
+                const newRow = rolesTableBody.insertRow();
+                newRow.innerHTML = `
+                    <td contenteditable="true">Peran Baru</td>
+                    <td contenteditable="true"><ul><li>Tugas baru...</li></ul></td>
+                    <td contenteditable="true">Verifikasi baru...</td>
+                    <td class="actions-cell"><button class="delete-row-btn">🗑️</button></td>
+                `;
+            });
+
+            const checklistData = {
+                "Dokumen & Perizinan": [
+                    "Izin Kerja (PTW) sudah disetujui.",
+                    "JSA sudah dibahas dan dipahami oleh semua tim.",
+                    "SIO Operator dan Sertifikat Rigger valid dan sesuai."
+                ],
+                "Area Kerja": [
+                    "Lokasi penurunan rata, padat, dan stabil.",
+                    "Jarak aman dari kabel listrik (OHL) terpenuhi.",
+                    "Zona eksklusi dengan barikade fisik sudah terpasang."
+                ],
+                "Peralatan": [
+                    "P2H unit Rig Bauer BG 20 H sudah dilakukan.",
+                    "Roda lowboy sudah diganjal (chocked).",
+                    "Ramp lowboy sudah diinspeksi (tidak ada retak, pin aman)."
+                ],
+                "Personel & Komunikasi": [
+                    "Semua anggota tim hadir saat Toolbox Meeting.",
+                    "APD lengkap dan dipakai dengan benar.",
+                    "Radio komunikasi sudah dites dan berfungsi baik."
+                ]
+            };
+
+            const checklistContainer = document.getElementById('checklist-container');
+            for (const category in checklistData) {
+                const categoryHeader = document.createElement('div');
+                categoryHeader.className = 'subsection-header';
+                categoryHeader.innerHTML = `<h3 class="translatable">${category}</h3><button class="add-item-btn" data-target-list="#checklist-${category.replace(/[\s&]/g, '')}">+</button>`;
+                checklistContainer.appendChild(categoryHeader);
+                
+                const listContainer = document.createElement('div');
+                listContainer.id = `checklist-${category.replace(/[\s&]/g, '')}`;
+                checklistData[category].forEach(itemText => {
+                    const newItem = document.createElement('label');
+                    newItem.className = 'checklist-item';
+                    newItem.innerHTML = `
+                        <input type="checkbox" class="checklist-box">
+                        <span class="translatable">${itemText}</span>
+                        <button class="delete-item-btn">&times;</button>
+                    `;
+                    listContainer.appendChild(newItem);
+                });
+                checklistContainer.appendChild(listContainer);
+            }
+            
+            document.body.addEventListener('click', e => {
+                if (e.target.matches('.add-item-btn')) {
+                    const targetSelector = e.target.dataset.targetList;
+                    const targetList = document.querySelector(targetSelector);
+                    if (targetList) {
+                        if (targetList.tagName === 'UL' || targetList.tagName === 'OL') {
+                            const newItem = document.createElement('li');
+                            newItem.setAttribute('contenteditable', 'true');
+                            newItem.innerHTML = 'Item baru... <button class="delete-item-btn">&times;</button>';
+                            targetList.appendChild(newItem);
+                        } else {
+                            const newItem = document.createElement('label');
+                            newItem.className = 'checklist-item';
+                            newItem.innerHTML = `
+                                <input type="checkbox" class="checklist-box">
+                                <span contenteditable="true">Checklist baru...</span>
+                                <button class="delete-item-btn">&times;</button>
+                            `;
+                            targetList.appendChild(newItem);
+                            newItem.querySelector('span').focus();
+                        }
+                    }
+                }
+
+                if (e.target.matches('.delete-row-btn')) {
+                    const row = e.target.closest('tr');
+                    const tbody = row.parentElement;
+                    row.remove();
+                    if(tbody.id === 'riskTableBody') {
+                        renumberTableRows(tbody);
+                    }
+                }
+                if (e.target.matches('.delete-item-btn')) {
+                    const item = e.target.closest('li, .checklist-item');
+                    item.remove();
+                }
+            });
+            
+            // --- INITIALIZE ALL ---
+            document.querySelectorAll('.translatable').forEach(el => setTranslationData(el));
+            switchLanguage('id');
 
         });
     </script>
