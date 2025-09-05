@@ -18,6 +18,7 @@
     <meta property="og:url" content="https://simcalc.github.io/html/safety-procedure-Rig-BAUERBG20H.html" />
     <meta property="og:description" content="Dokumen Risk Assessment interaktif untuk aktivitas unloading alat berat Bauer BG 20 H, lengkap dengan checklist dan prosedur K3." />
 
+
     <style>
         /* CSS Reset and Basic Setup */
         :root {
@@ -93,6 +94,21 @@
 
         main {
             padding-top: var(--header-height);
+        }
+        
+        .header-image-container {
+            width: 100%;
+            height: 300px;
+            margin-bottom: 25px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        
+        .header-image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
         section {
@@ -332,6 +348,9 @@
             header h1 {
                 font-size: 1.2em;
             }
+             .header-image-container {
+                height: 250px;
+            }
         }
         
         @media (max-width: 768px) {
@@ -357,6 +376,9 @@
                 height: 40px;
                 font-size: 0.8em;
             }
+            .header-image-container {
+                height: 200px;
+            }
         }
         
         /* Print Styles */
@@ -365,7 +387,7 @@
                 background-color: white;
                 color: black;
             }
-            header, nav, .action-buttons, .menu-toggle, .modal-overlay, .modal, .add-row-btn {
+            header, nav, .action-buttons, .menu-toggle, .modal-overlay, .modal, .add-row-btn, .header-image-container {
                 display: none;
             }
             main {
@@ -450,6 +472,10 @@
         <div class="container">
             <div class="action-buttons">
                 <button class="print-btn" onclick="window.print()">Cetak / Simpan ke PDF</button>
+            </div>
+
+            <div class="header-image-container">
+                <img src="https://raw.githubusercontent.com/simcalc/simcalc.github.io/refs/heads/main/img/Drilling-Rig-BG-20-H-BT-50.webp" alt="Drilling Rig BAUER BG 20 H">
             </div>
 
             <section id="prasyarat">
@@ -934,7 +960,7 @@
             // Add new row function
             addRowBtn.addEventListener('click', function() {
                 const rowCount = riskTableBody.rows.length;
-                const newRow = riskTableBody.insertRow();
+                const newRow = riskTableTableBody.insertRow();
                 
                 newRow.innerHTML = `
                     <td>${rowCount + 1}</td>
