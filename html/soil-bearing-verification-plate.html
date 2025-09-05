@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modeling Daya Dukung & Verifikasi Plate (v2.4)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Konfigurasi MathJax agar mengenali simbol $...$ -->
+    <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
+      },
+      svg: {
+        fontCache: 'global'
+      }
+    };
+    </script>
+    
+    <!-- Penambahan MathJax untuk Render Simbol Matematika -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <style>
+        /* CSS Reset and Basic Setup */
+        :root {
+            --primary-color: #0d47a1; /* Biru tua profesional */
+            --secondary-color: #1976d2; /* Biru lebih terang */
+            --accent-color: #f9a825; /* Kuning/Oranye untuk tombol */
+            --text-color: #212121;
+            --bg-color: #f5f7fa;
+            --border-color: #cfd8dc;
+            --success-bg: #2e7d32; /* Hijau tua */
+            --error-bg: #c62828;   /* Merah tua */
+            --light-text: #ffffff;
+            --shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+            --card-shadow: 0 4px 8px rgba(0,0,0,0.07);
+            --border-radius: 8px;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 20px auto;
+            background-color: var(--light-text);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: var(--light-text);
+            padding: 20px 30px;
+            text-align: center;
+        }
+        
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .header-image {
+            height: 100px;
+            width: auto;
+            border-radius: var(--border-radius);
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 5px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            object-fit: cover;
+        }
+
+        .header-text {
+            text-align: left;
+            flex: 1;
+            min-width: 300px;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2em;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            margin: 5px 0 15px;
+            font-weight: 400;
+            opacity: 0.9;
+        }
+
+        .default-info {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 10px 15px;
+            border-radius: 6px;
+            font-size: 0.9em;
+            display: inline-block;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        main { padding: 30px; }
+        .input-cards-container {
+            display: flex;
+            gap: 25px;
+            margin-bottom: 25px;
+        }
+
+        fieldset {
+            flex: 1;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: var(--card-shadow);
+            min-width: 0;
+        }
+
+        legend {
+            color: var(--primary-color);
+            font-weight: 700;
+            padding: 0 10px;
+            font-size: 1.1em;
+        }
+
+        .form-group { margin-bottom: 18px; }
+        .form-group label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 6px;
+            color: #455a64;
+        }
+
+        .input-with-unit { display: flex; align-items: center; }
+        .input-with-unit input {
+            flex-grow: 1;
+            width: 100%;
+            border-radius: 4px 0 0 4px;
+        }
+        .input-with-unit span {
+            background-color: #eceff1;
+            border: 1px solid var(--border-color);
+            border-left: none;
+            padding: 10px 12px;
+            border-radius: 0 4px 4px 0;
+            font-size: 0.9em;
+            white-space: nowrap;
+            color: #546e7a;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 1em;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        input[type="number"]:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.2);
+        }
+        input[type="number"] { -moz-appearance: textfield; }
+        input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
+        .form-group small {
+            font-size: 0.8em;
+            color: #78909c;
+            display: block;
+            margin-top: 4px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            background-color: #f5f7fa;
+            padding: 12px;
+            border-radius: 4px;
+        }
+        .checkbox-group input[type="checkbox"] {
+            margin-right: 10px;
+            width: 18px;
+            height: 18px;
+            accent-color: var(--primary-color);
+        }
+        
+        .info-toggle-button {
+            display: inline-block;
+            background-color: var(--secondary-color);
+            color: var(--light-text);
+            border: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85em;
+            font-weight: 500;
+            text-decoration: none;
+            margin-top: 10px;
+            transition: background-color 0.3s ease, transform 0.1s ease;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .info-toggle-button:hover {
+            background-color: var(--primary-color);
+            transform: translateY(-1px);
+        }
+        
+        .info-content {
+            margin-top: 8px;
+            padding: 10px 12px;
+            background-color: #e3f2fd;
+            border: 1px solid #bbdefb;
+            border-radius: 4px;
+            color: #333;
+        }
+        .info-content p, .info-content ul { margin: 5px 0; }
+        .info-content ul { padding-left: 20px; }
+
+        button#calculateBtn {
+            background: var(--accent-color);
+            color: var(--text-color);
+            border: none;
+            padding: 14px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.2em;
+            font-weight: 700;
+            width: 100%;
+            transition: background-color 0.3s ease, transform 0.1s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+            margin-bottom: 30px;
+        }
+        button#calculateBtn:hover { background-color: #fbc02d; }
+        button#calculateBtn:active { transform: translateY(1px); }
+
+        .result-section {
+            background-color: #f9fafb;
+            padding: 25px;
+            border-radius: var(--border-radius);
+            border: 1px solid #e0e0e0;
+            margin-bottom: 30px;
+        }
+
+        #result h2 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+
+        .status {
+            padding: 15px;
+            border-radius: var(--border-radius);
+            color: var(--light-text);
+            font-size: 1.5em;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+        .status-safe { background-color: var(--success-bg); }
+        .status-unsafe { background-color: var(--error-bg); }
+
+        #status-details {
+            list-style-type: none;
+            padding: 0;
+            margin-bottom: 20px;
+        }
+        #status-details li {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+        }
+        #status-details li:last-child { border-bottom: none; }
+        .status-detail-safe { font-weight: bold; color: var(--success-bg); }
+        .status-detail-unsafe { font-weight: bold; color: var(--error-bg); }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .result-item:last-of-type { border-bottom: none; }
+        .result-item strong { font-size: 1.3em; color: var(--secondary-color); }
+
+        .formula-box {
+            margin-top: 25px;
+            background-color: #e8f0fe;
+            padding: 15px;
+            border-radius: 4px;
+            border: 1px solid #d3e3fd;
+        }
+        .formula-box h4 {
+            margin: 0 0 10px 0;
+            font-family: 'Inter', sans-serif;
+            color: var(--primary-color);
+        }
+        #formula-container { text-align: center; font-size: 0.95em; }
+
+        .hidden { display: none; }
+        #placeholder {
+            text-align: center;
+            color: #999;
+            padding: 50px 0;
+        }
+        
+        .theory-image-container {
+            text-align: center;
+            margin: 20px 0 30px 0;
+        }
+        .theory-image-container img {
+            max-width: 700px;
+            width: 100%;
+            height: auto;
+            border-radius: var(--border-radius);
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--border-color);
+        }
+
+        /* Theory & Reference Section */
+        .theory-section {
+            background-color: #ffffff;
+            padding: 25px;
+            border-radius: var(--border-radius);
+            border: 1px solid var(--border-color);
+            margin-top: 20px;
+        }
+        .theory-section h2 {
+            color: var(--primary-color);
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .theory-section h3 {
+            color: var(--secondary-color);
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 5px;
+            margin-top: 25px;
+        }
+        .theory-section h4 {
+            color: #333;
+            margin-top: 20px;
+        }
+        .theory-section p, .theory-section ul {
+            color: #444;
+            text-align: justify;
+        }
+        .theory-section ul {
+            padding-left: 20px;
+            margin-bottom: 15px;
+        }
+        .theory-section .formula-display {
+            background-color: #f5f7fa;
+            padding: 15px;
+            margin: 15px 0;
+            border-left: 4px solid var(--primary-color);
+            overflow-x: auto;
+        }
+        .theory-section a {
+            color: var(--secondary-color);
+            text-decoration: none;
+        }
+        .theory-section a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 900px) {
+            .input-cards-container { flex-direction: column; }
+            header h1 { font-size: 1.6em; }
+            main { padding: 20px; }
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+            .header-text {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <img src="https://raw.githubusercontent.com/simcalc/simcalc.github.io/refs/heads/main/img/bor-pile-soil-bearing-capacity.webp" alt="Ilustrasi Bor Pile" class="header-image">
+                <div class="header-text">
+                    <h1>Modeling Daya Dukung & Verifikasi Plate</h1>
+                    <p class="subtitle">Verifikasi tekanan alat berat dan kekuatan steel plate.</p>
+                    <div class="default-info">
+                        <strong>Default Rig:</strong> BAUER BG 20 H (SN: 2418) | <strong>Base Carrier:</strong> BH 60
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <form id="bearingCalculatorForm" onsubmit="return false;">
+                <div class="input-cards-container">
+                    <!-- Card 1: Parameter Alat Berat -->
+                    <fieldset>
+                        <legend>1. Parameter Alat Berat (Rig)</legend>
+                        <div class="form-group"><label for="rigWeight">Berat Operasi Total ($W$)</label><div class="input-with-unit"><input type="number" id="rigWeight" value="56" step="0.1" required><span>ton</span></div></div>
+                        <div class="form-group"><label for="trackWidth">Lebar Track Shoe ($b_{\text{track}}$)</label><div class="input-with-unit"><input type="number" id="trackWidth" value="0.7" step="0.01" required><span>meter</span></div></div>
+                        <div class="form-group"><label for="trackLength">Panjang Kontak Track ($L_{\text{contact}}$)</label><div class="input-with-unit"><input type="number" id="trackLength" value="4.5" step="0.1" required><span>meter</span></div></div>
+                        <div class="form-group" id="loadDistributionGroup"><label for="loadDistribution">Faktor Distribusi Beban ($\eta$)</label><div class="input-with-unit"><input type="number" id="loadDistribution" value="1" step="0.1" required><span>(tanpa unit)</span></div><small>Untuk tanah tidak rata, nilainya < 1.</small></div>
+                    </fieldset>
+
+                    <!-- Card 2: Parameter Tanah & Desain -->
+                    <fieldset>
+                        <legend>2. Parameter Tanah & Material</legend>
+                        <div class="form-group"><label for="soilCapacity">Daya Dukung Tanah Izin ($q_{\text{allow,test}}$)</label><div class="input-with-unit"><input type="number" id="soilCapacity" value="25" step="1" required><span>kPa</span></div><small>Dari hasil uji lapangan.</small><span id="cbrInfoToggle" class="info-toggle-button">Info Konversi CBR</span><div id="cbrInfoContent" class="info-content hidden"><p><strong>Estimasi dari CBR:</strong></p><ul><li><strong>Tanah Lunak:</strong> CBR 2% - 4%</li><li><strong>Tanah Sedang:</strong> CBR 5% - 7%</li></ul><p>$q_{\text{allow}} (\text{kPa}) \approx 10 \times \text{CBR} (\%)$</p><small>Contoh: CBR 2.5% $\approx$ 25 kPa.</small></div></div>
+                        <div class="form-group"><label for="factorOfSafety">Faktor Keamanan (FoS)</label><div class="input-with-unit"><input type="number" id="factorOfSafety" value="1.5" step="0.1" required><span>(tanpa unit)</span></div></div>
+                        <div class="form-group"><label for="loadFactor">Faktor Beban ($\gamma_F$)</label><div class="input-with-unit"><input type="number" id="loadFactor" value="1.15" step="0.01" required><span>(tanpa unit)</span></div><small>Ref: EFFC/DFI Guide.</small></div>
+                        <div class="form-group hidden" id="steelYieldStrengthGroup"><label for="steelYieldStrength">Kuat Leleh Baja Plate ($f_y$)</label><div class="input-with-unit"><input type="number" id="steelYieldStrength" value="250" step="10"><span>MPa</span></div></div>
+                    </fieldset>
+                    
+                    <!-- Card 3: Opsi Tambahan -->
+                    <fieldset>
+                        <legend>3. Opsi Tambahan</legend>
+                        <div class="form-group checkbox-group"><input type="checkbox" id="useSteelPlate" checked><label for="useSteelPlate">Gunakan Steel Plate / Mat</label></div>
+                        <div id="steelPlateInput" class="hidden">
+                            <div class="form-group"><label for="plateLength">Panjang Plate ($L_{\text{plate}}$)</label><div class="input-with-unit"><input type="number" id="plateLength" value="6.0" step="0.1"><span>meter</span></div></div>
+                            <div class="form-group"><label for="plateWidth">Lebar Plate ($b_{\text{plate}}$)</label><div class="input-with-unit"><input type="number" id="plateWidth" value="2.0" step="0.1"><span>meter</span></div></div>
+                            <div class="form-group"><label for="plateThickness">Tebal Plate ($t_{\text{plate}}$)</label><div class="input-with-unit"><input type="number" id="plateThickness" value="25" step="1"><span>mm</span></div></div>
+                        </div>
+                    </fieldset>
+                </div>
+                <button type="button" id="calculateBtn">HITUNG VERIFIKASI</button>
+            </form>
+
+            <!-- Bagian Hasil -->
+            <div class="result-section">
+                <div id="result" class="hidden">
+                    <h2>Hasil Verifikasi</h2>
+                    <div id="status" class="status"></div>
+                    <ul id="status-details"></ul>
+                    <div class="result-item"><span title="Tekanan aktual yang diberikan alat ke tanah">Tekanan Aktual ke Tanah ($q_{\text{demand}}$)</span><strong id="qDemand"></strong></div>
+                    <div class="result-item"><span title="Kapasitas aman tanah berdasarkan FoS">Kapasitas Aman Tanah ($q_{\text{allowable}}$)</span><strong id="qAllowable"></strong></div>
+                    <div class="result-item hidden" id="bendingResultItem"><span title="Tegangan lentur aktual pada plate">Tegangan Lentur Plate ($\sigma_{\text{bending}}$)</span><strong id="bendingStress"></strong></div>
+                    <div class="result-item hidden" id="bendingAllowableResultItem"><span title="Tegangan lentur izin material plate">Tegangan Lentur Izin ($\sigma_{\text{allow}}$)</span><strong id="bendingAllowable"></strong></div>
+                    <div class="result-item hidden" id="shearResultItem"><span title="Tegangan geser pons aktual pada plate">Tegangan Geser Pons Plate ($\tau_{\text{punch}}$)</span><strong id="shearStress"></strong></div>
+                    <div class="result-item hidden" id="shearAllowableResultItem"><span title="Tegangan geser pons izin material plate">Tegangan Geser Izin ($\tau_{\text{allow}}$)</span><strong id="shearAllowable"></strong></div>
+                    <div class="formula-box"><h4>Formula yang Digunakan:</h4><div id="formula-container"></div></div>
+                </div>
+                <div id="placeholder"><svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" style="color: #b0bec5;"><path d="M2 21h20"/><path d="M5.23 21V8.41c0-1.1.9-2,2-2h9.54c1.1,0,2,.9,2,2V21"/><path d="M9 21v-5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v5"/><path d="M12 21v-8"/><path d="M18 10c-1.5-3-6-2.5-6-2.5s-4.5-.5-6,2.5"/><path d="M11 11h2"/></svg><p>Hasil perhitungan akan ditampilkan di sini.</p></div>
+            </div>
+
+            <!-- Theory Image -->
+            <div class="theory-image-container">
+                <img src="https://raw.githubusercontent.com/simcalc/simcalc.github.io/refs/heads/main/img/ground-bearing-pressure-under-rig-tracks.webp" alt="Ilustrasi Tekanan Tanah di Bawah Track">
+            </div>
+
+            <!-- Landasan Teori -->
+            <div class="theory-section">
+                <h2>Landasan Teori Perhitungan</h2>
+                <p>Analisis ini bertujuan untuk memastikan keamanan operasional alat berat di atas permukaan tanah, baik secara langsung maupun dengan menggunakan perantara <i>steel plate</i>. Metodologi perhitungan mengacu pada praktik umum rekayasa geoteknik dan struktural, terutama yang dijelaskan dalam panduan desain platform kerja oleh EFFC/DFI <b>[1]</b>. Verifikasi mencakup tiga aspek utama:</p>
+                
+                <h3>1. Verifikasi Daya Dukung Tanah (Ground Bearing Pressure)</h3>
+                <p>Tujuan verifikasi ini adalah untuk memastikan bahwa tekanan yang diberikan oleh alat berat ke tanah ($q_{\text{demand}}$) tidak melampaui kapasitas aman tanah ($q_{\text{allowable}}$). Kapasitas aman diperoleh dari data uji tanah ($q_{\text{allow,test}}$) yang direduksi dengan Faktor Keamanan (FoS) untuk mengantisipasi ketidakpastian.</p>
+                <div class="formula-display">
+                    $q_{\text{allowable}} = \frac{q_{\text{allow,test}}}{\text{FoS}}$
+                </div>
+                <p>Tekanan aktual yang terjadi dihitung dengan memperhitungkan berat operasi total alat ($W$), faktor beban ($\gamma_F$) untuk kondisi dinamis, dan area kontak. Untuk kasus tanpa plate, faktor distribusi beban ($\eta$) digunakan untuk memodelkan kontak yang tidak merata.</p>
+                <div class="formula-display">
+                    Tekanan Aktual (dengan plate): $q_{\text{demand}} = \frac{\gamma_F \times W \times g}{2 \times L_{\text{plate}} \times b_{\text{plate}}}$
+                </div>
+                <p><b>Syarat Aman: $q_{\text{demand}} \le q_{\text{allowable}}$</b></p>
+
+                <h3>2. Verifikasi Struktural Steel Plate</h3>
+                <p>Ketika steel plate digunakan, integritas struktural plate itu sendiri harus diverifikasi. Beban dari track alat berat dapat menyebabkan kegagalan lentur atau kegagalan geser pons pada plate.</p>
+
+                <h4>a. Verifikasi Lentur (Bending Stress)</h4>
+                <p>Model analisis mengasumsikan bagian plate yang menjorok keluar dari area kontak track (<i>cantilever</i>) menerima tekanan balik dari tanah ($q_{\text{demand}}$). Tekanan ini menyebabkan momen lentur pada plate. Tegangan lentur aktual ($\sigma_{\text{bending}}$) yang terjadi dihitung menggunakan formula untuk plat kantilever dengan beban merata <b>[2]</b> dan tidak boleh melebihi tegangan izin material ($\sigma_{\text{allowable}}$). Berdasarkan standar desain baja, tegangan izin lentur dapat diambil sebesar 75% dari kuat leleh baja ($f_y$) <b>[3]</b>.</p>
+                <div class="formula-display">
+                    Jarak Kantilever: $c = \frac{b_{\text{plate}} - b_{\text{track}}}{2}$ <br>
+                    Tegangan Lentur Aktual: $\sigma_{\text{bending}} = \frac{3 \times q_{\text{demand}} \times c^2}{t_{\text{plate}}^2}$ <br>
+                    Tegangan Lentur Izin: $\sigma_{\text{allowable}} = 0.75 \times f_y$
+                </div>
+                <p><b>Syarat Aman: $\sigma_{\text{bending}} \le \sigma_{\text{allowable}}$</b></p>
+                
+                <h4>b. Verifikasi Geser Pons (Punching Shear)</h4>
+                <p>Verifikasi ini memastikan track tidak "menusuk" atau "merobek" steel plate. Tegangan geser ($\tau_{\text{punch}}$) dihitung pada keliling perimeter kritis di sekitar area track. Gaya geser netto adalah beban dari track dikurangi gaya dukung tanah yang bekerja di bawah area track. Tegangan geser aktual tidak boleh melampaui tegangan geser izin ($\tau_{\text{allowable}}$), yang umumnya diambil sebesar 40% dari kuat leleh baja ($f_y$) <b>[3]</b>.</p>
+                <div class="formula-display">
+                    Gaya Pons Netto: $V = (\frac{\gamma_F \times W \times g}{2}) - (q_{\text{demand}} \times b_{\text{track}} \times L_{\text{contact}})$ <br>
+                    Tegangan Geser Aktual: $\tau_{\text{punch}} = \frac{V}{2 \times (L_{\text{contact}} + b_{\text{track}}) \times t_{\text{plate}}}$ <br>
+                    Tegangan Geser Izin: $\tau_{\text{allowable}} = 0.40 \times f_y$
+                </div>
+                <p><b>Syarat Aman: $\tau_{\text{punch}} \le \tau_{\text{allowable}}$</b></p>
+
+                <h3>Daftar Pustaka</h3>
+                <ol>
+                    <li>European Federation of Foundation Contractors (EFFC) & Deep Foundations Institute (DFI). (2020). <i>A Guide to Working Platform Design</i>. <br><a href="https://www.geoforum.com/gij/a-guide-to-working-platform-design-2020.pdf" target="_blank" rel="noopener noreferrer">https://www.geoforum.com/gij/a-guide-to-working-platform-design-2020.pdf</a></li>
+                    <li>Young, W. C., & Budynas, R. G. (2002). <i>Roark's Formulas for Stress and Strain (7th ed.)</i>. McGraw-Hill. (Formula umum untuk lentur plat). <br><a href="https://www.engr.psu.edu/ae/courses/ae458/references/roark_formulas_for_stress_and_strain.pdf" target="_blank" rel="noopener noreferrer">https://www.engr.psu.edu/ae/courses/ae458/references/roark_formulas_for_stress_and_strain.pdf</a></li>
+                    <li>American Institute of Steel Construction (AISC). (2016). <i>Specification for Structural Steel Buildings (ANSI/AISC 360-16)</i>. (Prinsip umum untuk tegangan izin lentur dan geser). <br><a href="https://www.aisc.org/products/publication/standards/ansiaisc-360-16-specification-for-structural-steel-buildings" target="_blank" rel="noopener noreferrer">https://www.aisc.org/products/publication/standards/ansiaisc-360-16-specification-for-structural-steel-buildings</a></li>
+                </ol>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Elemen Kontrol
+            const calculateBtn = document.getElementById('calculateBtn');
+            const useSteelPlateCheckbox = document.getElementById('useSteelPlate');
+            const cbrInfoToggle = document.getElementById('cbrInfoToggle');
+            const cbrInfoContent = document.getElementById('cbrInfoContent');
+
+            // Grup Input yang bisa disembunyikan
+            const steelPlateInputDiv = document.getElementById('steelPlateInput');
+            const loadDistributionGroup = document.getElementById('loadDistributionGroup');
+            const steelYieldStrengthGroup = document.getElementById('steelYieldStrengthGroup');
+
+            // Elemen Input
+            const rigWeightInput = document.getElementById('rigWeight');
+            const trackWidthInput = document.getElementById('trackWidth');
+            const trackLengthInput = document.getElementById('trackLength');
+            const loadDistributionInput = document.getElementById('loadDistribution');
+            const soilCapacityInput = document.getElementById('soilCapacity');
+            const factorOfSafetyInput = document.getElementById('factorOfSafety');
+            const loadFactorInput = document.getElementById('loadFactor');
+            const steelYieldStrengthInput = document.getElementById('steelYieldStrength');
+            const plateLengthInput = document.getElementById('plateLength');
+            const plateWidthInput = document.getElementById('plateWidth');
+            const plateThicknessInput = document.getElementById('plateThickness');
+
+            // Elemen Hasil
+            const resultDiv = document.getElementById('result');
+            const placeholderDiv = document.getElementById('placeholder');
+            const statusDiv = document.getElementById('status');
+            const statusDetailsUl = document.getElementById('status-details');
+            const qDemandSpan = document.getElementById('qDemand');
+            const qAllowableSpan = document.getElementById('qAllowable');
+            const bendingStressSpan = document.getElementById('bendingStress');
+            const bendingAllowableSpan = document.getElementById('bendingAllowable');
+            const shearStressSpan = document.getElementById('shearStress');
+            const shearAllowableSpan = document.getElementById('shearAllowable');
+            const formulaContainer = document.getElementById('formula-container');
+            
+            // Elemen Hasil (Item)
+            const resultItems = {
+                bending: document.getElementById('bendingResultItem'),
+                bendingAllowable: document.getElementById('bendingAllowableResultItem'),
+                shear: document.getElementById('shearResultItem'),
+                shearAllowable: document.getElementById('shearAllowableResultItem')
+            };
+
+            // Fungsi untuk mengatur visibilitas form berdasarkan status checkbox
+            function updateFormVisibility() {
+                const isChecked = useSteelPlateCheckbox.checked;
+                steelPlateInputDiv.classList.toggle('hidden', !isChecked);
+                loadDistributionGroup.classList.toggle('hidden', isChecked);
+                steelYieldStrengthGroup.classList.toggle('hidden', !isChecked);
+            }
+
+            // Event Listeners
+            cbrInfoToggle.addEventListener('click', () => {
+                cbrInfoContent.classList.toggle('hidden');
+                cbrInfoToggle.textContent = cbrInfoContent.classList.contains('hidden') ? 'Info Konversi CBR' : 'Tutup Info';
+            });
+
+            useSteelPlateCheckbox.addEventListener('change', updateFormVisibility);
+
+            calculateBtn.addEventListener('click', performCalculation);
+
+            // Panggil fungsi saat halaman pertama kali dimuat untuk mengatur state default
+            updateFormVisibility();
+
+            function validateInputs(inputs) {
+                for (const input of inputs) {
+                    const value = parseFloat(input.value);
+                    if (isNaN(value) || value <= 0) {
+                        const label = document.querySelector(`label[for='${input.id}']`).textContent;
+                        alert(`Harap isi field "${label}" dengan angka positif yang valid.`);
+                        return false;
+                    }
+                }
+                return true;
+            }
+
+            function performCalculation() {
+                // Kumpulkan input dasar
+                const baseInputs = [rigWeightInput, trackWidthInput, trackLengthInput, soilCapacityInput, factorOfSafetyInput, loadFactorInput];
+                // Kumpulkan input kondisional
+                let conditionalInputs = useSteelPlateCheckbox.checked ? 
+                    [steelYieldStrengthInput, plateLengthInput, plateWidthInput, plateThicknessInput] : 
+                    [loadDistributionInput];
+
+                if (!validateInputs([...baseInputs, ...conditionalInputs])) return;
+
+                // Ambil nilai
+                const rigWeight = parseFloat(rigWeightInput.value);
+                const trackWidth = parseFloat(trackWidthInput.value);
+                const trackLength = parseFloat(trackLengthInput.value);
+                const soilCapacity = parseFloat(soilCapacityInput.value);
+                const factorOfSafety = parseFloat(factorOfSafetyInput.value);
+                const loadFactor = parseFloat(loadFactorInput.value);
+
+                const g = 9.81;
+                const rigWeight_kN = rigWeight * g;
+                
+                let results = {};
+
+                if (useSteelPlateCheckbox.checked) {
+                    // Perhitungan dengan Steel Plate
+                    const fy = parseFloat(steelYieldStrengthInput.value); // MPa
+                    const plateLength = parseFloat(plateLengthInput.value); // m
+                    const plateWidth = parseFloat(plateWidthInput.value); // m
+                    const t = parseFloat(plateThicknessInput.value) / 1000; // convert mm to m
+
+                    // 1. Verifikasi Daya Dukung Tanah
+                    const plateArea = plateLength * plateWidth;
+                    const loadPerTrack_factored = (loadFactor * rigWeight_kN) / 2;
+                    results.q_demand = loadPerTrack_factored / plateArea;
+                    results.q_allowable = soilCapacity / factorOfSafety;
+                    results.bearingOk = results.q_demand <= results.q_allowable;
+
+                    // 2. Verifikasi Lentur (Bending)
+                    const cantilever = (plateWidth - trackWidth) / 2;
+                    if (cantilever <= 0) {
+                        results.sigma_bending = 0; // Tidak ada lentur jika plate tidak lebih lebar dari track
+                    } else {
+                        results.sigma_bending = (3 * results.q_demand * Math.pow(cantilever, 2)) / Math.pow(t, 2);
+                    }
+                    results.sigma_allowable = 0.75 * (fy * 1000); // 0.75 * fy (in kPa)
+                    results.bendingOk = results.sigma_bending <= results.sigma_allowable;
+
+                    // 3. Verifikasi Geser Pons (Punching Shear)
+                    const shearPerimeter = 2 * (trackLength + trackWidth);
+                    const shearArea = shearPerimeter * t;
+                    const punchingForce = loadPerTrack_factored - (results.q_demand * trackWidth * trackLength);
+                    results.tau_punch = punchingForce > 0 ? punchingForce / shearArea : 0;
+                    results.tau_allowable = 0.4 * (fy * 1000); // 0.4 * fy (in kPa)
+                    results.shearOk = results.tau_punch <= results.tau_allowable;
+                    
+                    results.isPlateCalculation = true;
+
+                } else {
+                    // Perhitungan Tanpa Plate
+                    const loadDistribution = parseFloat(loadDistributionInput.value);
+                    const contactArea = 2 * trackWidth * trackLength;
+                    results.q_demand = (loadFactor * rigWeight_kN) / (contactArea * loadDistribution);
+                    results.q_allowable = soilCapacity / factorOfSafety;
+                    results.bearingOk = results.q_demand <= results.q_allowable;
+                    results.isPlateCalculation = false;
+                }
+                
+                displayResults(results);
+            }
+
+            function displayResults(r) {
+                placeholderDiv.classList.add('hidden');
+                resultDiv.classList.remove('hidden');
+
+                // Tampilkan hasil utama
+                qDemandSpan.textContent = `${r.q_demand.toFixed(2)} kPa`;
+                qAllowableSpan.textContent = `${r.q_allowable.toFixed(2)} kPa`;
+                
+                // Reset/sembunyikan hasil plate
+                Object.values(resultItems).forEach(item => item.classList.add('hidden'));
+                statusDetailsUl.innerHTML = '';
+                
+                let formulaHTML = '<h4>Daya Dukung Tanah:</h4> $q_{\\text{demand}} = \\frac{\\gamma_F \\times W \\times g}{2 \\times b_{\\text{track}} \\times L_{\\text{contact}} \\times \\eta}$';
+                
+                let allOk;
+
+                if (r.isPlateCalculation) {
+                    allOk = r.bearingOk && r.bendingOk && r.shearOk;
+                    
+                    // Tampilkan hasil & item plate
+                    Object.values(resultItems).forEach(item => item.classList.remove('hidden'));
+                    bendingStressSpan.textContent = `${r.sigma_bending.toFixed(2)} kPa`;
+                    bendingAllowableSpan.textContent = `${r.sigma_allowable.toFixed(2)} kPa`;
+                    shearStressSpan.textContent = `${r.tau_punch.toFixed(2)} kPa`;
+                    shearAllowableSpan.textContent = `${r.tau_allowable.toFixed(2)} kPa`;
+
+                    // Detail status
+                    statusDetailsUl.innerHTML = `
+                        <li><span>1. Verifikasi Daya Dukung Tanah</span><span class="${r.bearingOk ? 'status-detail-safe' : 'status-detail-unsafe'}">${r.bearingOk ? 'AMAN' : 'TIDAK AMAN'}</span></li>
+                        <li><span>2. Verifikasi Lentur Plate</span><span class="${r.bendingOk ? 'status-detail-safe' : 'status-detail-unsafe'}">${r.bendingOk ? 'AMAN' : 'TIDAK AMAN'}</span></li>
+                        <li><span>3. Verifikasi Geser Pons Plate</span><span class="${r.shearOk ? 'status-detail-safe' : 'status-detail-unsafe'}">${r.shearOk ? 'AMAN' : 'TIDAK AMAN'}</span></li>`;
+                    
+                    // Formula
+                    formulaHTML = `
+                        <h4>Daya Dukung Tanah:</h4> $q_{\\text{demand}} = \\frac{\\gamma_F \\times W \\times g}{2 \\times L_{\\text{plate}} \\times b_{\\text{plate}}}$ <br><br>
+                        <h4>Lentur Plate:</h4> $\\sigma_{\\text{bending}} = \\frac{3 \\times q_{\\text{demand}} \\times c^2}{t^2}$, dimana $c = \\frac{b_{\\text{plate}} - b_{\\text{track}}}{2}$ <br><br>
+                        <h4>Geser Pons Plate:</h4> $\\tau_{\\text{punch}} = \\frac{P_{\\text{track}} - (q_{\\text{demand}} \\times A_{\\text{track}})}{A_{\\text{shear}}}$`;
+                } else {
+                    allOk = r.bearingOk;
+                    statusDetailsUl.innerHTML = `<li><span>1. Verifikasi Daya Dukung Tanah</span><span class="${r.bearingOk ? 'status-detail-safe' : 'status-detail-unsafe'}">${r.bearingOk ? 'AMAN' : 'TIDAK AMAN'}</span></li>`;
+                }
+
+                // Status keseluruhan
+                statusDiv.textContent = allOk ? 'KONDISI AMAN' : 'KONDISI TIDAK AMAN';
+                statusDiv.className = `status ${allOk ? 'status-safe' : 'status-unsafe'}`;
+                
+                formulaContainer.innerHTML = formulaHTML;
+                
+                if (window.MathJax) {
+                    MathJax.typesetPromise();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
+
+
+
+
+
+
