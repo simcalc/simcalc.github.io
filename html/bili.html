@@ -1,0 +1,2696 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MSRA Bor Pile Operation</title>
+
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="MSRA (Method Statement and Risk Assessment) komprehensif untuk operasi bor pile menggunakan rig BAUER BG 20 H, mencakup unloading, pergerakan, pengeboran, pengangkatan, pengisian BBM, dan maintenance.">
+    <meta name="keywords" content="MSRA, Bor Pile, BAUER BG 20 H, Prosedur Keselamatan, Risk Assessment, JSA, HIRADC, Geoteknik, Working Platform, Lifting Cage, Lifting Casing">
+    <meta name="author" content="Tim Keselamatan Proyek">
+    <link rel="canonical" href="https://simcalc.github.io/html/msra-bor-pile-operation.html" />
+
+    <!-- Open Graph / Facebook / WhatsApp Meta Tags -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://simcalc.github.io/html/msra-bor-pile-operation.html">
+    <meta property="og:title" content="MSRA Bor Pile Operation - BAUER BG 20 H">
+    <meta property="og:description" content="Prosedur dan penilaian risiko detail untuk operasi bor pile, dari unloading hingga maintenance.">
+    <meta property="og:image" content="https://raw.githubusercontent.com/simcalc/simcalc.github.io/refs/heads/main/img/Drilling-Rig-BG-20-H-BT-50.webp">
+
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://simcalc.github.io/html/msra-bor-pile-operation.html">
+    <meta name="twitter:title" content="MSRA Bor Pile Operation - BAUER BG 20 H">
+    <meta name="twitter:description" content="Prosedur dan penilaian risiko detail untuk operasi bor pile, dari unloading hingga maintenance.">
+    <meta name="twitter:image" content="https://raw.githubusercontent.com/simcalc/simcalc.github.io/refs/heads/main/img/Drilling-Rig-BG-20-H-BT-50.webp">
+
+    <style>
+        /* CSS Reset and Basic Setup */
+        :root {
+            --primary-color: #003366;
+            --secondary-color: #005a9c;
+            --accent-color: #f39c12;
+            --text-color: #333;
+            --bg-color: #f4f7f9;
+            --header-height: 70px;
+            /* REVIEW: Use a CSS variable for sidebar width for easier maintenance. */
+            --sidebar-width: 220px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: var(--header-height);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex; /* Flexbox for layout */
+        }
+
+        /* Main Layout */
+        .page-container {
+            display: flex;
+            width: 100%;
+        }
+
+        .main-content-area {
+            flex-grow: 1;
+            /* REVIEW: Use the new CSS variable. */
+            padding-left: var(--sidebar-width); 
+            transition: padding-left 0.3s ease-in-out;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 0 20px;
+            position: fixed;
+            top: 0;
+            /* REVIEW: Use the new CSS variable. */
+            left: var(--sidebar-width); 
+            width: calc(100% - var(--sidebar-width));
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: var(--header-height);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            transition: left 0.3s ease-in-out, width 0.3s ease-in-out;
+        }
+
+        header h1 {
+            font-size: 1.5em;
+            text-align: center;
+            flex-grow: 1;
+            margin: 0 1rem;
+        }
+        
+        .header-right-items {
+            display: flex;
+            align-items: center;
+        }
+        
+        .header-logo {
+            height: 50px;
+            max-height: calc(var(--header-height) - 20px);
+            margin-left: 15px;
+            border-radius: 5px;
+        }
+
+        /* --- Activity Sidebar --- */
+        /* REVIEW: Changed from <div> to <aside> for better semantics. */
+        .activity-sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            /* REVIEW: Use the new CSS variable. */
+            width: var(--sidebar-width);
+            height: 100vh;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px;
+            z-index: 1002;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.2);
+            overflow-y: auto;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .activity-sidebar h2 {
+            color: white;
+            border-bottom: 2px solid var(--accent-color);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            font-size: 1.4em;
+        }
+
+        .sidebar-btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 10px;
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            text-align: left;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .sidebar-btn:hover {
+            background-color: #007acc;
+            transform: translateX(5px);
+        }
+
+        /* REVIEW: Added focus-visible state for better keyboard navigation accessibility. */
+        .sidebar-btn:focus-visible {
+            outline: 2px solid var(--accent-color);
+            outline-offset: 2px;
+        }
+
+        .sidebar-btn.active {
+            background-color: var(--accent-color);
+            font-weight: bold;
+        }
+        
+        nav ul {
+            list-style: none;
+            display: flex;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            padding: 15px;
+            display: block;
+            transition: background-color 0.3s;
+        }
+
+        nav ul li a:hover, nav ul li a.active {
+            background-color: var(--secondary-color);
+        }
+
+        main {
+            padding-top: var(--header-height);
+        }
+        
+        .activity-content {
+            display: none; /* Hide all activities by default */
+        }
+        .activity-content.active {
+            display: block; /* Show only the active one */
+        }
+
+        section {
+            background-color: white;
+            margin-bottom: 25px;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        h2 {
+            color: var(--primary-color);
+            border-bottom: 3px solid var(--accent-color);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+        
+        h3 {
+            color: var(--secondary-color);
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-size: 1.4em;
+        }
+
+        .activity-description {
+            font-style: italic;
+            color: #555;
+            background-color: #e9eff3;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 25px;
+            border-left: 5px solid var(--secondary-color);
+        }
+
+        .action-buttons {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1001;
+        }
+        
+        .print-btn {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            transition: background-color 0.3s;
+        }
+
+        .print-btn:hover {
+            background-color: #e67e22;
+        }
+        
+        .link-btn {
+            display: inline-block;
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 8px 15px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 10px;
+            font-size: 0.9em;
+            transition: background-color 0.3s;
+        }
+        .link-btn:hover {
+            background-color: var(--primary-color);
+        }
+
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            z-index: 1003;	
+            border: none;
+            background: transparent;
+            padding: 5px;
+        }
+
+        .menu-toggle .bar {
+            height: 3px;
+            width: 25px;
+            background-color: white;
+            margin: 4px 0;
+            transition: 0.4s;
+        }
+        
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1001; /* Below sidebar, above main content */
+        }
+
+
+        .risk-table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        th {
+            background-color: var(--primary-color);
+            color: white;
+            font-size: 0.9em;
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: var(--bg-color);
+        }
+
+        .risk-level {
+            font-weight: bold;
+            text-align: center;
+            color: white;
+            border-radius: 4px;
+            padding: 5px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .risk-level:hover {
+            transform: scale(1.1);
+        }
+        .risk-high { background-color: #e74c3c; } /* Red */
+        .risk-extreme { background-color: #c0392b; } /* Dark Red */
+        .risk-medium { background-color: #f39c12; } /* Orange */
+        .risk-low { background-color: #27ae60; } /* Green */
+        
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+            padding: 10px;
+            border: 1px solid #eee;
+            border-radius: 5px;
+            transition: background-color 0.2s;
+            cursor: pointer;
+        }
+        .checklist-item:hover {
+            background-color: #f9f9f9;
+        }
+        .checklist-box {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--primary-color);
+            border-radius: 3px;
+            margin-right: 15px;
+            flex-shrink: 0;
+            cursor: pointer;
+            position: relative;
+            top: -1px;
+        }
+        .checklist-box:checked {
+            background-color: var(--primary-color);
+        }
+        .checklist-box:checked::after {
+            content: '✔';
+            font-size: 14px;
+            color: white;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+        
+        ul, ol {
+            padding-left: 20px;
+        }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.6);
+            z-index: 2000;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            z-index: 2001;
+            width: auto;	
+            max-width: 95vw;	
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+        .modal-header h3 {
+            margin: 0;
+        }
+        .close-btn {
+            border: none;
+            background: none;
+            font-size: 2em;
+            font-weight: bold;
+            cursor: pointer;
+            color: #888;
+            padding: 0 10px;
+        }
+        .risk-matrix-table {
+            border-collapse: collapse;
+        }
+        .risk-matrix-table th, .risk-matrix-table td {
+            border: 1px solid #ccc;
+            width: 100px;
+            height: 60px;
+            text-align: center;
+            vertical-align: middle;
+            padding: 5px;
+        }
+        .risk-matrix-table td[data-value] {
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        .risk-matrix-table td[data-value]:hover {
+            transform: scale(1.1);
+        }
+        .matrix-header { background-color: white; font-weight: bold; color: #333; }
+        .matrix-header sub { font-size: 0.8em; font-weight: normal; }
+        .m-low { background-color: #2ecc71; color: #333; }
+        .m-medium { background-color: #f1c40f; color: #333; }
+        .m-high { background-color: #e67e22; color: white; }
+        .m-extreme { background-color: #e74c3c; color: white; }
+
+        .add-row-btn {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            margin-top: 10px;
+            transition: background-color 0.3s;
+        }
+        .add-row-btn:hover {
+            background-color: var(--primary-color);
+        }
+
+        /* REVIEW: Added focus-visible states for better accessibility. */
+        .print-btn:focus-visible,
+        .link-btn:focus-visible,
+        .add-row-btn:focus-visible,
+        .close-btn:focus-visible {
+            outline: 2px solid var(--accent-color);
+            outline-offset: 2px;
+        }
+
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .activity-sidebar {
+                transform: translateX(-100%);
+                width: 250px;
+            }
+             .activity-sidebar.active {
+                transform: translateX(0);
+            }
+            .main-content-area, header {
+                padding-left: 0;
+                left: 0;
+                width: 100%;
+            }
+            .menu-toggle {
+                display: flex;
+            }
+             .header-right-items {
+                display: none; /* Hide top nav and logo on mobile */
+            }
+        }
+        
+        @media (max-width: 768px) { /* Tablet size */
+             .modal {
+                padding: 15px;
+            }
+             .risk-matrix-table th, .risk-matrix-table td {
+                width: 80px;
+                height: 50px;
+                font-size: 0.9em;
+             }
+        }
+        
+         @media (max-width: 576px) { /* Mobile size */
+            header h1 {
+                font-size: 1.1em;
+            }
+             .modal-header h3 {
+                font-size: 1.1em;
+            }
+             .risk-matrix-table th, .risk-matrix-table td {
+                width: 15vw;
+                height: 12vw;
+                min-width: 45px;
+                min-height: 40px;
+                font-size: 0.8em;
+                padding: 2px;
+             }
+             .risk-matrix-table .matrix-header sub {
+                display: none;
+            }
+        }
+        
+        /* Print Styles */
+        @media print {
+            body {
+                display: block;
+                background-color: white;
+                color: black;
+            }
+             header, .activity-sidebar, .sidebar-overlay, .action-buttons, .menu-toggle, .modal-overlay, .modal, .add-row-btn, .activity-description, .link-btn {
+                display: none !important;
+            }
+             .main-content-area {
+                padding-left: 0;
+            }
+            main {
+                padding-top: 0;
+            }
+            .container {
+                padding: 0;
+                max-width: 100%;
+            }
+            .activity-content {
+                display: none !important;
+            }
+            .activity-content.active {
+                display: block !important;
+            }
+            section {
+                box-shadow: none;
+                border: 1px solid #ccc;
+                margin-bottom: 20px;
+                padding: 15px;
+                page-break-inside: avoid;
+            }
+            h2 {
+                font-size: 16pt;
+                color: black;
+                border-color: black;
+            }
+            h3 {
+                font-size: 14pt;
+                color: black;
+            }
+            table, th, td {
+                border: 1px solid #666;
+                font-size: 9pt;
+                padding: 6px;
+            }
+            th {
+                background-color: #ddd !important;
+                color: black !important;
+            }
+            tbody tr:nth-child(even) {
+                background-color: #f2f2f2 !important;
+            }
+            .risk-level {
+                -webkit-print-color-adjust: exact;
+                color-adjust: exact;
+                color: black !important;
+                border: 1px solid black;
+            }
+            .risk-extreme { background-color: #777 !important; }
+            .risk-high { background-color: #aaa !important; }
+            .risk-medium { background-color: #ccc !important; }
+            .risk-low { background-color: #eee !important; }
+
+            .checklist-box {
+                border: 2px solid black;
+            }
+            .checklist-box:checked {
+                background-color: #ccc !important;
+            }
+            .checklist-box:checked::after {
+                color: black;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Activity Sidebar -->
+    <!-- REVIEW: Changed to <aside> for semantic HTML -->
+    <aside class="activity-sidebar" id="activity-sidebar">
+        <h2>Aktivitas Pekerjaan</h2>
+        <button class="sidebar-btn active" data-target="activity-unloading">Unloading Rig</button>
+        <button class="sidebar-btn" data-target="activity-movement">Pergerakan Rig</button>
+        <button class="sidebar-btn" data-target="activity-drilling">Pengeboran</button>
+        <button class="sidebar-btn" data-target="activity-lifting">Lifting Cage</button>
+        <button class="sidebar-btn" data-target="activity-casing">Lifting Casing</button>
+        <button class="sidebar-btn" data-target="activity-refueling">Pengisian BBM</button>
+        <button class="sidebar-btn" data-target="activity-maintenance">Maintenance</button>
+    </aside>
+    
+    <!-- Mobile menu overlay -->
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+
+    <!-- Main Content Area -->
+    <div class="main-content-area">
+        <header>
+            <!-- REVIEW: Changed to <button> for accessibility and added ARIA attributes -->
+            <button class="menu-toggle" id="menu-toggle" aria-controls="activity-sidebar" aria-expanded="false" aria-label="Toggle navigation menu">
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+            </button>
+            <h1>MSRA Bor Pile Operation</h1>
+            <div class="header-right-items">
+                <nav id="navbar">
+                    <ul id="nav-menu">
+                        <!-- Links will be dynamically updated by JS -->
+                    </ul>
+                </nav>
+                <img src="https://raw.githubusercontent.com/simcalc/simcalc.github.io/refs/heads/main/img/Drilling-Rig-BG-20-H-BT-50.webp" alt="BAUER BG 20 H Rig" class="header-logo">
+            </div>
+        </header>
+
+        <main>
+            <div class="container">
+                <div class="action-buttons">
+                    <button class="print-btn" onclick="window.print()">Cetak / Simpan ke PDF</button>
+                </div>
+
+                <!-- ======================================================= -->
+                <!-- ACTIVITY 1: UNLOADING RIG                               -->
+                <!-- ======================================================= -->
+                <div id="activity-unloading" class="activity-content active">
+                    <p class="activity-description">
+                        Aktivitas ini mencakup seluruh proses penurunan rig Bauer BG 20 H dari kendaraan pengangkut (lowboy) ke area kerja yang telah disiapkan. Prosedur ini krusial untuk memastikan rig ditempatkan dengan aman tanpa merusak alat atau membahayakan personel.
+                    </p>
+                    <section id="prasyarat-unloading">
+                        <h2>A) Prasyarat Sebelum Unloading</h2>
+                          <h3>1. Verifikasi Dokumen & Izin Kerja</h3>
+                          <ul>
+                              <li><strong>Surat Izin Kerja Aman (SIKA) / Permit to Work (PTW):</strong> Telah diterbitkan dan disetujui oleh otoritas site yang berwenang.</li>
+                              <li><strong>Job Safety Analysis (JSA) / HIRADC:</strong> Spesifik untuk aktivitas unloading, telah disosialisasikan, dan ditandatangani oleh seluruh tim.</li>
+                              <li><strong>Sertifikasi Personel:</strong> Operator rig memiliki SIO yang valid. Rigger/Banksman memiliki sertifikat kompetensi.</li>
+                              <li><strong>Inspeksi Alat:</strong> Dokumen Pemeriksaan dan Pengecekan Harian (Pre-Start check) untuk unit rig dan lowboy lengkap dan menyatakan kondisi layak pakai.</li>
+                          </ul>
+                          <h3>2. Penyiapan Area Kerja</h3>
+                          <ul>
+                              <li><strong>Pemilihan Lokasi:</strong> Area penurunan harus rata, stabil, dan padat untuk menahan beban rig (sekitar 60-70 ton) tanpa amblas.</li>
+                              <li><strong>Manajemen Jarak Aman (Clearance):</strong> Area harus bebas dari penghalang atas seperti kabel listrik (overhead line). Jarak aman minimum harus ditaati.</li>
+                              <li><strong>Barikade & Rambu:</strong> Pasang barikade fisik untuk membuat zona eksklusi (exclusion zone). Hanya personel yang terlibat langsung yang boleh masuk.</li>
+                              <li><strong>Kondisi Cuaca:</strong> Dilarang melakukan pekerjaan saat hujan lebat, angin kencang, atau jarak pandang terbatas.</li>
+                          </ul>
+                          <h3>3. Kesiapan Tim & Peralatan</h3>
+                          <ul>
+                              <li><strong>Toolbox Meeting (P5M):</strong> Lakukan briefing keselamatan sebelum pekerjaan. Bahas JSA, metode kerja, peran, sinyal komunikasi, dan prosedur darurat.</li>
+                              <li><strong>Alat Pelindung Diri (APD):</strong> Seluruh personel wajib menggunakan helm, sepatu keselamatan, rompi visibilitas tinggi, dan sarung tangan.</li>
+                              <li><strong>Komunikasi:</strong> Siapkan radio komunikasi dua arah yang berfungsi baik dan tetapkan sinyal tangan sebagai cadangan.</li>
+                              <li><strong>Peralatan Darurat:</strong> Pastikan APAR dan kotak P3K mudah dijangkau.</li>
+                          </ul>
+                    </section>
+                    <section id="metode-unloading">
+                        <h2>B) Metode Kerja Unloading (Step-by-Step)</h2>
+                        <ol>
+                              <li><strong>Manajemen Lalu Lintas:</strong> Sebelum lowboy memasuki area, pasang rambu-rambu keselamatan lalu lintas yang relevan (misalnya "Pekerjaan Konstruksi di Depan", "Kurangi Kecepatan"). Buat exclusion zone yang jelas menggunakan pagar keras dan diperkuat dengan <em>traffic cone</em>.</li>
+                              <li><strong>Posisi Kendaraan:</strong> Pengemudi lowboy memposisikan truk di area yang telah ditentukan, diarahkan oleh banksman.</li>
+                              <li><strong>Stabilisasi Lowboy:</strong> Aktifkan rem parkir dan pasang ganjal roda (wheel chocks).</li>
+                              <li><strong>Persiapan Ramp:</strong> Turunkan ramp, pastikan terkunci dengan aman dan berada pada sudut yang tidak terlalu curam. Permukaan ramp harus bersih.</li>
+                              <li><strong>Inspeksi Akhir:</strong> Operator rig naik ke unit dan melakukan inspeksi fungsi kontrol. Banksman memposisikan diri di lokasi yang aman dan terlihat jelas.</li>
+                              <li><strong>Proses Penurunan:</strong> Atas instruksi HANYA dari satu banksman, operator menggerakkan rig secara sangat perlahan menuruni ramp. Banksman fokus memandu kelurusan track.</li>
+                              <li><strong>Selesai Penurunan:</strong> Setelah rig sepenuhnya di tanah, parkirkan di lokasi aman yang telah ditentukan.</li>
+                              <li><strong>Pengamanan Area:</strong> Naikkan kembali ramp lowboy. Truk lowboy meninggalkan area kerja. Barikade dan rambu lalu lintas dilepas setelah situasi benar-benar aman.</li>
+                           </ol>
+                    </section>
+                    <section id="risk-assessment-unloading">
+                        <h2>C) Risk Assessment - Unloading</h2>
+                        <p>Dokumen ini menggabungkan analisis risiko awal dengan risk register teknis. Klik pada angka risiko untuk mengubah nilainya.</p>
+                        <div class="risk-table-container">
+                             <table class="mainRiskTable" id="mainRiskTable-unloading">
+                                 <thead>
+                                     <tr>
+                                         <th>No</th>
+                                         <th>Bahaya & Skenario Rinci</th>
+                                         <th>Potensi Konsekuensi Utama</th>
+                                         <th>Tindakan Pengendalian</th>
+                                         <th>Risiko Awal (R)</th>
+                                         <th>Risiko Residual (R)</th>
+                                     </tr>
+                                 </thead>
+                                 <tbody class="riskTableBody" id="riskTableBody-unloading">
+                                     <tr>
+                                         <td>1</td>
+                                         <td><strong>Platform Kerja Gagal</strong> (Tanah tidak stabil/amblas)</td>
+                                         <td>Trailer/rig terguling (tipping). Kerusakan masif & fatal.</td>
+                                         <td>Wajibkan WPC (Working Platform Certificate). Gunakan steel plates atau crane mats. Hentikan kerja & inspeksi ulang pasca hujan.</td>
+                                         <td><div class="risk-level" data-editable="true" tabindex="0" role="button">15</div></td>
+                                         <td><div class="risk-level" data-editable="true" tabindex="0" role="button">6</div></td>
+                                     </tr>
+                                     <tr>
+                                         <td>2</td>
+                                         <td><strong>Interaksi Alat-Manusia</strong> (Personel tertabrak/terjepit)</td>
+                                         <td>Cedera serius, crush injury, fatal.</td>
+                                         <td>Buat zona eksklusi berpagar keras, diperjelas dengan <em>traffic cone</em> dan rambu peringatan lalu lintas. Tunjuk 1 banksman dengan radio sebagai satu-satunya pemberi komando.</td>
+                                         <td><div class="risk-level" data-editable="true" tabindex="0" role="button">15</div></td>
+                                         <td><div class="risk-level" data-editable="true" tabindex="0" role="button">6</div></td>
+                                     </tr>
+                                     <tr>
+                                         <td>3</td>
+                                         <td><strong>Halangan Atas / overhead line</strong> (Mast menyentuh kabel listrik)</td>
+                                         <td>Sengatan listrik (electrocution), fatal.</td>
+                                         <td>Survei utilitas. Terapkan panduan HSE GS6 (pasang goalposts). Terbitkan PTW khusus pekerjaan dekat overhead line.</td>
+                                         <td><div class="risk-level" data-editable="true" tabindex="0" role="button">10</div></td>
+                                         <td><div class="risk-level" data-editable="true" tabindex="0" role="button">4</div></td>
+                                     </tr>
+                                     <tr>
+                                         <td>4</td>
+                                         <td><strong>Kegagalan Ramp atau Selip</strong> (Ramp patah/licin)</td>
+                                         <td>Rig jatuh dari trailer, terguling, fatal bagi operator.</td>
+                                         <td>Inspeksi visual ramp. Pastikan rating kapasitas > berat rig. Dilarang unloading saat hujan deras. Opsi winch-assist.</td>
+                                         <td><div class="risk-level" data-editable="true" tabindex="0" role="button">15</div></td>
+                                         <td><div class="risk-level" data-editable="true" tabindex="0" role="button">6</div></td>
+                                     </tr>
+                                     <tr>
+                                         <td>5</td>
+                                         <td><strong>Pelepasan Tie-Down Salah</strong> (Lecutan rantai/energi tersimpan)</td>
+                                         <td>"Chain whip", crush injury.</td>
+                                         <td>Ikuti prosedur pelepasan (release plan) yang aman dan simetris. Personel berdiri di posisi aman (tidak di jalur rekoil).</td>
+                                         <td><div class="risk-level" data-editable="true" tabindex="0" role="button">12</div></td>
+                                         <td><div class="risk-level" data-editable="true" tabindex="0" role="button">5</div></td>
+                                     </tr>
+                                     <tr>
+                                         <td>6</td>
+                                         <td><strong>Trailer Tidak Stabil</strong> (Lowboy bergerak saat unloading)</td>
+                                         <td>Rig jatuh atau terguling.</td>
+                                         <td>Wajib pasang ganjal roda (wheel chocks). Pastikan landing gear menapak sempurna di tanah rata. Konfirmasi verbal driver-banksman.</td>
+                                         <td><div class="risk-level" data-editable="true" tabindex="0" role="button">10</div></td>
+                                         <td><div class="risk-level" data-editable="true" tabindex="0" role="button">4</div></td>
+                                     </tr>
+                                     <tr>
+                                         <td>7</td>
+                                         <td><strong>Kegagalan Komunikasi</strong> (Perintah salah, sinyal tidak terlihat)</td>
+                                         <td>Pergerakan rig yang tidak diinginkan, tabrakan, near-miss.</td>
+                                         <td>Gunakan radio UHF yang dites. 1 banksman sebagai satu-satunya komando. Prosedur Stop-Look-Communicate.</td>
+                                         <td><div class="risk-level" data-editable="true" tabindex="0" role="button">9</div></td>
+                                         <td><div class="risk-level" data-editable="true" tabindex="0" role="button">4</div></td>
+                                     </tr>
+                                     <tr>
+                                         <td>8</td>
+                                         <td><strong>Visibilitas Buruk</strong> (Malam, debu, hujan)</td>
+                                         <td>Salah manuver, menabrak orang atau objek.</td>
+                                         <td>Sediakan menara lampu. Lakukan penyiraman debu. Wajibkan APD Hi-Viz Kelas 3.</td>
+                                         <td><div class="risk-level" data-editable="true" tabindex="0" role="button">12</div></td>
+                                         <td><div class="risk-level" data-editable="true" tabindex="0" role="button">5</div></td>
+                                     </tr>
+                                     <tr>
+                                         <td>9</td>
+                                         <td><strong>Kegagalan Sistem Alat</strong> (Rem, hidrolik gagal)</td>
+                                         <td>Runaway rig (rig meluncur tanpa kendali).</td>
+                                         <td>Lakukan tes fungsi rem & E-stop sebelum rilis. Siapkan wheel-stops di kaki ramp sebagai barikade darurat.</td>
+                                         <td><div class="risk-level" data-editable="true" tabindex="0" role="button">10</div></td>
+                                         <td><div class="risk-level" data-editable="true" tabindex="0" role="button">4</div></td>
+                                     </tr>
+                                     <tr>
+                                         <td>10</td>
+                                         <td><strong>Pusat Gravitasi (COG) Bergeser</strong> (Attachment tidak aman)</td>
+                                         <td>Kehilangan kontrol, terguling (tipping).</td>
+                                         <td>Verifikasi semua attachment & mast terkunci sesuai konfigurasi transport. Review data berat & dimensi.</td>
+                                         <td><div class="risk-level" data-editable="true" tabindex="0" role="button">10</div></td>
+                                         <td><div class="risk-level" data-editable="true" tabindex="0" role="button">4</div></td>
+                                     </tr>
+                                     <tr>
+                                         <td>11</td>
+                                         <td><strong>Titik Jepit & Remuk</strong> (Saat lepas gooseneck/penyangga ramp)</td>
+                                         <td>Cedera serius pada tangan atau kaki.</td>
+                                         <td>Ciptakan zona steril. Gunakan alat bantu (tuas), hindari menempatkan tangan secara langsung.</td>
+                                         <td><div class="risk-level" data-editable="true" tabindex="0" role="button">12</div></td>
+                                         <td><div class="risk-level" data-editable="true" tabindex="0" role="button">6</div></td>
+                                     </tr>
+                                     <tr>
+                                         <td>12</td>
+                                         <td><strong>Tumpahan & Kebocoran</strong> (BBM atau oli hidrolik bocor)</td>
+                                         <td>Risiko kebakaran, pencemaran lingkungan.</td>
+                                         <td>Siapkan spill-kit. Jika bocor, matikan mesin segera. Lakukan inspeksi visual pada selang hidrolik.</td>
+                                         <td><div class="risk-level" data-editable="true" tabindex="0" role="button">8</div></td>
+                                         <td><div class="risk-level" data-editable="true" tabindex="0" role="button">4</div></td>
+                                     </tr>
+                                     <tr>
+                                         <td>13</td>
+                                         <td><strong>Pihak Ketiga Mendekat</strong> (Pekerja lain/publik masuk area bahaya)</td>
+                                         <td>Mengekspos orang yang tidak terlatih pada bahaya.</td>
+                                         <td>Gunakan pagar keras yang dilengkapi rambu "DILARANG MASUK - AREA KERJA ALAT BERAT". Tempatkan penjaga di akses masuk. Jadwalkan unloading pada jam sepi.</td>
+                                         <td><div class="risk-level" data-editable="true" tabindex="0" role="button">12</div></td>
+                                         <td><div class="risk-level" data-editable="true" tabindex="0" role="button">5</div></td>
+                                     </tr>
+                                 </tbody>
+                             </table>
+                        </div>
+                         <button class="add-row-btn" data-target-table="riskTableBody-unloading">Tambah Baris Baru</button>
+                    </section>
+                    <section id="peran-unloading">
+                        <h2>D) Peran & Verifikasi - Unloading</h2>
+                        <div class="risk-table-container">
+                             <table>
+                                 <thead>
+                                     <tr>
+                                         <th>Peran</th>
+                                         <th>Tugas & Tanggung Jawab Utama</th>
+                                         <th>Verifikasi yang Dilakukan</th>
+                                     </tr>
+                                 </thead>
+                                 <tbody>
+                                     <tr>
+                                         <td><strong>Project Manager</strong></td>
+                                         <td>Memastikan ketersediaan sumber daya (personel, alat, waktu). Memberikan briefing awal yang menjelaskan metode kerja, scope, dan target keselamatan secara keseluruhan. Bertanggung jawab atas keberhasilan proyek, termasuk aspek K3.</td>
+                                         <td>Menyetujui JSA/HIRADC final. Memastikan semua izin prinsip dari klien telah diamankan. Melakukan review performa K3.</td>
+                                     </tr>
+                                      <tr>
+                                         <td><strong>Pengawas Lapangan (Site Supervisor)</strong></td>
+                                         <td>Memastikan semua prasyarat terpenuhi. Memimpin Toolbox Meeting. Memberi otorisasi final untuk memulai pekerjaan dan mengawasi proses.</td>
+                                         <td>Memeriksa dan menandatangani Izin Kerja & JSA. Memastikan area kerja sudah disiapkan dengan benar.</td>
+                                     </tr>
+                                     <tr>
+                                         <td><strong>Petugas K3 (Safety Officer)</strong></td>
+                                         <td>Memberikan masukan K3. Memastikan semua prosedur diikuti. Memiliki wewenang menghentikan pekerjaan (Stop Work Authority) jika tidak aman.</td>
+                                         <td>Mengaudit pelaksanaan Toolbox Meeting. Memeriksa kelengkapan APD dan pemasangan barikade.</td>
+                                     </tr>
+                                     <tr>
+                                         <td><strong>Operator Rig (Alat Berat)</strong></td>
+                                         <td>Melakukan Pemeriksaan dan Pengecekan Harian (Pre-Start check). Mengoperasikan alat HANYA berdasarkan instruksi dari banksman. Bertanggung jawab atas kendali mekanis alat.</td>
+                                         <td>Menunjukkan SIO yang valid. Mengkonfirmasi pemahaman atas sinyal yang akan digunakan.</td>
+                                     </tr>
+                                     <tr>
+                                         <td><strong>Banksman / Rigger (Pemandu)</strong></td>
+                                         <td>Menjadi "mata dan telinga" operator. Memberikan sinyal yang jelas dan standar. Mengawasi zona eksklusi.</td>
+                                         <td>Mengkonfirmasi posisi aman dan jalur pandang yang jelas sebelum memulai. Memastikan radio berfungsi.</td>
+                                     </tr>
+                                 </tbody>
+                             </table>
+                        </div>
+                    </section>
+                    <section id="checklist-unloading">
+                        <h2>E) Checklist Pra-Start - Unloading</h2>
+                        <h3>Dokumen & Perizinan</h3>
+                        <label class="checklist-item">
+                            <input type="checkbox" class="checklist-box">
+                            <span>Izin Kerja (PTW) sudah disetujui.</span>
+                        </label>
+                         <label class="checklist-item">
+                             <input type="checkbox" class="checklist-box">
+                             <span>JSA sudah dibahas dan dipahami oleh semua tim.</span>
+                         </label>
+                         <label class="checklist-item">
+                             <input type="checkbox" class="checklist-box">
+                             <span>SIO Operator dan Sertifikat Rigger valid dan sesuai.</span>
+                         </label>
+                         <h3>Area Kerja</h3>
+                         <label class="checklist-item">
+                             <input type="checkbox" class="checklist-box">
+                             <span>Lokasi penurunan rata, padat, dan stabil.</span>
+                         </label>
+                         <label class="checklist-item">
+                             <input type="checkbox" class="checklist-box">
+                             <span>Jarak aman dari overhead line terpenuhi.</span>
+                         </label>
+                         <label class="checklist-item">
+                             <input type="checkbox" class="checklist-box">
+                             <span>Zona eksklusi dengan barikade fisik sudah terpasang.</span>
+                         </label>
+                          <h3>Peralatan</h3>
+                           <label class="checklist-item">
+                               <input type="checkbox" class="checklist-box">
+                               <span>Pemeriksaan dan Pengecekan Harian (Pre-Start check) unit Rig Bauer BG 20 H sudah dilakukan.</span>
+                          </label>
+                         <label class="checklist-item">
+                             <input type="checkbox" class="checklist-box">
+                             <span>Roda lowboy sudah diganjal (chocked).</span>
+                         </label>
+                         <label class="checklist-item">
+                             <input type="checkbox" class="checklist-box">
+                             <span>Ramp lowboy sudah diinspeksi (tidak ada retak, pin aman).</span>
+                         </label>
+                         <h3>Personel & Komunikasi</h3>
+                         <label class="checklist-item">
+                             <input type="checkbox" class="checklist-box">
+                             <span>Semua anggota tim hadir saat Toolbox Meeting.</span>
+                         </label>
+                         <label class="checklist-item">
+                             <input type="checkbox" class="checklist-box">
+                             <span>APD lengkap dan dipakai dengan benar.</span>
+                         </label>
+                         <label class="checklist-item">
+                             <input type="checkbox" class="checklist-box">
+                             <span>Radio komunikasi sudah dites dan berfungsi baik.</span>
+                        </label>
+                    </section>
+                </div>
+
+                <!-- ======================================================= -->
+                <!-- ACTIVITY 2: RIG MOVEMENT                              -->
+                <!-- ======================================================= -->
+                <div id="activity-movement" class="activity-content">
+                    <p class="activity-description">
+                        Aktivitas ini mencakup perpindahan rig dari satu titik ke titik lain di dalam area proyek. Fokus utama adalah memastikan stabilitas tanah dan lintasan yang aman untuk mencegah alat amblas atau terguling.
+                    </p>
+                    <section id="prasyarat-movement">
+                        <h2>A) Prasyarat Sebelum Pergerakan Rig</h2>
+                        <h3>1. Verifikasi Kapasitas Dukung & Desain Lintasan</h3>
+                        <ul>
+                            <li><strong>Data Spesifikasi Rig (OEM):</strong> Pastikan data teknis rig yang akan digunakan (berat operasi total, dimensi dan tipe undercarriage, mis. lebar track shoe 600 mm) telah sesuai dengan unit aktual di site dan digunakan sebagai dasar desain lintasan.</li>
+                            <li><strong>Verifikasi Kapasitas Lintasan (Ground Bearing):</strong> Lakukan uji tanah seperti CBR/DCP atau Plate Load Test (PLT) di titik-titik kritis (area bekas galian, timbunan, transisi tanah). Tetapkan kapasitas dukung izin (q_allowable,test) dengan Faktor Keamanan (FoS) yang memadai (≥1.5–2.0).</li>
+                            <li><strong>Desain Lintasan (Working Platform):</strong> Berdasarkan hasil uji tanah dan data rig, rancang lintasan sebagai working platform yang aman. Opsi termasuk platform granular yang diperkuat geogrid atau penggunaan dua jalur steel plate (satu per track) jika tanah sangat lunak. Gunakan metodologi desain yang diakui seperti EFFC/DFI atau BR470.</li>
+                            <li><strong>Spesifikasi Steel Plate (Jika Digunakan):</strong> Desain pemasangan plate harus diperiksa oleh engineer. Spesifikasi mencakup lebar plate per jalur (≥ lebar track + 200–300 mm), overlap antar plate (≥ 300 mm), penggunaan pengikat/pin anti-geser, dan verifikasi struktural plate terhadap beban (ketebalan, lentur, tekuk).</li>
+                        </ul>
+
+                        <h3>2. Manajemen Rute & Area Kerja</h3>
+                        <ul>
+                            <li><strong>Utilitas & Bahaya Atas/Bawah:</strong> Dapatkan Izin Gali (Permit-to-Dig) setelah verifikasi utilitas bawah tanah (melalui GPR, data as-built, atau trial pit). Pastikan seluruh rute pergerakan bebas dari halangan atas seperti kabel listrik (overhead line) sebelum mobilisasi.</li>
+                            <li><strong>Manajemen Lalu Lintas & Segregasi:</strong> Implementasikan Traffic Management Plan yang mencakup rute satu arah (jika memungkinkan), penempatan marshal/banksman, pemasangan pagar atau barikade untuk membuat zona eksklusi di sepanjang koridor, serta rambu dan lampu penerangan yang memadai.</li>
+                            <li><strong>Manajemen Cuaca & Perubahan Kondisi:</strong> Tetapkan kriteria pemicu STOP-WORK (misalnya, hujan lebat, angin kencang). Wajibkan inspeksi ulang kapasitas dukung tanah (re-inspection CBR/PLT) jika terjadi hujan besar sebelum melanjutkan pergerakan.</li>
+                        </ul>
+
+                        <h3>3. Kesiapan Tim & Kompetensi</h3>
+                        <ul>
+                            <li><strong>Komunikasi & Briefing:</strong> Siapkan radio UHF yang berfungsi baik dan lakukan tes pra-start. Tetapkan satu orang sebagai komando utama. Lakukan briefing yang mencakup detail lintasan, titik kritis, dan kriteria lulus/gagal (misal: batas settlement).</li>
+                            <li><strong>Kompetensi Personel:</strong> Pastikan operator rig dan banksman yang bertugas memiliki kompetensi dan pengalaman yang relevan untuk tugas pergerakan alat berat di kondisi site spesifik.</li>
+                        </ul>
+                    </section>
+                    <section id="metode-movement">
+                        <h2>B) Metode Kerja Pergerakan Rig (Step-by-Step)</h2>
+                        <ol>
+                            <li><strong>Survei dan Uji Lintasan:</strong> Petakan rute pergerakan menjadi zona hijau (aman), amber (waspada), dan merah (dilarang/butuh perkuatan khusus). Ambil hasil uji CBR/PLT sebagai nilai kapasitas dukung izin tanah (q_allowable,test).</li>
+                            <li>
+                                <strong>Verifikasi Tekan Tanah Kuantitatif:</strong> Lakukan analisis stabilitas untuk memastikan tekanan yang diberikan rig (q_demand) tidak melebihi kapasitas dukung tanah dibagi Faktor Keamanan (FoS).
+                                <ul>
+                                    <li><strong>Tanpa Plate:</strong> q<sub>demand</sub> = (γF ⋅ W) / (2 ⋅ b<sub>track</sub> ⋅ L<sub>contact</sub> ⋅ η)</li>
+                                    <li><strong>Dengan Plate Kontinu:</strong> q<sub>demand,plate</sub> = (γF ⋅ W) / (2 ⋅ b<sub>plate</sub> ⋅ L<sub>contact</sub>)</li>
+                                    <li><strong>Kriteria Kelulusan:</strong> Pastikan <strong>q<sub>demand</sub> ≤ q<sub>allowable,test</sub> / FoS</strong>. Gunakan data OEM rig aktual di site untuk nilai W (berat), b<sub>track</sub> (lebar track), dan L<sub>contact</sub> (panjang kontak).
+                                        <br><em><small>Catatan OEM: Untuk BG 20 H (BT 50), lebar track shoe standar adalah 600 mm dan lebar transport 2,5 m. Selalu gunakan nilai aktual dari dokumen unit di site.</small></em>
+                                        <br><a href="https://simcalc.github.io/html/soil-bearing-verification-plate-modeling.html" target="_blank" class="link-btn">Buka Kalkulator Verifikasi (Eksternal)</a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li><strong>Persiapan Koridor Lintasan:</strong> Gelar platform granular atau steel plate sesuai desain. Pastikan permukaan bedding rata, overlap plate minimal 300 mm, dan semua pin pengunci/lapisan anti-skid terpasang. Pasang pagar pengaman dan rambu keselamatan standar ISO di sepanjang koridor.</li>
+                            <li><strong>Operasi Pergerakan & Uji Awal (Proof-Rolling):</strong> Gerakkan rig dengan kecepatan rendah (low-speed) dan hindari gerakan slewing (memutar) yang mendadak. Banksman harus mengawal di posisi aman untuk mengawasi tepi jalur, sambungan plate, dan area persimpangan. Lakukan pengukuran penurunan (settlement) pada 10–20 meter pertama sebagai uji coba (proof-rolling).</li>
+                            <li><strong>Implementasi Kriteria Lanjut/Stop:</strong> Selama pergerakan, jika terjadi perbedaan penurunan (Δ-settlement) antar-track melebihi 20–25 mm, atau jika steel plate terlihat bergeser atau melendut secara signifikan, maka berlaku kondisi <strong>STOP</strong>. Hentikan pergerakan, lakukan perkuatan pada area tersebut, dan lakukan verifikasi ulang sebelum melanjutkan.</li>
+                            <li><strong>Monitoring Berkelanjutan:</strong> Lakukan inspeksi visual pada sambungan plate dan kondisi tanah setiap ±20–25 meter. Bersihkan lumpur atau air yang dapat menyebabkan selip. Dokumentasikan seluruh proses inspeksi dengan foto dan log pemeriksaan.</li>
+                        </ol>
+                    </section>
+                    <section id="risk-assessment-movement">
+                        <h2>C) Risk Assessment - Pergerakan Rig</h2>
+                        <p>Klik pada angka risiko untuk mengubah nilainya.</p>
+                          <div class="risk-table-container">
+                               <table class="mainRiskTable" id="mainRiskTable-movement">
+                                   <thead>
+                                       <tr>
+                                           <th>No</th>
+                                           <th>Bahaya & Skenario Rinci</th>
+                                           <th>Potensi Konsekuensi Utama</th>
+                                           <th>Tindakan Pengendalian</th>
+                                           <th>Risiko Awal (R)</th>
+                                           <th>Risiko Residual (R)</th>
+                                       </tr>
+                                   </thead>
+                                   <tbody class="riskTableBody" id="riskTableBody-movement">
+                                      <tr>
+                                           <td>1</td>
+                                           <td><strong>Daya Dukung Gagal</strong> (Tanah lunak/bekas galian tidak stabil)</td>
+                                           <td>Rig amblas, miring, atau terguling (tipping), menyebabkan kerusakan masif dan potensi cedera fatal.</td>
+                                           <td>Wajibkan desain lintasan (misal: EFFC/DFI) berdasarkan uji tanah (CBR/PLT). Pastikan tekanan rig (q<sub>demand</sub>) ≤ kapasitas tanah (q<sub>allow</sub>/FoS). Gunakan platform granular/geogrid atau steel plate. Lakukan proof-rolling.</td>
+                                           <td><div class="risk-level" data-editable="true" tabindex="0" role="button">15</div></td>
+                                           <td><div class="risk-level" data-editable="true" tabindex="0" role="button">6</div></td>
+                                       </tr>
+                                       <tr>
+                                           <td>2</td>
+                                           <td><strong>Kegagalan Tepi (Edge Failure)</strong> (Terlalu dekat dengan tepi galian atau void)</td>
+                                           <td>Longsor lokal yang dapat menyebabkan rig kehilangan keseimbangan dan terguling.</td>
+                                           <td>Jaga jarak bebas dari tepi galian (≥ 1,0 m atau ≥ 1x kedalaman galian). Gunakan bridging balok/plate jika perlu. Pasang barrier fisik di tepi.</td>
+                                           <td><div class="risk-level" data-editable="true" tabindex="0" role="button">15</div></td>
+                                           <td><div class="risk-level" data-editable="true" tabindex="0" role="button">6</div></td>
+                                       </tr>
+                                       <tr>
+                                           <td>3</td>
+                                           <td><strong>Permukaan Licin</strong> (Air, lumpur, atau tumpahan di lintasan)</td>
+                                           <td>Rig selip atau kehilangan traksi, menyebabkan pergerakan tidak terkontrol dan potensi tabrakan.</td>
+                                           <td>Buat sistem drainase sementara. Gunakan lapisan geotextile dan sub-base. Pasang plate anti-slip. Tetapkan ambang batas genangan air untuk stop kerja.</td>
+                                           <td><div class="risk-level" data-editable="true" tabindex="0" role="button">12</div></td>
+                                           <td><div class="risk-level" data-editable="true" tabindex="0" role="button">6</div></td>
+                                       </tr>
+                                       <tr>
+                                           <td>4</td>
+                                           <td><strong>Kegagalan Material Plate</strong> (Plate terlalu tipis atau overlap kurang)</td>
+                                           <td>Plate melendut atau retak, menciptakan beban terpusat yang dapat menyebabkan kegagalan tanah di bawahnya.</td>
+                                           <td>Lakukan pemeriksaan struktural plate (ketebalan, mutu baja). Pastikan overlap antar plate ≥ 300 mm dan tidak ada "lidah" plate yang tersingkap.</td>
+                                           <td><div class="risk-level" data-editable="true" tabindex="0" role="button">12</div></td>
+                                           <td><div class="risk-level" data-editable="true" tabindex="0" role="button">6</div></td>
+                                       </tr>
+                                       <tr>
+                                           <td>5</td>
+                                           <td><strong>Pergeseran Steel Plate</strong> (Plate bergerak saat dilewati rig)</td>
+                                           <td>Menimbulkan celah berbahaya, potensi insiden antara rig dengan personel atau struktur lain (people-plant incident).</td>
+                                           <td>Gunakan pin atau klip pengikat antar plate. Pasang lapisan anti-skid. Gunakan bedding granular yang rata. Inspeksi sambungan tiap ±20 m oleh banksman.</td>
+                                           <td><div class="risk-level" data-editable="true" tabindex="0" role="button">12</div></td>
+                                           <td><div class="risk-level" data-editable="true" tabindex="0" role="button">6</div></td>
+                                       </tr>
+                                       <tr>
+                                           <td>6</td>
+                                           <td><strong>Penurunan Diferensial</strong> (Terjadi di area transisi jenis tanah)</td>
+                                           <td>Rig miring secara tiba-tiba saat bergerak dari tanah keras ke lunak (atau sebaliknya), berisiko tipping.</td>
+                                           <td>Buat lapis peralihan bertahap pada zona transisi. Tetapkan kriteria stop jika perbedaan penurunan (Δ-settlement) antar-track > 20–25 mm.</td>
+                                           <td><div class="risk-level" data-editable="true" tabindex="0" role="button">12</div></td>
+                                           <td><div class="risk-level" data-editable="true" tabindex="0" role="button">6</div></td>
+                                       </tr>
+                                       <tr>
+                                           <td>7</td>
+                                           <td><strong>Gradien Berlebih</strong> (Kemiringan lintasan melebihi batas aman)</td>
+                                           <td>Kehilangan stabilitas dan kontrol traksi, meningkatkan risiko tergelincir atau terguling.</td>
+                                           <td>Batasi gradien lintasan sesuai spesifikasi pabrikan. Jika perlu, perlebar steel plate untuk meningkatkan stabilitas. Terapkan FoS lebih tinggi pada verifikasi tekanan.</td>
+                                           <td><div class="risk-level" data-editable="true" tabindex="0" role="button">8</div></td>
+                                           <td><div class="risk-level" data-editable="true" tabindex="0" role="button">4</div></td>
+                                       </tr>
+                                       <tr>
+                                           <td>8</td>
+                                           <td><strong>Utilitas Bawah Tanah</strong> (Kabel atau pipa dangkal di bawah lintasan)</td>
+                                           <td>Kerusakan utilitas yang dapat menyebabkan amblasan, kebocoran gas, atau kebakaran.</td>
+                                           <td>Wajibkan Izin Gali (Permit-to-Dig). Lakukan verifikasi via GPR/as-built/trial pit. Dapatkan izin dari pemilik utilitas. Gunakan bridging jika harus melintas.</td>
+                                           <td><div class="risk-level" data-editable="true" tabindex="0" role="button">10</div></td>
+                                           <td><div class="risk-level" data-editable="true" tabindex="0" role="button">3</div></td>
+                                       </tr>
+                                       <tr>
+                                           <td>9</td>
+                                           <td><strong>Interaksi Lalu Lintas</strong> (Campur dengan pejalan kaki atau kendaraan lain)</td>
+                                           <td>Risiko tabrakan fatal akibat titik buta alat berat dan pergerakan yang tidak terduga.</td>
+                                           <td>Implementasikan Traffic Management Plan (TMP): segregasi rute, jalur satu arah, marshal, rambu & lampu, dan zona eksklusi di sepanjang koridor.</td>
+                                           <td><div class="risk-level" data-editable="true" tabindex="0" role="button">15</div></td>
+                                           <td><div class="risk-level" data-editable="true" tabindex="0" role="button">6</div></td>
+                                       </tr>
+                                       <tr>
+                                           <td>10</td>
+                                           <td><strong>Visibilitas Rendah</strong> (Malam hari, hujan lebat, atau area berdebu)</td>
+                                           <td>Operator salah melakukan manuver, berisiko menabrak personel atau objek.</td>
+                                           <td>Sediakan menara lampu portabel. Pastikan pencahayaan memenuhi standar minimum (misal: 100-200 lux untuk area kerja kasar) sesuai Permenaker No. 5 Tahun 2018 & SNI terkait. Lakukan pembasahan untuk mengurangi debu. Pastikan lampu dan kamera rig bersih dan berfungsi. Wajibkan APD Hi-Viz kelas 3.</td>
+                                           <td><div class="risk-level" data-editable="true" tabindex="0" role="button">12</div></td>
+                                           <td><div class="risk-level" data-editable="true" tabindex="0" role="button">6</div></td>
+                                       </tr>
+                                       <tr>
+                                           <td>11</td>
+                                           <td><strong>Kegagalan Komunikasi</strong> (Radio rusak atau sinyal tidak jelas)</td>
+                                           <td>Operator menerima instruksi yang salah atau tidak menerima perintah STOP, menyebabkan pergerakan berbahaya.</td>
+                                           <td>Gunakan radio UHF yang telah diuji. Tetapkan satu orang komando. Terapkan prosedur "Stop–Look–Communicate" jika terjadi keraguan.</td>
+                                           <td><div class="risk-level" data-editable="true" tabindex="0" role="button">9</div></td>
+                                           <td><div class="risk-level" data-editable="true" tabindex="0" role="button">4</div></td>
+                                       </tr>
+                                       <tr>
+                                           <td>12</td>
+                                           <td><strong>Cuaca Ekstrem</strong> (Hujan badai, angin kencang)</td>
+                                           <td>Lintasan menjadi rusak, tanah jenuh air, atau steel plate dapat terangkat/bergeser oleh air.</td>
+                                           <td>Tetapkan ambang batas cuaca untuk menghentikan pekerjaan (STOP-WORK). Lakukan inspeksi ulang dan uji cepat (misal: Dynamic Cone Penetrometer) pasca hujan besar.</td>
+                                           <td><div class="risk-level" data-editable="true" tabindex="0" role="button">8</div></td>
+                                           <td><div class="risk-level" data-editable="true" tabindex="0" role="button">4</div></td>
+                                       </tr>
+                                   </tbody>
+                               </table>
+                          </div>
+                           <button class="add-row-btn" data-target-table="riskTableBody-movement">Tambah Baris Baru</button>
+                    </section>
+                     <section id="peran-movement">
+                        <h2>D) Peran & Verifikasi - Pergerakan Rig</h2>
+                        <div class="risk-table-container">
+                             <table>
+                                 <thead>
+                                     <tr>
+                                         <th>Peran</th>
+                                         <th>Tugas & Tanggung Jawab Utama</th>
+                                         <th>Verifikasi yang Dilakukan</th>
+                                     </tr>
+                                 </thead>
+                                 <tbody>
+                                     <tr>
+                                         <td><strong>Supervisor / Engineer</strong></td>
+                                         <td>Mengesahkan Last Minute Risk Assessment (LMRA). Menetapkan kriteria STOP-WORK (misalnya batas settlement, kondisi cuaca). Memastikan semua rambu dan pagar pengaman terpasang sesuai rencana.</td>
+                                         <td>Memeriksa dan menyetujui hasil uji tanah (CBR/PLT), perhitungan Faktor Keamanan (FoS), dan gambar desain lintasan.</td>
+                                     </tr>
+                                     <tr>
+                                         <td><strong>Geotechnical Engineer</strong></td>
+                                         <td>Merencanakan, melaksanakan, dan menginterpretasi hasil uji tanah (CBR/DCP/PLT) untuk menentukan kapasitas dukung izin (q<sub>allowable,test</sub>). Memberikan rekomendasi teknis untuk tebal platform atau lebar steel plate.</td>
+                                         <td>Menyediakan laporan geoteknik yang valid sebagai dasar desain dan verifikasi kapasitas lintasan.</td>
+                                     </tr>
+                                     <tr>
+                                         <td><strong>HSE Officer</strong></td>
+                                         <td>Melakukan audit terhadap implementasi Traffic Management Plan (TMP) dan segregasi area. Memastikan zona eksklusi (exclusion zone) dan rambu keselamatan efektif.</td>
+                                         <td>Memverifikasi bahwa briefing keselamatan telah dilakukan, dipahami oleh semua tim, dan kelengkapan APD sesuai.</td>
+                                     </tr>
+                                     <tr>
+                                         <td><strong>Banksman / Traffic Marshal</strong></td>
+                                         <td>Mengawal pergerakan rig di sepanjang koridor, fokus pada tepi lintasan, sambungan plate, dan area persimpangan. Mencegah personel atau kendaraan yang tidak berkepentingan memasuki koridor.</td>
+                                         <td>Menjaga komunikasi radio yang konstan dan jelas dengan operator. Melaporkan setiap anomali lintasan secara real-time.</td>
+                                     </tr>
+                                     <tr>
+                                         <td><strong>Structural Engineer (jika pakai plate)</strong></td>
+                                         <td>Memastikan steel plate yang digunakan memiliki kapasitas yang cukup terhadap beban lentur dan tekuk dari rig.</td>
+                                         <td>Memverifikasi detail pemasangan, termasuk metode sambungan dan spesifikasi overlap (≥ 300 mm).</td>
+                                     </tr>
+                                     <tr>
+                                         <td><strong>Operator Rig</strong></td>
+                                         <td>Mengoperasikan rig dengan kecepatan rendah (low-speed), menghindari gerakan slewing mendadak, dan hanya mematuhi komando dari satu banksman yang ditunjuk.</td>
+                                         <td>Segera melaporkan jika merasakan penurunan (sinkage) yang tidak normal atau melihat pergeseran/lendutan pada steel plate.</td>
+                                     </tr>
+                                 </tbody>
+                             </table>
+                        </div>
+                    </section>
+                    <section id="checklist-movement">
+                        <h2>E) Checklist Pra-Start - Pergerakan Rig</h2>
+                        <p>Checklist ini harus diverifikasi oleh Supervisor/Engineer sebelum pergerakan rig dimulai. Semua item harus terpenuhi.</p>
+                        
+                        <h3>1. Dokumen & Verifikasi Desain</h3>
+                        <label class="checklist-item">
+                            <input type="checkbox" class="checklist-box">
+                            <span>Laporan Geoteknik (CBR/PLT) tersedia dan telah disetujui.</span>
+                        </label>
+                        <label class="checklist-item">
+                            <input type="checkbox" class="checklist-box">
+                            <span>Perhitungan verifikasi tekanan tanah (q<sub>demand</sub> ≤ q<sub>allow</sub>/FoS) telah diperiksa oleh Engineer.</span>
+                        </label>
+                        <label class="checklist-item">
+                            <input type="checkbox" class="checklist-box">
+                            <span>Gambar desain lintasan (platform/steel plate) final dan sudah disosialisasikan ke tim.</span>
+                        </label>
+                        <label class="checklist-item">
+                            <input type="checkbox" class="checklist-box">
+                            <span>Izin Gali (Permit-to-Dig) dan dokumen verifikasi utilitas bawah tanah sudah lengkap.</span>
+                        </label>
+                        <label class="checklist-item">
+                            <input type="checkbox" class="checklist-box">
+                            <span>Traffic Management Plan (TMP) sudah disetujui dan dipahami oleh semua pihak terkait.</span>
+                        </label>
+
+                        <h3>2. Persiapan Lintasan & Area Kerja</h3>
+                        <label class="checklist-item">
+                            <input type="checkbox" class="checklist-box">
+                            <span>Lintasan telah disiapkan sesuai desain (platform granular atau steel plate terpasang).</span>
+                        </label>
+                        <label class="checklist-item">
+                            <input type="checkbox" class="checklist-box">
+                            <span>Overlap plate (min. 300 mm) dan pin/klip pengunci sudah terpasang dan diperiksa.</span>
+                        </label>
+                        <label class="checklist-item">
+                            <input type="checkbox" class="checklist-box">
+                            <span>Seluruh rute dipastikan bebas dari halangan atas (misal: kabel listrik/overhead line).</span>
+                        </label>
+                        <label class="checklist-item">
+                            <input type="checkbox" class="checklist-box">
+                            <span>Pagar/barikade, rambu keselamatan, dan lampu penerangan (jika malam) sudah terpasang.</span>
+                        </label>
+                         <label class="checklist-item">
+                            <input type="checkbox" class="checklist-box">
+                            <span>Kriteria Lanjut/Stop (misal: batas settlement) telah ditetapkan dan dipahami oleh tim.</span>
+                        </label>
+
+                        <h3>3. Kesiapan Tim & Peralatan</h3>
+                        <label class="checklist-item">
+                            <input type="checkbox" class="checklist-box">
+                            <span>Briefing pra-kerja (Toolbox Meeting) telah dilakukan, membahas rute, titik kritis, dan prosedur darurat.</span>
+                        </label>
+                        <label class="checklist-item">
+                            <input type="checkbox" class="checklist-box">
+                            <span>Semua personel menggunakan APD yang sesuai (Rompi Hi-Viz, helm, sepatu keselamatan).</span>
+                        </label>
+                        <label class="checklist-item">
+                            <input type="checkbox" class="checklist-box">
+                            <span>Radio UHF sudah dites, kanal komunikasi disepakati, dan berfungsi dengan baik.</span>
+                        </label>
+                        <label class="checklist-item">
+                            <input type="checkbox" class="checklist-box">
+                            <span>Kondisi cuaca saat ini aman dan sesuai dengan kriteria STOP-WORK yang ditetapkan.</span>
+                        </label>
+                    </section>
+                </div>
+
+                <!-- ======================================================= -->
+                <!-- ACTIVITY 3: DRILLING                                  -->
+                <!-- ======================================================= -->
+                <div id="activity-drilling" class="activity-content">
+                    <p class="activity-description">
+                        Aktivitas ini adalah fungsi utama rig, yaitu proses pengeboran pondasi. Prosedur ini berfokus pada stabilitas alat selama operasi, penanganan material, dan interaksi dengan personel pendukung di sekitar titik bor.
+                    </p>
+                    <section id="prasyarat-drilling">
+                        <h2>A) Prasyarat Sebelum Pengeboran</h2>
+                        <h3>1. Verifikasi Platform Kerja & Stabilitas Lubang Bor</h3>
+                        <ul>
+                            <li><strong>Working Platform Certificate (WPC):</strong> Dokumen WPC yang valid dan disetujui Geotechnical Engineer adalah wajib. Ini mengkonfirmasi platform mampu menahan beban statis dan dinamis rig.</li>
+                            <li><strong>Verifikasi Tekan Tanah Kuantitatif:</strong> Analisis stabilitas untuk memastikan tekanan yang diberikan rig (q_demand) tidak melebihi kapasitas dukung tanah (q_allowable,test) dibagi Faktor Keamanan (FoS) harus didokumentasikan.
+                                <ul>
+                                     <li><strong>Tanpa Plate:</strong> q<sub>demand</sub> = (γF ⋅ W) / (2 ⋅ b<sub>track</sub> ⋅ L<sub>contact</sub> ⋅ η)</li>
+                                     <li><strong>Dengan Plate Kontinu:</strong> q<sub>demand,plate</sub> = (γF ⋅ W) / (2 ⋅ b<sub>plate</sub> ⋅ L<sub>contact</sub>)</li>
+                                     <li><strong>Kriteria Kelulusan:</strong> Pastikan <strong>q<sub>demand</sub> ≤ q<sub>allowable,test</sub> / FoS</strong>. Gunakan data OEM rig aktual (W, b<sub>track</sub>, L<sub>contact</sub>).</li>
+                                </ul>
+                                <em><small>Catatan: Untuk BG 20 H (BT 50), lebar track standar 600 mm. Selalu gunakan nilai aktual unit di site.</small></em>
+                                <br><a href="https://simcalc.github.io/html/soil-bearing-verification-plate-modeling.html" target="_blank" class="link-btn">Buka Kalkulator Verifikasi (Eksternal)</a>
+                            </li>
+                            <li><strong>Manajemen Cuaca (Hujan):</strong> Jika terjadi hujan lebat, platform kerja wajib diinspeksi ulang. Penurunan daya dukung tanah harus dievaluasi. Pekerjaan dilarang jika ada genangan air atau platform lunak.</li>
+                            <li><strong>Rencana Mitigasi Runtuhan Lubang Bor:</strong> Berdasarkan laporan geoteknik, pastikan rencana dan peralatan untuk mitigasi keruntuhan (misal: temporary casing, fluida bentonite/polymer) siap jika formasi tanah tidak stabil diidentifikasi.</li>
+                        </ul>
+                        <h3>2. Kesiapan Alat & Sistem Keselamatan</h3>
+                        <ul>
+                            <li><strong>Pemeriksaan dan Pengecekan Harian (Pre-Start check):</strong> Fokus pada winch, tali baja, hidrolik, dan undercarriage. Lakukan uji fungsi hold/over-centre valve setiap awal shift.</li>
+                            <li><strong>Inspeksi Kelly Bar & Tools:</strong> Periksa visual drive keys dan lock pockets. Gunakan gauge go/no-go untuk step-wear. Pastikan mekanisme teleskopik berfungsi lancar.</li>
+                            <li><strong>Verifikasi BAUER B-Tronic/B-Control:</strong> Pastikan sistem B-Tronic aktif. Lakukan tes fungsi sensor: inclinometer, pengukur kedalaman, monitor tekanan, dan limit switch winch. Pastikan alarm berfungsi dan set-point (batas torsi) sesuai rekomendasi.</li>
+                            <li><strong>Kesiapan Pengamanan Lubang Bor:</strong> Pastikan penutup lubang bor (borehole cover) yang kuat dan sesuai ukuran tersedia di lokasi.</li>
+                        </ul>
+                        <h3>3. Manajemen Area Kerja & Personel</h3>
+                        <ul>
+                            <li><strong>Zona Merah (Red Zone):</strong> Tentukan dan barikade fisik "Zona Merah" (area bahaya putaran/jatuhan) di sekitar titik bor dengan radius minimal sama dengan panjang Kelly bar + 3 meter. Terapkan kebijakan "zero-hand" (< 1m dari rotary).</li>
+                            <li><strong>Toolbox Meeting:</strong> Lakukan briefing spesifik, membahas urutan kerja, sinyal komunikasi, lokasi utilitas, prosedur "Lock-Mark-Try", dan mitigasi keruntuhan lubang bor.</li>
+                        </ul>
+                    </section>
+                    <section id="metode-drilling">
+                        <h2>B) Metode Kerja Pengeboran (Step-by-Step)</h2>
+                        <ol>
+                            <li><strong>Verifikasi Akhir Platform:</strong> Sebelum rig masuk ke titik bor, Supervisor dan Operator secara visual memeriksa kondisi platform, memastikan tidak ada perubahan signifikan dari desain yang disetujui dan hasil verifikasi kuantitatif masih valid.</li>
+                            <li><strong>Positioning & Leveling:</strong> Posisikan rig secara akurat di atas titik bor. Gunakan sistem B-Tronic untuk memastikan rig level dengan toleransi kemiringan lebih ketat dari batas pabrikan (-10%).</li>
+                            <li><strong>Penyambungan & Uji Kelly Bar:</strong> Saat menyambung, terapkan prosedur **"Lock - Mark - Try"**: Pastikan Kelly terkunci (indikasi visual/mekanis), beri tanda cat, dan lakukan uji tarik dengan kecepatan rendah selama 2-3 detik.</li>
+                            <li><strong>Aplikasi Mitigasi Lubang Bor:</strong> Jika diperlukan, pasang temporary casing atau mulai sirkulasi fluida penyangga sebelum pengeboran mencapai lapisan tanah yang tidak stabil.</li>
+                            <li><strong>Proses Pengeboran:</strong> Mulai pengeboran dengan parameter (torsi, tekanan) yang terkontrol sesuai rekomendasi geoteknik. Operator memantau B-Tronic untuk deteksi anomali (misal: kehilangan tekanan tiba-tiba yang mengindikasikan keruntuhan).</li>
+                            <li><strong>Ekstraksi & Pembuangan Spoil:</strong> Angkat auger dengan kecepatan terkontrol untuk mengurangi efek isap (suction) yang dapat memicu keruntuhan. Ayunkan rig secara perlahan.</li>
+                            <li><strong>Pengamanan Lubang Bor Selesai:</strong> Segera setelah auger keluar sepenuhnya dan sebelum rig berpindah, pasang penutup lubang bor yang kuat dan aman. Jangan tinggalkan lubang bor terbuka tanpa penjagaan.</li>
+                        </ol>
+                    </section>
+                    <section id="risk-assessment-drilling">
+                        <h2>C) Risk Assessment - Pengeboran</h2>
+                        <p>Klik pada angka risiko untuk mengubah nilainya.</p>
+
+                        <h3>Keselamatan Khusus Operasi Kelly Bar</h3>
+                        <div class="risk-table-container">
+                            <table class="mainRiskTable" id="mainRiskTable-drilling-kelly">
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Hazard & Skenario</th>
+                                        <th>Konsekuensi Utama</th>
+                                        <th>Safeguard Eksisting</th>
+                                        <th>Control Measure Tambahan</th>
+                                        <th>Risiko Awal (R)</th>
+                                        <th>Risiko Residual (R)</th>
+                                        <th>PIC & Verifikasi</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="riskTableBody" id="riskTableBody-drilling-kelly">
+                                    <tr>
+                                        <td>1</td>
+                                        <td>Kelly tidak terkunci penuh saat shift/penyambungan</td>
+                                        <td>Kelly jatuh/terhempas, cedera fatal</td>
+                                        <td>Indikasi penguncian, slow-down di joint, interlock tertentu</td>
+                                        <td>Checklist “Lock–Mark–Try”: beri paint-mark, pull-test 2–3 s; kamera/spotter verifikasi; exclusion zone (+2m) berpagar.</td>
+                                        <td><div class="risk-level" data-editable="true" tabindex="0" role="button">15</div></td>
+                                        <td><div class="risk-level" data-editable="true" tabindex="0" role="button">6</div></td>
+                                        <td>Operator & Rigger; Supervisor</td>
+                                    </tr>
+                                    <tr>
+                                        <td>2</td>
+                                        <td>Over-torque/over-crowd saat menembus lensa keras</td>
+                                        <td>Twist-off Kelly/kerusakan KDK</td>
+                                        <td>Torque/crowd limit set-point, auto cut-back</td>
+                                        <td>Parameter window berbasis geotek; mode pelan saat transisi; alarm kedua di 90% limit; review trend B-Tronic per lubang.</td>
+                                        <td><div class="risk-level" data-editable="true" tabindex="0" role="button">12</div></td>
+                                        <td><div class="risk-level" data-editable="true" tabindex="0" role="button">6</div></td>
+                                        <td>Supervisor drilling; QC harian</td>
+                                    </tr>
+                                    <tr>
+                                        <td>3</td>
+                                        <td>Over-pull/over-speed winch saat angkat auger/kelly</td>
+                                        <td>Sling putus, jatuh bebas</td>
+                                        <td>Load & speed monitoring, E-stop</td>
+                                        <td>SWL tagging sling/kelk; inspeksi NDT periodik hook/lug; anti-two-blocking; zona jatuh (drop-zone) kosong.</td>
+                                        <td><div class="risk-level" data-editable="true" tabindex="0" role="button">10</div></td>
+                                        <td><div class="risk-level" data-editable="true" tabindex="0" role="button">5</div></td>
+                                        <td>Rig mechanic; Form inspeksi</td>
+                                    </tr>
+                                    <tr>
+                                        <td>4</td>
+                                        <td>Whip/entanglement pakaian/selang</td>
+                                        <td>Amputasi/tertarik ke rotary</td>
+                                        <td>Guarding standar, remote untuk set-up</td>
+                                        <td>Bahaya rotasi: zero-hand policy < 1 m dari rotary; routing & clamp selang; tanda cat kuning 1 m di lantai.</td>
+                                        <td><div class="risk-level" data-editable="true" tabindex="0" role="button">10</div></td>
+                                        <td><div class="risk-level" data-editable="true" tabindex="0" role="button">4</div></td>
+                                        <td>HSE + Operator; Observasi BBS</td>
+                                    </tr>
+                                    <tr>
+                                        <td>5</td>
+                                        <td>Misalignment mast (X/Y) saat mulai bor</td>
+                                        <td>Beban eksentrik, struktur rusak</td>
+                                        <td>Inclinometer & auto-vertical</td>
+                                        <td>Leveling pad & WPC; batas kemiringan < nilai pabrikan –10%; lock slewing selama penyambungan.</td>
+                                        <td><div class="risk-level" data-editable="true" tabindex="0" role="button">8</div></td>
+                                        <td><div class="risk-level" data-editable="true" tabindex="0" role="button">4</div></td>
+                                        <td>Site engineer geotek; Validasi WPC</td>
+                                    </tr>
+                                    <tr>
+                                        <td>6</td>
+                                        <td>Ground bearing lemah pada working platform</td>
+                                        <td>Rig miring/terperosok</td>
+                                        <td>- (di luar mesin)</td>
+                                        <td>Desain & uji kapasitas platform (WPC); matting di area lunak; inspeksi pascahujan; larang beban tambahan dekat track.</td>
+                                        <td><div class="risk-level" data-editable="true" tabindex="0" role="button">10</div></td>
+                                        <td><div class="risk-level" data-editable="true" tabindex="0" role="button">5</div></td>
+                                        <td>Geotech + Principal Contractor</td>
+                                    </tr>
+                                    <tr>
+                                        <td>7</td>
+                                        <td>Step-wear/bent Kelly joint</td>
+                                        <td>Kunci tak sempurna, keausan cepat</td>
+                                        <td>- (monitor umum)</td>
+                                        <td>Gauge go/no-go untuk step-wear; pengukuran run-out; log umur joint; rotasi aset; pelumasan sesuai spesifikasi.</td>
+                                        <td><div class="risk-level" data-editable="true" tabindex="0" role="button">9</div></td>
+                                        <td><div class="risk-level" data-editable="true" tabindex="0" role="button">4</div></td>
+                                        <td>Workshop; Kartu aset Kelly</td>
+                                    </tr>
+                                    <tr>
+                                        <td>8</td>
+                                        <td>Loss of hydraulic control (free-fall tak terkendali)</td>
+                                        <td>Kejatuhan komponen</td>
+                                        <td>Desain hidrolik & valve</td>
+                                        <td>Proving test fungsi hold/over-centre valve tiap start-shift; lock-out saat maintenance; spare hose & drip-tray.</td>
+                                        <td><div class="risk-level" data-editable="true" tabindex="0" role="button">5</div></td>
+                                        <td><div class="risk-level" data-editable="true" tabindex="0" role="button">3</div></td>
+                                        <td>Mechanic; Form test fungsi</td>
+                                    </tr>
+                                    <tr>
+                                        <td>9</td>
+                                        <td>Kontak overhead line/instalasi atas saat naik-turun mast</td>
+                                        <td>Sengatan listrik/fatality</td>
+                                        <td>Height limiter (jika ada), kamera</td>
+                                        <td>Survei OHL; PTW dekat OHL; spotter; batas aman ≥ jarak clear utility lokal; penghalang fisik.</td>
+                                        <td><div class="risk-level" data-editable="true" tabindex="0" role="button">10</div></td>
+                                        <td><div class="risk-level" data-editable="true" tabindex="0" role="button">4</div></td>
+                                        <td>Supervisor + Owner utility</td>
+                                    </tr>
+                                    <tr>
+                                        <td>10</td>
+                                        <td>Komunikasi buruk saat penyambungan</td>
+                                        <td>Salah perintah, orang masuk zona</td>
+                                        <td>-</td>
+                                        <td>Radio UHF dedicated; isyarat standar; 1 orang komando; tanda lampu/klakson sebelum rotasi.</td>
+                                        <td><div class="risk-level" data-editable="true" tabindex="0" role="button">9</div></td>
+                                        <td><div class="risk-level" data-editable="true" tabindex="0" role="button">4</div></td>
+                                        <td>Supervisor; Drill-crew briefing</td>
+                                    </tr>
+                                    <tr>
+                                        <td>11</td>
+                                        <td>Pecahnya cutting/fling dari auger</td>
+                                        <td>Cedera mata/penetrasi</td>
+                                        <td>Guard dasar</td>
+                                        <td>Face shield + kacamata grade Z87+; curtain jaring sisi lepas; kecepatan buang dibatasi.</td>
+                                        <td><div class="risk-level" data-editable="true" tabindex="0" role="button">6</div></td>
+                                        <td><div class="risk-level" data-editable="true" tabindex="0" role="button">3</div></td>
+                                        <td>HSE; PPE check</td>
+                                    </tr>
+                                    <tr>
+                                        <td>12</td>
+                                        <td>Emergency (E-stop tidak berfungsi/ tidak diketahui)</td>
+                                        <td>Respons terlambat</td>
+                                        <td>E-stop multi-lokasi</td>
+                                        <td>Latihan E-stop 2-mingguan (drill 60 s); label & glow-tape pada tombol; rekaman waktu respons.</td>
+                                        <td><div class="risk-level" data-editable="true" tabindex="0" role="button">5</div></td>
+                                        <td><div class="risk-level" data-editable="true" tabindex="0" role="button">2</div></td>
+                                        <td>HSE + Operator</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <button class="add-row-btn" data-target-table="riskTableBody-drilling-kelly">Tambah Baris (Kelly Ops)</button>
+                        
+                        <h3>Analisis Risiko Sensor & Interlock</h3>
+                        <div class="risk-table-container">
+                            <table class="mainRiskTable" id="mainRiskTable-drilling-sensor">
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Hazard & Skenario (Sensor/Interlock)</th>
+                                        <th>Konsekuensi</th>
+                                        <th>Safeguard Pabrikan</th>
+                                        <th>Control Measure Tambahan</th>
+                                        <th>Risiko Awal (R)</th>
+                                        <th>Risiko Residual (R)</th>
+                                        <th>PIC & Verifikasi</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="riskTableBody" id="riskTableBody-drilling-sensor">
+                                    <tr>
+                                        <td>1</td>
+                                        <td>Inclinometer error / auto-vertical gagal → mast tidak tegak</td>
+                                        <td>Instabilitas, beban eksentrik</td>
+                                        <td>Inclinometer X/Y + auto-vertical (ECA)</td>
+                                        <td>Zero-check harian vs plumb-bob/bubble level, alarm kedua pada ±0,5° dari batas, lock slewing saat penyambungan.</td>
+                                        <td><div class="risk-level" data-editable="true" tabindex="0" role="button">12</div></td>
+                                        <td><div class="risk-level" data-editable="true" tabindex="0" role="button">5</div></td>
+                                        <td>Operator+Supervisor; checklist pra-start</td>
+                                    </tr>
+                                    <tr>
+                                        <td>2</td>
+                                        <td>Load-cell winch off-calibration → over-pull tak terdeteksi</td>
+                                        <td>Putus sling, jatuh beban</td>
+                                        <td>Electric load-sensing main/aux (ECA)</td>
+                                        <td>Proof-load bulanan, limit kedua di 90% SWL, SWL tagging & NDT hook/lug.</td>
+                                        <td><div class="risk-level" data-editable="true" tabindex="0" role="button">10</div></td>
+                                        <td><div class="risk-level" data-editable="true" tabindex="0" role="button">4</div></td>
+                                        <td>Rigger+Mechanic; catatan uji</td>
+                                    </tr>
+                                     <tr>
+                                         <td>3</td>
+                                         <td>Speed sensor KDK gagal → overspeed/over-torque</td>
+                                         <td>Twist-off Kelly/rotary rusak</td>
+                                         <td>Speed-sensing KDK + defined torque setting (ECA)</td>
+                                         <td>Mode limp-speed saat fault; set-point lock (password supervisor); trend review torsi per lubang.</td>
+                                         <td><div class="risk-level" data-editable="true" tabindex="0" role="button">10</div></td>
+                                         <td><div class="risk-level" data-editable="true" tabindex="0" role="button">4</div></td>
+                                         <td>Supervisor; review tren B-Tronic</td>
+                                     </tr>
+                                     <tr>
+                                         <td>4</td>
+                                         <td>Electronic limitation H-kinematics tidak aktif</td>
+                                         <td>Tabrakan linkage/over-reach</td>
+                                         <td>Electronic limitation horizontal displacement (ECA)</td>
+                                         <td>Mechanical slew/boom stops, no-go zone fisik; uji fungsi limit tiap start-shift.</td>
+                                         <td><div class="risk-level" data-editable="true" tabindex="0" role="button">8</div></td>
+                                         <td><div class="risk-level" data-editable="true" tabindex="0" role="button">4</div></td>
+                                         <td>Mechanic; form uji interlock</td>
+                                     </tr>
+                                     <tr>
+                                         <td>5</td>
+                                         <td>Crowd-stroke measurement fault → hantam end-stop</td>
+                                         <td>Kerusakan silinder/alat</td>
+                                         <td>Crowd-stroke measurement (ECA)</td>
+                                         <td>Soft-limit 200–300 mm sebelum end-stop, uji end-stop mingguan, inspeksi over-centre valve.</td>
+                                         <td><div class="risk-level" data-editable="true" tabindex="0" role="button">8</div></td>
+                                         <td><div class="risk-level" data-editable="true" tabindex="0" role="button">4</div></td>
+                                         <td>Mechanic; log uji</td>
+                                     </tr>
+                                     <tr>
+                                         <td>6</td>
+                                         <td>ACC tidak terset/di-bypass saat lensa keras</td>
+                                         <td>Over-crowd, keausan, kecelakaan</td>
+                                         <td>Automatic Crowd Control (BAUER Maschinen)</td>
+                                         <td>Two-Person Rule utk perubahan set-point; alarm ganda (90% & 100%); SOP fallback ke manual + stop-work.</td>
+                                         <td><div class="risk-level" data-editable="true" tabindex="0" role="button">12</div></td>
+                                         <td><div class="risk-level" data-editable="true" tabindex="0" role="button">6</div></td>
+                                         <td>Supervisor; audit set-point</td>
+                                     </tr>
+                                     <tr>
+                                         <td>7</td>
+                                         <td>Kelly assistant tak aktif / joint detection luput</td>
+                                         <td>Salah kunci, shock</td>
+                                         <td>Kelly Drilling Assistant (ECA)</td>
+                                         <td>Prosedur “Lock–Mark–Try” (tanda cat, pull-test 2–3 s), slow mode wajib saat mendekati joint.</td>
+                                         <td><div class="risk-level" data-editable="true" tabindex="0" role="button">15</div></td>
+                                         <td><div class="risk-level" data-editable="true" tabindex="0" role="button">6</div></td>
+                                         <td>Operator+Banksman; observasi BBS</td>
+                                     </tr>
+                                     <tr>
+                                         <td>8</td>
+                                         <td>Spoil-discharge assistant salah arah/parameter</td>
+                                         <td>Serpihan ke personel</td>
+                                         <td>Spoil-discharge assistant (uni/bi) (ECA)</td>
+                                         <td>Exclusion zone & jaring samping, preset arah & lock-parameter, toolbox tentang arah buang.</td>
+                                         <td><div class="risk-level" data-editable="true" tabindex="0" role="button">9</div></td>
+                                         <td><div class="risk-level" data-editable="true" tabindex="0" role="button">4</div></td>
+                                         <td>HSE; inspeksi visual</td>
+                                     </tr>
+                                     <tr>
+                                         <td>9</td>
+                                         <td>Slewing-angle display diabaikan</td>
+                                         <td>Counterweight mengenai barrier/orang</td>
+                                         <td>Slewing-angle display (ECA)</td>
+                                         <td>Pagar penuh zona sapuan + banksman; alarm slewing pada sudut terlarang.</td>
+                                         <td><div class="risk-level" data-editable="true" tabindex="0" role="button">8</div></td>
+                                         <td><div class="risk-level" data-editable="true" tabindex="0" role="button">4</div></td>
+                                         <td>TM/Banksman; patrol zona</td>
+                                     </tr>
+                                     <tr>
+                                         <td>10</td>
+                                         <td>Fault/alarm ditunda (operator overload informasi)</td>
+                                         <td>Operasi berlanjut dalam kondisi tidak aman</td>
+                                         <td>B-Control menampilkan fault plain-text (ECA)</td>
+                                         <td>Policy “Stop-to-Investigate”: semua Class-A alarms = stop; drill 2-mingguan respon E-stop/alarm.</td>
+                                         <td><div class="risk-level" data-editable="true" tabindex="0" role="button">12</div></td>
+                                         <td><div class="risk-level" data-editable="true" tabindex="0" role="button">5</div></td>
+                                         <td>Supervisor+HSE; audit alarm</td>
+                                     </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <button class="add-row-btn" data-target-table="riskTableBody-drilling-sensor">Tambah Baris (Sensor)</button>
+
+                        <h3>Analisis Risiko Perangkat Standar Lain</h3>
+                        <div class="risk-table-container">
+                            <table class="mainRiskTable" id="mainRiskTable-drilling-standard">
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Hazard & Skenario</th>
+                                        <th>Konsekuensi Utama</th>
+                                        <th>Safeguard Pabrikan / Standar</th>
+                                        <th>Control Measure Tambahan</th>
+                                        <th>Risiko Awal (R)</th>
+                                        <th>Risiko Residual (R)</th>
+                                        <th>PIC & Verifikasi</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="riskTableBody" id="riskTableBody-drilling-standard">
+                                    <tr>
+                                        <td>1</td>
+                                        <td>Visibilitas rendah (malam/debu/hujan) → operator/banksman tidak saling lihat</td>
+                                        <td>Tertabrak/near-miss</td>
+                                        <td>LED lighting on-board; kamera belakang. (ECA)</td>
+                                        <td>Menara lampu portable, pembasahan debu, angle anti-glare; inspeksi lampu & kamera setiap start-shift.</td>
+                                        <td><div class="risk-level" data-editable="true" tabindex="0" role="button">15</div></td>
+                                        <td><div class="risk-level" data-editable="true" tabindex="0" role="button">6</div></td>
+                                        <td>HSE; form pra-start lighting</td>
+                                    </tr>
+                                    <tr>
+                                        <td>2</td>
+                                        <td>Blind-spot saat mundur/slewing</td>
+                                        <td>Tertabrak pejalan kaki/kendaraan</td>
+                                        <td>Kamera area belakang; display sudut slewing. (ECA)</td>
+                                        <td>Segregasi rute & banksman ber-radio; pagar penuh swing-envelope; SOP “immobilise-and-enter”. (HSE)</td>
+                                        <td><div class="risk-level" data-editable="true" tabindex="0" role="button">15</div></td>
+                                        <td><div class="risk-level" data-editable="true" tabindex="0" role="button">6</div></td>
+                                        <td>Traffic Marshal; audit rute mingguan</td>
+                                    </tr>
+                                    <tr>
+                                        <td>3</td>
+                                        <td>Counterweight menyapu pagar (salah sudut)</td>
+                                        <td>Kerusakan pagar/cedera</td>
+                                        <td>Slewing-angle display. (ECA)</td>
+                                        <td>Physical slew-stop/no-go block; alarm kedua pada sudut terlarang; banksman di titik buta.</td>
+                                        <td><div class="risk-level" data-editable="true" tabindex="0" role="button">12</div></td>
+                                        <td><div class="risk-level" data-editable="true" tabindex="0" role="button">5</div></td>
+                                        <td>Supervisor; uji sudut terlarang</td>
+                                    </tr>
+                                    <tr>
+                                        <td>4</td>
+                                        <td>Pelepasan beban tak halus (shock-load) pada winch</td>
+                                        <td>Putus sling/alat rusak</td>
+                                        <td>Hydraulic freewheeling control pada main winch. (ECA)</td>
+                                        <td>Proving test hold/over-centre valve tiap start-shift; limit kedua di 90% SWL; NDT hook/lug bulanan.</td>
+                                        <td><div class="risk-level" data-editable="true" tabindex="0" role="button">10</div></td>
+                                        <td><div class="risk-level" data-editable="true" tabindex="0" role="button">4</div></td>
+                                        <td>Mechanic+Rigger; log uji</td>
+                                    </tr>
+                                    <tr>
+                                        <td>5</td>
+                                        <td>Alarm/fault muncul tapi diabaikan (overload informasi)</td>
+                                        <td>Operasi berlanjut dlm kondisi tidak aman</td>
+                                        <td>B-Control: fault plain text & display beban/ torsi. (ECA)</td>
+                                        <td>Kebijakan “Stop-to-Investigate” utk alarm prioritas; drill 2-mingguan respon alarm; dashboard DTR utk alarm Class-A.</td>
+                                        <td><div class="risk-level" data-editable="true" tabindex="0" role="button">12</div></td>
+                                        <td><div class="risk-level" data-editable="true" tabindex="0" role="button">5</div></td>
+                                        <td>Supervisor+HSE; audit alarm</td>
+                                    </tr>
+                                    <tr>
+                                        <td>6</td>
+                                        <td>Kamera kotor/condensation → citra tidak jelas</td>
+                                        <td>Salah keputusan manuver</td>
+                                        <td>Kamera belakang standar; opsi kamera winch. (ECA)</td>
+                                        <td>Cleaning schedule per-shift; pelindung lensa; checklist kualitas visual di pra-start.</td>
+                                        <td><div class="risk-level" data-editable="true" tabindex="0" role="button">9</div></td>
+                                        <td><div class="risk-level" data-editable="true" tabindex="0" role="button">4</div></td>
+                                        <td>Operator; checklist kamera</td>
+                                    </tr>
+                                    <tr>
+                                        <td>7</td>
+                                        <td>Akses servis berisiko (licin/kurang rapi)</td>
+                                        <td>Terslip/terjatuh</td>
+                                        <td>Integrated service platform (“no working @ height”). (ECA)</td>
+                                        <td>5S area servis (anti-slip, drain, handrail portabel saat guard dilepas); LOTO + PTW.</td>
+                                        <td><div class="risk-level" data-editable="true" tabindex="0" role="button">8</div></td>
+                                        <td><div class="risk-level" data-editable="true" tabindex="0" role="button">4</div></td>
+                                        <td>Mechanic; PTW & foto verifikasi</td>
+                                    </tr>
+                                    <tr>
+                                        <td>8</td>
+                                        <td>Paparan bising area (di luar kabin)</td>
+                                        <td>Gangguan pendengaran</td>
+                                        <td>Kebisingan kabin LPA 80 dB(A) (rujuk EN 16228). (ECA)</td>
+                                        <td>Noise mapping area; hearing protection zoning; rotasi kerja sesuai dosis harian.</td>
+                                        <td><div class="risk-level" data-editable="true" tabindex="0" role="button">9</div></td>
+                                        <td><div class="risk-level" data-editable="true" tabindex="0" role="button">4</div></td>
+                                        <td>HSE; spot-check dosimeter</td>
+                                    </tr>
+                                    <tr>
+                                        <td>9</td>
+                                        <td>Telemetri DTR tidak dimanfaatkan</td>
+                                        <td>“Early-warning” terlewat</td>
+                                        <td>DTR-module (opsional). (ECA)</td>
+                                        <td>Routing notifikasi ke WA/Email HSE; review tren harian (over-pull, tilt, alarm) utk tindakan cepat.</td>
+                                        <td><div class="risk-level" data-editable="true" tabindex="0" role="button">9</div></td>
+                                        <td><div class="risk-level" data-editable="true" tabindex="0" role="button">4</div></td>
+                                        <td>Supervisor; log review DTR</td>
+                                    </tr>
+                                    <tr>
+                                        <td>10</td>
+                                        <td>Signage & kontrol akses lemah di pagar</td>
+                                        <td>Orang masuk zona tanpa sadar</td>
+                                        <td>–</td>
+                                        <td>Rambu sesuai ISO 7010 + sistem gate berpenjaga; briefing rute harian untuk semua kru/tamunya.</td>
+                                        <td><div class="risk-level" data-editable="true" tabindex="0" role="button">8</div></td>
+                                        <td><div class="risk-level" data-editable="true" tabindex="0" role="button">4</div></td>
+                                        <td>HSE; inspeksi rambu & gate</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <button class="add-row-btn" data-target-table="riskTableBody-drilling-standard">Tambah Baris (Perangkat)</button>
+
+                    </section>
+                     <section id="peran-drilling">
+                        <h2>D) Peran & Verifikasi - Pengeboran</h2>
+                        <div class="risk-table-container">
+                             <table>
+                                 <thead>
+                                     <tr>
+                                         <th>Peran</th>
+                                         <th>Tugas & Tanggung Jawab Utama</th>
+                                         <th>Verifikasi yang Dilakukan</th>
+                                     </tr>
+                                 </thead>
+                                 <tbody>
+                                     <tr>
+                                         <td><strong>Geotechnical Engineer</strong></td>
+                                         <td>Menyediakan desain WPC, parameter pengeboran, dan melakukan perhitungan verifikasi tekanan tanah kuantitatif (q_demand vs q_allowable).</td>
+                                         <td>Menandatangani WPC dan hasil perhitungan verifikasi tekanan tanah. Memberikan disposisi tertulis jika kondisi tanah berubah.</td>
+                                     </tr>
+                                     <tr>
+                                         <td><strong>Site Supervisor</strong></td>
+                                         <td>Memastikan semua prasyarat, termasuk hasil verifikasi tekanan tanah yang disetujui, sudah lengkap sebelum memulai pekerjaan.</td>
+                                         <td>Memverifikasi bahwa dokumen perhitungan tekanan tanah ada dan disetujui. Memastikan pemasangan penutup lubang bor setelah selesai.</td>
+                                     </tr>
+                                     <tr>
+                                         <td><strong>Operator Rig</strong></td>
+                                         <td>Mengoperasikan rig sesuai parameter, memantau B-Tronic, dan melaporkan tanda-tanda awal instabilitas lubang bor.</td>
+                                         <td>Mengkonfirmasi pemahaman atas metode mitigasi keruntuhan lubang bor yang akan digunakan.</td>
+                                     </tr>
+                                      <tr>
+                                         <td><strong>HSE Officer</strong></td>
+                                         <td>Mengaudit implementasi pengamanan lubang bor terbuka dan efektivitas "Zona Merah".</td>
+                                         <td>Memastikan ketersediaan dan penggunaan penutup lubang bor yang sesuai standar.</td>
+                                     </tr>
+                                 </tbody>
+                             </table>
+                        </div>
+                    </section>
+                    <section id="checklist-drilling">
+                        <h2>E) Checklist Pra-Start - Pengeboran</h2>
+                          <h3>Dokumen & Verifikasi Area</h3>
+                        <label class="checklist-item">
+                            <input type="checkbox" class="checklist-box">
+                            <span>Working Platform Certificate (WPC) valid dan telah diverifikasi pasca hujan.</span>
+                        </label>
+                        <label class="checklist-item">
+                            <input type="checkbox" class="checklist-box">
+                            <span>Perhitungan Daya Dukung Tanah (q<sub>demand</sub> ≤ q<sub>allowable</sub>/FoS) telah selesai & disetujui.</span>
+                        </label>
+                         <label class="checklist-item">
+                            <input type="checkbox" class="checklist-box">
+                            <span>Penyediaan Steel Plate yang cukup sebagai platform kerja (jika diperlukan) telah diverifikasi untuk mitigasi risiko tanah lunak.</span>
+                        </label>
+                         <label class="checklist-item">
+                            <input type="checkbox" class="checklist-box">
+                            <span>Izin Gali & Izin Kerja dekat overhead line (jika ada) telah disetujui.</span>
+                        </label>
+                         <label class="checklist-item">
+                            <input type="checkbox" class="checklist-box">
+                            <span>"Zona Merah" sudah dibarikade & rencana mitigasi keruntuhan lubang bor (jika perlu) siap.</span>
+                        </label>
+                        <h3>Kesiapan Alat & Prosedur</h3>
+                         <label class="checklist-item">
+                            <input type="checkbox" class="checklist-box">
+                            <span>Pemeriksaan dan Pengecekan Harian (Pre-Start check) rig, winch, dan Kelly Bar (dengan go/no-go gauge) selesai.</span>
+                        </label>
+                         <label class="checklist-item">
+                            <input type="checkbox" class="checklist-box">
+                            <span>Sistem B-Tronic berfungsi: inclinometer, limit switch, alarm, & set-point torsi sudah diatur.</span>
+                        </label>
+                        <label class="checklist-item">
+                            <input type="checkbox" class="checklist-box">
+                            <span>Prosedur "Lock-Mark-Try" dan prosedur pengamanan lubang bor dipahami oleh tim.</span>
+                        </label>
+                         <label class="checklist-item">
+                            <input type="checkbox" class="checklist-box">
+                            <span>Penutup lubang bor (borehole cover) yang sesuai tersedia di lokasi.</span>
+                        </label>
+                    </section>
+                </div>
+                
+                <!-- ======================================================= -->
+                <!-- ACTIVITY - LIFTING CAGE (NEW)                         -->
+                <!-- ======================================================= -->
+                <div id="activity-lifting" class="activity-content">
+                    <p class="activity-description">
+                        Aktivitas ini mencakup proses pengangkatan dan pemasangan tulangan (rebar cage) ke dalam lubang bor menggunakan mobile crane. Fokus utama adalah pada perencanaan pengangkatan yang aman, integritas peralatan angkat, dan koordinasi tim untuk mencegah jatuhan material dan memastikan penempatan yang akurat.
+                    </p>
+                    <section id="prasyarat-lifting">
+                        <h2>A) Prasyarat Sebelum Lifting Cage</h2>
+                        <h3>1. Dokumen & Perizinan Pengangkatan</h3>
+                        <ul>
+                            <li><strong>Lifting Plan:</strong> Wajib ada lifting plan yang disetujui, mencakup detail berat cage, radius kerja crane, kapasitas crane, jenis lifting gear, dan urutan kerja.</li>
+                            <li><strong>Sertifikasi & Inspeksi:</strong> Pastikan SIO Operator Crane, Sertifikat Rigger, dan Sertifikat Juru Ikat (jika berbeda) valid. Dokumen inspeksi crane (SIA) dan lifting gear (sertifikat & color code) harus terbaru dan tersedia.</li>
+                            <li><strong>Izin Kerja (PTW):</strong> Izin kerja khusus untuk aktivitas pengangkatan (lifting permit) harus diterbitkan dan disetujui.</li>
+                        </ul>
+                        <h3>2. Penyiapan Area & Peralatan</h3>
+                        <ul>
+                            <li><strong>Posisi Crane:</strong> Area landasan crane (crane pad) harus rata, padat, dan telah diverifikasi kapasitas dukungnya untuk menahan beban crane dan cage. Jaga jarak aman dari galian atau tepi yang tidak stabil.</li>
+                            <li><strong>Zona Eksklusi & Jalur Angkat:</strong> Barikade area di bawah jalur angkat (swing radius). Pastikan tidak ada personel yang tidak berkepentingan di dalam zona tersebut. Jauhkan jalur angkat dari kabel listrik (overhead lines).</li>
+                            <li><strong>Peralatan Angkat (Lifting Gear):</strong> Gunakan spreader beam jika panjang cage melebihi 6 meter untuk mencegah tekuk. Semua shackle, sling, dan hook harus sesuai dengan SWL (Safe Working Load) dan telah diinspeksi.</li>
+                            <li><strong>Tagline:</strong> Siapkan minimal 2 tagline untuk mengendalikan ayunan cage.</li>
+                        </ul>
+                        <h3>3. Kesiapan Tim & Kondisi Lingkungan</h3>
+                        <ul>
+                            <li><strong>Toolbox Meeting:</strong> Lakukan briefing yang dipimpin oleh lifting supervisor. Bahas lifting plan, peran masing-masing (operator, rigger, signalman), sinyal komunikasi, dan prosedur darurat.</li>
+                            <li><strong>Komunikasi:</strong> Pastikan radio komunikasi antara signalman dan operator crane berfungsi dengan baik.</li>
+                            <li><strong>Kondisi Cuaca:</strong> Hentikan pekerjaan jika kecepatan angin melebihi batas aman yang ditentukan pabrikan crane (umumnya sekitar 12.5 m/s) atau saat terjadi hujan lebat yang mengganggu jarak pandang.</li>
+                        </ul>
+                    </section>
+                    <section id="metode-lifting">
+                        <h2>B) Metode Kerja Lifting Cage (Step-by-Step)</h2>
+                        <ol>
+                            <li><strong>Inspeksi Pra-Angkat:</strong> Rigger dan lifting supervisor melakukan inspeksi terakhir pada semua lifting gear dan titik angkat (lifting points) pada rebar cage.</li>
+                            <li><strong>Pemasangan Rigging & Tagline:</strong> Pasang sling, shackle, dan spreader beam (jika perlu) pada cage sesuai lifting plan. Pasang tagline di kedua ujung cage.</li>
+                            <li><strong>Komunikasi & Area Steril:</strong> Signalman memposisikan diri di lokasi yang terlihat jelas oleh operator crane dan dapat memantau seluruh proses. Pastikan zona eksklusi telah steril.</li>
+                            <li><strong>Uji Angkat (Trial Lift):</strong> Atas instruksi signalman, operator mengangkat cage sekitar 10-20 cm dari tanah. Tahan posisi untuk memeriksa keseimbangan, stabilitas, dan fungsi rem crane.</li>
+                            <li><strong>Proses Pengangkatan & Manuver:</strong> Setelah uji angkat berhasil, lanjutkan mengangkat cage secara perlahan ke ketinggian yang aman. Gunakan tagline untuk mengarahkan dan mencegah ayunan. Manuver (swing/boom) dilakukan dengan gerakan halus.</li>
+                            <li><strong>Penurunan ke Lubang Bor:</strong> Posisikan cage tepat di atas lubang bor. Turunkan secara perlahan, dipandu oleh tim di darat untuk memastikan tidak tersangkut di dinding lubang.</li>
+                            <li><strong>Pelepasan Rigging:</strong> Setelah cage duduk dengan aman pada posisi finalnya, lepaskan tegangan pada sling. Rigger melepaskan shackle dan lifting gear lainnya dengan aman.</li>
+                            <li><strong>Selesaikan Pekerjaan:</strong> Jauhkan hook crane dari area kerja. Lepas barikade setelah crane meninggalkan lokasi dan area dinyatakan aman.</li>
+                        </ol>
+                    </section>
+                    <section id="risk-assessment-lifting">
+                        <h2>C) Risk Assessment - Lifting Cage</h2>
+                        <p>Klik pada angka risiko untuk mengubah nilainya.</p>
+                        <div class="risk-table-container">
+                            <table class="mainRiskTable" id="mainRiskTable-lifting">
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Bahaya & Skenario Rinci</th>
+                                        <th>Potensi Konsekuensi Utama</th>
+                                        <th>Tindakan Pengendalian</th>
+                                        <th>Risiko Awal (R)</th>
+                                        <th>Risiko Residual (R)</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="riskTableBody" id="riskTableBody-lifting">
+                                    <tr>
+                                        <td>1</td>
+                                        <td><strong>Kegagalan Crane / Tanah Amblas</strong> (Outrigger tidak stabil, kapasitas dukung tanah tidak cukup)</td>
+                                        <td>Crane terguling, jatuhan material masif, fatal.</td>
+                                        <td>Wajibkan lifting plan yang disetujui. Lakukan verifikasi kapasitas dukung tanah. Gunakan outrigger pad yang sesuai. Jaga radius kerja sesuai load chart.</td>
+                                        <td><div class="risk-level" data-editable="true" tabindex="0" role="button">20</div></td>
+                                        <td><div class="risk-level" data-editable="true" tabindex="0" role="button">5</div></td>
+                                    </tr>
+                                    <tr>
+                                        <td>2</td>
+                                        <td><strong>Jatuhan Material (Dropped Object)</strong> (Kegagalan sling/shackle, titik angkat pada cage patah)</td>
+                                        <td>Cedera fatal pada personel di bawah, kerusakan properti.</td>
+                                        <td>Gunakan lifting gear bersertifikat dengan SWL yang sesuai. Lakukan inspeksi pra-pakai. Desain titik angkat yang memadai pada cage. Buat zona eksklusi yang ketat.</td>
+                                        <td><div class="risk-level" data-editable="true" tabindex="0" role="button">20</div></td>
+                                        <td><div class="risk-level" data-editable="true" tabindex="0" role="button">4</div></td>
+                                    </tr>
+                                    <tr>
+                                        <td>3</td>
+                                        <td><strong>Beban Berayun (Swinging Load)</strong> (Angin kencang, gerakan crane mendadak)</td>
+                                        <td>Menabrak personel atau struktur di sekitar, menyebabkan crush injury atau kerusakan.</td>
+                                        <td>Gunakan minimal 2 tagline. Hentikan pekerjaan saat angin kencang. Operator harus melakukan gerakan yang halus dan terkontrol.</td>
+                                        <td><div class="risk-level" data-editable="true" tabindex="0" role="button">12</div></td>
+                                        <td><div class="risk-level" data-editable="true" tabindex="0" role="button">4</div></td>
+                                    </tr>
+                                    <tr>
+                                        <td>4</td>
+                                        <td><strong>Personel Jatuh ke Lubang Bor</strong> (Saat memandu cage masuk atau melepas rigging)</td>
+                                        <td>Cedera serius atau fatal.</td>
+                                        <td>Wajibkan penggunaan fall restraint system jika bekerja di dekat tepi lubang. Pasang barikade fisik di sekeliling lubang. Pasang penutup lubang sementara jika ditinggal.</td>
+                                        <td><div class="risk-level" data-editable="true" tabindex="0" role="button">15</div></td>
+                                        <td><div class="risk-level" data-editable="true" tabindex="0" role="button">5</div></td>
+                                    </tr>
+                                    <tr>
+                                        <td>5</td>
+                                        <td><strong>Titik Jepit (Pinch Point)</strong> (Tangan terjepit saat memasang shackle atau memandu cage)</td>
+                                        <td>Cedera serius pada tangan atau jari.</td>
+                                        <td>Wajibkan penggunaan sarung tangan heavy-duty. Terapkan kebijakan "hands-off" saat beban mulai menegang. Gunakan tagline untuk memandu, bukan tangan langsung.</td>
+                                        <td><div class="risk-level" data-editable="true" tabindex="0" role="button">9</div></td>
+                                        <td><div class="risk-level" data-editable="true" tabindex="0" role="button">3</div></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <button class="add-row-btn" data-target-table="riskTableBody-lifting">Tambah Baris Baru</button>
+                    </section>
+                    <section id="peran-lifting">
+                        <h2>D) Peran & Verifikasi - Lifting Cage</h2>
+                        <div class="risk-table-container">
+                             <table>
+                                 <thead>
+                                     <tr>
+                                         <th>Peran</th>
+                                         <th>Tugas & Tanggung Jawab Utama</th>
+                                         <th>Verifikasi yang Dilakukan</th>
+                                     </tr>
+                                 </thead>
+                                 <tbody>
+                                     <tr>
+                                         <td><strong>Lifting Supervisor</strong></td>
+                                         <td>Memastikan seluruh aspek lifting plan dijalankan. Memimpin Toolbox Meeting dan memberikan komando GO/NO-GO untuk memulai pengangkatan.</td>
+                                         <td>Menandatangani lifting plan dan izin kerja. Memverifikasi semua sertifikasi personel dan peralatan valid.</td>
+                                     </tr>
+                                     <tr>
+                                         <td><strong>Operator Crane</strong></td>
+                                         <td>Mengoperasikan crane sesuai load chart dan sinyal dari signalman. Melakukan inspeksi harian crane.</td>
+                                         <td>Mengkonfirmasi pemahaman atas lifting plan dan sinyal tangan/radio. Memastikan load moment indicator (LMI) berfungsi.</td>
+                                     </tr>
+                                     <tr>
+                                         <td><strong>Rigger / Juru Ikat</strong></td>
+                                         <td>Memilih, menginspeksi, dan memasang lifting gear sesuai lifting plan. Memasang dan mengendalikan tagline.</td>
+                                         <td>Memastikan color code pada lifting gear sesuai dengan periode inspeksi yang berlaku.</td>
+                                     </tr>
+                                     <tr>
+                                         <td><strong>Signalman / Pemandu</strong></td>
+                                         <td>Menjadi satu-satunya pemberi sinyal kepada operator crane. Memastikan jalur angkat aman dan zona eksklusi steril.</td>
+                                         <td>Mengkonfirmasi jalur komunikasi radio dengan operator jernih sebelum pengangkatan dimulai.</td>
+                                     </tr>
+                                 </tbody>
+                             </table>
+                        </div>
+                    </section>
+                    <section id="checklist-lifting">
+                        <h2>E) Checklist Pra-Start - Lifting Cage</h2>
+                        <h3>Dokumen & Perizinan</h3>
+                        <label class="checklist-item">
+                            <input type="checkbox" class="checklist-box">
+                            <span>Lifting Plan telah disetujui oleh personel yang berwenang.</span>
+                        </label>
+                        <label class="checklist-item">
+                            <input type="checkbox" class="checklist-box">
+                            <span>Izin Kerja Angkat (Lifting Permit) valid.</span>
+                        </label>
+                        <label class="checklist-item">
+                            <input type="checkbox" class="checklist-box">
+                            <span>Sertifikat Crane, Operator, dan Rigger tersedia dan valid.</span>
+                        </label>
+                        <h3>Area & Peralatan</h3>
+                        <label class="checklist-item">
+                            <input type="checkbox" class="checklist-box">
+                            <span>Landasan crane rata, padat, dan outrigger terpasang penuh di atas pad.</span>
+                        </label>
+                        <label class="checklist-item">
+                            <input type="checkbox" class="checklist-box">
+                            <span>Semua lifting gear (sling, shackle) telah diinspeksi dan sesuai SWL.</span>
+                        </label>
+                        <label class="checklist-item">
+                            <input type="checkbox" class="checklist-box">
+                            <span>Zona eksklusi telah dibarikade dan steril dari personel tidak berkepentingan.</span>
+                        </label>
+                        <h3>Tim & Kondisi</h3>
+                        <label class="checklist-item">
+                            <input type="checkbox" class="checklist-box">
+                            <span>Toolbox Meeting telah dilakukan dan dihadiri seluruh tim.</span>
+                        </label>
+                        <label class="checklist-item">
+                            <input type="checkbox" class="checklist-box">
+                            <span>Komunikasi radio antara operator dan signalman telah dites.</span>
+                        </label>
+                        <label class="checklist-item">
+                            <input type="checkbox" class="checklist-box">
+                            <span>Kecepatan angin berada di bawah batas aman.</span>
+                        </label>
+                    </section>
+                </div>
+
+                <!-- ======================================================= -->
+                <!-- ACTIVITY - LIFTING CASING (NEW)                       -->
+                <!-- ======================================================= -->
+                <div id="activity-casing" class="activity-content">
+                    <p class="activity-description">
+                        Proses pengangkatan, penyambungan, dan pemasangan casing baja ke dalam lubang bor. Aktivitas ini kritis untuk menjaga stabilitas lubang bor dan membutuhkan koordinasi yang presisi untuk menghindari kerusakan casing dan bahaya bagi tim kerja.
+                    </p>
+                    <section id="prasyarat-casing">
+                        <h2>A) Prasyarat Sebelum Lifting Casing</h2>
+                        <h3>1. Dokumen & Perencanaan</h3>
+                        <ul>
+                            <li><strong>Lifting Plan & Prosedur Pemasangan:</strong> Lifting plan harus mencakup berat per segmen casing, metode pengangkatan (misal: casing clamp, lug), dan urutan penyambungan.</li>
+                            <li><strong>Sertifikasi & Inspeksi:</strong> Sertifikat crane/winch, operator, rigger, dan welder (jika penyambungan dilas) harus valid. Semua lifting gear, termasuk casing clamp, harus diinspeksi.</li>
+                            <li><strong>Izin Kerja (PTW):</strong> Izin kerja pengangkatan dan izin kerja panas (jika ada pengelasan) wajib disetujui.</li>
+                        </ul>
+                        <h3>2. Penyiapan Area & Peralatan</h3>
+                        <ul>
+                            <li><strong>Area Kerja Stabil:</strong> Pastikan area di sekitar lubang bor stabil dan mampu menahan beban crane, tumpukan casing, dan peralatan lainnya.</li>
+                            <li><strong>Peralatan Khusus:</strong> Siapkan casing clamp yang sesuai dengan diameter dan berat casing. Siapkan peralatan untuk penyambungan (mesin las, kunci torsi untuk baut).</li>
+                            <li><strong>Vibrator / Oscillator:</strong> Jika metode pemasangan menggunakan vibrator, pastikan unit telah diinspeksi dan operatornya kompeten. Lakukan asesmen risiko getaran terhadap struktur sekitar.</li>
+                        </ul>
+                        <h3>3. Kesiapan Tim</h3>
+                        <ul>
+                            <li><strong>Toolbox Meeting:</strong> Bahas metode pengangkatan, teknik penyambungan, bahaya titik jepit, prosedur komunikasi, dan rencana darurat (misal: casing macet).</li>
+                            <li><strong>APD Spesifik:</strong> Selain APD dasar, siapkan APD untuk pengelasan (topeng las, sarung tangan kulit) dan pelindung pendengaran jika menggunakan vibrator.</li>
+                        </ul>
+                    </section>
+                    <section id="metode-casing">
+                        <h2>B) Metode Kerja Lifting Casing (Step-by-Step)</h2>
+                        <ol>
+                            <li><strong>Posisikan Casing Pertama:</strong> Angkat segmen casing pertama dan posisikan secara vertikal di atas lubang bor.</li>
+                            <li><strong>Pemasangan Awal:</strong> Turunkan casing secara perlahan ke dalam lubang. Gunakan level untuk memastikan casing masuk secara vertikal.</li>
+                            <li><strong>Pemasangan dengan Vibrator (Jika Digunakan):</strong> Pasang vibro hammer ke casing. Nyalakan vibrator dan tekan casing ke dalam tanah dengan kecepatan terkontrol. Pantau vertikalitas secara terus-menerus.</li>
+                            <li><strong>Penyambungan Segmen:</strong> Angkat segmen berikutnya, posisikan tepat di atas segmen yang sudah terpasang. Lakukan penyambungan (pengelasan atau baut) sesuai spesifikasi teknis.</li>
+                            <li><strong>Lanjutkan Pemasangan:</strong> Ulangi proses pengangkatan, penyambungan, dan penekanan hingga casing mencapai kedalaman desain.</li>
+                            <li><strong>Pelepasan Alat:</strong> Setelah selesai, lepaskan semua alat angkat dan vibrator dari casing dengan aman.</li>
+                        </ol>
+                    </section>
+                    <section id="risk-assessment-casing">
+                        <h2>C) Risk Assessment - Lifting Casing</h2>
+                        <p>Klik pada angka risiko untuk mengubah nilainya.</p>
+                        <div class="risk-table-container">
+                            <table class="mainRiskTable" id="mainRiskTable-casing">
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Bahaya & Skenario Rinci</th>
+                                        <th>Potensi Konsekuensi Utama</th>
+                                        <th>Tindakan Pengendalian</th>
+                                        <th>Risiko Awal (R)</th>
+                                        <th>Risiko Residual (R)</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="riskTableBody" id="riskTableBody-casing">
+                                    <tr>
+                                        <td>1</td>
+                                        <td><strong>Kegagalan Alat Angkat / Casing Clamp</strong> (Clamp selip atau sling putus saat mengangkat)</td>
+                                        <td>Jatuhnya segmen casing, fatal.</td>
+                                        <td>Gunakan casing clamp bersertifikat dengan SWL yang sesuai. Inspeksi clamp dan lifting gear sebelum setiap pengangkatan. Terapkan zona eksklusi yang ketat.</td>
+                                        <td><div class="risk-level" data-editable="true" tabindex="0" role="button">20</div></td>
+                                        <td><div class="risk-level" data-editable="true" tabindex="0" role="button">4</div></td>
+                                    </tr>
+                                    <tr>
+                                        <td>2</td>
+                                        <td><strong>Titik Jepit saat Penyambungan</strong> (Tangan atau jari terjepit di antara dua segmen casing)</td>
+                                        <td>Amputasi atau cedera remuk yang parah.</td>
+                                        <td>Gunakan alat bantu untuk memandu (guide tool). Terapkan kebijakan "hands-off" saat segmen diturunkan. Komunikasi yang jelas antara rigger dan operator.</td>
+                                        <td><div class="risk-level" data-editable="true" tabindex="0" role="button">16</div></td>
+                                        <td><div class="risk-level" data-editable="true" tabindex="0" role="button">4</div></td>
+                                    </tr>
+                                    <tr>
+                                        <td>3</td>
+                                        <td><strong>Bahaya Pengelasan</strong> (Percikan api, sengatan listrik, paparan asap las)</td>
+                                        <td>Kebakaran, luka bakar, kerusakan mata, gangguan pernapasan.</td>
+                                        <td>Wajibkan Izin Kerja Panas. Siapkan APAR. Gunakan APD las yang lengkap. Pastikan grounding mesin las baik dan area berventilasi.</td>
+                                        <td><div class="risk-level" data-editable="true" tabindex="0" role="button">12</div></td>
+                                        <td><div class="risk-level" data-editable="true" tabindex="0" role="button">4</div></td>
+                                    </tr>
+                                    <tr>
+                                        <td>4</td>
+                                        <td><strong>Bahaya Getaran & Kebisingan</strong> (Dari vibro hammer)</td>
+                                        <td>Gangguan pendengaran, kerusakan pada struktur/utilitas sekitar.</td>
+                                        <td>Lakukan survei struktur/utilitas sebelum memulai. Wajibkan penggunaan pelindung pendengaran (earmuff/earplug). Rotasi kerja untuk personel yang terpapar.</td>
+                                        <td><div class="risk-level" data-editable="true" tabindex="0" role="button">9</div></td>
+                                        <td><div class="risk-level" data-editable="true" tabindex="0" role="button">4</div></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <button class="add-row-btn" data-target-table="riskTableBody-casing">Tambah Baris Baru</button>
+                    </section>
+                    <section id="peran-casing">
+                        <h2>D) Peran & Verifikasi - Lifting Casing</h2>
+                        <div class="risk-table-container">
+                             <table>
+                                 <thead>
+                                     <tr>
+                                         <th>Peran</th>
+                                         <th>Tugas & Tanggung Jawab Utama</th>
+                                         <th>Verifikasi yang Dilakukan</th>
+                                     </tr>
+                                 </thead>
+                                 <tbody>
+                                     <tr>
+                                         <td><strong>Supervisor</strong></td>
+                                         <td>Memastikan semua prasyarat terpenuhi, termasuk verifikasi vertikalitas casing secara berkala.</td>
+                                         <td>Menyetujui Izin Kerja dan memastikan tim memahami metode kerja yang spesifik (misal: pengelasan, vibrasi).</td>
+                                     </tr>
+                                     <tr>
+                                         <td><strong>Operator Crane / Rig</strong></td>
+                                         <td>Mengangkat dan menurunkan segmen casing dengan gerakan yang sangat halus dan terkontrol, hanya berdasarkan perintah dari signalman.</td>
+                                         <td>Memastikan alat angkat (winch/crane) dalam kondisi prima dan LMI berfungsi (jika menggunakan crane).</td>
+                                     </tr>
+                                     <tr>
+                                         <td><strong>Rigger & Banksman</strong></td>
+                                         <td>Memasang casing clamp dengan benar, memandu casing masuk ke lubang, dan mengawasi titik jepit.</td>
+                                         <td>Memverifikasi bahwa casing clamp terkunci dengan aman sebelum setiap pengangkatan.</td>
+                                     </tr>
+                                     <tr>
+                                         <td><strong>Welder</strong></td>
+                                         <td>Melakukan penyambungan las antar segmen casing sesuai dengan Welding Procedure Specification (WPS).</td>
+                                         <td>Memastikan area kerja aman dari bahan mudah terbakar dan APD las lengkap sebelum memulai pekerjaan.</td>
+                                     </tr>
+                                 </tbody>
+                             </table>
+                        </div>
+                    </section>
+                    <section id="checklist-casing">
+                        <h2>E) Checklist Pra-Start - Lifting Casing</h2>
+                        <label class="checklist-item">
+                            <input type="checkbox" class="checklist-box">
+                            <span>Lifting Plan dan Izin Kerja (termasuk Izin Kerja Panas jika perlu) telah disetujui.</span>
+                        </label>
+                        <label class="checklist-item">
+                            <input type="checkbox" class="checklist-box">
+                            <span>Casing clamp dan semua lifting gear telah diinspeksi visual.</span>
+                        </label>
+                        <label class="checklist-item">
+                            <input type="checkbox" class="checklist-box">
+                            <span>Peralatan las dan APD las lengkap (jika ada pengelasan).</span>
+                        </label>
+                        <label class="checklist-item">
+                            <input type="checkbox" class="checklist-box">
+                            <span>Peralatan tanggap darurat (APAR, P3K) tersedia di lokasi.</span>
+                        </label>
+                        <label class="checklist-item">
+                            <input type="checkbox" class="checklist-box">
+                            <span>Toolbox meeting yang membahas bahaya spesifik (titik jepit, pengelasan) telah dilakukan.</span>
+                        </label>
+                    </section>
+                </div>
+
+                <!-- ======================================================= -->
+                <!-- ACTIVITY 4: REFUELING (was 4)                         -->
+                <!-- ======================================================= -->
+                <div id="activity-refueling" class="activity-content">
+                    <p class="activity-description">
+                        Aktivitas ini mencakup pengisian bahan bakar diesel untuk rig. Fokus utama adalah pencegahan kebakaran, tumpahan ke lingkungan, dan paparan bahan kimia pada personel.
+                    </p>
+                    <section id="prasyarat-refueling">
+                        <h2>A) Prasyarat Sebelum Pengisian BBM</h2>
+                        <h3>1. Penentuan Lokasi & Kesiapan Area</h3>
+                        <ul>
+                            <li><strong>Lokasi Aman:</strong> Pengisian dilakukan di area yang telah ditentukan (designated area), rata, stabil, dan berjarak minimal 15 meter dari sumber api terbuka, area pengelasan, atau bahan mudah terbakar lainnya.</li>
+                            <li><strong>Ventilasi:</strong> Pastikan area memiliki sirkulasi udara yang baik untuk mencegah akumulasi uap bahan bakar.</li>
+                            <li><strong>Kesiapan Tanggap Darurat:</strong> Pastikan minimal 2 unit APAR jenis Dry Powder (ABC) 9kg dan spill kit yang memadai tersedia dan mudah dijangkau (tidak lebih dari 10 meter).</li>
+                        </ul>
+                        <h3>2. Isolasi Energi & Kesiapan Alat</h3>
+                        <ul>
+                            <li><strong>Mesin Wajib Mati:</strong> Mesin rig harus dalam kondisi mati total. Kunci kontak dicabut dan prosedur LOTO (Lockout-Tagout) sederhana diterapkan (misal: memasang tag "DILARANG MENGOPERASIKAN").</li>
+                            <li><strong>Peralatan Pengisian:</strong> Inspeksi kondisi selang, nozzle, dan pompa bahan bakar. Pastikan tidak ada kebocoran atau kerusakan. Gunakan nozzle dengan fitur auto-shutoff jika tersedia.</li>
+                            <li><strong>Bonding & Grounding:</strong> Siapkan kabel bonding untuk dipasang antara tangki penyimpanan (truk BBM) dan tangki rig untuk mencegah percikan api dari listrik statis.</li>
+                        </ul>
+                        <h3>3. Kesiapan Personel</h3>
+                        <ul>
+                            <li><strong>Kompetensi:</strong> Hanya personel yang telah dilatih dan ditunjuk yang boleh melakukan pengisian bahan bakar.</li>
+                            <li><strong>APD Wajib:</strong> Personel wajib menggunakan sarung tangan nitrile (tahan bahan kimia), kacamata keselamatan (safety glasses), dan sepatu keselamatan. Dilarang merokok atau membawa ponsel.</li>
+                            <li><strong>MSDS:</strong> Pastikan Material Safety Data Sheet (MSDS) untuk solar/diesel tersedia dan telah dipahami oleh personel.</li>
+                        </ul>
+                    </section>
+                    <section id="metode-refueling">
+                        <h2>B) Metode Kerja Pengisian BBM (Step-by-Step)</h2>
+                        <ol>
+                            <li><strong>Posisikan Unit:</strong> Parkirkan rig dan kendaraan tangki BBM di lokasi yang telah ditentukan. Aktifkan rem parkir dan ganjal roda.</li>
+                            <li><strong>Isolasi & Barikade:</strong> Matikan mesin rig. Pasang barikade dan rambu "AWAS - PENGISIAN BAHAN BAKAR" di sekitar area.</li>
+                            <li><strong>Pasang Bonding:</strong> Hubungkan kabel bonding dari badan metal truk tangki ke badan metal rig sebelum membuka tutup tangki manapun.</li>
+                            <li><strong>Lakukan Pengisian:</strong> Buka tutup tangki rig secara perlahan untuk melepaskan tekanan. Masukkan nozzle dan lakukan pengisian dengan laju aliran yang terkontrol untuk menghindari percikan.</li>
+                            <li><strong>Jangan Mengisi Penuh:</strong> Sisakan ruang kosong sekitar 5-10% dari kapasitas tangki untuk ekspansi bahan bakar (ullage).</li>
+                            <li><strong>Selesaikan Pengisian:</strong> Setelah selesai, lepaskan nozzle dengan hati-hati. Tutup kembali tangki rig dengan rapat.</li>
+                            <li><strong>Lepas Bonding:</strong> Lepaskan kabel bonding SETELAH semua tutup tangki tertutup rapat.</li>
+                            <li><strong>Pembersihan & Inspeksi:</strong> Periksa area dari tumpahan. Jika ada tumpahan kecil, segera bersihkan dengan spill kit. Laporkan setiap tumpahan besar kepada pengawas.</li>
+                            <li><strong>Selesaikan Pekerjaan:</strong> Lepas barikade dan rambu. Kendaraan tangki BBM meninggalkan area dengan aman.</li>
+                        </ol>
+                    </section>
+                    <section id="risk-assessment-refueling">
+                        <h2>C) Risk Assessment - Pengisian BBM</h2>
+                        <p>Klik pada angka risiko untuk mengubah nilainya.</p>
+                        <div class="risk-table-container">
+                            <table class="mainRiskTable" id="mainRiskTable-refueling">
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Bahaya & Skenario Rinci</th>
+                                        <th>Potensi Konsekuensi Utama</th>
+                                        <th>Tindakan Pengendalian</th>
+                                        <th>Risiko Awal (R)</th>
+                                        <th>Risiko Residual (R)</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="riskTableBody" id="riskTableBody-refueling">
+                                    <tr>
+                                        <td>1</td>
+                                        <td><strong>Kebakaran/Ledakan</strong> (Uap BBM tersulut oleh listrik statis, mesin panas, atau sumber api eksternal)</td>
+                                        <td>Luka bakar serius, fatal, kerusakan properti masif.</td>
+                                        <td>Wajibkan mesin mati & LOTO. Pasang bonding/grounding. Terapkan zona larangan merokok & ponsel 15m. Sediakan APAR.</td>
+                                        <td><div class="risk-level" data-editable="true" tabindex="0" role="button">20</div></td>
+                                        <td><div class="risk-level" data-editable="true" tabindex="0" role="button">4</div></td>
+                                    </tr>
+                                    <tr>
+                                        <td>2</td>
+                                        <td><strong>Tumpahan Bahan Bakar</strong> (Selang pecah, pengisian berlebih, nozzle lepas)</td>
+                                        <td>Pencemaran tanah & air, risiko tergelincir, kerugian material.</td>
+                                        <td>Siapkan spill kit. Jangan tinggalkan proses pengisian. Jangan mengisi tangki sampai penuh (sisakan ullage). Inspeksi selang & nozzle.</td>
+                                        <td><div class="risk-level" data-editable="true" tabindex="0" role="button">12</div></td>
+                                        <td><div class="risk-level" data-editable="true" tabindex="0" role="button">4</div></td>
+                                    </tr>
+                                    <tr>
+                                        <td>3</td>
+                                        <td><strong>Paparan Bahan Kimia</strong> (Kontak kulit, inhalasi uap solar)</td>
+                                        <td>Iritasi kulit, pusing, gangguan pernapasan jangka panjang.</td>
+                                        <td>Wajibkan penggunaan APD (sarung tangan nitrile, kacamata). Pastikan ventilasi baik. Review MSDS.</td>
+                                        <td><div class="risk-level" data-editable="true" tabindex="0" role="button">9</div></td>
+                                        <td><div class="risk-level" data-editable="true" tabindex="0" role="button">3</div></td>
+                                    </tr>
+                                    <tr>
+                                        <td>4</td>
+                                        <td><strong>Interaksi Lalu Lintas</strong> (Kendaraan lain menabrak area pengisian)</td>
+                                        <td>Tabrakan, tumpahan, potensi kebakaran.</td>
+                                        <td>Pilih lokasi yang jauh dari jalur lalu lintas utama. Pasang barikade fisik (bukan hanya safety line) dan rambu peringatan.</td>
+                                        <td><div class="risk-level" data-editable="true" tabindex="0" role="button">10</div></td>
+                                        <td><div class="risk-level" data-editable="true" tabindex="0" role="button">4</div></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <button class="add-row-btn" data-target-table="riskTableBody-refueling">Tambah Baris Baru</button>
+                    </section>
+                    <section id="peran-refueling">
+                        <h2>D) Peran & Verifikasi - Pengisian BBM</h2>
+                        <div class="risk-table-container">
+                             <table>
+                                 <thead>
+                                     <tr>
+                                         <th>Peran</th>
+                                         <th>Tugas & Tanggung Jawab Utama</th>
+                                         <th>Verifikasi yang Dilakukan</th>
+                                     </tr>
+                                 </thead>
+                                 <tbody>
+                                     <tr>
+                                         <td><strong>Pengawas Lapangan</strong></td>
+                                         <td>Memastikan lokasi pengisian aman dan semua peralatan tanggap darurat (APAR, spill kit) tersedia sebelum pekerjaan dimulai.</td>
+                                         <td>Menandatangani izin kerja jika diperlukan. Memastikan hanya personel yang ditunjuk yang melakukan tugas.</td>
+                                     </tr>
+                                     <tr>
+                                         <td><strong>Operator / Mekanik</strong></td>
+                                         <td>Melaksanakan pengisian bahan bakar sesuai prosedur, termasuk mematikan mesin, memasang bonding, dan menggunakan APD.</td>
+                                         <td>Melakukan inspeksi visual pada peralatan pengisian sebelum digunakan. Mengkonfirmasi mesin sudah LOTO.</td>
+                                     </tr>
+                                     <tr>
+                                         <td><strong>HSE Officer</strong></td>
+                                         <td>Melakukan inspeksi periodik untuk memastikan kepatuhan terhadap prosedur, ketersediaan APAR, spill kit, dan MSDS.</td>
+                                         <td>Memverifikasi bahwa personel yang bertugas telah menerima pelatihan penanganan bahan bakar dan tanggap darurat tumpahan.</td>
+                                     </tr>
+                                 </tbody>
+                             </table>
+                        </div>
+                    </section>
+                    <section id="checklist-refueling">
+                        <h2>E) Checklist Pra-Start - Pengisian BBM</h2>
+                        <h3>Kesiapan Area & Alat</h3>
+                        <label class="checklist-item">
+                            <input type="checkbox" class="checklist-box">
+                            <span>Lokasi aman, berjarak >15m dari sumber api.</span>
+                        </label>
+                        <label class="checklist-item">
+                            <input type="checkbox" class="checklist-box">
+                            <span>Mesin rig sudah dalam kondisi MATI, kunci dicabut.</span>
+                        </label>
+                        <label class="checklist-item">
+                            <input type="checkbox" class="checklist-box">
+                            <span>APAR (min. 2 unit) dan Spill Kit tersedia & mudah dijangkau.</span>
+                        </label>
+                        <label class="checklist-item">
+                            <input type="checkbox" class="checklist-box">
+                            <span>Kabel bonding/grounding sudah terpasang.</span>
+                        </label>
+                        <h3>Kesiapan Personel</h3>
+                        <label class="checklist-item">
+                            <input type="checkbox" class="checklist-box">
+                            <span>Personel menggunakan APD (sarung tangan nitrile, kacamata).</span>
+                        </label>
+                        <label class="checklist-item">
+                            <input type="checkbox" class="checklist-box">
+                            <span>Area bebas dari aktivitas merokok atau penggunaan ponsel.</span>
+                        </label>
+                    </section>
+                </div>
+
+                <!-- ======================================================= -->
+                <!-- ACTIVITY 5: MAINTENANCE                               -->
+                <!-- ======================================================= -->
+                 <div id="activity-maintenance" class="activity-content">
+                    <p class="activity-description">
+                        Aktivitas ini mencakup perawatan rutin (preventive) dan perbaikan (corrective) pada rig. Fokus utama adalah pada isolasi energi berbahaya (LOTO), penanganan komponen berat, dan bekerja secara aman untuk memastikan keselamatan mekanik dan keandalan alat sesuai standar manufaktur dan regulasi K3.
+                    </p>
+                    <section id="prasyarat-maintenance">
+                        <h2>A) Prasyarat Sebelum Maintenance</h2>
+                        <h3>1. Perencanaan dan Perizinan</h3>
+                        <ul>
+                            <li><strong>Izin Kerja (Permit to Work):</strong> Diterbitkan untuk semua pekerjaan non-rutin. Untuk pekerjaan panas (pengelasan) atau di ruang terbatas, izin kerja khusus wajib diterbitkan.</li>
+                            <li><strong>Prosedur Lockout/Tagout (LOTO):</strong> Prosedur LOTO yang spesifik untuk unit harus disiapkan dan disosialisasikan, mencakup semua sumber energi (listrik, hidrolik, pneumatik, mekanis/gravitasi). Sesuai dengan OSHA 1910.147.</li>
+                            <li><strong>Jadwal & Manual:</strong> Pastikan jadwal preventive maintenance (harian, mingguan, bulanan) tersedia dan dipatuhi. Gunakan manual servis dari BAUER sebagai referensi utama.</li>
+                        </ul>
+                         <h3>2. Kesiapan Area dan Peralatan</h3>
+                        <ul>
+                            <li><strong>Area Kerja Aman:</strong> Alokasikan area maintenance yang rata, stabil, dan dibarikade. Jauhkan dari lalu lintas operasional.</li>
+                            <li><strong>Peralatan & Tools:</strong> Siapkan semua alat yang diperlukan, termasuk alat angkat (lifting gear) yang telah diinspeksi, kunci torsi, dan alat khusus lainnya.</li>
+                            <li><strong>Kesiapan Tanggap Darurat:</strong> Spill kit, APAR, dan kotak P3K harus tersedia di area kerja.</li>
+                        </ul>
+                        <h3>3. Kesiapan Tim</h3>
+                        <ul>
+                            <li><strong>Kompetensi:</strong> Pekerjaan hanya boleh dilakukan oleh mekanik yang kompeten dan telah mendapatkan pelatihan khusus untuk rig BAUER.</li>
+                             <li><strong>Alat Pelindung Diri (APD):</strong> APD standar (helm, sepatu, kacamata) ditambah APD spesifik seperti sarung tangan tahan kimia, face shield, atau harness untuk bekerja di ketinggian.</li>
+                             <li><strong>Toolbox Meeting:</strong> Lakukan briefing sebelum kerja, membahas JSA, prosedur LOTO, metode kerja, dan potensi bahaya spesifik.</li>
+                        </ul>
+                    </section>
+                    <section id="metode-maintenance">
+                        <h2>B) Metode Kerja Maintenance (Step-by-Step)</h2>
+                        <ol>
+                            <li><strong>Serah Terima Unit:</strong> Operator memposisikan rig di area maintenance yang ditentukan, menurunkan semua attachment ke tanah, dan menyerahkan kunci kepada mekanik/pengawas.</li>
+                            <li><strong>Implementasi LOTO:</strong> Mekanik mengisolasi semua sumber energi sesuai prosedur LOTO. Pasang gembok dan tag pada titik isolasi. Lakukan uji coba (try-out) untuk memastikan mesin tidak dapat distarter.</li>
+                            <li><strong>Laksanakan Pekerjaan:</strong> Lakukan pekerjaan maintenance sesuai jadwal (harian, mingguan, bulanan) atau perbaikan yang diperlukan.
+                                <ul>
+                                    <li><strong>Harian (Pre-Start Check):</strong> Pengecekan level cairan (oli mesin, hidrolik, coolant), inspeksi visual selang, undercarriage, dan alat kerja.</li>
+                                    <li><strong>Mingguan:</strong> Pelumasan (greasing) pada semua titik, pembersihan filter udara, pengecekan tensi track.</li>
+                                    <li><strong>Bulanan/Periodik:</strong> Pengambilan sampel oli hidrolik untuk analisis, inspeksi mendalam pada tali baja (sesuai Permenaker No. 8/2020), pengencangan baut struktural. Inspeksi NDT pada komponen angkat kritis (lifting points) sesuai standar ASME.</li>
+                                </ul>
+                            </li>
+                            <li><strong>Penanganan Komponen Berat:</strong> Gunakan alat angkat yang sesuai (crane, chain block) untuk mengangkat komponen >25 kg. Pastikan lifting plan tersedia untuk pengangkatan kritis.</li>
+                            <li><strong>Penyelesaian & Pengujian:</strong> Setelah pekerjaan selesai, pasang kembali semua pelindung mesin (guards). Bersihkan area dari sisa material dan tumpahan.</li>
+                            <li><strong>Pelepasan LOTO:</strong> Hanya personel yang memasang LOTO yang boleh melepaskannya setelah memastikan semua personel aman dan alat siap dioperasikan.</li>
+                            <li><strong>Uji Fungsi:</strong> Lakukan uji fungsi terbatas di area aman untuk memastikan semua sistem berjalan normal sebelum unit diserahkan kembali ke tim operasi.</li>
+                        </ol>
+                    </section>
+                    <section id="risk-assessment-maintenance">
+                        <h2>C) Risk Assessment - Maintenance</h2>
+                        <p>Klik pada angka risiko untuk mengubah nilainya.</p>
+                          <div class="risk-table-container">
+                               <table class="mainRiskTable" id="mainRiskTable-maintenance">
+                                   <thead>
+                                       <tr>
+                                           <th>No</th>
+                                           <th>Bahaya & Skenario Rinci</th>
+                                           <th>Potensi Konsekuensi Utama</th>
+                                           <th>Tindakan Pengendalian</th>
+                                           <th>Risiko Awal (R)</th>
+                                           <th>Risiko Residual (R)</th>
+                                       </tr>
+                                   </thead>
+                                   <tbody class="riskTableBody" id="riskTableBody-maintenance">
+                                       <tr>
+                                           <td>1</td>
+                                           <td><strong>Pelepasan Energi Tersimpan</strong> (Start tidak terduga, pergerakan komponen hidrolik/mekanis)</td>
+                                           <td>Crush injury, amputasi, fatal.</td>
+                                           <td>Implementasi prosedur LOTO yang ketat & verifikasi zero-energy state. Lepaskan tekanan hidrolik sebelum membuka koneksi.</td>
+                                           <td><div class="risk-level" data-editable="true" tabindex="0" role="button">25</div></td>
+                                           <td><div class="risk-level" data-editable="true" tabindex="0" role="button">5</div></td>
+                                       </tr>
+                                       <tr>
+                                           <td>2</td>
+                                           <td><strong>Jatuh dari Ketinggian</strong> (Saat mengakses mesin, mast, atau platform servis)</td>
+                                           <td>Patah tulang, cedera serius, fatal.</td>
+                                           <td>Gunakan tangga dan platform yang sesuai. Wajibkan penggunaan Full Body Harness dengan 100% tie-off jika bekerja di luar platform berpagar.</td>
+                                           <td><div class="risk-level" data-editable="true" tabindex="0" role="button">16</div></td>
+                                           <td><div class="risk-level" data-editable="true" tabindex="0" role="button">4</div></td>
+                                       </tr>
+                                       <tr>
+                                           <td>3</td>
+                                           <td><strong>Tertimpa Komponen Berat</strong> (Saat perbaikan undercarriage atau pelepasan attachment)</td>
+                                           <td>Cedera serius, fatal.</td>
+                                           <td>Gunakan alat angkat yang sesuai dan telah diinspeksi. Gunakan penyangga (blocking/stand) yang kuat, jangan hanya mengandalkan dongkrak hidrolik.</td>
+                                           <td><div class="risk-level" data-editable="true" tabindex="0" role="button">15</div></td>
+                                           <td><div class="risk-level" data-editable="true" tabindex="0" role="button">6</div></td>
+                                       </tr>
+                                       <tr>
+                                           <td>4</td>
+                                           <td><strong>Paparan Bahan Kimia Berbahaya</strong> (Oli panas, cairan hidrolik, solvent)</td>
+                                           <td>Luka bakar, iritasi kulit/mata, gangguan pernapasan.</td>
+                                           <td>Gunakan APD yang sesuai (sarung tangan kimia, kacamata/goggle). Pastikan ventilasi baik. Sediakan MSDS dan eye-wash station.</td>
+                                           <td><div class="risk-level" data-editable="true" tabindex="0" role="button">12</div></td>
+                                           <td><div class="risk-level" data-editable="true" tabindex="0" role="button">4</div></td>
+                                       </tr>
+                                       <tr>
+                                           <td>5</td>
+                                           <td><strong>Kebakaran</strong> (Percikan dari korsleting listrik, tumpahan oli mengenai permukaan panas)</td>
+                                           <td>Luka bakar, kerusakan properti.</td>
+                                           <td>Lepaskan koneksi aki sebagai bagian dari LOTO. Siapkan APAR yang sesuai. Segera bersihkan semua tumpahan.</td>
+                                           <td><div class="risk-level" data-editable="true" tabindex="0" role="button">10</div></td>
+                                           <td><div class="risk-level" data-editable="true" tabindex="0" role="button">4</div></td>
+                                       </tr>
+                                   </tbody>
+                               </table>
+                          </div>
+                           <button class="add-row-btn" data-target-table="riskTableBody-maintenance">Tambah Baris Baru</button>
+                    </section>
+                     <section id="peran-maintenance">
+                        <h2>D) Peran & Verifikasi - Maintenance</h2>
+                        <div class="risk-table-container">
+                             <table>
+                                 <thead>
+                                     <tr>
+                                         <th>Peran</th>
+                                         <th>Tugas & Tanggung Jawab Utama</th>
+                                         <th>Verifikasi yang Dilakukan</th>
+                                     </tr>
+                                 </thead>
+                                 <tbody>
+                                     <tr>
+                                         <td><strong>Maintenance Supervisor</strong></td>
+                                         <td>Merencanakan, menjadwalkan, dan mengawasi semua pekerjaan maintenance. Menyetujui Izin Kerja dan prosedur LOTO.</td>
+                                         <td>Memverifikasi penerapan LOTO sebelum pekerjaan dimulai dan memastikan pelepasan LOTO aman setelah selesai.</td>
+                                     </tr>
+                                     <tr>
+                                         <td><strong>Mekanik / Teknisi</strong></td>
+                                         <td>Melaksanakan pekerjaan sesuai manual dan standar K3. Memasang LOTO pribadi. Menggunakan APD dan peralatan yang benar.</td>
+                                         <td>Melakukan verifikasi zero-energy state (try-out) setelah menerapkan LOTO. Melaporkan penyelesaian pekerjaan kepada supervisor.</td>
+                                     </tr>
+                                     <tr>
+                                         <td><strong>HSE Officer</strong></td>
+                                         <td>Melakukan audit periodik terhadap pelaksanaan LOTO, penggunaan APD, dan kepatuhan terhadap Izin Kerja.</td>
+                                         <td>Memastikan catatan maintenance dan inspeksi (misal: sertifikat lifting gear, laporan NDT tali baja) tersedia dan valid.</td>
+                                     </tr>
+                                 </tbody>
+                             </table>
+                        </div>
+                    </section>
+                    <section id="checklist-maintenance">
+                        <h2>E) Checklist Pra-Start - Maintenance</h2>
+                        <label class="checklist-item">
+                            <input type="checkbox" class="checklist-box">
+                            <span>Izin Kerja (Permit to Work) telah diterbitkan dan disetujui.</span>
+                        </label>
+                        <label class="checklist-item">
+                            <input type="checkbox" class="checklist-box">
+                            <span>Prosedur LOTO telah diterapkan pada SEMUA sumber energi.</span>
+                        </label>
+                         <label class="checklist-item">
+                            <input type="checkbox" class="checklist-box">
+                            <span>Verifikasi zero-energy state (try-out) telah berhasil dilakukan.</span>
+                        </label>
+                         <label class="checklist-item">
+                            <input type="checkbox" class="checklist-box">
+                            <span>Area kerja sudah dibarikade dan diberi rambu peringatan.</span>
+                        </label>
+                         <label class="checklist-item">
+                            <input type="checkbox" class="checklist-box">
+                            <span>Semua peralatan, APD spesifik, dan peralatan darurat (spill kit, APAR) sudah siap.</span>
+                        </label>
+                         <label class="checklist-item">
+                            <input type="checkbox" class="checklist-box">
+                            <span>Manual servis dan JSA telah dibahas dalam Toolbox Meeting.</span>
+                        </label>
+                    </section>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal HTML (Remains the same, used by all activities) -->
+    <div id="modalOverlay" class="modal-overlay"></div>
+    <div id="riskMatrixModal" class="modal">
+        <div class="modal-header">
+            <h3>Pilih Tingkat Risiko</h3>
+            <button id="closeModalBtn" class="close-btn" aria-label="Tutup Modal">&times;</button>
+        </div>
+        <div class="modal-body">
+            <table class="risk-matrix-table">
+                 <tr>
+                     <td rowspan="7" style="writing-mode: vertical-rl; transform: rotate(180deg); font-weight: bold;" class="matrix-header">KEKERAPAN →</td>
+                     <th class="matrix-header"></th>
+                     <th colspan="5" class="matrix-header">DAMPAK →</th>
+                 </tr>
+                 <tr>
+                     <th class="matrix-header"></th>
+                     <th class="matrix-header">1<br><sub>Tidak Signifikan</sub></th>
+                     <th class="matrix-header">2<br><sub>Kecil</sub></th>
+                     <th class="matrix-header">3<br><sub>Signifikan</sub></th>
+                     <th class="matrix-header">4<br><sub>Besar</sub></th>
+                     <th class="matrix-header">5<br><sub>Parah</sub></th>
+                 </tr>
+                 <tr>
+                     <th class="matrix-header">5<br><sub>Hampir Pasti</sub></th>
+                     <td class="m-medium" data-value="5">5</td>
+                     <td class="m-high" data-value="10">10</td>
+                     <td class="m-high" data-value="15">15</td>
+                     <td class="m-extreme" data-value="20">20</td>
+                     <td class="m-extreme" data-value="25">25</td>
+                 </tr>
+                 <tr>
+                     <th class="matrix-header">4<br><sub>Mungkin</sub></th>
+                     <td class="m-low" data-value="4">4</td>
+                     <td class="m-medium" data-value="8">8</td>
+                     <td class="m-medium" data-value="12">12</td>
+                     <td class="m-high" data-value="16">16</td>
+                     <td class="m-extreme" data-value="20">20</td>
+                 </tr>
+                 <tr>
+                     <th class="matrix-header">3<br><sub>Sedang</sub></th>
+                     <td class="m-low" data-value="3">3</td>
+                     <td class="m-low" data-value="6">6</td>
+                     <td class="m-medium" data-value="9">9</td>
+                     <td class="m-medium" data-value="12">12</td>
+                     <td class="m-high" data-value="15">15</td>
+                 </tr>
+                 <tr>
+                     <th class="matrix-header">2<br><sub>Jarang</sub></th>
+                     <td class="m-low" data-value="2">2</td>
+                     <td class="m-low" data-value="4">4</td>
+                     <td class="m-low" data-value="6">6</td>
+                     <td class="m-medium" data-value="8">8</td>
+                     <td class="m-high" data-value="10">10</td>
+                 </tr>
+                 <tr>
+                     <th class="matrix-header">1<br><sub>Sangat Jarang</sub></th>
+                     <td class="m-low" data-value="1">1</td>
+                     <td class="m-low" data-value="2">2</td>
+                     <td class="m-low" data-value="3">3</td>
+                     <td class="m-low" data-value="4">4</td>
+                     <td class="m-medium" data-value="5">5</td>
+                 </tr>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Mobile Menu for Sidebar
+            const menuToggle = document.getElementById('menu-toggle');
+            const sidebar = document.getElementById('activity-sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+
+            function openMobileMenu() {
+                sidebar.classList.add('active');
+                overlay.style.display = 'block';
+                menuToggle.setAttribute('aria-expanded', 'true');
+            }
+
+            function closeMobileMenu() {
+                sidebar.classList.remove('active');
+                overlay.style.display = 'none';
+                menuToggle.setAttribute('aria-expanded', 'false');
+            }
+
+            menuToggle.addEventListener('click', (e) => {
+                e.stopPropagation(); // Prevents the click from reaching main content
+                sidebar.classList.contains('active') ? closeMobileMenu() : openMobileMenu();
+            });
+
+            overlay.addEventListener('click', closeMobileMenu);
+            
+
+            // --- ACTIVITY SWITCHER LOGIC ---
+            const sidebarBtns = document.querySelectorAll('.sidebar-btn');
+            const activityContents = document.querySelectorAll('.activity-content');
+            const navMenu = document.getElementById('nav-menu');
+
+            const navLinksMap = {
+                'activity-unloading': [
+                    { href: '#prasyarat-unloading', text: 'A) Prasyarat' },
+                    { href: '#metode-unloading', text: 'B) Metode Kerja' },
+                    { href: '#risk-assessment-unloading', text: 'C) Risk Assessment' },
+                    { href: '#peran-unloading', text: 'D) Peran & Verifikasi' },
+                    { href: '#checklist-unloading', text: 'E) Checklist' }
+                ],
+                'activity-movement': [
+                    { href: '#prasyarat-movement', text: 'A) Prasyarat' },
+                    { href: '#metode-movement', text: 'B) Metode Kerja' },
+                    { href: '#risk-assessment-movement', text: 'C) Risk Assessment' },
+                    { href: '#peran-movement', text: 'D) Peran & Verifikasi' },
+                    { href: '#checklist-movement', text: 'E) Checklist' }
+                ],
+                'activity-drilling': [
+                    { href: '#prasyarat-drilling', text: 'A) Prasyarat' },
+                    { href: '#metode-drilling', text: 'B) Metode Kerja' },
+                    { href: '#risk-assessment-drilling', text: 'C) Risk Assessment' },
+                    { href: '#peran-drilling', text: 'D) Peran & Verifikasi' },
+                    { href: '#checklist-drilling', text: 'E) Checklist' }
+                ],
+                'activity-lifting': [
+                    { href: '#prasyarat-lifting', text: 'A) Prasyarat' },
+                    { href: '#metode-lifting', text: 'B) Metode Kerja' },
+                    { href: '#risk-assessment-lifting', text: 'C) Risk Assessment' },
+                    { href: '#peran-lifting', text: 'D) Peran & Verifikasi' },
+                    { href: '#checklist-lifting', text: 'E) Checklist' }
+                ],
+                'activity-casing': [
+                    { href: '#prasyarat-casing', text: 'A) Prasyarat' },
+                    { href: '#metode-casing', text: 'B) Metode Kerja' },
+                    { href: '#risk-assessment-casing', text: 'C) Risk Assessment' },
+                    { href: '#peran-casing', text: 'D) Peran & Verifikasi' },
+                    { href: '#checklist-casing', text: 'E) Checklist' }
+                ],
+                'activity-refueling': [
+                    { href: '#prasyarat-refueling', text: 'A) Prasyarat' },
+                    { href: '#metode-refueling', text: 'B) Metode Kerja' },
+                    { href: '#risk-assessment-refueling', text: 'C) Risk Assessment' },
+                    { href: '#peran-refueling', text: 'D) Peran & Verifikasi' },
+                    { href: '#checklist-refueling', text: 'E) Checklist' }
+                ],
+                'activity-maintenance': [
+                    { href: '#prasyarat-maintenance', text: 'A) Prasyarat' },
+                    { href: '#metode-maintenance', text: 'B) Metode Kerja' },
+                    { href: '#risk-assessment-maintenance', text: 'C) Risk Assessment' },
+                    { href: '#peran-maintenance', text: 'D) Peran & Verifikasi' },
+                    { href: '#checklist-maintenance', text: 'E) Checklist' }
+                ]
+            };
+
+            function updateNavMenu(activityId) {
+                navMenu.innerHTML = '';
+                const links = navLinksMap[activityId] || [];
+                links.forEach(linkInfo => {
+                    const li = document.createElement('li');
+                    const a = document.createElement('a');
+                    a.href = linkInfo.href;
+                    a.textContent = linkInfo.text;
+                    li.appendChild(a);
+                    navMenu.appendChild(li);
+                });
+            }
+
+            sidebarBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    sidebarBtns.forEach(b => b.classList.remove('active'));
+                    activityContents.forEach(c => c.classList.remove('active'));
+
+                    btn.classList.add('active');
+                    const targetId = btn.getAttribute('data-target');
+                    document.getElementById(targetId).classList.add('active');
+                    
+                    updateNavMenu(targetId);
+
+                    if (window.innerWidth <= 992) {
+                        closeMobileMenu();
+                    }
+                });
+            });
+            
+            // Initial nav menu setup
+            updateNavMenu('activity-unloading');
+
+
+            // --- REFACTORED & REUSABLE: INTERACTIVE RISK ASSESSMENT LOGIC ---
+            const modal = document.getElementById('riskMatrixModal');
+            const riskModalOverlay = document.getElementById('modalOverlay');
+            const closeModalBtn = document.getElementById('closeModalBtn');
+            let currentTargetCell = null;
+
+            function updateCellColor(cell, value) {
+                cell.classList.remove('risk-low', 'risk-medium', 'risk-high', 'risk-extreme');
+                if (value >= 17) {
+                    cell.classList.add('risk-extreme');
+                } else if (value >= 10) {
+                    cell.classList.add('risk-high');
+                } else if (value >= 5) {
+                    cell.classList.add('risk-medium');
+                } else {
+                    cell.classList.add('risk-low');
+                }
+            }
+
+            function openRiskModal(target) {
+                currentTargetCell = target;
+                modal.style.display = 'block';
+                riskModalOverlay.style.display = 'block';
+            }
+
+            function closeRiskModal() {
+                modal.style.display = 'none';
+                riskModalOverlay.style.display = 'none';
+                currentTargetCell = null;
+            }
+
+            document.querySelector('.risk-matrix-table').addEventListener('click', function(e) {
+                if (e.target && e.target.matches('td[data-value]')) {
+                    const selectedValue = e.target.getAttribute('data-value');
+                    if (currentTargetCell) {
+                        currentTargetCell.textContent = selectedValue;
+                        updateCellColor(currentTargetCell, parseInt(selectedValue));
+                    }
+                    closeRiskModal();
+                }
+            });
+
+            closeModalBtn.addEventListener('click', closeRiskModal);
+            riskModalOverlay.addEventListener('click', closeRiskModal);
+
+            // REVIEW: Added event listener for the Escape key to close the modal for better accessibility.
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && modal.style.display === 'block') {
+                    closeRiskModal();
+                }
+            });
+
+            function setupRiskAssessmentInteraction(containerId) {
+                const container = document.getElementById(containerId);
+                if (!container) return;
+
+                container.addEventListener('click', (e) => {
+                     const targetCell = e.target.closest('div.risk-level[data-editable="true"]');
+                     if(targetCell) openRiskModal(targetCell);
+                });
+
+                container.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        const targetCell = e.target.closest('div.risk-level[data-editable="true"]');
+                        if (targetCell) {
+                            e.preventDefault();
+                            openRiskModal(targetCell);
+                        }
+                    }
+                });
+
+                container.querySelectorAll('.add-row-btn').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const targetTableId = this.getAttribute('data-target-table');
+                        const tableBody = document.getElementById(targetTableId);
+                        if (tableBody) {
+                            const rowCount = tableBody.rows.length;
+                            const newRow = tableBody.insertRow();
+                            let newRowHTML = '';
+
+                            // Check how many columns the table header has to determine the new row structure
+                            const columnCount = tableBody.previousElementSibling.rows[0].cells.length;
+
+                            if (columnCount === 8) { // For tables with 8 columns
+                                newRowHTML = `
+                                    <td>${rowCount + 1}</td>
+                                    <td contenteditable="true"></td>
+                                    <td contenteditable="true"></td>
+                                    <td contenteditable="true"></td>
+                                    <td contenteditable="true"></td>
+                                    <td><div class="risk-level risk-low" data-editable="true" tabindex="0" role="button">1</div></td>
+                                    <td><div class="risk-level risk-low" data-editable="true" tabindex="0" role="button">1</div></td>
+                                    <td contenteditable="true"></td>
+                                `;
+                            } else { // Default logic for tables with 6 columns
+                                newRowHTML = `
+                                    <td>${rowCount + 1}</td>
+                                    <td contenteditable="true"></td>
+                                    <td contenteditable="true"></td>
+                                    <td contenteditable="true"></td>
+                                    <td><div class="risk-level risk-low" data-editable="true" tabindex="0" role="button">1</div></td>
+                                    <td><div class="risk-level risk-low" data-editable="true" tabindex="0" role="button">1</div></td>
+                                `;
+                            }
+                            newRow.innerHTML = newRowHTML;
+                        }
+                    });
+                });
+                
+                container.querySelectorAll('.risk-level[data-editable="true"]').forEach(cell => {
+                    const value = parseInt(cell.textContent);
+                    updateCellColor(cell, value);
+                });
+            }
+
+            // Initialize interactions for all activities
+            const activityIds = ['activity-unloading', 'activity-movement', 'activity-drilling', 'activity-lifting', 'activity-casing', 'activity-refueling', 'activity-maintenance'];
+            activityIds.forEach(id => setupRiskAssessmentInteraction(id));
+        });
+    </script>
+
+</body>
+</html>
+
