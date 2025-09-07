@@ -1,0 +1,585 @@
+/* CSS Reset and Basic Setup */
+:root {
+    --primary-color: #003366;
+    --secondary-color: #005a9c;
+    --accent-color: #f39c12;
+    --text-color: #333;
+    --bg-color: #f4f7f9;
+    --header-height: 70px;
+    /* REVIEW: Use a CSS variable for sidebar width for easier maintenance. */
+    --sidebar-width: 220px;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    scroll-behavior: smooth;
+    scroll-padding-top: var(--header-height);
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    display: flex; /* Flexbox for layout */
+}
+
+/* Main Layout */
+.page-container {
+    display: flex;
+    width: 100%;
+}
+
+.main-content-area {
+    flex-grow: 1;
+    /* REVIEW: Use the new CSS variable. */
+    padding-left: var(--sidebar-width); 
+    transition: padding-left 0.3s ease-in-out;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+header {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 0 20px;
+    position: fixed;
+    top: 0;
+    /* REVIEW: Use the new CSS variable. */
+    left: var(--sidebar-width); 
+    width: calc(100% - var(--sidebar-width));
+    z-index: 1000;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: var(--header-height);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    transition: left 0.3s ease-in-out, width 0.3s ease-in-out;
+}
+
+header h1 {
+    font-size: 1.5em;
+    text-align: center;
+    flex-grow: 1;
+    margin: 0 1rem;
+}
+
+.header-right-items {
+    display: flex;
+    align-items: center;
+}
+
+.header-logo {
+    height: 50px;
+    max-height: calc(var(--header-height) - 20px);
+    margin-left: 15px;
+    border-radius: 5px;
+}
+
+/* --- Activity Sidebar --- */
+/* REVIEW: Changed from <div> to <aside> for better semantics. */
+.activity-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    /* REVIEW: Use the new CSS variable. */
+    width: var(--sidebar-width);
+    height: 100vh;
+    background-color: var(--primary-color);
+    color: white;
+    padding: 20px;
+    z-index: 1002;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.2);
+    overflow-y: auto;
+    transition: transform 0.3s ease-in-out;
+}
+
+.activity-sidebar h2 {
+    color: white;
+    border-bottom: 2px solid var(--accent-color);
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+    font-size: 1.4em;
+}
+
+.sidebar-btn {
+    display: block;
+    width: 100%;
+    padding: 15px;
+    margin-bottom: 10px;
+    background-color: var(--secondary-color);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    text-align: left;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.sidebar-btn:hover {
+    background-color: #007acc;
+    transform: translateX(5px);
+}
+
+/* REVIEW: Added focus-visible state for better keyboard navigation accessibility. */
+.sidebar-btn:focus-visible {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 2px;
+}
+
+.sidebar-btn.active {
+    background-color: var(--accent-color);
+    font-weight: bold;
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+}
+
+nav ul li a {
+    color: white;
+    text-decoration: none;
+    padding: 15px;
+    display: block;
+    transition: background-color 0.3s;
+}
+
+nav ul li a:hover, nav ul li a.active {
+    background-color: var(--secondary-color);
+}
+
+main {
+    padding-top: var(--header-height);
+}
+
+.activity-content {
+    display: none; /* Hide all activities by default */
+}
+.activity-content.active {
+    display: block; /* Show only the active one */
+}
+
+section {
+    background-color: white;
+    margin-bottom: 25px;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+h2 {
+    color: var(--primary-color);
+    border-bottom: 3px solid var(--accent-color);
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+    font-size: 1.8em;
+}
+
+h3 {
+    color: var(--secondary-color);
+    margin-top: 20px;
+    margin-bottom: 10px;
+    font-size: 1.4em;
+}
+
+.activity-description {
+    font-style: italic;
+    color: #555;
+    background-color: #e9eff3;
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 25px;
+    border-left: 5px solid var(--secondary-color);
+}
+
+.action-buttons {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1001;
+}
+
+.print-btn {
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: bold;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    transition: background-color 0.3s;
+}
+
+.print-btn:hover {
+    background-color: #e67e22;
+}
+
+.link-btn {
+    display: inline-block;
+    background-color: var(--secondary-color);
+    color: white;
+    padding: 8px 15px;
+    text-decoration: none;
+    border-radius: 5px;
+    margin-top: 10px;
+    font-size: 0.9em;
+    transition: background-color 0.3s;
+}
+.link-btn:hover {
+    background-color: var(--primary-color);
+}
+
+.menu-toggle {
+    display: none;
+    flex-direction: column;
+    cursor: pointer;
+    z-index: 1003;	
+    border: none;
+    background: transparent;
+    padding: 5px;
+}
+
+.menu-toggle .bar {
+    height: 3px;
+    width: 25px;
+    background-color: white;
+    margin: 4px 0;
+    transition: 0.4s;
+}
+
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    z-index: 1001; /* Below sidebar, above main content */
+}
+
+
+.risk-table-container {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: left;
+    vertical-align: top;
+}
+
+th {
+    background-color: var(--primary-color);
+    color: white;
+    font-size: 0.9em;
+}
+
+tbody tr:nth-child(even) {
+    background-color: var(--bg-color);
+}
+
+.risk-level {
+    font-weight: bold;
+    text-align: center;
+    color: white;
+    border-radius: 4px;
+    padding: 5px;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+.risk-level:hover {
+    transform: scale(1.1);
+}
+.risk-high { background-color: #e74c3c; } /* Red */
+.risk-extreme { background-color: #c0392b; } /* Dark Red */
+.risk-medium { background-color: #f39c12; } /* Orange */
+.risk-low { background-color: #27ae60; } /* Green */
+
+.checklist-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+    padding: 10px;
+    border: 1px solid #eee;
+    border-radius: 5px;
+    transition: background-color 0.2s;
+    cursor: pointer;
+}
+.checklist-item:hover {
+    background-color: #f9f9f9;
+}
+.checklist-box {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--primary-color);
+    border-radius: 3px;
+    margin-right: 15px;
+    flex-shrink: 0;
+    cursor: pointer;
+    position: relative;
+    top: -1px;
+}
+.checklist-box:checked {
+    background-color: var(--primary-color);
+}
+.checklist-box:checked::after {
+    content: '✔';
+    font-size: 14px;
+    color: white;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+ul, ol {
+    padding-left: 20px;
+}
+
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.6);
+    z-index: 2000;
+}
+.modal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    z-index: 2001;
+    width: auto;	
+    max-width: 95vw;	
+}
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+.modal-header h3 {
+    margin: 0;
+}
+.close-btn {
+    border: none;
+    background: none;
+    font-size: 2em;
+    font-weight: bold;
+    cursor: pointer;
+    color: #888;
+    padding: 0 10px;
+}
+.risk-matrix-table {
+    border-collapse: collapse;
+}
+.risk-matrix-table th, .risk-matrix-table td {
+    border: 1px solid #ccc;
+    width: 100px;
+    height: 60px;
+    text-align: center;
+    vertical-align: middle;
+    padding: 5px;
+}
+.risk-matrix-table td[data-value] {
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s, transform 0.2s;
+}
+.risk-matrix-table td[data-value]:hover {
+    transform: scale(1.1);
+}
+.matrix-header { background-color: white; font-weight: bold; color: #333; }
+.matrix-header sub { font-size: 0.8em; font-weight: normal; }
+.m-low { background-color: #2ecc71; color: #333; }
+.m-medium { background-color: #f1c40f; color: #333; }
+.m-high { background-color: #e67e22; color: white; }
+.m-extreme { background-color: #e74c3c; color: white; }
+
+.add-row-btn {
+    background-color: var(--secondary-color);
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    margin-top: 10px;
+    transition: background-color 0.3s;
+}
+.add-row-btn:hover {
+    background-color: var(--primary-color);
+}
+
+/* REVIEW: Added focus-visible states for better accessibility. */
+.print-btn:focus-visible,
+.link-btn:focus-visible,
+.add-row-btn:focus-visible,
+.close-btn:focus-visible {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 2px;
+}
+
+
+/* Responsive Design */
+@media (max-width: 992px) {
+    .activity-sidebar {
+        transform: translateX(-100%);
+        width: 250px;
+    }
+     .activity-sidebar.active {
+        transform: translateX(0);
+    }
+    .main-content-area, header {
+        padding-left: 0;
+        left: 0;
+        width: 100%;
+    }
+    .menu-toggle {
+        display: flex;
+    }
+     .header-right-items {
+        display: none; /* Hide top nav and logo on mobile */
+    }
+}
+
+@media (max-width: 768px) { /* Tablet size */
+     .modal {
+        padding: 15px;
+    }
+     .risk-matrix-table th, .risk-matrix-table td {
+        width: 80px;
+        height: 50px;
+        font-size: 0.9em;
+     }
+}
+
+ @media (max-width: 576px) { /* Mobile size */
+    header h1 {
+        font-size: 1.1em;
+    }
+     .modal-header h3 {
+        font-size: 1.1em;
+    }
+     .risk-matrix-table th, .risk-matrix-table td {
+        width: 15vw;
+        height: 12vw;
+        min-width: 45px;
+        min-height: 40px;
+        font-size: 0.8em;
+        padding: 2px;
+     }
+     .risk-matrix-table .matrix-header sub {
+        display: none;
+    }
+}
+
+/* Print Styles */
+@media print {
+    body {
+        display: block;
+        background-color: white;
+        color: black;
+    }
+     header, .activity-sidebar, .sidebar-overlay, .action-buttons, .menu-toggle, .modal-overlay, .modal, .add-row-btn, .activity-description, .link-btn {
+        display: none !important;
+    }
+     .main-content-area {
+        padding-left: 0;
+    }
+    main {
+        padding-top: 0;
+    }
+    .container {
+        padding: 0;
+        max-width: 100%;
+    }
+    .activity-content {
+        display: none !important;
+    }
+    .activity-content.active {
+        display: block !important;
+    }
+    section {
+        box-shadow: none;
+        border: 1px solid #ccc;
+        margin-bottom: 20px;
+        padding: 15px;
+        page-break-inside: avoid;
+    }
+    h2 {
+        font-size: 16pt;
+        color: black;
+        border-color: black;
+    }
+    h3 {
+        font-size: 14pt;
+        color: black;
+    }
+    table, th, td {
+        border: 1px solid #666;
+        font-size: 9pt;
+        padding: 6px;
+    }
+    th {
+        background-color: #ddd !important;
+        color: black !important;
+    }
+    tbody tr:nth-child(even) {
+        background-color: #f2f2f2 !important;
+    }
+    .risk-level {
+        -webkit-print-color-adjust: exact;
+        color-adjust: exact;
+        color: black !important;
+        border: 1px solid black;
+    }
+    .risk-extreme { background-color: #777 !important; }
+    .risk-high { background-color: #aaa !important; }
+    .risk-medium { background-color: #ccc !important; }
+    .risk-low { background-color: #eee !important; }
+
+    .checklist-box {
+        border: 2px solid black;
+    }
+    .checklist-box:checked {
+        background-color: #ccc !important;
+    }
+    .checklist-box:checked::after {
+        color: black;
+    }
+}
