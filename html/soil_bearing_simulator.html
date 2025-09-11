@@ -1,0 +1,82 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Soil Bearing Verification Simulator</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        h2 { color: #2c3e50; }
+        label { display: block; margin-top: 10px; }
+        input, select { width: 200px; padding: 5px; margin-top: 5px; }
+        #result { margin-top: 20px; font-weight: bold; }
+        #chart { margin-top: 30px; }
+    </style>
+</head>
+<body>
+    <h2>Soil Bearing Verification Simulator</h2>
+    <label>Berat Alat Berat (ton): <input type="number" id="weight" value="56"></label>
+    <label>Lebar Track (m): <input type="number" id="trackWidth" value="0.7"></label>
+    <label>Panjang Kontak Track (m): <input type="number" id="trackLength" value="4.5"></label>
+    <label>Daya Dukung Tanah (kPa): <input type="number" id="soilBearing" value="25"></label>
+    <label>Faktor Keamanan: <input type="number" id="fos" value="1.5" step="0.1"></label>
+    <label>Gunakan Pelat Baja? 
+        <select id="usePlate">
+            <option value="no">Tidak</option>
+            <option value="yes">Ya</option>
+        </select>
+    </label>
+    <div id="plateInputs" style="display:none;">
+        <label>Panjang Plate (m): <input type="number" id="plateLength" value="6.0"></label>
+        <label>Lebar Plate (m): <input type="number" id="plateWidth" value="2.0"></label>
+    </div>
+    <button onclick="calculate()">Hitung</button>
+    <div id="result"></div>
+    <div id="chart"></div>
+
+    <script>
+        document.getElementById("usePlate").addEventListener("change", function() {
+            document.getElementById("plateInputs").style.display = this.value === "yes" ? "block" : "none";
+        });
+
+        function calculate() {
+            const weightTon = parseFloat(document.getElementById("weight").value);
+            const trackWidth = parseFloat(document.getElementById("trackWidth").value);
+            const trackLength = parseFloat(document.getElementById("trackLength").value);
+            const soilBearing = parseFloat(document.getElementById("soilBearing").value);
+            const fos = parseFloat(document.getElementById("fos").value);
+            const usePlate = document.getElementById("usePlate").value === "yes";
+            const plateLength = parseFloat(document.getElementById("plateLength").value);
+            const plateWidth = parseFloat(document.getElementById("plateWidth").value);
+
+            const weightN = weightTon * 1000 * 9.81;
+            const area = usePlate ? plateLength * plateWidth : trackWidth * trackLength;
+            const q_actual = weightN / area / 1000; // in kPa
+            const q_allow_design = soilBearing / fos;
+
+            const status = q_actual <= q_allow_design ? "✅ AMAN" : "❌ TIDAK AMAN";
+            document.getElementById("result").innerHTML = `
+                Berat: ${weightN.toFixed(2)} N<br>
+                Luas Kontak: ${area.toFixed(2)} m²<br>
+                Tekanan Aktual: ${q_actual.toFixed(2)} kPa<br>
+                Daya Dukung Desain: ${q_allow_design.toFixed(2)} kPa<br>
+                Status: <span style="color:${q_actual <= q_allow_design ? 'green' : 'red'}">${status}</span>
+            `;
+
+            const data = [{
+                x: ["Tekanan Aktual", "Daya Dukung Desain"],
+                y: [q_actual, q_allow_design],
+                type: "bar",
+                marker: { color: ["#e74c3c", "#2ecc71"] }
+            }];
+
+            const layout = {
+                title: "Grafik Tekanan vs Daya Dukung Tanah",
+                yaxis: { title: "Tekanan (kPa)" }
+            };
+
+            Plotly.newPlot("chart", data, layout);
+        }
+    </script>
+</body>
+</html>
