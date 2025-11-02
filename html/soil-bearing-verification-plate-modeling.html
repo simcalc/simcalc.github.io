@@ -3,14 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modeling Daya Dukung & Verifikasi Plate (v3.2 - Fix Kontras)</title> <meta name="description" content="Kalkulator online dwibahasa untuk analisis daya dukung tanah (ground bearing pressure) dan verifikasi struktural steel plate (lentur & geser pons) untuk alat berat. Berdasarkan panduan EFFC/DFI dan korelasi IRC 37:2018.">
+    <title>Modeling Daya Dukung & Verifikasi Plate (v3.3 - LCP Optimized)</title> <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="preload" as="image" href="/img/groundbearingpressure-modeling.webp" fetchpriority="high">
+    <meta name="description" content="Kalkulator online dwibahasa untuk analisis daya dukung tanah (ground bearing pressure) dan verifikasi struktural steel plate (lentur & geser pons) untuk alat berat. Berdasarkan panduan EFFC/DFI dan korelasi IRC 37:2018.">
     <meta name="keywords" content="kalkulator daya dukung tanah, ground bearing pressure, verifikasi steel plate, bore pile, fondasi, geoteknik, teknik sipil, EFFC, DFI, IRC 37 2018, analisis platform kerja, civil engineering calculator, CBR correlation">
     <meta name="author" content="simcalc.github.io">
     <meta name="robots" content="index, follow">
 
     <meta property="og:title" content="Modeling Daya Dukung & Verifikasi Plate (Bilingual)">
     <meta property="og:description" content="Alat bantu interaktif untuk engineer sipil dalam memverifikasi keamanan platform kerja alat berat.">
-    <meta property="og:image" content="https://raw.githubusercontent.com/simcalc/simcalc.github.io/refs/heads/main/img/ground-bearing-pressure-under-rig-tracks.webp">
+    <meta property="og:image" content="https://simcalc.github.io/img/ground-bearing-pressure-under-rig-tracks.webp">
     <meta property="og:url" content="https://simcalc.github.io/calc/daya-dukung-tanah-alat-berat">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="SimCalc">
@@ -21,13 +25,11 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Modeling Daya Dukung & Verifikasi Plate (Bilingual)">
     <meta name="twitter:description" content="Alat bantu interaktif untuk engineer sipil dalam memverifikasi keamanan platform kerja alat berat.">
-    <meta name="twitter:image" content="https://raw.githubusercontent.com/simcalc/simcalc.github.io/refs/heads/main/img/ground-bearing-pressure-under-rig-tracks.webp">
+    <meta name="twitter:image" content="https://simcalc.github.io/img/ground-bearing-pressure-under-rig-tracks.webp">
 
     <link rel="canonical" href="https://simcalc.github.io/calc/daya-dukung-tanah-alat-berat">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏗️</text></svg>">
     
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" media="print" onload="this.media='all'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap"></noscript>
     
@@ -42,7 +44,7 @@
     };
     </script>
     
-    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-svg.js"></script>
     
     <style>
         /* CSS Reset and Basic Setup */
@@ -556,7 +558,7 @@
     <div class="container">
         <header>
             <div class="header-content">
-                <img src="https://raw.githubusercontent.com/simcalc/simcalc.github.io/refs/heads/main/img/bor-pile-soil-bearing-capacity.webp" alt="Ilustrasi Bor Pile" class="header-image">
+                <img src="/img/bor-pile-soil-bearing-capacity.webp" alt="Ilustrasi Bor Pile" class="header-image">
                 <div class="header-text">
                     <h1>
                         Modeling Daya Dukung & Verifikasi Plate
@@ -1231,7 +1233,10 @@
             safeTypeset();
             
             // Picu event input CBR saat load untuk mengisi soilCapacity
-            cbrValueInput.dispatchEvent(new Event('input', { bubbles: true }));
+            // Kita tunda 0ms (defer) agar tidak menyebabkan "forced reflow" pada render awal
+            setTimeout(() => {
+                cbrValueInput.dispatchEvent(new Event('input', { bubbles: true }));
+            }, 0);
             
         });
     </script>
