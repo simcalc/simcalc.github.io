@@ -52,8 +52,7 @@
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     
-    <!-- Library untuk Print PDF -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <!-- Library untuk Print PDF Dihapus -->
 
     <style>
         /* CSS Reset and Basic Setup */
@@ -706,12 +705,10 @@
                     </fieldset>
                 </div>
                 <div class="button-container">
-                    <button type="button" id="calculateBtn">
+                    <button type="button" id="calculateBtn" class="hidden"> <!-- Tombol Hitung disembunyikan -->
                         HITUNG VERIFIKASI
                     </button>
-                    <button type="button" id="printBtn" class="hidden">
-                        CETAK PDF
-                    </button>
+                    <!-- Tombol Cetak PDF Dihapus -->
                 </div>
             </form>
 
@@ -772,11 +769,6 @@
                         Hasil perhitungan akan ditampilkan di sini.
                     </p>
                 </div>
-            </div>
-
-            <!-- Theory Image -->
-            <div class="theory-image-container">
-                <img src="https://raw.githubusercontent.com/simcalc/simcalc.github.io/refs/heads/main/img/ground-bearing-pressure-under-rig-tracks.webp" alt="Ilustrasi Tekanan Tanah di Bawah Track">
             </div>
 
             <!-- Landasan Teori -->
@@ -888,8 +880,8 @@
             // === KODE TRANSLATE DIHAPUS ===
 
             // Elemen Kontrol
-            const calculateBtn = document.getElementById('calculateBtn');
-            const printBtn = document.getElementById('printBtn');
+            // const calculateBtn = document.getElementById('calculateBtn'); // Dihapus, tidak perlu lagi
+            // const printBtn = document.getElementById('printBtn'); // Dihapus
             const useSteelPlateCheckbox = document.getElementById('useSteelPlate');
             const cbrInfoToggle = document.getElementById('cbrInfoToggle');
             const cbrInfoContent = document.getElementById('cbrInfoContent');
@@ -1025,34 +1017,7 @@
                 clearAllErrors();
             }
 
-            function printPDF() {
-                if (resultDiv.classList.contains('hidden')) {
-                    showAlert('Silakan hitung verifikasi terlebih dahulu.');
-                    return;
-                }
-
-                const element = document.querySelector('.container');
-                const opt = {
-                    margin:       [10, 10, 10, 10],
-                    filename:     'Verifikasi_Daya_Dukung.pdf', // [FIX] Baris dipindahkan ke sini
-                    image:        { type: 'jpeg', quality: 0.98 },
-                    html2canvas:  { scale: 2, useCORS: true, logging: false },
-                    jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
-                };
-
-                // Sembunyikan elemen yang tidak perlu dicetak
-                const elementsToHide = [
-                    document.querySelector('.button-container'),
-                    /* document.querySelector('.lang-switcher'), */ // Sudah dihapus
-                    document.getElementById('cbrInfoToggle')
-                ];
-                elementsToHide.forEach(el => el.style.visibility = 'hidden');
-
-                html2pdf().from(element).set(opt).save().then(() => {
-                    // Tampilkan kembali elemen setelah PDF dibuat
-                    elementsToHide.forEach(el => el.style.visibility = 'visible');
-                });
-            }
+            // Fungsi printPDF() dihapus
 
             function calculate() {
                 if (!validateInputs()) {
@@ -1143,7 +1108,7 @@
             function displayResults(data) {
                 resultDiv.classList.remove('hidden');
                 placeholderDiv.classList.add('hidden');
-                printBtn.classList.remove('hidden'); // Tampilkan tombol print
+                // printBtn.classList.remove('hidden'); // Dihapus
 
                 qDemandSpan.textContent = `${data.qDemand.toFixed(2)} kPa`;
                 qAllowableSpan.textContent = `${data.qAllowable.toFixed(2)} kPa`;
@@ -1212,11 +1177,27 @@
             }
 
             // Event Listeners
-            calculateBtn.addEventListener('click', calculate);
-            printBtn.addEventListener('click', printPDF);
-            useSteelPlateCheckbox.addEventListener('change', updateFormVisibility);
+            // calculateBtn.addEventListener('click', calculate); // Dihapus, diganti dengan event 'input'
+            // printBtn.addEventListener('click', printPDF); // Dihapus
             cbrInfoToggle.addEventListener('click', () => cbrInfoContent.classList.toggle('hidden'));
-            craneSelect.addEventListener('change', updateCraneData); // <-- TAMBAHAN BARU
+
+            // --- Kalkulasi Otomatis ---
+            // 1. Panggil kalkulasi untuk setiap perubahan input angka
+            Object.values(inputs).forEach(inputElement => {
+                inputElement.addEventListener('input', calculate);
+            });
+
+            // 2. Panggil kalkulasi saat checkbox plate diganti
+            useSteelPlateCheckbox.addEventListener('change', () => {
+                updateFormVisibility();
+                calculate();
+            });
+
+            // 3. Panggil kalkulasi saat preset crane diganti
+            craneSelect.addEventListener('change', () => {
+                updateCraneData();
+                calculate();
+            });
             
             // Inisialisasi tampilan form
             updateFormVisibility();
@@ -1224,7 +1205,13 @@
             
             // Panggil typeset sekali di awal untuk merender formula statis
             safeTypeset();
+
+            // Panggil kalkulasi sekali saat memuat untuk hasil default
+            calculate();
         });
     </script>
 </body>
 </html>
+
+
+
