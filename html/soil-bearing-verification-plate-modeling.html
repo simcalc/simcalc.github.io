@@ -552,6 +552,44 @@
                 font-size: 1.4em;
             }
         }
+
+        /* --- CSS UNTUK FOOTER --- */
+        footer {
+            background-color: #37474f; /* Warna dark teal/grey dari gambar */
+            color: #cfd8dc;            /* Warna teks terang */
+            padding: 40px 30px;
+            text-align: center;
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+        }
+        .footer-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        footer p {
+            margin: 8px 0;
+            font-size: 0.95em;
+        }
+        footer a {
+            color: #66cdaa; /* Warna link (teal muda) */
+            text-decoration: underline;
+            font-weight: 500;
+        }
+        footer a:hover {
+            color: #80deea;
+        }
+        footer hr {
+            border: 0;
+            height: 1px;
+            background-color: #546e7a; /* Warna garis pemisah */
+            margin: 20px auto;
+            max-width: 600px;
+        }
+        footer .disclaimer {
+            font-size: 0.9em;
+            font-style: italic;
+            color: #90a4ae; /* Warna disclaimer sedikit lebih redup */
+        }
     </style>
 </head>
 <body>
@@ -850,7 +888,20 @@
                 </ol>
             </div>
         </main>
-    </div>
+
+        <!-- ▼▼▼ TAMBAHAN FOOTER ▼▼▼ -->
+        <footer>
+            <div class="footer-content">
+                <p>Copyright © 2025 Apps Development by <a href="https://www.gendewa.my.id/" target="_blank" rel="noopener noreferrer">Ahmad Fauzan Gendewa</a></p>
+                <p>Calculation & Validation Field Study by <a href="https://id.linkedin.com/in/dimas-muflih-181b33288" target="_blank" rel="noopener noreferrer">Dimas Muflih</a></p>
+                <p>Layout Designed by <a href="https://id.linkedin.com/in/mokhamadabrar" target="_blank" rel="noopener noreferrer">Mokhamad Abrar</a></p>
+                <hr>
+                <p class="disclaimer">Disclaimer: This application is part of field engineering study concerning the soil bearing pressure simulation. Its purpose is purely field practices study. We sincerely welcome any constructive feedback and criticism to enrich this study, both from the perspective of civil engineering and the implementation of JavaScript technology.</p>
+            </div>
+        </footer>
+        <!-- ▲▲▲ AKHIR FOOTER ▲▲▲ -->
+
+    </div> <!-- <-- Penutup <div class="container"> -->
 
     <div id="custom-alert"></div>
 
@@ -1214,8 +1265,3 @@
     </script>
 </body>
 </html>
-
-
-
-
-
