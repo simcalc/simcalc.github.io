@@ -619,7 +619,7 @@
                     <!-- Card 1: Parameter Alat Berat -->
                     <fieldset>
                         <legend>
-                            1. Parameter Alat Berat (Rig)
+                            1. Parameter Alat Berat (Rig/Crane)
                         </legend>
                         <div class="form-group">
                             <label for="craneSelect">
@@ -674,18 +674,6 @@
                             <small>
                                 Dari hasil uji lapangan.
                             </small>
-                            <span id="cbrInfoToggle" class="info-toggle-button">
-                                Info Konversi CBR
-                            </span>
-                            <div id="cbrInfoContent" class="info-content hidden">
-                                <p><strong>Estimasi dari CBR:</strong></p>
-                                <ul>
-                                    <li><strong>Tanah Lunak:</strong> CBR 2% - 4%</li>
-                                    <li><strong>Tanah Sedang:</strong> CBR 5% - 7%</li>
-                                </ul>
-                                <p>$q_{\text{allow}} (\text{kPa}) \approx 10 \times \text{CBR} (\%)$</p>
-                                <small>Contoh: CBR 2.5% $\approx$ 25 kPa.</small>
-                            </div>
                             <small class="error-message"></small>
                         </div>
                         <div class="form-group">
@@ -936,8 +924,6 @@
             // const calculateBtn = document.getElementById('calculateBtn'); // Dihapus, tidak perlu lagi
             // const printBtn = document.getElementById('printBtn'); // Dihapus
             const useSteelPlateCheckbox = document.getElementById('useSteelPlate');
-            const cbrInfoToggle = document.getElementById('cbrInfoToggle');
-            const cbrInfoContent = document.getElementById('cbrInfoContent');
             const craneSelect = document.getElementById('craneSelect'); // <-- TAMBAHAN BARU
 
             // Grup Input yang bisa disembunyikan
@@ -1232,7 +1218,6 @@
             // Event Listeners
             // calculateBtn.addEventListener('click', calculate); // Dihapus, diganti dengan event 'input'
             // printBtn.addEventListener('click', printPDF); // Dihapus
-            cbrInfoToggle.addEventListener('click', () => cbrInfoContent.classList.toggle('hidden'));
 
             // --- Kalkulasi Otomatis ---
             // 1. Panggil kalkulasi untuk setiap perubahan input angka
