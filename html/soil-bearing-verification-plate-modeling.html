@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modeling Daya Dukung & Verifikasi Plate (v3.1 - IRC 37:2018)</title> <meta name="description" content="Kalkulator online dwibahasa untuk analisis daya dukung tanah (ground bearing pressure) dan verifikasi struktural steel plate (lentur & geser pons) untuk alat berat. Berdasarkan panduan EFFC/DFI dan korelasi IRC 37:2018.">
+    <title>Modeling Daya Dukung & Verifikasi Plate (v3.2 - Fix Kontras)</title> <meta name="description" content="Kalkulator online dwibahasa untuk analisis daya dukung tanah (ground bearing pressure) dan verifikasi struktural steel plate (lentur & geser pons) untuk alat berat. Berdasarkan panduan EFFC/DFI dan korelasi IRC 37:2018.">
     <meta name="keywords" content="kalkulator daya dukung tanah, ground bearing pressure, verifikasi steel plate, bore pile, fondasi, geoteknik, teknik sipil, EFFC, DFI, IRC 37 2018, analisis platform kerja, civil engineering calculator, CBR correlation">
     <meta name="author" content="simcalc.github.io">
     <meta name="robots" content="index, follow">
@@ -28,7 +28,8 @@
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap"></noscript>
     
     <script>
     MathJax = {
@@ -220,16 +221,18 @@
         input[type="number"] { -moz-appearance: textfield; }
         input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
         
+        /* ▼▼▼ PERBAIKAN KONTRAS 1 ▼▼▼ */
         input[readonly] {
             background-color: #eceff1;
-            color: #546e7a;
+            color: #424242;  /* Diubah dari #546e7a */
             cursor: not-allowed;
             opacity: 0.9;
         }
 
+        /* ▼▼▼ PERBAIKAN KONTRAS 2 ▼▼▼ */
         .form-group small {
             font-size: 0.8em;
-            color: #78909c;
+            color: #455a64; /* Diubah dari #78909c */
             display: block;
             margin-top: 4px;
             line-height: 1.3;
@@ -336,7 +339,7 @@
             border-radius: 4px;
             border: 1px solid #d3e3fd;
         }
-        .formula-box h4 {
+        .formula-box h3 {
             margin: 0 0 10px 0;
             font-family: 'Inter', sans-serif;
             color: var(--primary-color);
@@ -644,7 +647,7 @@
                              <label for="factorOfSafety">
                                 Faktor Keamanan (FoS)
                              </label>
-                             <div class="input-with-unit"><input type="number" id="factorOfSafety" value="1.5" step="0.1" required><span>(unitless)</span></div><small class="error-message"></small>
+                            <div class="input-with-unit"><input type="number" id="factorOfSafety" value="1.5" step="0.1" required><span>(unitless)</span></div><small class="error-message"></small>
                         </div>
                         <div class="form-group">
                             <label for="loadFactor">
@@ -748,9 +751,9 @@
                         <strong id="shearAllowable"></strong>
                     </div>
                     <div class="formula-box">
-                        <h4>
+                        <h3>
                             Formula yang Digunakan:
-                        </h4>
+                        </h3>
                         <div id="formula-container"></div>
                     </div>
                 </div>
@@ -823,7 +826,7 @@
                     b. Verifikasi Geser Pons (Punching Shear)
                 </h4>
                 <p>
-                    Verifikasi ini memastikan track tidak "menusuk" atau "merobek" steel plate. Tegangan geser ($\tau_{\text{punch}}$) dihitung pada keliling perimeter kritis di sekitar area track. Gaya geser netto adalah beban dari track dikurangi gaya dukung tanah yang bekerja di bawah area track itu sendiri. Tegangan geser aktual tidak boleh melebihi tegangan geser izin ($\tau_{\text{allowable}}$). Sesuai dengan spesifikasi AISC 360, tegangan geser izin dapat diambil sebesar 40% dari kuat leleh baja ($0.40 \times f_y$) untuk kondisi plastis <b class="citation">[3, 4]</b>.
+                    Verifikasi ini memastikan track tidak "menusuk" atau "merobek" steel plate. Tegangan geser ($\tau_{\text{punch}}$) dihitung pada keliling perimeter kritis di sekitar area track. Gaya geser netto adalah beban dari track dikurangi gaya dukung tanah yang bekerja di bawah area track itu sendiri. Tegangan geser aktual tidak boleh melampaui tegangan geser izin ($\tau_{\text{allowable}}$). Sesuai dengan spesifikasi AISC 360, tegangan geser izin dapat diambil sebesar 40% dari kuat leleh baja ($0.40 \times f_y$) untuk kondisi plastis <b class="citation">[3, 4]</b>.
                 </p>
                 <div class="formula-display">
                     Gaya Pons Netto: $V = (\frac{\gamma_F \times W \times g}{2}) - (q_{\text{demand}} \times b_{\text{track}} \times L_{\text{contact}})$ <br>
@@ -1133,7 +1136,7 @@
                     shearAllowableSpan.textContent = `${data.shearAllowable.toFixed(2)} MPa`;
                     
                     addStatusDetail('Lentur Plate', data.isBendingSafe, data.bendingStress, data.bendingAllowable);
-                    addStatusDetail('Geser Pons Plate', data.isSheBendingSafe, data.shearStress, data.shearAllowable);
+                    addStatusDetail('Geser Pons Plate', data.isShearSafe, data.shearStress, data.shearAllowable);
 
                 } else {
                     resultItems.bending.classList.add('hidden');
