@@ -1,33 +1,33 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modeling Daya Dukung & Verifikasi Plate (v3.3 - LCP Optimized)</title> <link rel="preconnect" href="https://fonts.googleapis.com">
+    <title data-lang="pageTitle">Bearing Capacity Modeling & Plate Verification (v3.3 - LCP Optimized)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://cdn.jsdelivr.net">
     <link rel="preload" as="image" href="/img/groundbearingpressure-modeling.webp" fetchpriority="high">
-    <meta name="description" content="Kalkulator online dwibahasa untuk analisis daya dukung tanah (ground bearing pressure) dan verifikasi struktural steel plate (lentur & geser pons) untuk alat berat. Berdasarkan panduan EFFC/DFI dan korelasi IRC 37:2018.">
-    <meta name="keywords" content="kalkulator daya dukung tanah, ground bearing pressure, verifikasi steel plate, bore pile, fondasi, geoteknik, teknik sipil, EFFC, DFI, IRC 37 2018, analisis platform kerja, civil engineering calculator, CBR correlation">
+    <meta name="description" content="Bilingual online calculator for ground bearing pressure analysis and structural steel plate verification (bending & punching shear) for heavy equipment. Based on EFFC/DFI guidance and IRC 37:2018 correlations.">
+    <meta name="keywords" content="ground bearing capacity calculator, ground bearing pressure, steel plate verification, bore pile, foundation, geotechnical, civil engineering, EFFC, DFI, IRC 37 2018, working platform analysis, civil engineering calculator, CBR correlation">
     <meta name="author" content="simcalc.github.io">
     <meta name="robots" content="index, follow">
 
-    <meta property="og:title" content="Modeling Daya Dukung & Verifikasi Plate (Bilingual)">
-    <meta property="og:description" content="Alat bantu interaktif untuk engineer sipil dalam memverifikasi keamanan platform kerja alat berat.">
+    <meta property="og:title" content="Bearing Capacity Modeling & Plate Verification (Bilingual)">
+    <meta property="og:description" content="An interactive tool for civil engineers to verify the safety of heavy equipment working platforms.">
     <meta property="og:image" content="https://simcalc.github.io/img/ground-bearing-pressure-under-rig-tracks.webp">
-    <meta property="og:url" content="https://simcalc.github.io/calc/daya-dukung-tanah-alat-berat">
+    <meta property="og:url" content="https://simcalc.github.io/calc/ground-bearing-capacity-heavy-equipment">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="SimCalc">
-    <meta property="og:locale" content="id_ID">
-    <meta property="og:locale:alternate" content="en_US" />
-
+    <meta property="og:locale" content="en_US">
+    <meta property="og:locale:alternate" content="id_ID" />
 
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Modeling Daya Dukung & Verifikasi Plate (Bilingual)">
-    <meta name="twitter:description" content="Alat bantu interaktif untuk engineer sipil dalam memverifikasi keamanan platform kerja alat berat.">
+    <meta name="twitter:title" content="Bearing Capacity Modeling & Plate Verification (Bilingual)">
+    <meta name="twitter:description" content="An interactive tool for civil engineers to verify the safety of heavy equipment working platforms.">
     <meta name="twitter:image" content="https://simcalc.github.io/img/ground-bearing-pressure-under-rig-tracks.webp">
 
-    <link rel="canonical" href="https://simcalc.github.io/calc/daya-dukung-tanah-alat-berat">
+    <link rel="canonical" href="https://simcalc.github.io/calc/ground-bearing-capacity-heavy-equipment">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏗️</text></svg>">
     
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" media="print" onload="this.media='all'">
@@ -49,14 +49,14 @@
     <style>
         /* CSS Reset and Basic Setup */
         :root {
-            --primary-color: #0d47a1; /* Biru tua profesional */
-            --secondary-color: #1976d2; /* Biru lebih terang */
-            --accent-color: #f9a825; /* Kuning/Oranye untuk tombol */
+            --primary-color: #0d47a1; /* Professional dark blue */
+            --secondary-color: #1976d2; /* Lighter blue */
+            --accent-color: #f9a825; /* Yellow/Orange for buttons */
             --text-color: #212121;
             --bg-color: #f5f7fa;
             --border-color: #cfd8dc;
-            --success-bg: #2e7d32; /* Hijau tua */
-            --error-bg: #c62828;   /* Merah tua */
+            --success-bg: #2e7d32; /* Dark green */
+            --error-bg: #c62828;   /* Dark red */
             --light-text: #ffffff;
             --shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
             --card-shadow: 0 4px 8px rgba(0,0,0,0.07);
@@ -73,11 +73,11 @@
         }
 
         .container {
-            max-width: 100%; 
-            margin: 0; 
+            max-width: 100%;  
+            margin: 0;  
             background-color: var(--light-text);
-            border-radius: 0; 
-            box-shadow: none; 
+            border-radius: 0;  
+            box-shadow: none;  
         }
 
         header {
@@ -87,9 +87,9 @@
             background-repeat: no-repeat;
             
             color: var(--light-text);
-            padding: 60px 30px; 
+            padding: 60px 30px;  
             text-align: center;
-            position: relative; 
+            position: relative;  
         }
         
         .header-content {
@@ -98,7 +98,7 @@
             justify-content: center;
             gap: 30px;
             flex-wrap: wrap;
-            position: relative; 
+            position: relative;  
             z-index: 2;
         }
 
@@ -110,13 +110,13 @@
             padding: 5px;
             border: 1px solid rgba(255, 255, 255, 0.2);
             object-fit: cover;
-            max-width: 100%; 
+            max-width: 100%;  
         }
 
         .header-text {
             text-align: left;
             flex: 1;
-            min-width: 0; 
+            min-width: 0;  
         }
 
         header h1 {
@@ -140,6 +140,37 @@
             font-size: 0.9em;
             display: inline-block;
             border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* --- Language Selector --- */
+        .lang-selector {
+            position: absolute;
+            bottom: 15px;
+            right: 20px;
+            z-index: 10;
+            display: flex;
+            gap: 10px;
+        }
+        .lang-selector a {
+            display: block;
+            opacity: 0.8;
+            transition: opacity 0.3s, transform 0.3s;
+            border-radius: 50%;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+        .lang-selector a:hover {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+        .lang-selector img {
+            width: 32px;
+            height: 32px;
+            display: block;
+        }
+        .lang-selector a.active {
+            border: 2px solid var(--accent-color, #f9a825);
+            opacity: 1;
         }
 
         main { padding: 30px; }
@@ -177,7 +208,7 @@
         .input-with-unit { display: flex; align-items: center; }
         .input-with-unit input {
             flex-grow: 1;
-            width: auto; 
+            width: auto;  
             border-radius: 4px 0 0 4px;
         }
         .input-with-unit span {
@@ -191,21 +222,21 @@
             color: #546e7a;
         }
 
-        input[type="number"], select { 
+        input[type="number"], select {  
             width: 100%;
             padding: 10px;
             border: 1px solid var(--border-color);
             border-radius: 4px;
             font-size: 1em;
             transition: border-color 0.3s, box-shadow 0.3s;
-            background-color: #fff; 
+            background-color: #fff;  
         }
-        input[type="number"]:focus, select:focus { 
+        input[type="number"]:focus, select:focus {  
             outline: none;
             border-color: var(--secondary-color);
             box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.2);
         }
-       
+        
         select {
             -webkit-appearance: none;
             -moz-appearance: none;
@@ -214,27 +245,25 @@
             background-repeat: no-repeat;
             background-position: right 10px center;
             background-size: 10px;
-            padding-right: 30px; 
+            padding-right: 30px;  
         }
         select#craneSelect {
-             background-color: #f9f9f9; 
+            background-color: #f9f9f9;  
         }
         
         input[type="number"] { -moz-appearance: textfield; }
         input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
         
-        /* ▼▼▼ PERBAIKAN KONTRAS 1 ▼▼▼ */
         input[readonly] {
             background-color: #eceff1;
-            color: #424242;  /* Diubah dari #546e7a */
+            color: #424242;
             cursor: not-allowed;
             opacity: 0.9;
         }
 
-        /* ▼▼▼ PERBAIKAN KONTRAS 2 ▼▼▼ */
         .form-group small {
             font-size: 0.8em;
-            color: #455a64; /* Diubah dari #78909c */
+            color: #455a64;
             display: block;
             margin-top: 4px;
             line-height: 1.3;
@@ -245,7 +274,7 @@
             font-size: 0.85em;
             font-weight: 500;
             display: block;
-            height: 1em; 
+            height: 1em;  
             margin-top: 4px;
         }
         input.input-error {
@@ -311,8 +340,8 @@
             border-bottom: 1px solid #eee;
             display: flex;
             justify-content: space-between;
-            flex-wrap: wrap; 
-            gap: 5px; 
+            flex-wrap: wrap;  
+            gap: 5px;  
         }
         #status-details li:last-child { border-bottom: none; }
         .status-detail-safe { font-weight: bold; color: var(--success-bg); }
@@ -324,12 +353,12 @@
             align-items: center;
             padding: 14px 0;
             border-bottom: 1px solid #eee;
-            flex-wrap: wrap; 
+            flex-wrap: wrap;  
             gap: 5px;
         }
         .result-item:last-of-type { border-bottom: none; }
-        .result-item strong { 
-            font-size: 1.3em; 
+        .result-item strong {  
+            font-size: 1.3em;  
             color: var(--secondary-color);
             word-break: break-all;
         }
@@ -346,8 +375,8 @@
             font-family: 'Inter', sans-serif;
             color: var(--primary-color);
         }
-        #formula-container { 
-            text-align: center; 
+        #formula-container {  
+            text-align: center;  
             font-size: 0.95em;
             overflow-x: auto;
             word-wrap: break-word;
@@ -368,7 +397,7 @@
             margin-top: 20px;
         }
         .theory-section h2, .theory-section h3, .theory-section h4 {
-             text-align: left;
+            text-align: left;
         }
         .theory-section h2 {
             color: var(--primary-color);
@@ -417,7 +446,7 @@
 
         .custom-alert {
             position: fixed;
-            bottom: -100px; 
+            bottom: -100px;  
             left: 50%;
             transform: translateX(-50%);
             background-color: var(--accent-color);
@@ -432,15 +461,15 @@
         }
 
         .custom-alert.show {
-            bottom: 20px; 
+            bottom: 20px;  
         }
 
-        /* --- CSS UNTUK LAYOUT 2 KOLOM --- */
+        /* --- CSS for 2-Column Layout --- */
         .layout-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr; 
-            gap: 30px; 
-            margin-bottom: 30px; 
+            grid-template-columns: 1fr 1fr;  
+            gap: 30px;  
+            margin-bottom: 30px;  
         }
 
         .layout-grid .input-cards-container {
@@ -449,21 +478,21 @@
 
         .output-column {
             position: sticky;
-            top: 30px; 
-            align-self: start; 
-            min-width: 0; /* Mencegah kolom "melebar" */
+            top: 30px;  
+            align-self: start;  
+            min-width: 0; /* Prevents column from "expanding" */
         }
-        /* --- AKHIR CSS 2 KOLOM --- */
+        /* --- End 2-Column CSS --- */
 
-        @media (max-width: 1024px) { 
+        @media (max-width: 1024px) {  
             .layout-grid {
-                grid-template-columns: 1fr; 
+                grid-template-columns: 1fr;  
                 gap: 20px;
                 margin-bottom: 20px;
             }
 
             .output-column {
-                position: static; 
+                position: static;  
                 top: auto;
             }
             
@@ -476,16 +505,24 @@
             }
             .header-text {
                 text-align: center;
-                width: 100%; 
+                width: 100%;  
             }
         }
         
-        @media (max-width: 768px) { 
+        @media (max-width: 768px) {  
             main, .result-section, .theory-section {
                 padding: 15px;
             }
             header {
-                padding: 40px 20px; 
+                padding: 40px 20px;  
+            }
+            .lang-selector { /* Adjust lang buttons for mobile */
+                bottom: 10px;
+                right: 15px;
+            }
+            .lang-selector img {
+                width: 28px;
+                height: 28px;
             }
             .button-container {
                 flex-direction: column;
@@ -493,27 +530,27 @@
             .result-item, #status-details li {
                 flex-direction: column;
                 align-items: flex-start;
-                gap: 5px; 
+                gap: 5px;  
                 padding-top: 12px;
                 padding-bottom: 12px;
             }
             .result-item strong {
                 font-size: 1.2em;
-                padding-left: 0; 
+                padding-left: 0;  
             }
             #status-details li span:last-child {
-                padding-left: 0; 
-                text-align: left; 
+                padding-left: 0;  
+                text-align: left;  
             }
             header h1 {
                 font-size: 1.4em;
             }
         }
 
-        /* --- CSS UNTUK FOOTER --- */
+        /* --- CSS for Footer --- */
         footer {
-            background-color: #37474f; 
-            color: #cfd8dc;         
+            background-color: #37474f;  
+            color: #cfd8dc;       
             padding: 40px 30px;
             text-align: center;
             font-family: 'Inter', sans-serif;
@@ -528,10 +565,10 @@
             font-size: 0.95em;
         }
         footer a {
-            color: #66cdaa; 
+            color: #66cdaa;  
             text-decoration: underline;
             font-weight: 500;
-            overflow-wrap: break-word; 
+            overflow-wrap: break-word;  
             word-break: break-all;
         }
         footer a:hover {
@@ -540,14 +577,13 @@
         footer hr {
             border: 0;
             height: 1px;
-            background-color: #546e7a; 
+            background-color: #546e7a;  
             margin: 20px auto;
             max-width: 600px;
         }
         footer .disclaimer {
             font-size: 0.9em;
             font-style: italic;
-            /* color: #90a4ae; */ /* Dihapus agar mewarisi warna footer utama */
             text-align: justify;
             hyphens: auto;
         }
@@ -558,290 +594,300 @@
     <div class="container">
         <header>
             <div class="header-content">
-                <img src="/img/virsim_trans.webp" alt="Ilustrasi Bor Pile" class="header-image">
+                <img src="/img/virsim_trans.webp" alt="Bore Pile Illustration" class="header-image">
                 <div class="header-text">
-                    <h1>
-                        Modeling Daya Dukung & Verifikasi Plate
+                    <h1 data-lang="headerTitle">
+                        Bearing Capacity Modeling & Plate Verification
                     </h1>
-                    <p class="subtitle">
-                        Verifikasi tekanan alat berat dan kekuatan steel plate.
+                    <p class="subtitle" data-lang="headerSubtitle">
+                        Verification of heavy equipment pressure and steel plate strength.
                     </p>
-                    <div class="default-info hidden"> 
+                    <div class="default-info hidden">  
                         <strong>Default Rig:</strong> Kobelco CKS2500 (217t)
                     </div>
                 </div>
             </div>
+
+            <!-- Language Selector -->
+            <div class="lang-selector">
+                <a href="#" title="Switch to Bahasa Indonesia" data-lang-title="langTooltipID" onclick="switchLang('id'); return false;">
+                    <img src="https://xplosion.vercel.app/img/ID.svg" alt="Bahasa Indonesia">
+                </a>
+                <a href="#" title="Switch to English" class="active" data-lang-title="langTooltipEN" onclick="switchLang('en'); return false;">
+                    <img src="https://xplosion.vercel.app/img/EN.svg" alt="English">
+                </a>
+            </div>
         </header>
 
         <main>
-            <div class="layout-grid"> 
+            <div class="layout-grid">  
                 <form id="bearingCalculatorForm" onsubmit="return false;" class="input-column">
-                    <div class="input-cards-container"> 
-                        <fieldset> 
-                            <legend>
-                                1. Parameter Alat Berat (Rig/Crane)
+                    <div class="input-cards-container">  
+                        <fieldset>  
+                            <legend data-lang="legendParamsRig">
+                                1. Heavy Equipment (Rig/Crane) Parameters
                             </legend>
                             <div class="form-group">
-                                <label for="craneSelect">
-                                    Pilih Alat Berat (Preset)
+                                <label for="craneSelect" data-lang="labelCraneSelect">
+                                    Select Equipment (Preset)
                                 </label>
-                                <select id="craneSelect"> 
-                                    <option value="bauer_bg_20_h">BAUER BG 20 H (56t)</option>
-                                    <option value="kobelco_cks2500" selected>Kobelco CKS2500 (Default: 217t)</option>
-                                    <option value="custom">Input Manual / Custom</option>
+                                <select id="craneSelect">  
+                                    <option value="bauer_bg_20_h" data-lang="optionBauer">BAUER BG 20 H (56t)</option>
+                                    <option value="kobelco_cks2500" selected data-lang="optionKobelco">Kobelco CKS2500 (Default: 217t)</option>
+                                    <option value="custom" data-lang="optionCustom">Manual / Custom Input</option>
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label for="rigWeight">
-                                    Berat Operasi Total ($W$)
+                                <label for="rigWeight" data-lang="labelRigWeight">
+                                    Total Operating Weight ($W$)
                                 </label>
                                 <div class="input-with-unit"><input type="number" id="rigWeight" value="56" step="0.1" required readonly><span>ton</span></div><small class="error-message"></small>
                             </div>
-                        <div class="form-group">
-                            <label for="trackWidth">
-                                Lebar Track Shoe ($b_{\text{track}}$)
-                            </label>
-                            <div class="input-with-unit"><input type="number" id="trackWidth" value="0.7" step="0.01" min="0.1" max="1.5" required readonly><span>meter</span></div><small class="error-message"></small>
-                        </div>
-                        <div class="form-group">
-                            <label for="trackLength">
-                                Panjang Kontak Track ($L_{\text{contact}}$)
-                            </label>
-                            <div class="input-with-unit"><input type="number" id="trackLength" value="4.5" step="0.1" min="0.1" max="10" required readonly><span>meter</span></div><small class="error-message"></small>
-                        </div>
-                        <div class="form-group hidden" id="loadDistributionGroup">
-                            <label for="loadDistribution">
-                                Faktor Distribusi Beban ($\eta$)
-                            </label>
-                            <div class="input-with-unit"><input type="number" id="loadDistribution" value="1" step="0.1" required><span>(unitless)</span></div>
-                            <small>
-                                Untuk tanah tidak rata, nilainya < 1.
-                            </small>
-                            <small class="error-message"></small>
-                        </div>
-                    </fieldset> 
+                            <div class="form-group">
+                                <label for="trackWidth" data-lang="labelTrackWidth">
+                                    Track Shoe Width ($b_{\text{track}}$)
+                                </label>
+                                <div class="input-with-unit"><input type="number" id="trackWidth" value="0.7" step="0.01" min="0.1" max="1.5" required readonly><span>meter</span></div><small class="error-message"></small>
+                            </div>
+                            <div class="form-group">
+                                <label for="trackLength" data-lang="labelTrackLength">
+                                    Track Contact Length ($L_{\text{contact}}$)
+                                </label>
+                                <div class="input-with-unit"><input type="number" id="trackLength" value="4.5" step="0.1" min="0.1" max="10" required readonly><span>meter</span></div><small class="error-message"></small>
+                            </div>
+                            <div class="form-group hidden" id="loadDistributionGroup">
+                                <label for="loadDistribution" data-lang="labelLoadDist">
+                                    Load Distribution Factor ($\eta$)
+                                </label>
+                                <div class="input-with-unit"><input type="number" id="loadDistribution" value="1" step="0.1" required><span>(unitless)</span></div>
+                                <small data-lang="smallLoadDist">
+                                    For uneven ground, value is &lt; 1.
+                                </small>
+                                <small class="error-message"></small>
+                            </div>
+                        </fieldset>  
 
-                    <fieldset>
-                        <legend>
-                            2. Parameter Tanah & Material
-                        </legend>
+                        <fieldset>
+                            <legend data-lang="legendParamsSoil">
+                                2. Soil & Material Parameters
+                            </legend>
+                            
+                            <div class="form-group">
+                                <label for="cbrValue" data-lang="labelCbr">
+                                    Estimate from CBR (Optional)
+                                </label>
+                                <div class="input-with-unit"><input type="number" id="cbrValue" step="1" min="0" value="50"><span>%</span></div>
+                                <small id="cbrInfo" data-lang="smallCbr">Estimate based on IRC 37:2018 formula.</small>
+                                <small class="error-message"></small>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="soilCapacity" data-lang="labelSoilCap">
+                                    Allowable Ground Bearing Capacity ($q_{\text{allow,test}}$)
+                                </label>
+                                <div class="input-with-unit"><input type="number" id="soilCapacity" value="25" step="1" required><span>kPa</span></div>
+                                <small data-lang="smallSoilCap">
+                                    From field test results (or CBR estimate).
+                                </small>
+                                <small class="error-message"></small>
+                            </div>
+                            <div class="form-group">
+                                 <label for="factorOfSafety" data-lang="labelFoS">
+                                    Factor of Safety (FoS)
+                                 </label>
+                                <div class="input-with-unit"><input type="number" id="factorOfSafety" value="1.5" step="0.1" required><span>(unitless)</span></div><small class="error-message"></small>
+                            </div>
+                            <div class="form-group">
+                                <label for="loadFactor" data-lang="labelLoadFactor">
+                                    Load Factor ($\gamma_F$)
+                                </label>
+                                <div class="input-with-unit"><input type="number" id="loadFactor" value="1.15" step="0.01" required><span>(unitless)</span></div>
+                                <small data-lang="smallLoadFactor">Ref: EFFC/DFI Guide.</small><small class="error-message"></small>
+                            </div>
+                            <div class="form-group hidden" id="steelYieldStrengthGroup">
+                                <label for="steelYieldStrength" data-lang="labelSteelYield">
+                                    Plate Steel Yield Strength ($f_y$)
+                                </label>
+                                <div class="input-with-unit"><input type="number" id="steelYieldStrength" value="250" step="10"><span>MPa</span></div><small class="error-message"></small>
+                            </div>
+                        </fieldset>
                         
-                        <div class="form-group">
-                            <label for="cbrValue">
-                                Estimasi dari CBR (Opsional)
-                            </label>
-                            <div class="input-with-unit"><input type="number" id="cbrValue" step="1" min="0" value="50"><span>%</span></div>
-                            <small id="cbrInfo">Estimasi berdasarkan formula IRC 37:2018.</small>
-                            <small class="error-message"></small>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="soilCapacity">
-                                Daya Dukung Tanah Izin ($q_{\text{allow,test}}$)
-                            </label>
-                            <div class="input-with-unit"><input type="number" id="soilCapacity" value="25" step="1" required><span>kPa</span></div>
-                            <small>
-                                Dari hasil uji lapangan (atau estimasi CBR).
-                            </small>
-                            <small class="error-message"></small>
-                        </div>
-                        <div class="form-group">
-                             <label for="factorOfSafety">
-                                Faktor Keamanan (FoS)
-                             </label>
-                            <div class="input-with-unit"><input type="number" id="factorOfSafety" value="1.5" step="0.1" required><span>(unitless)</span></div><small class="error-message"></small>
-                        </div>
-                        <div class="form-group">
-                            <label for="loadFactor">
-                                Faktor Beban ($\gamma_F$)
-                            </label>
-                            <div class="input-with-unit"><input type="number" id="loadFactor" value="1.15" step="0.01" required><span>(unitless)</span></div>
-                            <small>Ref: EFFC/DFI Guide.</small><small class="error-message"></small>
-                        </div>
-                        <div class="form-group hidden" id="steelYieldStrengthGroup">
-                            <label for="steelYieldStrength">
-                                Kuat Leleh Baja Plate ($f_y$)
-                            </label>
-                            <div class="input-with-unit"><input type="number" id="steelYieldStrength" value="250" step="10"><span>MPa</span></div><small class="error-message"></small>
-                        </div>
-                    </fieldset>
-                    
-                    <fieldset>
-                        <legend>
-                            3. Opsi Tambahan
-                        </legend>
-                        <div class="form-group checkbox-group">
-                            <input type="checkbox" id="useSteelPlate" checked>
-                            <label for="useSteelPlate">
-                                Gunakan Steel Plate / Mat
-                            </label>
-                        </div>
-                        <div id="steelPlateInput">
-                            <div class="form-group">
-                                <label for="plateLength">
-                                    Panjang Plate ($L_{\text{plate}}$)
+                        <fieldset>
+                            <legend data-lang="legendOptions">
+                                3. Additional Options
+                            </legend>
+                            <div class="form-group checkbox-group">
+                                <input type="checkbox" id="useSteelPlate" checked>
+                                <label for="useSteelPlate" data-lang="labelUsePlate">
+                                    Use Steel Plate / Mat
                                 </label>
-                                <div class="input-with-unit"><input type="number" id="plateLength" value="6.0" step="0.1"><span>meter</span></div><small class="error-message"></small>
                             </div>
-                            <div class="form-group">
-                                <label for="plateWidth">
-                                    Lebar Plate ($b_{\text{plate}}$)
-                                </label>
-                                <div class="input-with-unit"><input type="number" id="plateWidth" value="1.5" step="0.1"><span>meter</span></div><small class="error-message"></small>
+                            <div id="steelPlateInput">
+                                <div class="form-group">
+                                    <label for="plateLength" data-lang="labelPlateLength">
+                                        Plate Length ($L_{\text{plate}}$)
+                                    </label>
+                                    <div class="input-with-unit"><input type="number" id="plateLength" value="6.0" step="0.1"><span>meter</span></div><small class="error-message"></small>
+                                </div>
+                                <div class="form-group">
+                                    <label for="plateWidth" data-lang="labelPlateWidth">
+                                        Plate Width ($b_{\text{plate}}$)
+                                    </label>
+                                    <div class="input-with-unit"><input type="number" id="plateWidth" value="1.5" step="0.1"><span>meter</span></div><small class="error-message"></small>
+                                </div>
+                                <div class="form-group">
+                                    <label for="plateThickness" data-lang="labelPlateThick">
+                                        Plate Thickness ($t_{\text{plate}}$)
+                                    </label>
+                                    <div class="input-with-unit"><input type="number" id="plateThickness" value="22" step="1"><span>mm</span></div><small class="error-message"></small>
+                                </div>
                             </div>
-                            <div class="form-group">
-                                <label for="plateThickness">
-                                    Tebal Plate ($t_{\text{plate}}$)
-                                </label>
-                                <div class="input-with-unit"><input type="number" id="plateThickness" value="22" step="1"><span>mm</span></div><small class="error-message"></small>
-                            </div>
-                        </div>
-                    </fieldset> 
+                        </fieldset>  
 
-                    </div> 
+                    </div>  
 
                     <div class="button-container">
-                        <button type="button" id="calculateBtn" class="hidden"> 
-                            HITUNG VERIFIKASI
+                        <button type="button" id="calculateBtn" class="hidden">  
+                            CALCULATE VERIFICATION
                         </button>
                     </div>
 
-                </form> 
+                </form>  
 
-                <div class="result-section output-column"> 
+                <div class="result-section output-column">  
 
-                <div id="result" class="hidden">
-                    <h2>
-                        Hasil Verifikasi
-                    </h2>
-                    <div id="status" class="status"></div>
-                    <ul id="status-details"></ul>
-                    <div class="result-item">
-                        <span title="Tekanan aktual yang diberikan alat ke tanah">
-                            Tekanan Aktual ke Tanah ($q_{\text{demand}}$)
-                        </span>
-                        <strong id="qDemand"></strong>
+                    <div id="result" class="hidden">
+                        <h2 data-lang="resultsTitle">
+                            Verification Results
+                        </h2>
+                        <div id="status" class="status"></div>
+                        <ul id="status-details"></ul>
+                        <div class="result-item">
+                            <span title="Actual pressure applied by the equipment to the ground" data-lang="labelQDemand" data-lang-title="tooltipQDemand">
+                                Actual Pressure on Ground ($q_{\text{demand}}$)
+                            </span>
+                            <strong id="qDemand"></strong>
+                        </div>
+                        <div class="result-item">
+                            <span title="Safe bearing capacity of the soil based on FoS" data-lang="labelQAllow" data-lang-title="tooltipQAllow">
+                                Allowable Ground Capacity ($q_{\text{allowable}}$)
+                            </span>
+                            <strong id="qAllowable"></strong>
+                        </div>
+                        <div class="result-item hidden" id="bendingResultItem">
+                            <span title="Actual bending stress on the plate" data-lang="labelBendingStress" data-lang-title="tooltipBendingStress">
+                                Plate Bending Stress ($\sigma_{\text{bending}}$)
+                            </span>
+                            <strong id="bendingStress"></strong>
+                        </div>
+                        <div class="result-item hidden" id="bendingAllowableResultItem">
+                            <span title="Allowable bending stress of the plate material" data-lang="labelBendingAllow" data-lang-title="tooltipBendingAllow">
+                                 Allowable Bending Stress ($\sigma_{\text{allow}}$)
+                            </span>
+                            <strong id="bendingAllowable"></strong>
+                        </div>
+                        <div class="result-item hidden" id="shearResultItem">
+                            <span title="Actual punching shear stress on the plate" data-lang="labelShearStress" data-lang-title="tooltipShearStress">
+                                Plate Punching Shear Stress ($\tau_{\text{punch}}$)
+                            </span>
+                            <strong id="shearStress"></strong>
+                        </div>
+                        <div class="result-item hidden" id="shearAllowableResultItem">
+                            <span title="Allowable punching shear stress of the plate material" data-lang="labelShearAllow" data-lang-title="tooltipShearAllow">
+                                Allowable Shear Stress ($\tau_{\text{allow}}$)
+                            </span>
+                            <strong id="shearAllowable"></strong>
+                        </div>
+                        <div class="formula-box">
+                            <h3 data-lang="labelFormulas">
+                                Formulas Used:
+                            </h3>
+                            <div id="formula-container"></div>
+                        </div>
                     </div>
-                    <div class="result-item">
-                        <span title="Kapasitas aman tanah berdasarkan FoS">
-                            Kapasitas Aman Tanah ($q_{\text{allowable}}$)
-                        </span>
-                        <strong id="qAllowable"></strong>
-                    </div>
-                    <div class="result-item hidden" id="bendingResultItem">
-                        <span title="Tegangan lentur aktual pada plate">
-                            Tegangan Lentur Plate ($\sigma_{\text{bending}}$)
-                        </span>
-                        <strong id="bendingStress"></strong>
-                    </div>
-                    <div class="result-item hidden" id="bendingAllowableResultItem">
-                        <span title="Tegangan lentur izin material plate">
-                             Tegangan Lentur Izin ($\sigma_{\text{allow}}$)
-                        </span>
-                        <strong id="bendingAllowable"></strong>
-                    </div>
-                    <div class="result-item hidden" id="shearResultItem">
-                        <span title="Tegangan geser pons aktual pada plate">
-                            Tegangan Geser Pons Plate ($\tau_{\text{punch}}$)
-                        </span>
-                        <strong id="shearStress"></strong>
-                    </div>
-                    <div class="result-item hidden" id="shearAllowableResultItem">
-                        <span title="Tegangan geser pons izin material plate">
-                            Tegangan Geser Izin ($\tau_{\text{allow}}$)
-                        </span>
-                        <strong id="shearAllowable"></strong>
-                    </div>
-                    <div class="formula-box">
-                        <h3>
-                            Formula yang Digunakan:
-                        </h3>
-                        <div id="formula-container"></div>
+                    <div id="placeholder">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" style="color: #b0bec5;"><path d="M2 21h20"/><path d="M5.23 21V8.41c0-1.1.9-2,2-2h9.54c1.1,0,2,.9,2,2V21"/><path d="M9 21v-5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v5"/><path d="M12 21v-8"/><path d="M18 10c-1.5-3-6-2.5-6-2.5s-4.5-.5-6,2.5"/><path d="M11 11h2"/></svg>
+                        <p data-lang="placeholderText">
+                            Calculation results will be displayed here.
+                        </p>
                     </div>
                 </div>
-                <div id="placeholder">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" style="color: #b0bec5;"><path d="M2 21h20"/><path d="M5.23 21V8.41c0-1.1.9-2,2-2h9.54c1.1,0,2,.9,2,2V21"/><path d="M9 21v-5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v5"/><path d="M12 21v-8"/><path d="M18 10c-1.5-3-6-2.5-6-2.5s-4.5-.5-6,2.5"/><path d="M11 11h2"/></svg>
-                    <p>
-                        Hasil perhitungan akan ditampilkan di sini.
-                    </p>
-                </div>
-            </div>
-        </div> 
+            </div>  
 
             <div class="theory-section">
-                <h2>
-                    Landasan Teori Perhitungan
+                <h2 data-lang="theoryTitle">
+                    Basis of Calculation Theory
                 </h2>
-                <p>
-                    Analisis ini bertujuan untuk memastikan keamanan dan stabilitas platform kerja untuk operasional alat berat, baik secara langsung di atas tanah maupun dengan menggunakan perantara <i>steel plate</i> (matras). Platform kerja harus mampu menahan beban yang diberikan tanpa mengalami keruntuhan atau deformasi berlebih <b class="citation">[1, 4]</b>. Metodologi perhitungan mengacu pada panduan desain platform kerja oleh EFFC/DFI dan praktik umum rekayasa geoteknik dan struktural. Verifikasi mencakup tiga aspek utama:
+                <p data-lang="theoryIntro">
+                    This analysis aims to ensure the safety and stability of the working platform for heavy equipment operations, either directly on the ground or using a <i>steel plate</i> (mat) intermediary. The working platform must be able to support the applied loads without failure or excessive deformation <b class="citation">[1, 4]</b>. The calculation methodology refers to the working platform design guide by EFFC/DFI and common geotechnical and structural engineering practices. The verification covers three main aspects:
                 </p>
                 
-                <h3>
-                    1. Verifikasi Daya Dukung Tanah (Ground Bearing Pressure)
+                <h3 data-lang="theoryTitle1">
+                    1. Ground Bearing Capacity Verification
                 </h3>
-                <p>
-                    Tujuan verifikasi ini adalah untuk memastikan bahwa tekanan yang diberikan oleh alat berat ke tanah ($q_{\text{demand}}$) tidak melampaui kapasitas aman tanah ($q_{\text{allowable}}$). Kapasitas aman diperoleh dari data uji tanah ($q_{\text{allow,test}}$), seperti uji CBR atau Plate Bearing Test, yang kemudian direduksi dengan Faktor Keamanan (FoS) <b class="citation">[1]</b>. 
+                <p data-lang="theoryP1_1">
+                    The purpose of this verification is to ensure that the pressure applied by the heavy equipment to the ground ($q_{\text{demand}}$) does not exceed the allowable ground capacity ($q_{\text{allowable}}$). The allowable capacity is obtained from soil test data ($q_{\text{allow,test}}$), such as a CBR or Plate Bearing Test, which is then reduced by a Factor of Safety (FoS) <b class="citation">[1]</b>.
                 </p>
-                <p>
-                    Nilai $q_{\text{allow,test}}$ juga dapat diestimasi dari nilai CBR. Standar seperti IRC 37:2018 (menggunakan korelasi Powell et al.) mengkorelasikan CBR dengan Resilient Modulus ($M_R$). Untuk tujuan estimasi daya dukung (bukan modulus perkerasan), formula empiris berikut digunakan dalam kalkulator ini:
+                <p data-lang="theoryP1_2">
+                    The $q_{\text{allow,test}}$ value can also be estimated from the CBR value. Standards like IRC 37:2018 (using the Powell et al. correlation) correlate CBR with Resilient Modulus ($M_R$). For the purpose of estimating bearing capacity (not pavement modulus), the following empirical formulas are used in this calculator:
                 </p>
                 <div class="formula-display">
-                    Jika $\text{CBR} \le 5\%$: $q_{\text{allow,test}} \text{ (kPa)} \approx 10 \times \text{CBR}$ <br>
-                    Jika $\text{CBR} > 5\%$: $q_{\text{allow,test}} \text{ (kPa)} \approx 17.6 \times (\text{CBR})^{0.64}$
+                    If $\text{CBR} \le 5\%$: $q_{\text{allow,test}} \text{ (kPa)} \approx 10 \times \text{CBR}$ <br>
+                    If $\text{CBR} > 5\%$: $q_{\text{allow,test}} \text{ (kPa)} \approx 17.6 \times (\text{CBR})^{0.64}$
                 </div>
                 <div class="formula-display">
                     $q_{\text{allowable}} = \frac{q_{\text{allow,test}}}{\text{FoS}}$
                 </div>
-                <p>
-                    Tekanan aktual yang terjadi ($q_{\text{demand}}$) dihitung dengan memperhitungkan berat operasi total alat ($W$) yang dikalikan dengan faktor beban ($\gamma_F$). Faktor ini mengakomodasi efek dinamis, beban eksentris, dan intensitas operasional <b class="citation">[4]</b>. Beban berfaktor ini kemudian didistribusikan ke seluruh area kontak.
+                <p data-lang="theoryP1_3">
+                    The actual applied pressure ($q_{\text{demand}}$) is calculated by considering the total operating weight of the equipment ($W$) multiplied by a load factor ($\gamma_F$). This factor accommodates dynamic effects, eccentric loads, and operational intensity <b class="citation">[4]</b>. This factored load is then distributed over the entire contact area.
                 </p>
                 <div class="formula-display">
-                    Tekanan Aktual (dengan plate): $q_{\text{demand}} = \frac{\gamma_F \times W \times g}{2 \times L_{\text{plate}} \times b_{\text{plate}}}$
+                    Actual Pressure (with plate): $q_{\text{demand}} = \frac{\gamma_F \times W \times g}{2 \times L_{\text{plate}} \times b_{\text{plate}}}$
                 </div>
-                <p><b>
-                    Syarat Aman: $q_{\text{demand}} \le q_{\text{allowable}}$
+                <p><b data-lang="theorySafety1">
+                    Safety Condition: $q_{\text{demand}} \le q_{\text{allowable}}$
                 </b></p>
 
-                <h3>
-                    2. Verifikasi Struktural Steel Plate
+                <h3 data-lang="theoryTitle2">
+                    2. Steel Plate Structural Verification
                 </h3>
-                <p>
-                    Ketika steel plate digunakan, integritas struktural plate itu sendiri harus diverifikasi terhadap dua mode kegagalan utama: lentur (bending) dan geser pons (punching shear) <b class="citation">[1, 4]</b>.
+                <p data-lang="theoryP2_1">
+                    When a steel plate is used, the structural integrity of the plate itself must be verified against two primary failure modes: bending and punching shear <b class="citation">[1, 4]</b>.
                 </p>
 
-                <h4>
-                    a. Verifikasi Lentur (Bending Stress)
+                <h4 data-lang="theoryTitle2a">
+                    a. Bending Stress Verification
                 </h4>
-                <p>
-                    Model analisis mengasumsikan bagian plate yang menjorok keluar dari area kontak track (<i>cantilever</i>) menerima tekanan balik dari tanah ($q_{\text{demand}}$). Tekanan ini menyebabkan momen lentur pada plate. Tegangan lentur aktual ($\sigma_{\text{bending}}$) dihitung menggunakan formula standar untuk plat kantilever dengan beban merata <b class="citation">[2]</b>. Tegangan ini tidak boleh melebihi tegangan izin material ($\sigma_{\text{allowable}}$). Berdasarkan standar desain baja seperti AISC 360, tegangan izin untuk kondisi layan seringkali diambil sebagai persentase dari kuat leleh baja ($f_y$). Nilai yang umum digunakan untuk desain perancah atau struktur temporer adalah $0.75 \times f_y$, yang memberikan faktor keamanan tambahan <b class="citation">[3]</b>.
+                <p data-lang="theoryP2a_1">
+                    The analysis model assumes the part of the plate cantilevering beyond the track contact area receives an upward pressure from the ground ($q_{\text{demand}}$). This pressure induces a bending moment in the plate. The actual bending stress ($\sigma_{\text{bending}}$) is calculated using the standard formula for a cantilever plate with a uniformly distributed load <b class="citation">[2]</b>. This stress must not exceed the allowable material stress ($\sigma_{\text{allowable}}$). Based on steel design standards like AISC 360, the allowable stress for serviceability conditions is often taken as a percentage of the steel's yield strength ($f_y$). A common value used for scaffolding or temporary structures is $0.75 \times f_y$, which provides an additional factor of safety <b class="citation">[3]</b>.
                 </p>
                 <div class="formula-display">
-                    Jarak Kantilever: $c = \frac{b_{\text{plate}} - b_{\text{track}}}{2}$ <br>
-                    Tegangan Lentur Aktual: $\sigma_{\text{bending}} = \frac{3 \times q_{\text{demand}} \times c^2}{t_{\text{plate}}^2}$ <br>
-                    Tegangan Lentur Izin: $\sigma_{\text{allowable}} = 0.75 \times f_y$
+                    Cantilever Length: $c = \frac{b_{\text{plate}} - b_{\text{track}}}{2}$ <br>
+                    Actual Bending Stress: $\sigma_{\text{bending}} = \frac{3 \times q_{\text{demand}} \times c^2}{t_{\text{plate}}^2}$ <br>
+                    Allowable Bending Stress: $\sigma_{\text{allowable}} = 0.75 \times f_y$
                 </div>
-                <p><b>
-                    Syarat Aman: $\sigma_{\text{bending}} \le \sigma_{\text{allowable}}$
+                <p><b data-lang="theorySafety2a">
+                    Safety Condition: $\sigma_{\text{bending}} \le \sigma_{\text{allowable}}$
                 </b></p>
                 
-                <h4>
-                    b. Verifikasi Geser Pons (Punching Shear)
+                <h4 data-lang="theoryTitle2b">
+                    b. Punching Shear Verification
                 </h4>
-                <p>
-                    Verifikasi ini memastikan track tidak "menusuk" atau "merobek" steel plate. Tegangan geser ($\tau_{\text{punch}}$) dihitung pada keliling perimeter kritis di sekitar area track. Gaya geser netto adalah beban dari track dikurangi gaya dukung tanah yang bekerja di bawah area track itu sendiri. Tegangan geser aktual tidak boleh melampaui tegangan geser izin ($\tau_{\text{allowable}}$). Sesuai dengan spesifikasi AISC 360, tegangan geser izin dapat diambil sebesar 40% dari kuat leleh baja ($0.40 \times f_y$) untuk kondisi plastis <b class="citation">[3, 4]</b>.
+                <p data-lang="theoryP2b_1">
+                    This verification ensures the track does not "punch" or "tear" through the steel plate. The shear stress ($\tau_{\text{punch}}$) is calculated on the critical perimeter around the track area. The net shear force is the load from the track minus the ground support force acting under the track area itself. The actual shear stress must not exceed the allowable shear stress ($\tau_{\text{allowable}}$). In accordance with AISC 360 specifications, the allowable shear stress can be taken as 40% of the yield strength ($0.40 \times f_y$) for plastic conditions <b class="citation">[3, 4]</b>.
                 </p>
                 <div class="formula-display">
-                    Gaya Pons Netto: $V = (\frac{\gamma_F \times W \times g}{2}) - (q_{\text{demand}} \times b_{\text{track}} \times L_{\text{contact}})$ <br>
-                    Tegangan Geser Aktual: $\tau_{\text{punch}} = \frac{V}{2 \times (L_{\text{contact}} + b_{\text{track}}) \times t_{\text{plate}}}$ <br>
+                    Net Punching Force: $V = (\frac{\gamma_F \times W \times g}{2}) - (q_{\text{demand}} \times b_{\text{track}} \times L_{\text{contact}})$ <br>
+                    Actual Shear Stress: $\tau_{\text{punch}} = \frac{V}{2 \times (L_{\text{contact}} + b_{\text{track}}) \times t_{\text{plate}}}$ <br>
 
-                    Tegangan Geser Izin: $\tau_{\text{allowable}} = 0.40 \times f_y$
+                    Allowable Shear Stress: $\tau_{\text{allowable}} = 0.40 \times f_y$
                 </div>
-                <p><b>
-                    Syarat Aman: $\tau_{\text{punch}} \le \tau_{\text{allowable}}$
+                <p><b data-lang="theorySafety2b">
+                    Safety Condition: $\tau_{\text{punch}} \le \tau_{\text{allowable}}$
                 </b></p>
 
-                <h3>
-                    Daftar Pustaka
+                <h3 data-lang="theoryTitle3">
+                    References
                 </h3>
                 <ol>
                     <li>European Federation of Foundation Contractors (EFFC) & Deep Foundations Institute (DFI). (2020). <i>A Guide to Working Platform Design</i>. <a href="https://www.effc.org/the-effc-dfi-guide-to-working-platforms/" target="_blank" rel="noopener noreferrer">[Link]</a></li>
@@ -849,27 +895,196 @@
                     <li>American Institute of Steel Construction (AISC). (2016). <i>Specification for Structural Steel Buildings (ANSI/AISC 360-16)</i>. (General principles for allowable bending and shear stress). <a href="https://www.aisc.org/globalassets/aisc/publications/standards/a360-16w-rev-june-2019.pdf" target="_blank" rel="noopener noreferrer">[Link]</a></li>
                     <li>European Federation of Foundation Contractors (EFFC) & Deep Foundations Institute (DFI). (2023). <i>Guide to Working Platform Design (2nd ed.)</i>. <a href="https://www.voebu.at/media//Publikationen/EFFC-DFI_Guide_For_Working_Platforms_Edition_2_WEB_FINAL.pdf" target="_blank" rel="noopener noreferrer">[Link]</a></li>
                     <li>Indian Roads Congress (IRC). (2018). <i>Guidelines for the Design of Flexible Pavements (IRC: 37-2018)</i>. (Provides correlation $M_R \text{ (MPa)} = 17.6 \times (\text{CBR})^{0.64}$ for CBR > 5%).</li>
-                    <li>Kobelco Construction Machinery. (2023). <i>CKS2500 Specifications</i>. (Spesifikasi alat berat). <a href="https://www.kobelcocm-global.com/products/cranes/asia/pdf/CKS2500spec.pdf?230227" target="_blank" rel="noopener noreferrer">[Link]</a></li>
-                    <li>BAUER Maschinen GmbH. (2022). <i>BAUER BG 20 H (BS 60 RS) Specifications</i>. (Spesifikasi alat berat). <a href="httpsg://equipment.bauer.de/en/media/1914/download?inline" target="_blank" rel="noopener noreferrer">[Link]</a></li>
+                    <li data-lang="theoryRef6">Kobelco Construction Machinery. (2023). <i>CKS2500 Specifications</i>. (Equipment specifications). <a href="https://www.kobelcocm-global.com/products/cranes/asia/pdf/CKS2500spec.pdf?230227" target="_blank" rel="noopener noreferrer">[Link]</a></li>
+                    <li data-lang="theoryRef7">BAUER Maschinen GmbH. (2022). <i>BAUER BG 20 H (BS 60 RS) Specifications</i>. (Equipment specifications). <a href="https://equipment.bauer.de/en/media/1914/download?inline" target="_blank" rel="noopener noreferrer">[Link]</a></li>
                 </ol>
             </div>
         </main>
 
         <footer>
             <div class="footer-content">
-                <p>Copyright © 2025 Apps Development by <a href="https://www.gendewa.my.id/" target="_blank" rel="noopener noreferrer">Ahmad Fauzan. Gendewa</a></p>
-                <p>Calculation & Validation Field Study by <a href="https://id.linkedin.com/in/dimas-muflih-181b33288" target="_blank" rel="noopener noreferrer">Dimas Muflih</a></p>
-                <p>Layout Designed by <a href="https://id.linkedin.com/in/mokhamadabrar" target="_blank" rel="noopener noreferrer">Mokhamad Abrar</a></p>
+                <p data-lang="footerP1">Copyright © 2025 Apps Development by <a href="https://www.gendewa.my.id/" target="_blank" rel="noopener noreferrer">Ahmad Fauzan. Gendewa</a></p>
+                <p data-lang="footerP2">Calculation & Validation Field Study by <a href="https://id.linkedin.com/in/dimas-muflih-181b33288" target="_blank" rel="noopener noreferrer">Dimas Muflih</a></p>
+                <p data-lang="footerP3">Layout Designed by <a href="https://id.linkedin.com/in/mokhamadabrar" target="_blank" rel="noopener noreferrer">Mokhamad Abrar</a></p>
                 <hr>
-                <p class="disclaimer">Disclaimer: This application is part of field engineering study concerning the soil bearing pressure simulation. Its purpose is purely field practices study. We sincerely welcome any constructive feedback and criticism to enrich this study, both from the perspective of civil engineering and the implementation of JavaScript technology.</p>
+                <p class="disclaimer" data-lang="footerDisclaimer">Disclaimer: This application is part of field engineering study concerning the soil bearing pressure simulation. Its purpose is purely field practices study. We sincerely welcome any constructive feedback and criticism to enrich this study, both from the perspective of civil engineering and the implementation of JavaScript technology.</p>
             </div>
         </footer>
 
-    </div> 
+    </div>  
 
     <div id="custom-alert"></div>
 
     <script>
+        // --- BEGIN LANGUAGE TRANSLATION ---
+        let currentLang = 'en'; // Default language
+
+        const translations = {
+            // Page & Header
+            'pageTitle': { en: 'Bearing Capacity Modeling & Plate Verification (v3.3 - LCP Optimized)', id: 'Modeling Daya Dukung & Verifikasi Plate (v3.3 - LCP Optimized)' },
+            'headerTitle': { en: 'Bearing Capacity Modeling & Plate Verification', id: 'Modeling Daya Dukung & Verifikasi Plate' },
+            'headerSubtitle': { en: 'Verification of heavy equipment pressure and steel plate strength.', id: 'Verifikasi tekanan alat berat dan kekuatan steel plate.' },
+            'langTooltipID': { en: 'Switch to Bahasa Indonesia', id: 'Ganti ke Bahasa Indonesia' },
+            'langTooltipEN': { en: 'Switch to English', id: 'Ganti ke Bahasa Inggris' },
+            // Section 1: Rig Params
+            'legendParamsRig': { en: '1. Heavy Equipment (Rig/Crane) Parameters', id: '1. Parameter Alat Berat (Rig/Crane)' },
+            'labelCraneSelect': { en: 'Select Equipment (Preset)', id: 'Pilih Alat Berat (Preset)' },
+            'optionBauer': { en: 'BAUER BG 20 H (56t)', id: 'BAUER BG 20 H (56t)' },
+            'optionKobelco': { en: 'Kobelco CKS2500 (Default: 217t)', id: 'Kobelco CKS2500 (Default: 217t)' },
+            'optionCustom': { en: 'Manual / Custom Input', id: 'Input Manual / Custom' },
+            'labelRigWeight': { en: 'Total Operating Weight ($W$)', id: 'Berat Operasi Total ($W$)' },
+            'labelTrackWidth': { en: 'Track Shoe Width ($b_{\\text{track}}$)', id: 'Lebar Track Shoe ($b_{\\text{track}}$)' },
+            'labelTrackLength': { en: 'Track Contact Length ($L_{\\text{contact}}$)', id: 'Panjang Kontak Track ($L_{\\text{contact}}$)' },
+            'labelLoadDist': { en: 'Load Distribution Factor ($\\eta$)', id: 'Faktor Distribusi Beban ($\\eta$)' },
+            'smallLoadDist': { en: 'For uneven ground, value is &lt; 1.', id: 'Untuk tanah tidak rata, nilainya < 1.' },
+            // Section 2: Soil Params
+            'legendParamsSoil': { en: '2. Soil & Material Parameters', id: '2. Parameter Tanah & Material' },
+            'labelCbr': { en: 'Estimate from CBR (Optional)', id: 'Estimasi dari CBR (Opsional)' },
+            'smallCbr': { en: 'Estimate based on IRC 37:2018 formula.', id: 'Estimasi berdasarkan formula IRC 37:2018.' },
+            'labelSoilCap': { en: 'Allowable Ground Bearing Capacity ($q_{\\text{allow,test}}$)', id: 'Daya Dukung Tanah Izin ($q_{\\text{allow,test}}$)' },
+            'smallSoilCap': { en: 'From field test results (or CBR estimate).', id: 'Dari hasil uji lapangan (atau estimasi CBR).' },
+            'labelFoS': { en: 'Factor of Safety (FoS)', id: 'Faktor Keamanan (FoS)' },
+            'labelLoadFactor': { en: 'Load Factor ($\\gamma_F$)', id: 'Faktor Beban ($\\gamma_F$)' },
+            'smallLoadFactor': { en: 'Ref: EFFC/DFI Guide.', id: 'Ref: EFFC/DFI Guide.' },
+            'labelSteelYield': { en: 'Plate Steel Yield Strength ($f_y$)', id: 'Kuat Leleh Baja Plate ($f_y$)' },
+            // Section 3: Options
+            'legendOptions': { en: '3. Additional Options', id: '3. Opsi Tambahan' },
+            'labelUsePlate': { en: 'Use Steel Plate / Mat', id: 'Gunakan Steel Plate / Mat' },
+            'labelPlateLength': { en: 'Plate Length ($L_{\\text{plate}}$)', id: 'Panjang Plate ($L_{\\text{plate}}$)' },
+            'labelPlateWidth': { en: 'Plate Width ($b_{\\text{plate}}$)', id: 'Lebar Plate ($b_{\\text{plate}}$)' },
+            'labelPlateThick': { en: 'Plate Thickness ($t_{\\text{plate}}$)', id: 'Tebal Plate ($t_{\\text{plate}}$)' },
+            // Results
+            'resultsTitle': { en: 'Verification Results', id: 'Hasil Verifikasi' },
+            'labelQDemand': { en: 'Actual Pressure on Ground ($q_{\\text{demand}}$)', id: 'Tekanan Aktual ke Tanah ($q_{\\text{demand}}$)' },
+            'tooltipQDemand': { en: 'Actual pressure applied by the equipment to the ground', id: 'Tekanan aktual yang diberikan alat ke tanah' },
+            'labelQAllow': { en: 'Allowable Ground Capacity ($q_{\\text{allowable}}$)', id: 'Kapasitas Aman Tanah ($q_{\\text{allowable}}$)' },
+            'tooltipQAllow': { en: 'Safe bearing capacity of the soil based on FoS', id: 'Kapasitas aman tanah berdasarkan FoS' },
+            'labelBendingStress': { en: 'Plate Bending Stress ($\\sigma_{\\text{bending}}$)', id: 'Tegangan Lentur Plate ($\\sigma_{\\text{bending}}$)' },
+            'tooltipBendingStress': { en: 'Actual bending stress on the plate', id: 'Tegangan lentur aktual pada plate' },
+            'labelBendingAllow': { en: 'Allowable Bending Stress ($\\sigma_{\\text{allow}}$)', id: 'Tegangan Lentur Izin ($\\sigma_{\\text{allow}}$)' },
+            'tooltipBendingAllow': { en: 'Allowable bending stress of the plate material', id: 'Tegangan lentur izin material plate' },
+            'labelShearStress': { en: 'Plate Punching Shear Stress ($\\tau_{\\text{punch}}$)', id: 'Tegangan Geser Pons Plate ($\\tau_{\\text{punch}}$)' },
+            'tooltipShearStress': { en: 'Actual punching shear stress on the plate', id: 'Tegangan geser pons aktual pada plate' },
+            'labelShearAllow': { en: 'Allowable Shear Stress ($\\tau_{\\text{allow}}$)', id: 'Tegangan Geser Izin ($\\tau_{\\text{allow}}$)' },
+            'tooltipShearAllow': { en: 'Allowable punching shear stress of the plate material', id: 'Tegangan geser pons izin material plate' },
+            'labelFormulas': { en: 'Formulas Used:', id: 'Formula yang Digunakan:' },
+            'placeholderText': { en: 'Calculation results will be displayed here.', id: 'Hasil perhitungan akan ditampilkan di sini.' },
+            // Theory Section
+            'theoryTitle': { en: 'Basis of Calculation Theory', id: 'Landasan Teori Perhitungan' },
+            'theoryIntro': { en: 'This analysis aims to ensure the safety and stability of the working platform for heavy equipment operations, either directly on the ground or using a <i>steel plate</i> (mat) intermediary. The working platform must be able to support the applied loads without failure or excessive deformation <b class="citation">[1, 4]</b>. The calculation methodology refers to the working platform design guide by EFFC/DFI and common geotechnical and structural engineering practices. The verification covers three main aspects:', id: 'Analisis ini bertujuan untuk memastikan keamanan dan stabilitas platform kerja untuk operasional alat berat, baik secara langsung di atas tanah maupun dengan menggunakan perantara <i>steel plate</i> (matras). Platform kerja harus mampu menahan beban yang diberikan tanpa mengalami keruntuhan atau deformasi berlebih <b class="citation">[1, 4]</b>. Metodologi perhitungan mengacu pada panduan desain platform kerja oleh EFFC/DFI dan praktik umum rekayasa geoteknik dan struktural. Verifikasi mencakup tiga aspek utama:' },
+            'theoryTitle1': { en: '1. Ground Bearing Capacity Verification', id: '1. Verifikasi Daya Dukung Tanah (Ground Bearing Pressure)' },
+            'theoryP1_1': { en: 'The purpose of this verification is to ensure that the pressure applied by the heavy equipment to the ground ($q_{\\text{demand}}$) does not exceed the allowable ground capacity ($q_{\\text{allowable}}$). The allowable capacity is obtained from soil test data ($q_{\\text{allow,test}}$), such as a CBR or Plate Bearing Test, which is then reduced by a Factor of Safety (FoS) <b class="citation">[1]</b>.', id: 'Tujuan verifikasi ini adalah untuk memastikan bahwa tekanan yang diberikan oleh alat berat ke tanah ($q_{\\text{demand}}$) tidak melampaui kapasitas aman tanah ($q_{\\text{allowable}}$). Kapasitas aman diperoleh dari data uji tanah ($q_{\\text{allow,test}}$), seperti uji CBR atau Plate Bearing Test, yang kemudian direduksi dengan Faktor Keamanan (FoS) <b class="citation">[1]</b>.' },
+            'theoryP1_2': { en: 'The $q_{\\text{allow,test}}$ value can also be estimated from the CBR value. Standards like IRC 37:2018 (using the Powell et al. correlation) correlate CBR with Resilient Modulus ($M_R$). For the purpose of estimating bearing capacity (not pavement modulus), the following empirical formulas are used in this calculator:', id: 'Nilai $q_{\\text{allow,test}}$ juga dapat diestimasi dari nilai CBR. Standar seperti IRC 37:2018 (menggunakan korelasi Powell et al.) mengkorelasikan CBR dengan Resilient Modulus ($M_R$). Untuk tujuan estimasi daya dukung (bukan modulus perkerasan), formula empiris berikut digunakan dalam kalkulator ini:' },
+            'theoryP1_3': { en: 'The actual applied pressure ($q_{\\text{demand}}$) is calculated by considering the total operating weight of the equipment ($W$) multiplied by a load factor ($\\gamma_F$). This factor accommodates dynamic effects, eccentric loads, and operational intensity <b class="citation">[4]</b>. This factored load is then distributed over the entire contact area.', id: 'Tekanan aktual yang terjadi ($q_{\\text{demand}}$) dihitung dengan memperhitungkan berat operasi total alat ($W$) yang dikalikan dengan faktor beban ($\\gamma_F$). Faktor ini mengakomodasi efek dinamis, beban eksentris, dan intensitas operasional <b class="citation">[4]</b>. Beban berfaktor ini kemudian didistribusikan ke seluruh area kontak.' },
+            'theorySafety1': { en: 'Safety Condition: $q_{\\text{demand}} \\le q_{\\text{allowable}}$', id: 'Syarat Aman: $q_{\\text{demand}} \\le q_{\\text{allowable}}$' },
+            'theoryTitle2': { en: '2. Steel Plate Structural Verification', id: '2. Verifikasi Struktural Steel Plate' },
+            'theoryP2_1': { en: 'When a steel plate is used, the structural integrity of the plate itself must be verified against two primary failure modes: bending and punching shear <b class="citation">[1, 4]</b>.', id: 'Ketika steel plate digunakan, integritas struktural plate itu sendiri harus diverifikasi terhadap dua mode kegagalan utama: lentur (bending) dan geser pons (punching shear) <b class="citation">[1, 4]</b>.' },
+            'theoryTitle2a': { en: 'a. Bending Stress Verification', id: 'a. Verifikasi Lentur (Bending Stress)' },
+            'theoryP2a_1': { en: 'The analysis model assumes the part of the plate cantilevering beyond the track contact area receives an upward pressure from the ground ($q_{\\text{demand}}$). This pressure induces a bending moment in the plate. The actual bending stress ($\\sigma_{\\text{bending}}$) is calculated using the standard formula for a cantilever plate with a uniformly distributed load <b class="citation">[2]</b>. This stress must not exceed the allowable material stress ($\\sigma_{\\text{allowable}}$). Based on steel design standards like AISC 360, the allowable stress for serviceability conditions is often taken as a percentage of the steel\'s yield strength ($f_y$). A common value used for scaffolding or temporary structures is $0.75 \\times f_y$, which provides an additional factor of safety <b class="citation">[3]</b>.', id: 'Model analisis mengasumsikan bagian plate yang menjorok keluar dari area kontak track (<i>cantilever</i>) menerima tekanan balik dari tanah ($q_{\\text{demand}}$). Tekanan ini menyebabkan momen lentur pada plate. Tegangan lentur aktual ($\\sigma_{\\text{bending}}$) dihitung menggunakan formula standar untuk plat kantilever dengan beban merata <b class="citation">[2]</b>. Tegangan ini tidak boleh melebihi tegangan izin material ($\\sigma_{\\text{allowable}}$). Berdasarkan standar desain baja seperti AISC 360, tegangan izin untuk kondisi layan seringkali diambil sebagai persentase dari kuat leleh baja ($f_y$). Nilai yang umum digunakan untuk desain perancah atau struktur temporer adalah $0.75 \\times f_y$, yang memberikan faktor keamanan tambahan <b class="citation">[3]</b>.' },
+            'theorySafety2a': { en: 'Safety Condition: $\\sigma_{\\text{bending}} \\le \\sigma_{\\text{allowable}}$', id: 'Syarat Aman: $\\sigma_{\\text{bending}} \\le \\sigma_{\\text{allowable}}$' },
+            'theoryTitle2b': { en: 'b. Punching Shear Verification', id: 'b. Verifikasi Geser Pons (Punching Shear)' },
+            'theoryP2b_1': { en: 'This verification ensures the track does not "punch" or "tear" through the steel plate. The shear stress ($\\tau_{\\text{punch}}$) is calculated on the critical perimeter around the track area. The net shear force is the load from the track minus the ground support force acting under the track area itself. The actual shear stress must not exceed the allowable shear stress ($\\tau_{\\text{allowable}}$). In accordance with AISC 360 specifications, the allowable shear stress can be taken as 40% of the yield strength ($0.40 \\times f_y$) for plastic conditions <b class="citation">[3, 4]</b>.', id: 'Verifikasi ini memastikan track tidak "menusuk" atau "merobek" steel plate. Tegangan geser ($\\tau_{\\text{punch}}$) dihitung pada keliling perimeter kritis di sekitar area track. Gaya geser netto adalah beban dari track dikurangi gaya dukung tanah yang bekerja di bawah area track itu sendiri. Tegangan geser aktual tidak boleh melampaui tegangan geser izin ($\\tau_{\\text{allowable}}$). Sesuai dengan spesifikasi AISC 360, tegangan geser izin dapat diambil sebesar 40% dari kuat leleh baja ($0.40 \\times f_y$) untuk kondisi plastis <b class="citation">[3, 4]</b>.' },
+            'theorySafety2b': { en: 'Safety Condition: $\\tau_{\\text{punch}} \\le \\tau_{\\text{allowable}}$', id: 'Syarat Aman: $\\tau_{\\text{punch}} \\le \\tau_{\\text{allowable}}$' },
+            'theoryTitle3': { en: 'References', id: 'Daftar Pustaka' },
+            'theoryRef6': { en: 'Kobelco Construction Machinery. (2023). <i>CKS2500 Specifications</i>. (Equipment specifications).', id: 'Kobelco Construction Machinery. (2023). <i>CKS2500 Specifications</i>. (Spesifikasi alat berat).' },
+            'theoryRef7': { en: 'BAUER Maschinen GmbH. (2022). <i>BAUER BG 20 H (BS 60 RS) Specifications</i>. (Equipment specifications).', id: 'BAUER Maschinen GmbH. (2022). <i>BAUER BG 20 H (BS 60 RS) Specifications</i>. (Spesifikasi alat berat).' },
+            // Footer
+            'footerP1': { en: 'Copyright © 2025 Apps Development by <a href="https://www.gendewa.my.id/" target="_blank" rel="noopener noreferrer">Ahmad Fauzan. Gendewa</a>', id: 'Copyright © 2025 Apps Development by <a href="https://www.gendewa.my.id/" target="_blank" rel="noopener noreferrer">Ahmad Fauzan. Gendewa</a>' },
+            'footerP2': { en: 'Calculation & Validation Field Study by <a href="https://id.linkedin.com/in/dimas-muflih-181b33288" target="_blank" rel="noopener noreferrer">Dimas Muflih</a>', id: 'Calculation & Validation Field Study by <a href="https://id.linkedin.com/in/dimas-muflih-181b33288" target="_blank" rel="noopener noreferrer">Dimas Muflih</a>' },
+            'footerP3': { en: 'Layout Designed by <a href="https://id.linkedin.com/in/mokhamadabrar" target="_blank" rel="noopener noreferrer">Mokhamad Abrar</a>', id: 'Layout Designed by <a href="https://id.linkedin.com/in/mokhamadabrar" target="_blank" rel="noopener noreferrer">Mokhamad Abrar</a>' },
+            'footerDisclaimer': { en: 'Disclaimer: This application is part of field engineering study concerning the soil bearing pressure simulation. Its purpose is purely field practices study. We sincerely welcome any constructive feedback and criticism to enrich this study, both from the perspective of civil engineering and the implementation of JavaScript technology.', id: 'Disclaimer: This application is part of field engineering study concerning the soil bearing pressure simulation. Its purpose is purely field practices study. We sincerely welcome any constructive feedback and criticism to enrich this study, both from the perspective of civil engineering and the implementation of JavaScript technology.' },
+            // JS Alert/Dynamic Messages
+            'alertAlreadyEN': { en: 'Already in English.', id: 'Sudah dalam Bahasa Inggris.' },
+            'alertAlreadyID': { en: 'Already in Bahasa Indonesia.', id: 'Sudah dalam Bahasa Indonesia.' },
+            'alertManualInput': { en: 'Manual Input enabled.', id: 'Input Manual diaktifkan.' },
+            'alertOutOfRange': { en: 'is out of range, set to max value:', id: 'di luar rentang, diatur ke nilai maks:' },
+            'errorRequired': { en: 'This field is required.', id: 'Input ini wajib diisi.' },
+            'errorGreaterThanZero': { en: 'Value must be greater than zero.', id: 'Nilai harus lebih dari nol.' },
+            'errorPlateWidth': { en: 'Plate width must be greater than track width.', id: 'Lebar plate harus lebih besar dari lebar track.' },
+            'statusSafe': { en: 'SAFE', id: 'AMAN' },
+            'statusNotSafe': { en: 'NOT SAFE', id: 'TIDAK AMAN' },
+            'statusCheckSoil': { en: 'Ground Bearing Capacity', id: 'Daya Dukung Tanah' },
+            'statusCheckBending': { en: 'Plate Bending', id: 'Lentur Plate' },
+            'statusCheckShear': { en: 'Plate Punching Shear', id: 'Geser Pons Plate' },
+            'cbrEstimateDefault': { en: 'Estimate based on IRC 37:2018 formula.', id: 'Estimasi berdasarkan formula IRC 37:2018.' },
+            'cbrEstimateLTE5': { en: 'IRC 37 Estimate (CBR ≤ 5%):', id: 'Estimasi IRC 37 (CBR ≤ 5%):' },
+            'cbrEstimateGT5': { en: 'IRC 37 Estimate (CBR > 5%):', id: 'Estimasi IRC 37 (CBR > 5%):' },
+            'paramTrackLength': { en: 'Track Contact Length', id: 'Panjang Kontak Track' },
+            'paramTrackWidth': { en: 'Track Shoe Width', id: 'Lebar Track Shoe' }
+        };
+
+        function applyTranslations() {
+            const lang = currentLang;
+            // Set page lang and title
+            document.documentElement.lang = lang;
+            document.title = translations.pageTitle[lang];
+
+            // Update all static text content
+            document.querySelectorAll('[data-lang]').forEach(el => {
+                const key = el.getAttribute('data-lang');
+                if (translations[key] && translations[key][lang] !== undefined) {
+                    // Use innerHTML to render tags like <b> or <i>
+                    el.innerHTML = translations[key][lang];
+                }
+            });
+
+            // Update all title attributes (tooltips)
+            document.querySelectorAll('[data-lang-title]').forEach(el => {
+                const key = el.getAttribute('data-lang-title');
+                if (translations[key] && translations[key][lang] !== undefined) {
+                    el.setAttribute('title', translations[key][lang]);
+                }
+            });
+
+            // Update language switcher active state
+            document.querySelectorAll('.lang-selector a').forEach(a => {
+                a.classList.remove('active');
+            });
+            const activeLink = document.querySelector(`.lang-selector a[onclick="switchLang('${lang}'); return false;"]`);
+            if (activeLink) {
+                activeLink.classList.add('active');
+            }
+
+            // Re-typeset math if needed (for labels that changed)
+            if (window.MathJax && window.MathJax.startup) {
+                 MathJax.startup.promise.then(() => {
+                    MathJax.typesetPromise();
+                });
+            }
+        }
+        // --- END LANGUAGE TRANSLATION ---
+
+
+        const customAlert = document.getElementById('custom-alert');
+        let alertTimeout;
+
+        // Function to show custom notification
+        function showAlert(message) {
+            customAlert.textContent = message;
+            customAlert.classList.add('show');
+            
+            clearTimeout(alertTimeout);
+            setTimeout(() => {
+                customAlert.classList.remove('show');
+            }, 3500);  
+        }
+
+        // --- MODIFIED switchLang ---
+        // Make it globally accessible for onclick
+        window.switchLang = function(lang) {
+            if (lang === currentLang) {
+                showAlert(lang === 'en' ? translations.alertAlreadyEN[lang] : translations.alertAlreadyID[lang]);
+                return;
+            }
+            currentLang = lang;
+            applyTranslations();
+            // Re-calculate to update dynamic text (results, CBR info)
+            // Need to check if calculate function exists before calling
+            if (typeof calculate === 'function') {
+                calculate();
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
             // Helper function to safely typeset math formulas
             function safeTypeset(elements) {
@@ -880,28 +1095,14 @@
                 }
             }
 
-            const customAlert = document.getElementById('custom-alert');
-            let alertTimeout;
-
-            // Fungsi untuk menampilkan notifikasi kustom
-            function showAlert(message) {
-                customAlert.textContent = message;
-                customAlert.classList.add('show');
-                
-                clearTimeout(alertTimeout);
-                setTimeout(() => {
-                    customAlert.classList.remove('show');
-                }, 3500); 
-            }
-
             const useSteelPlateCheckbox = document.getElementById('useSteelPlate');
-            const craneSelect = document.getElementById('craneSelect'); 
+            const craneSelect = document.getElementById('craneSelect');  
 
             const steelPlateInputDiv = document.getElementById('steelPlateInput');
             const loadDistributionGroup = document.getElementById('loadDistributionGroup');
             const steelYieldStrengthGroup = document.getElementById('steelYieldStrengthGroup');
 
-            // Elemen Input
+            // Input Elements
             const inputs = {
                 rigWeight: document.getElementById('rigWeight'),
                 trackWidth: document.getElementById('trackWidth'),
@@ -916,7 +1117,7 @@
                 plateThickness: document.getElementById('plateThickness'),
             };
 
-            // Elemen Hasil
+            // Result Elements
             const resultDiv = document.getElementById('result');
             const placeholderDiv = document.getElementById('placeholder');
             const statusDiv = document.getElementById('status');
@@ -964,7 +1165,7 @@
                         errorSpan = errorSpan.nextElementSibling;
                     }
                     
-                    if (errorSpan && errorSpan.classList.contains('error-message')) { 
+                    if (errorSpan && errorSpan.classList.contains('error-message')) {  
                         errorSpan.textContent = message;
                     } else if (input.parentElement.parentElement.querySelector('.error-message')) {
                         input.parentElement.parentElement.querySelector('.error-message').textContent = message;
@@ -977,9 +1178,9 @@
                     const input = inputs[key];
                     if (input.required) {
                         if (input.value.trim() === '') {
-                             showError(input, 'Input ini wajib diisi.');
+                             showError(input, translations.errorRequired[currentLang]);
                         } else if (parseFloat(input.value) <= 0) {
-                            showError(input, 'Nilai harus lebih dari nol.');
+                            showError(input, translations.errorGreaterThanZero[currentLang]);
                         }
                     }
                 }
@@ -988,7 +1189,7 @@
                     const plateWidth = parseFloat(inputs.plateWidth.value);
                     const trackWidth = parseFloat(inputs.trackWidth.value);
                     if (plateWidth > 0 && trackWidth > 0 && plateWidth <= trackWidth) {
-                        showError(inputs.plateWidth, 'Lebar plate harus lebih besar dari lebar track.');
+                        showError(inputs.plateWidth, translations.errorPlateWidth[currentLang]);
                     }
                 }
                 
@@ -1006,7 +1207,7 @@
                     inputs.rigWeight.readOnly = false;
                     inputs.trackWidth.readOnly = false;
                     inputs.trackLength.readOnly = false;
-                    showAlert('Input Manual diaktifkan.');
+                    showAlert(translations.alertManualInput[currentLang]);
                 } else {
                     const preset = cranePresets[selectedCraneKey];
                     if (preset) {
@@ -1021,7 +1222,8 @@
                 clearAllErrors();
             }
 
-            function calculate() {
+            // Make calculate function global so switchLang can call it
+            window.calculate = function() {
                 if (!validateInputs()) {
                     resultDiv.classList.add('hidden');
                     placeholderDiv.classList.remove('hidden');
@@ -1030,24 +1232,26 @@
 
                 const checkAndClamp = (inputElement, min, max, nameId, nameEn) => {
                     let value = parseFloat(inputElement.value);
-                    if (isNaN(value)) return; 
+                    if (isNaN(value)) return;  
 
                     if (value < min || value > max) {
                         inputElement.value = max;
+                        const name = currentLang === 'id' ? nameId : nameEn; // Get correct lang name
                         showAlert(
-                            `${nameId} di luar rentang, diatur ke nilai maks: ${max} m.`
+                            `${name} ${translations.alertOutOfRange[currentLang]} ${max} m.`
                         );
                     }
                 };
 
-                checkAndClamp(inputs.trackLength, 0.1, 10, 'Panjang Kontak Track', 'Track Contact Length');
-                checkAndClamp(inputs.trackWidth, 0.1, 1.5, 'Lebar Track Shoe', 'Track Shoe Width');
+                // Pass translation keys for names
+                checkAndClamp(inputs.trackLength, 0.1, 10, translations.paramTrackLength['id'], translations.paramTrackLength['en']);
+                checkAndClamp(inputs.trackWidth, 0.1, 1.5, translations.paramTrackWidth['id'], translations.paramTrackWidth['en']);
 
                 const values = {};
                 for (const key in inputs) {
                     values[key] = parseFloat(inputs[key].value) || 0;
                 }
-                const g = 9.81; 
+                const g = 9.81;  
 
                 let qDemand, qAllowable, bendingStress, bendingAllowable, shearStress, shearAllowable;
                 let isSoilSafe, isBendingSafe, isShearSafe;
@@ -1055,37 +1259,37 @@
                 
                 const isUsingPlate = useSteelPlateCheckbox.checked;
 
-                const W_kN = values.rigWeight * g; 
+                const W_kN = values.rigWeight * g;  
                 qAllowable = values.soilCapacity / values.factorOfSafety;
 
                 if (isUsingPlate) {
                     const L_plate = values.plateLength;
                     const b_plate = values.plateWidth;
-                    const t_plate_m = values.plateThickness / 1000; 
+                    const t_plate_m = values.plateThickness / 1000;  
 
                     const contactAreaPlate = 2 * L_plate * b_plate;
-                    qDemand = (values.loadFactor * W_kN) / contactAreaPlate; 
+                    qDemand = (values.loadFactor * W_kN) / contactAreaPlate;  
                     isSoilSafe = qDemand <= qAllowable;
                     formulas += `\\(q_{\\text{demand}} = \\frac{${values.loadFactor} \\times ${values.rigWeight.toFixed(1)} \\times ${g.toFixed(2)}}{2 \\times ${L_plate.toFixed(2)} \\times ${b_plate.toFixed(2)}} = ${qDemand.toFixed(2)}\\text{ kPa}\\)<br>`;
                     
                     const cantileverLength = (b_plate - values.trackWidth) / 2;
                     const c_calc = Math.max(0, cantileverLength);
-                    bendingStress = (3 * qDemand * Math.pow(c_calc, 2)) / Math.pow(t_plate_m, 2) / 1000; 
-                    bendingAllowable = 0.75 * values.steelYieldStrength; 
+                    bendingStress = (3 * qDemand * Math.pow(c_calc, 2)) / Math.pow(t_plate_m, 2) / 1000;  
+                    bendingAllowable = 0.75 * values.steelYieldStrength;  
                     isBendingSafe = bendingStress <= bendingAllowable;
                     formulas += `\\(c = \\frac{${b_plate.toFixed(2)} - ${values.trackWidth.toFixed(2)}}{2} = ${cantileverLength.toFixed(2)}\\text{ m}\\)<br>`;
                     formulas += `\\(\\sigma_{\\text{bending}} = \\frac{3 \\times ${qDemand.toFixed(2)} \\times ${c_calc.toFixed(2)}^2}{(${values.plateThickness}/1000)^2} = ${bendingStress.toFixed(2)}\\text{ MPa}\\)<br>`;
                     
-                    const netPunchingForce = (values.loadFactor * W_kN / 2) - (qDemand * values.trackWidth * values.trackLength); 
+                    const netPunchingForce = (values.loadFactor * W_kN / 2) - (qDemand * values.trackWidth * values.trackLength);  
                     const shearPerimeter = 2 * (values.trackLength + values.trackWidth);
-                    shearStress = (netPunchingForce > 0) ? (netPunchingForce / (shearPerimeter * t_plate_m) / 1000) : 0; 
-                    shearAllowable = 0.40 * values.steelYieldStrength; 
+                    shearStress = (netPunchingForce > 0) ? (netPunchingForce / (shearPerimeter * t_plate_m) / 1000) : 0;  
+                    shearAllowable = 0.40 * values.steelYieldStrength;  
                     isShearSafe = shearStress <= shearAllowable;
                     formulas += `\\(V_{\\text{net}} = (\\frac{${values.loadFactor} \\times ${W_kN.toFixed(1)}}{2}) - (${qDemand.toFixed(2)} \\times ${values.trackWidth.toFixed(2)} \\times ${values.trackLength.toFixed(2)}) = ${netPunchingForce.toFixed(2)}\\text{ kN}\\)<br>`;
                     formulas += `\\(\\tau_{\\text{punch}} = \\frac{V_{\\text{net}}}{Perim \\times t_p} = ${shearStress.toFixed(2)}\\text{ MPa}\\)`;
                 } else {
                     const contactAreaTrack = 2 * values.trackLength * values.trackWidth;
-                    qDemand = (values.loadFactor * W_kN) / (contactAreaTrack * values.loadDistribution); 
+                    qDemand = (values.loadFactor * W_kN) / (contactAreaTrack * values.loadDistribution);  
                     isSoilSafe = qDemand <= qAllowable;
                      formulas += `\\(q_{\\text{demand}} = \\frac{${values.loadFactor} \\times ${values.rigWeight.toFixed(1)} \\times ${g.toFixed(2)}}{2 \\times ${values.trackLength.toFixed(2)} \\times ${values.trackWidth.toFixed(2)} \\times ${values.loadDistribution.toFixed(1)}} = ${qDemand.toFixed(2)}\\text{ kPa}\\)`;
                 }
@@ -1103,28 +1307,29 @@
                 qDemandSpan.textContent = `${data.qDemand.toFixed(2)} kPa`;
                 qAllowableSpan.textContent = `${data.qAllowable.toFixed(2)} kPa`;
                 
-                statusDetailsUl.innerHTML = ''; 
+                statusDetailsUl.innerHTML = '';  
 
-                function addStatusDetail(checkNameId, isSafe, value, allowable) {
+                function addStatusDetail(checkNameKey, isSafe, value, allowable) {
                     const li = document.createElement('li');
-                    const nameId = checkNameId;
+                    const name = translations[checkNameKey][currentLang];
                     const statusClass = isSafe ? 'status-detail-safe' : 'status-detail-unsafe';
-                    const statusTextId = isSafe ? 'AMAN' : 'TIDAK AMAN';
+                    const statusText = isSafe ? translations.statusSafe[currentLang] : translations.statusNotSafe[currentLang];
                     
                     let displayValue = (value < 0.01 && value > 0) ? value.toExponential(2) : value.toFixed(2);
                     let displayAllowable = (allowable < 0.01 && allowable > 0) ? allowable.toExponential(2) : allowable.toFixed(2);
 
                     li.innerHTML = `
                         <span>
-                            ${nameId}
+                            ${name}
                         </span>
                         <span class="${statusClass}">
-                             ${displayValue} &le; ${displayAllowable} (${statusTextId})
+                             ${displayValue} &le; ${displayAllowable} (${statusText})
                         </span>`;
                     statusDetailsUl.appendChild(li);
                 }
 
-                addStatusDetail('Daya Dukung Tanah', data.isSoilSafe, data.qDemand, data.qAllowable);
+                // Pass translation keys to the status detail function
+                addStatusDetail('statusCheckSoil', data.isSoilSafe, data.qDemand, data.qAllowable);
 
                 if (data.isUsingPlate) {
                     resultItems.bending.classList.remove('hidden');
@@ -1137,8 +1342,8 @@
                     shearStressSpan.textContent = `${data.shearStress.toFixed(2)} MPa`;
                     shearAllowableSpan.textContent = `${data.shearAllowable.toFixed(2)} MPa`;
                     
-                    addStatusDetail('Lentur Plate', data.isBendingSafe, data.bendingStress, data.bendingAllowable);
-                    addStatusDetail('Geser Pons Plate', data.isShearSafe, data.shearStress, data.shearAllowable);
+                    addStatusDetail('statusCheckBending', data.isBendingSafe, data.bendingStress, data.bendingAllowable);
+                    addStatusDetail('statusCheckShear', data.isShearSafe, data.shearStress, data.shearAllowable);
 
                 } else {
                     resultItems.bending.classList.add('hidden');
@@ -1149,21 +1354,20 @@
 
                 const isOverallSafe = data.isUsingPlate ? (data.isSoilSafe && data.isBendingSafe && data.isShearSafe) : data.isSoilSafe;
 
-                statusDiv.className = 'status'; 
+                statusDiv.className = 'status';  
                 if (isOverallSafe) {
                     statusDiv.classList.add('status-safe');
-                    statusDiv.innerHTML = `AMAN`;
+                    statusDiv.innerHTML = translations.statusSafe[currentLang]; // Translated
                 } else {
                     statusDiv.classList.add('status-unsafe');
-                    statusDiv.innerHTML = `TIDAK AMAN`;
+                    statusDiv.innerHTML = translations.statusNotSafe[currentLang]; // Translated
                 }
                 
                 formulaContainer.innerHTML = data.formulas;
                 safeTypeset([formulaContainer]);
             }
 
-            // --- Kalkulasi Otomatis ---
-            // 1. Panggil kalkulasi untuk setiap perubahan input angka
+            // --- Event Listeners ---
             Object.values(inputs).forEach(inputElement => {
                 inputElement.addEventListener('input', calculate);
             });
@@ -1171,31 +1375,31 @@
             const cbrValueInput = document.getElementById('cbrValue');
             const cbrInfo = document.getElementById('cbrInfo');
 
-            // Listener 1: Jika input CBR diisi -> update soilCapacity (Metode IRC 37:2018)
+            // Listener 1: Update soilCapacity from CBR input
             cbrValueInput.addEventListener('input', () => {
                 const cbr = parseFloat(cbrValueInput.value);
                 let estimatedCapacity = 0;
                 
                 if (cbr > 0) {
                     if (cbr <= 5) {
-                        // Formula IRC 37:2018 untuk CBR <= 5%
+                        // IRC 37:2018 formula for CBR <= 5%
                         estimatedCapacity = 10 * cbr;
-                        cbrInfo.textContent = `Estimasi IRC 37 (CBR ≤ 5%): 10 × ${cbr} = ${estimatedCapacity.toFixed(2)} kPa`;
+                        cbrInfo.textContent = `${translations.cbrEstimateLTE5[currentLang]} 10 × ${cbr} = ${estimatedCapacity.toFixed(2)} kPa`;
                     } else {
-                        // Formula IRC 37:2018 (Powell et al.) untuk CBR > 5%
+                        // IRC 37:2018 (Powell et al.) formula for CBR > 5%
                         estimatedCapacity = 17.6 * Math.pow(cbr, 0.64);
-                        cbrInfo.textContent = `Estimasi IRC 37 (CBR > 5%): 17.6 × (${cbr}^0.64) = ${estimatedCapacity.toFixed(2)} kPa`;
+                        cbrInfo.textContent = `${translations.cbrEstimateGT5[currentLang]} 17.6 × (${cbr}^0.64) = ${estimatedCapacity.toFixed(2)} kPa`;
                     }
                     
                     inputs.soilCapacity.value = estimatedCapacity.toFixed(2);
                     
                     inputs.soilCapacity.dispatchEvent(new Event('input', { bubbles: true }));
                 } else {
-                    cbrInfo.textContent = 'Estimasi berdasarkan formula IRC 37:2018.';
+                    cbrInfo.textContent = translations.cbrEstimateDefault[currentLang];
                 }
             });
 
-            // Listener 2: Jika soilCapacity diisi manual -> kosongkan CBR
+            // Listener 2: Clear CBR if soilCapacity is manually changed
             inputs.soilCapacity.addEventListener('input', () => {
                 const cbr = parseFloat(cbrValueInput.value);
                 if (cbr > 0) {
@@ -1207,33 +1411,33 @@
                     }
                     
                     if (Math.abs(parseFloat(inputs.soilCapacity.value) - estimatedCapacity) > 0.01) {
-                        cbrValueInput.value = ''; 
-                        cbrInfo.textContent = 'Estimasi berdasarkan formula IRC 37:2018.';
+                        cbrValueInput.value = '';  
+                        cbrInfo.textContent = translations.cbrEstimateDefault[currentLang];
                     }
                 }
             });
 
-            // 2. Panggil kalkulasi saat checkbox plate diganti
+            // Checkbox listener
             useSteelPlateCheckbox.addEventListener('change', () => {
                 updateFormVisibility();
                 calculate();
             });
 
-            // 3. Panggil kalkulasi saat preset crane diganti
+            // Select listener
             craneSelect.addEventListener('change', () => {
                 updateCraneData();
                 calculate();
             });
             
-            // Inisialisasi tampilan form
+            // Initialization
             updateFormVisibility();
-            updateCraneData(); 
+            updateCraneData();  
             
-            // Panggil typeset sekali di awal untuk merender formula statis
-            safeTypeset();
+            // Apply default language translations on load
+            applyTranslations();
             
-            // Picu event input CBR saat load untuk mengisi soilCapacity
-            // Kita tunda 0ms (defer) agar tidak menyebabkan "forced reflow" pada render awal
+            // Trigger CBR input event on load to populate soilCapacity
+            // We defer this 0ms to prevent "forced reflow" on initial render
             setTimeout(() => {
                 cbrValueInput.dispatchEvent(new Event('input', { bubbles: true }));
             }, 0);
@@ -1242,3 +1446,4 @@
     </script>
 </body>
 </html>
+
