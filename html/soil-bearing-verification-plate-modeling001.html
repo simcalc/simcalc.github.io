@@ -1,1 +1,1244 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modeling Daya Dukung & Verifikasi Plate (v3.3 - LCP Optimized)</title> <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="preload" as="image" href="/img/groundbearingpressure-modeling.webp" fetchpriority="high">
+    <meta name="description" content="Kalkulator online dwibahasa untuk analisis daya dukung tanah (ground bearing pressure) dan verifikasi struktural steel plate (lentur & geser pons) untuk alat berat. Berdasarkan panduan EFFC/DFI dan korelasi IRC 37:2018.">
+    <meta name="keywords" content="kalkulator daya dukung tanah, ground bearing pressure, verifikasi steel plate, bore pile, fondasi, geoteknik, teknik sipil, EFFC, DFI, IRC 37 2018, analisis platform kerja, civil engineering calculator, CBR correlation">
+    <meta name="author" content="simcalc.github.io">
+    <meta name="robots" content="index, follow">
 
+    <meta property="og:title" content="Modeling Daya Dukung & Verifikasi Plate (Bilingual)">
+    <meta property="og:description" content="Alat bantu interaktif untuk engineer sipil dalam memverifikasi keamanan platform kerja alat berat.">
+    <meta property="og:image" content="https://simcalc.github.io/img/ground-bearing-pressure-under-rig-tracks.webp">
+    <meta property="og:url" content="https://simcalc.github.io/calc/daya-dukung-tanah-alat-berat">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="SimCalc">
+    <meta property="og:locale" content="id_ID">
+    <meta property="og:locale:alternate" content="en_US" />
+
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Modeling Daya Dukung & Verifikasi Plate (Bilingual)">
+    <meta name="twitter:description" content="Alat bantu interaktif untuk engineer sipil dalam memverifikasi keamanan platform kerja alat berat.">
+    <meta name="twitter:image" content="https://simcalc.github.io/img/ground-bearing-pressure-under-rig-tracks.webp">
+
+    <link rel="canonical" href="https://simcalc.github.io/calc/daya-dukung-tanah-alat-berat">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏗️</text></svg>">
+    
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap"></noscript>
+    
+    <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
+      },
+      svg: {
+        fontCache: 'global'
+      }
+    };
+    </script>
+    
+    <script id="MathJax-script" defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-svg.js"></script>
+    
+    <style>
+        /* CSS Reset and Basic Setup */
+        :root {
+            --primary-color: #0d47a1; /* Biru tua profesional */
+            --secondary-color: #1976d2; /* Biru lebih terang */
+            --accent-color: #f9a825; /* Kuning/Oranye untuk tombol */
+            --text-color: #212121;
+            --bg-color: #f5f7fa;
+            --border-color: #cfd8dc;
+            --success-bg: #2e7d32; /* Hijau tua */
+            --error-bg: #c62828;   /* Merah tua */
+            --light-text: #ffffff;
+            --shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+            --card-shadow: 0 4px 8px rgba(0,0,0,0.07);
+            --border-radius: 8px;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 100%; 
+            margin: 0; 
+            background-color: var(--light-text);
+            border-radius: 0; 
+            box-shadow: none; 
+        }
+
+        header {
+            background-image: url('https://simcalc.github.io/img/groundbearingpressure-modeling.webp');
+            background-size: cover;
+            background-position: center center;
+            background-repeat: no-repeat;
+            
+            color: var(--light-text);
+            padding: 60px 30px; 
+            text-align: center;
+            position: relative; 
+        }
+        
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            position: relative; 
+            z-index: 2;
+        }
+
+        .header-image {
+            height: 100px;
+            width: auto;
+            border-radius: var(--border-radius);
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 5px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            object-fit: cover;
+            max-width: 100%; 
+        }
+
+        .header-text {
+            text-align: left;
+            flex: 1;
+            min-width: 0; 
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2em;
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.6);
+        }
+
+        .subtitle {
+            margin: 5px 0 15px;
+            font-weight: 400;
+            opacity: 0.9;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.6);
+        }
+
+        .default-info {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 10px 15px;
+            border-radius: 6px;
+            font-size: 0.9em;
+            display: inline-block;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        main { padding: 30px; }
+        .input-cards-container {
+            display: flex;
+            gap: 25px;
+            margin-bottom: 25px;
+        }
+
+        fieldset {
+            flex: 1;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: var(--card-shadow);
+            min-width: 0;
+        }
+
+        legend {
+            color: var(--primary-color);
+            font-weight: 700;
+            padding: 0 10px;
+            font-size: 1.1em;
+        }
+
+        .form-group { margin-bottom: 18px; }
+        .form-group label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 6px;
+            color: #455a64;
+        }
+
+        .input-with-unit { display: flex; align-items: center; }
+        .input-with-unit input {
+            flex-grow: 1;
+            width: auto; 
+            border-radius: 4px 0 0 4px;
+        }
+        .input-with-unit span {
+            background-color: #eceff1;
+            border: 1px solid var(--border-color);
+            border-left: none;
+            padding: 10px 12px;
+            border-radius: 0 4px 4px 0;
+            font-size: 0.9em;
+            white-space: nowrap;
+            color: #546e7a;
+        }
+
+        input[type="number"], select { 
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 1em;
+            transition: border-color 0.3s, box-shadow 0.3s;
+            background-color: #fff; 
+        }
+        input[type="number"]:focus, select:focus { 
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.2);
+        }
+       
+        select {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%2Bxmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%2Bwidth%3D%22292.4%22%2Bheight%3D%22292.4%22%3E%3Cpath%2Bfill%3D%22%23007CB2%22%2Bd%3D%22M287%2B69.4a17.6%2B17.6%2B0%2B0%2B0-13-5.4H18.4c-5%2B0-9.3%2B1.8-13%2B5.4A17.6%2B17.6%2B0%2B0%2B0%2B0%2B82.2c0%2B5%2B1.8%2B9.3%2B5.4%2B13l128%2B128c3.6%2B3.6%2B7.8%2B5.4%2B13%2B5.4s9.4-1.8%2B13-5.4l128-128c3.6-3.6%2B5.4-7.8%2B5.4-13%2B0-5-1.8-9.4-5.4-13z%22%2F%3E%3C%2Fsvg%3E');
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 10px;
+            padding-right: 30px; 
+        }
+        select#craneSelect {
+             background-color: #f9f9f9; 
+        }
+        
+        input[type="number"] { -moz-appearance: textfield; }
+        input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        
+        /* ▼▼▼ PERBAIKAN KONTRAS 1 ▼▼▼ */
+        input[readonly] {
+            background-color: #eceff1;
+            color: #424242;  /* Diubah dari #546e7a */
+            cursor: not-allowed;
+            opacity: 0.9;
+        }
+
+        /* ▼▼▼ PERBAIKAN KONTRAS 2 ▼▼▼ */
+        .form-group small {
+            font-size: 0.8em;
+            color: #455a64; /* Diubah dari #78909c */
+            display: block;
+            margin-top: 4px;
+            line-height: 1.3;
+        }
+        
+        .error-message {
+            color: var(--error-bg);
+            font-size: 0.85em;
+            font-weight: 500;
+            display: block;
+            height: 1em; 
+            margin-top: 4px;
+        }
+        input.input-error {
+            border-color: var(--error-bg) !important;
+            box-shadow: 0 0 0 2px rgba(198, 40, 40, 0.2) !important;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            background-color: #f5f7fa;
+            padding: 12px;
+            border-radius: 4px;
+        }
+        .checkbox-group input[type="checkbox"] {
+            margin-right: 10px;
+            width: 18px;
+            height: 18px;
+            accent-color: var(--primary-color);
+        }
+        
+        .button-container {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .result-section {
+            background-color: #f9fafb;
+            padding: 25px;
+            border-radius: var(--border-radius);
+            border: 1px solid #e0e0e0;
+            margin-bottom: 30px;
+        }
+
+        #result h2 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+
+        .status {
+            padding: 15px;
+            border-radius: var(--border-radius);
+            color: var(--light-text);
+            font-size: 1.5em;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+        .status-safe { background-color: var(--success-bg); }
+        .status-unsafe { background-color: var(--error-bg); }
+
+        #status-details {
+            list-style-type: none;
+            padding: 0;
+            margin-bottom: 20px;
+        }
+        #status-details li {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap; 
+            gap: 5px; 
+        }
+        #status-details li:last-child { border-bottom: none; }
+        .status-detail-safe { font-weight: bold; color: var(--success-bg); }
+        .status-detail-unsafe { font-weight: bold; color: var(--error-bg); }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 0;
+            border-bottom: 1px solid #eee;
+            flex-wrap: wrap; 
+            gap: 5px;
+        }
+        .result-item:last-of-type { border-bottom: none; }
+        .result-item strong { 
+            font-size: 1.3em; 
+            color: var(--secondary-color);
+            word-break: break-all;
+        }
+
+        .formula-box {
+            margin-top: 25px;
+            background-color: #e8f0fe;
+            padding: 15px;
+            border-radius: 4px;
+            border: 1px solid #d3e3fd;
+        }
+        .formula-box h3 {
+            margin: 0 0 10px 0;
+            font-family: 'Inter', sans-serif;
+            color: var(--primary-color);
+        }
+        #formula-container { 
+            text-align: center; 
+            font-size: 0.95em;
+            overflow-x: auto;
+            word-wrap: break-word;
+        }
+
+        .hidden { display: none; }
+        #placeholder {
+            text-align: center;
+            color: #999;
+            padding: 50px 0;
+        }
+        
+        .theory-section {
+            background-color: #ffffff;
+            padding: 25px;
+            border-radius: var(--border-radius);
+            border: 1px solid var(--border-color);
+            margin-top: 20px;
+        }
+        .theory-section h2, .theory-section h3, .theory-section h4 {
+             text-align: left;
+        }
+        .theory-section h2 {
+            color: var(--primary-color);
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .theory-section h3 {
+            color: var(--secondary-color);
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 5px;
+            margin-top: 25px;
+        }
+        .theory-section h4 {
+            color: #333;
+            margin-top: 20px;
+        }
+        .theory-section p, .theory-section ul {
+            color: #444;
+            text-align: justify;
+        }
+        .theory-section ul {
+            padding-left: 20px;
+            margin-bottom: 15px;
+        }
+        .theory-section .formula-display {
+            background-color: #f5f7fa;
+            padding: 15px;
+            margin: 15px 0;
+            border-left: 4px solid var(--primary-color);
+            overflow-x: auto;
+        }
+        .theory-section a {
+            color: var(--secondary-color);
+            text-decoration: none;
+            overflow-wrap: break-word;
+            word-break: break-all;
+        }
+        .theory-section a:hover {
+            text-decoration: underline;
+        }
+
+        .citation {
+            color: var(--secondary-color);
+            font-weight: bold;
+        }
+
+        .custom-alert {
+            position: fixed;
+            bottom: -100px; 
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--accent-color);
+            color: var(--text-color);
+            padding: 12px 20px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            z-index: 1000;
+            transition: bottom 0.5s ease-in-out;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .custom-alert.show {
+            bottom: 20px; 
+        }
+
+        /* --- CSS UNTUK LAYOUT 2 KOLOM --- */
+        .layout-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr; 
+            gap: 30px; 
+            margin-bottom: 30px; 
+        }
+
+        .layout-grid .input-cards-container {
+            flex-direction: column;
+        }
+
+        .output-column {
+            position: sticky;
+            top: 30px; 
+            align-self: start; 
+            min-width: 0; /* Mencegah kolom "melebar" */
+        }
+        /* --- AKHIR CSS 2 KOLOM --- */
+
+        @media (max-width: 1024px) { 
+            .layout-grid {
+                grid-template-columns: 1fr; 
+                gap: 20px;
+                margin-bottom: 20px;
+            }
+
+            .output-column {
+                position: static; 
+                top: auto;
+            }
+            
+            .input-cards-container { flex-direction: column; }
+            header h1 { font-size: 1.6em; }
+            main { padding: 20px; }
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+            .header-text {
+                text-align: center;
+                width: 100%; 
+            }
+        }
+        
+        @media (max-width: 768px) { 
+            main, .result-section, .theory-section {
+                padding: 15px;
+            }
+            header {
+                padding: 40px 20px; 
+            }
+            .button-container {
+                flex-direction: column;
+            }
+            .result-item, #status-details li {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 5px; 
+                padding-top: 12px;
+                padding-bottom: 12px;
+            }
+            .result-item strong {
+                font-size: 1.2em;
+                padding-left: 0; 
+            }
+            #status-details li span:last-child {
+                padding-left: 0; 
+                text-align: left; 
+            }
+            header h1 {
+                font-size: 1.4em;
+            }
+        }
+
+        /* --- CSS UNTUK FOOTER --- */
+        footer {
+            background-color: #37474f; 
+            color: #cfd8dc;         
+            padding: 40px 30px;
+            text-align: center;
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+        }
+        .footer-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        footer p {
+            margin: 8px 0;
+            font-size: 0.95em;
+        }
+        footer a {
+            color: #66cdaa; 
+            text-decoration: underline;
+            font-weight: 500;
+            overflow-wrap: break-word; 
+            word-break: break-all;
+        }
+        footer a:hover {
+            color: #80deea;
+        }
+        footer hr {
+            border: 0;
+            height: 1px;
+            background-color: #546e7a; 
+            margin: 20px auto;
+            max-width: 600px;
+        }
+        footer .disclaimer {
+            font-size: 0.9em;
+            font-style: italic;
+            /* color: #90a4ae; */ /* Dihapus agar mewarisi warna footer utama */
+            text-align: justify;
+            hyphens: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <img src="/img/virsim_trans.webp" alt="Ilustrasi Bor Pile" class="header-image">
+                <div class="header-text">
+                    <h1>
+                        Modeling Daya Dukung & Verifikasi Plate
+                    </h1>
+                    <p class="subtitle">
+                        Verifikasi tekanan alat berat dan kekuatan steel plate.
+                    </p>
+                    <div class="default-info hidden"> 
+                        <strong>Default Rig:</strong> Kobelco CKS2500 (217t)
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <div class="layout-grid"> 
+                <form id="bearingCalculatorForm" onsubmit="return false;" class="input-column">
+                    <div class="input-cards-container"> 
+                        <fieldset> 
+                            <legend>
+                                1. Parameter Alat Berat (Rig/Crane)
+                            </legend>
+                            <div class="form-group">
+                                <label for="craneSelect">
+                                    Pilih Alat Berat (Preset)
+                                </label>
+                                <select id="craneSelect"> 
+                                    <option value="bauer_bg_20_h">BAUER BG 20 H (56t)</option>
+                                    <option value="kobelco_cks2500" selected>Kobelco CKS2500 (Default: 217t)</option>
+                                    <option value="custom">Input Manual / Custom</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="rigWeight">
+                                    Berat Operasi Total ($W$)
+                                </label>
+                                <div class="input-with-unit"><input type="number" id="rigWeight" value="56" step="0.1" required readonly><span>ton</span></div><small class="error-message"></small>
+                            </div>
+                        <div class="form-group">
+                            <label for="trackWidth">
+                                Lebar Track Shoe ($b_{\text{track}}$)
+                            </label>
+                            <div class="input-with-unit"><input type="number" id="trackWidth" value="0.7" step="0.01" min="0.1" max="1.5" required readonly><span>meter</span></div><small class="error-message"></small>
+                        </div>
+                        <div class="form-group">
+                            <label for="trackLength">
+                                Panjang Kontak Track ($L_{\text{contact}}$)
+                            </label>
+                            <div class="input-with-unit"><input type="number" id="trackLength" value="4.5" step="0.1" min="0.1" max="10" required readonly><span>meter</span></div><small class="error-message"></small>
+                        </div>
+                        <div class="form-group hidden" id="loadDistributionGroup">
+                            <label for="loadDistribution">
+                                Faktor Distribusi Beban ($\eta$)
+                            </label>
+                            <div class="input-with-unit"><input type="number" id="loadDistribution" value="1" step="0.1" required><span>(unitless)</span></div>
+                            <small>
+                                Untuk tanah tidak rata, nilainya < 1.
+                            </small>
+                            <small class="error-message"></small>
+                        </div>
+                    </fieldset> 
+
+                    <fieldset>
+                        <legend>
+                            2. Parameter Tanah & Material
+                        </legend>
+                        
+                        <div class="form-group">
+                            <label for="cbrValue">
+                                Estimasi dari CBR (Opsional)
+                            </label>
+                            <div class="input-with-unit"><input type="number" id="cbrValue" step="1" min="0" value="50"><span>%</span></div>
+                            <small id="cbrInfo">Estimasi berdasarkan formula IRC 37:2018.</small>
+                            <small class="error-message"></small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="soilCapacity">
+                                Daya Dukung Tanah Izin ($q_{\text{allow,test}}$)
+                            </label>
+                            <div class="input-with-unit"><input type="number" id="soilCapacity" value="25" step="1" required><span>kPa</span></div>
+                            <small>
+                                Dari hasil uji lapangan (atau estimasi CBR).
+                            </small>
+                            <small class="error-message"></small>
+                        </div>
+                        <div class="form-group">
+                             <label for="factorOfSafety">
+                                Faktor Keamanan (FoS)
+                             </label>
+                            <div class="input-with-unit"><input type="number" id="factorOfSafety" value="1.5" step="0.1" required><span>(unitless)</span></div><small class="error-message"></small>
+                        </div>
+                        <div class="form-group">
+                            <label for="loadFactor">
+                                Faktor Beban ($\gamma_F$)
+                            </label>
+                            <div class="input-with-unit"><input type="number" id="loadFactor" value="1.15" step="0.01" required><span>(unitless)</span></div>
+                            <small>Ref: EFFC/DFI Guide.</small><small class="error-message"></small>
+                        </div>
+                        <div class="form-group hidden" id="steelYieldStrengthGroup">
+                            <label for="steelYieldStrength">
+                                Kuat Leleh Baja Plate ($f_y$)
+                            </label>
+                            <div class="input-with-unit"><input type="number" id="steelYieldStrength" value="250" step="10"><span>MPa</span></div><small class="error-message"></small>
+                        </div>
+                    </fieldset>
+                    
+                    <fieldset>
+                        <legend>
+                            3. Opsi Tambahan
+                        </legend>
+                        <div class="form-group checkbox-group">
+                            <input type="checkbox" id="useSteelPlate" checked>
+                            <label for="useSteelPlate">
+                                Gunakan Steel Plate / Mat
+                            </label>
+                        </div>
+                        <div id="steelPlateInput">
+                            <div class="form-group">
+                                <label for="plateLength">
+                                    Panjang Plate ($L_{\text{plate}}$)
+                                </label>
+                                <div class="input-with-unit"><input type="number" id="plateLength" value="6.0" step="0.1"><span>meter</span></div><small class="error-message"></small>
+                            </div>
+                            <div class="form-group">
+                                <label for="plateWidth">
+                                    Lebar Plate ($b_{\text{plate}}$)
+                                </label>
+                                <div class="input-with-unit"><input type="number" id="plateWidth" value="1.5" step="0.1"><span>meter</span></div><small class="error-message"></small>
+                            </div>
+                            <div class="form-group">
+                                <label for="plateThickness">
+                                    Tebal Plate ($t_{\text{plate}}$)
+                                </label>
+                                <div class="input-with-unit"><input type="number" id="plateThickness" value="22" step="1"><span>mm</span></div><small class="error-message"></small>
+                            </div>
+                        </div>
+                    </fieldset> 
+
+                    </div> 
+
+                    <div class="button-container">
+                        <button type="button" id="calculateBtn" class="hidden"> 
+                            HITUNG VERIFIKASI
+                        </button>
+                    </div>
+
+                </form> 
+
+                <div class="result-section output-column"> 
+
+                <div id="result" class="hidden">
+                    <h2>
+                        Hasil Verifikasi
+                    </h2>
+                    <div id="status" class="status"></div>
+                    <ul id="status-details"></ul>
+                    <div class="result-item">
+                        <span title="Tekanan aktual yang diberikan alat ke tanah">
+                            Tekanan Aktual ke Tanah ($q_{\text{demand}}$)
+                        </span>
+                        <strong id="qDemand"></strong>
+                    </div>
+                    <div class="result-item">
+                        <span title="Kapasitas aman tanah berdasarkan FoS">
+                            Kapasitas Aman Tanah ($q_{\text{allowable}}$)
+                        </span>
+                        <strong id="qAllowable"></strong>
+                    </div>
+                    <div class="result-item hidden" id="bendingResultItem">
+                        <span title="Tegangan lentur aktual pada plate">
+                            Tegangan Lentur Plate ($\sigma_{\text{bending}}$)
+                        </span>
+                        <strong id="bendingStress"></strong>
+                    </div>
+                    <div class="result-item hidden" id="bendingAllowableResultItem">
+                        <span title="Tegangan lentur izin material plate">
+                             Tegangan Lentur Izin ($\sigma_{\text{allow}}$)
+                        </span>
+                        <strong id="bendingAllowable"></strong>
+                    </div>
+                    <div class="result-item hidden" id="shearResultItem">
+                        <span title="Tegangan geser pons aktual pada plate">
+                            Tegangan Geser Pons Plate ($\tau_{\text{punch}}$)
+                        </span>
+                        <strong id="shearStress"></strong>
+                    </div>
+                    <div class="result-item hidden" id="shearAllowableResultItem">
+                        <span title="Tegangan geser pons izin material plate">
+                            Tegangan Geser Izin ($\tau_{\text{allow}}$)
+                        </span>
+                        <strong id="shearAllowable"></strong>
+                    </div>
+                    <div class="formula-box">
+                        <h3>
+                            Formula yang Digunakan:
+                        </h3>
+                        <div id="formula-container"></div>
+                    </div>
+                </div>
+                <div id="placeholder">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" style="color: #b0bec5;"><path d="M2 21h20"/><path d="M5.23 21V8.41c0-1.1.9-2,2-2h9.54c1.1,0,2,.9,2,2V21"/><path d="M9 21v-5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v5"/><path d="M12 21v-8"/><path d="M18 10c-1.5-3-6-2.5-6-2.5s-4.5-.5-6,2.5"/><path d="M11 11h2"/></svg>
+                    <p>
+                        Hasil perhitungan akan ditampilkan di sini.
+                    </p>
+                </div>
+            </div>
+        </div> 
+
+            <div class="theory-section">
+                <h2>
+                    Landasan Teori Perhitungan
+                </h2>
+                <p>
+                    Analisis ini bertujuan untuk memastikan keamanan dan stabilitas platform kerja untuk operasional alat berat, baik secara langsung di atas tanah maupun dengan menggunakan perantara <i>steel plate</i> (matras). Platform kerja harus mampu menahan beban yang diberikan tanpa mengalami keruntuhan atau deformasi berlebih <b class="citation">[1, 4]</b>. Metodologi perhitungan mengacu pada panduan desain platform kerja oleh EFFC/DFI dan praktik umum rekayasa geoteknik dan struktural. Verifikasi mencakup tiga aspek utama:
+                </p>
+                
+                <h3>
+                    1. Verifikasi Daya Dukung Tanah (Ground Bearing Pressure)
+                </h3>
+                <p>
+                    Tujuan verifikasi ini adalah untuk memastikan bahwa tekanan yang diberikan oleh alat berat ke tanah ($q_{\text{demand}}$) tidak melampaui kapasitas aman tanah ($q_{\text{allowable}}$). Kapasitas aman diperoleh dari data uji tanah ($q_{\text{allow,test}}$), seperti uji CBR atau Plate Bearing Test, yang kemudian direduksi dengan Faktor Keamanan (FoS) <b class="citation">[1]</b>. 
+                </p>
+                <p>
+                    Nilai $q_{\text{allow,test}}$ juga dapat diestimasi dari nilai CBR. Standar seperti IRC 37:2018 (menggunakan korelasi Powell et al.) mengkorelasikan CBR dengan Resilient Modulus ($M_R$). Untuk tujuan estimasi daya dukung (bukan modulus perkerasan), formula empiris berikut digunakan dalam kalkulator ini:
+                </p>
+                <div class="formula-display">
+                    Jika $\text{CBR} \le 5\%$: $q_{\text{allow,test}} \text{ (kPa)} \approx 10 \times \text{CBR}$ <br>
+                    Jika $\text{CBR} > 5\%$: $q_{\text{allow,test}} \text{ (kPa)} \approx 17.6 \times (\text{CBR})^{0.64}$
+                </div>
+                <div class="formula-display">
+                    $q_{\text{allowable}} = \frac{q_{\text{allow,test}}}{\text{FoS}}$
+                </div>
+                <p>
+                    Tekanan aktual yang terjadi ($q_{\text{demand}}$) dihitung dengan memperhitungkan berat operasi total alat ($W$) yang dikalikan dengan faktor beban ($\gamma_F$). Faktor ini mengakomodasi efek dinamis, beban eksentris, dan intensitas operasional <b class="citation">[4]</b>. Beban berfaktor ini kemudian didistribusikan ke seluruh area kontak.
+                </p>
+                <div class="formula-display">
+                    Tekanan Aktual (dengan plate): $q_{\text{demand}} = \frac{\gamma_F \times W \times g}{2 \times L_{\text{plate}} \times b_{\text{plate}}}$
+                </div>
+                <p><b>
+                    Syarat Aman: $q_{\text{demand}} \le q_{\text{allowable}}$
+                </b></p>
+
+                <h3>
+                    2. Verifikasi Struktural Steel Plate
+                </h3>
+                <p>
+                    Ketika steel plate digunakan, integritas struktural plate itu sendiri harus diverifikasi terhadap dua mode kegagalan utama: lentur (bending) dan geser pons (punching shear) <b class="citation">[1, 4]</b>.
+                </p>
+
+                <h4>
+                    a. Verifikasi Lentur (Bending Stress)
+                </h4>
+                <p>
+                    Model analisis mengasumsikan bagian plate yang menjorok keluar dari area kontak track (<i>cantilever</i>) menerima tekanan balik dari tanah ($q_{\text{demand}}$). Tekanan ini menyebabkan momen lentur pada plate. Tegangan lentur aktual ($\sigma_{\text{bending}}$) dihitung menggunakan formula standar untuk plat kantilever dengan beban merata <b class="citation">[2]</b>. Tegangan ini tidak boleh melebihi tegangan izin material ($\sigma_{\text{allowable}}$). Berdasarkan standar desain baja seperti AISC 360, tegangan izin untuk kondisi layan seringkali diambil sebagai persentase dari kuat leleh baja ($f_y$). Nilai yang umum digunakan untuk desain perancah atau struktur temporer adalah $0.75 \times f_y$, yang memberikan faktor keamanan tambahan <b class="citation">[3]</b>.
+                </p>
+                <div class="formula-display">
+                    Jarak Kantilever: $c = \frac{b_{\text{plate}} - b_{\text{track}}}{2}$ <br>
+                    Tegangan Lentur Aktual: $\sigma_{\text{bending}} = \frac{3 \times q_{\text{demand}} \times c^2}{t_{\text{plate}}^2}$ <br>
+                    Tegangan Lentur Izin: $\sigma_{\text{allowable}} = 0.75 \times f_y$
+                </div>
+                <p><b>
+                    Syarat Aman: $\sigma_{\text{bending}} \le \sigma_{\text{allowable}}$
+                </b></p>
+                
+                <h4>
+                    b. Verifikasi Geser Pons (Punching Shear)
+                </h4>
+                <p>
+                    Verifikasi ini memastikan track tidak "menusuk" atau "merobek" steel plate. Tegangan geser ($\tau_{\text{punch}}$) dihitung pada keliling perimeter kritis di sekitar area track. Gaya geser netto adalah beban dari track dikurangi gaya dukung tanah yang bekerja di bawah area track itu sendiri. Tegangan geser aktual tidak boleh melampaui tegangan geser izin ($\tau_{\text{allowable}}$). Sesuai dengan spesifikasi AISC 360, tegangan geser izin dapat diambil sebesar 40% dari kuat leleh baja ($0.40 \times f_y$) untuk kondisi plastis <b class="citation">[3, 4]</b>.
+                </p>
+                <div class="formula-display">
+                    Gaya Pons Netto: $V = (\frac{\gamma_F \times W \times g}{2}) - (q_{\text{demand}} \times b_{\text{track}} \times L_{\text{contact}})$ <br>
+                    Tegangan Geser Aktual: $\tau_{\text{punch}} = \frac{V}{2 \times (L_{\text{contact}} + b_{\text{track}}) \times t_{\text{plate}}}$ <br>
+
+                    Tegangan Geser Izin: $\tau_{\text{allowable}} = 0.40 \times f_y$
+                </div>
+                <p><b>
+                    Syarat Aman: $\tau_{\text{punch}} \le \tau_{\text{allowable}}$
+                </b></p>
+
+                <h3>
+                    Daftar Pustaka
+                </h3>
+                <ol>
+                    <li>European Federation of Foundation Contractors (EFFC) & Deep Foundations Institute (DFI). (2020). <i>A Guide to Working Platform Design</i>. <a href="https://www.effc.org/the-effc-dfi-guide-to-working-platforms/" target="_blank" rel="noopener noreferrer">[Link]</a></li>
+                    <li>Young, W. C., & Budynas, R. G. (2002). <i>Roark's Formulas for Stress and Strain (7th ed.)</i>. McGraw-Hill. (General formulas for plate bending). <a href="https://www.accessengineeringlibrary.com/binary/mheaeworks/cf5a48913b291c42/63369d37d6a66b0242c85f91b07d3ccb521ebbf16bb02c8eb098879b6c037a0b/book-summary.pdf" target="_blank" rel="noopener noreferrer">[Link]</a></li>
+                    <li>American Institute of Steel Construction (AISC). (2016). <i>Specification for Structural Steel Buildings (ANSI/AISC 360-16)</i>. (General principles for allowable bending and shear stress). <a href="https://www.aisc.org/globalassets/aisc/publications/standards/a360-16w-rev-june-2019.pdf" target="_blank" rel="noopener noreferrer">[Link]</a></li>
+                    <li>European Federation of Foundation Contractors (EFFC) & Deep Foundations Institute (DFI). (2023). <i>Guide to Working Platform Design (2nd ed.)</i>. <a href="https://www.voebu.at/media//Publikationen/EFFC-DFI_Guide_For_Working_Platforms_Edition_2_WEB_FINAL.pdf" target="_blank" rel="noopener noreferrer">[Link]</a></li>
+                    <li>Indian Roads Congress (IRC). (2018). <i>Guidelines for the Design of Flexible Pavements (IRC: 37-2018)</i>. (Provides correlation $M_R \text{ (MPa)} = 17.6 \times (\text{CBR})^{0.64}$ for CBR > 5%).</li>
+                    <li>Kobelco Construction Machinery. (2023). <i>CKS2500 Specifications</i>. (Spesifikasi alat berat). <a href="https://www.kobelcocm-global.com/products/cranes/asia/pdf/CKS2500spec.pdf?230227" target="_blank" rel="noopener noreferrer">[Link]</a></li>
+                    <li>BAUER Maschinen GmbH. (2022). <i>BAUER BG 20 H (BS 60 RS) Specifications</i>. (Spesifikasi alat berat). <a href="httpsg://equipment.bauer.de/en/media/1914/download?inline" target="_blank" rel="noopener noreferrer">[Link]</a></li>
+                </ol>
+            </div>
+        </main>
+
+        <footer>
+            <div class="footer-content">
+                <p>Copyright © 2025 Apps Development by <a href="https://www.gendewa.my.id/" target="_blank" rel="noopener noreferrer">Ahmad Fauzan. Gendewa</a></p>
+                <p>Calculation & Validation Field Study by <a href="https://id.linkedin.com/in/dimas-muflih-181b33288" target="_blank" rel="noopener noreferrer">Dimas Muflih</a></p>
+                <p>Layout Designed by <a href="https://id.linkedin.com/in/mokhamadabrar" target="_blank" rel="noopener noreferrer">Mokhamad Abrar</a></p>
+                <hr>
+                <p class="disclaimer">Disclaimer: This application is part of field engineering study concerning the soil bearing pressure simulation. Its purpose is purely field practices study. We sincerely welcome any constructive feedback and criticism to enrich this study, both from the perspective of civil engineering and the implementation of JavaScript technology.</p>
+            </div>
+        </footer>
+
+    </div> 
+
+    <div id="custom-alert"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Helper function to safely typeset math formulas
+            function safeTypeset(elements) {
+                if (window.MathJax && window.MathJax.startup) {
+                    MathJax.startup.promise.then(() => {
+                        MathJax.typesetPromise(elements || []);
+                    });
+                }
+            }
+
+            const customAlert = document.getElementById('custom-alert');
+            let alertTimeout;
+
+            // Fungsi untuk menampilkan notifikasi kustom
+            function showAlert(message) {
+                customAlert.textContent = message;
+                customAlert.classList.add('show');
+                
+                clearTimeout(alertTimeout);
+                setTimeout(() => {
+                    customAlert.classList.remove('show');
+                }, 3500); 
+            }
+
+            const useSteelPlateCheckbox = document.getElementById('useSteelPlate');
+            const craneSelect = document.getElementById('craneSelect'); 
+
+            const steelPlateInputDiv = document.getElementById('steelPlateInput');
+            const loadDistributionGroup = document.getElementById('loadDistributionGroup');
+            const steelYieldStrengthGroup = document.getElementById('steelYieldStrengthGroup');
+
+            // Elemen Input
+            const inputs = {
+                rigWeight: document.getElementById('rigWeight'),
+                trackWidth: document.getElementById('trackWidth'),
+                trackLength: document.getElementById('trackLength'),
+                loadDistribution: document.getElementById('loadDistribution'),
+                soilCapacity: document.getElementById('soilCapacity'),
+                factorOfSafety: document.getElementById('factorOfSafety'),
+                loadFactor: document.getElementById('loadFactor'),
+                steelYieldStrength: document.getElementById('steelYieldStrength'),
+                plateLength: document.getElementById('plateLength'),
+                plateWidth: document.getElementById('plateWidth'),
+                plateThickness: document.getElementById('plateThickness'),
+            };
+
+            // Elemen Hasil
+            const resultDiv = document.getElementById('result');
+            const placeholderDiv = document.getElementById('placeholder');
+            const statusDiv = document.getElementById('status');
+            const statusDetailsUl = document.getElementById('status-details');
+            const qDemandSpan = document.getElementById('qDemand');
+            const qAllowableSpan = document.getElementById('qAllowable');
+            const bendingStressSpan = document.getElementById('bendingStress');
+            const bendingAllowableSpan = document.getElementById('bendingAllowable');
+            const shearStressSpan = document.getElementById('shearStress');
+            const shearAllowableSpan = document.getElementById('shearAllowable');
+            const formulaContainer = document.getElementById('formula-container');
+            
+            const resultItems = {
+                bending: document.getElementById('bendingResultItem'),
+                bendingAllowable: document.getElementById('bendingAllowableResultItem'),
+                shear: document.getElementById('shearResultItem'),
+                shearAllowable: document.getElementById('shearAllowableResultItem')
+            };
+
+            function updateFormVisibility() {
+                const isChecked = useSteelPlateCheckbox.checked;
+                steelPlateInputDiv.classList.toggle('hidden', !isChecked);
+                loadDistributionGroup.classList.toggle('hidden', isChecked);
+                steelYieldStrengthGroup.classList.toggle('hidden', !isChecked);
+
+                inputs.plateLength.required = isChecked;
+                inputs.plateWidth.required = isChecked;
+                inputs.plateThickness.required = isChecked;
+                inputs.steelYieldStrength.required = isChecked;
+                inputs.loadDistribution.required = !isChecked;
+            }
+
+            function clearAllErrors() {
+                document.querySelectorAll('.error-message').forEach(span => span.textContent = '');
+                document.querySelectorAll('input.input-error').forEach(input => input.classList.remove('input-error'));
+            }
+
+            function validateInputs() {
+                let isValid = true;
+                clearAllErrors();
+
+                function showError(input, message) {
+                    let errorSpan = input.parentElement.nextElementSibling;
+                    if (errorSpan && errorSpan.tagName === 'SMALL' && !errorSpan.classList.contains('error-message')) {
+                        errorSpan = errorSpan.nextElementSibling;
+                    }
+                    
+                    if (errorSpan && errorSpan.classList.contains('error-message')) { 
+                        errorSpan.textContent = message;
+                    } else if (input.parentElement.parentElement.querySelector('.error-message')) {
+                        input.parentElement.parentElement.querySelector('.error-message').textContent = message;
+                    }
+                    input.classList.add('input-error');
+                    isValid = false;
+                }
+                
+                for (const key in inputs) {
+                    const input = inputs[key];
+                    if (input.required) {
+                        if (input.value.trim() === '') {
+                             showError(input, 'Input ini wajib diisi.');
+                        } else if (parseFloat(input.value) <= 0) {
+                            showError(input, 'Nilai harus lebih dari nol.');
+                        }
+                    }
+                }
+
+                if (useSteelPlateCheckbox.checked) {
+                    const plateWidth = parseFloat(inputs.plateWidth.value);
+                    const trackWidth = parseFloat(inputs.trackWidth.value);
+                    if (plateWidth > 0 && trackWidth > 0 && plateWidth <= trackWidth) {
+                        showError(inputs.plateWidth, 'Lebar plate harus lebih besar dari lebar track.');
+                    }
+                }
+                
+                return isValid;
+            }
+
+            const cranePresets = {
+                "bauer_bg_20_h": { weight: 56, width: 0.7, length: 4.5 },
+                "kobelco_cks2500": { weight: 217, width: 1.22, length: 7.74 }
+            };
+
+            function updateCraneData() {
+                const selectedCraneKey = craneSelect.value;
+                if (selectedCraneKey === 'custom') {
+                    inputs.rigWeight.readOnly = false;
+                    inputs.trackWidth.readOnly = false;
+                    inputs.trackLength.readOnly = false;
+                    showAlert('Input Manual diaktifkan.');
+                } else {
+                    const preset = cranePresets[selectedCraneKey];
+                    if (preset) {
+                        inputs.rigWeight.value = preset.weight;
+                        inputs.trackWidth.value = preset.width;
+                        inputs.trackLength.value = preset.length;
+                        inputs.rigWeight.readOnly = true;
+                        inputs.trackWidth.readOnly = true;
+                        inputs.trackLength.readOnly = true;
+                    }
+                }
+                clearAllErrors();
+            }
+
+            function calculate() {
+                if (!validateInputs()) {
+                    resultDiv.classList.add('hidden');
+                    placeholderDiv.classList.remove('hidden');
+                    return;
+                }
+
+                const checkAndClamp = (inputElement, min, max, nameId, nameEn) => {
+                    let value = parseFloat(inputElement.value);
+                    if (isNaN(value)) return; 
+
+                    if (value < min || value > max) {
+                        inputElement.value = max;
+                        showAlert(
+                            `${nameId} di luar rentang, diatur ke nilai maks: ${max} m.`
+                        );
+                    }
+                };
+
+                checkAndClamp(inputs.trackLength, 0.1, 10, 'Panjang Kontak Track', 'Track Contact Length');
+                checkAndClamp(inputs.trackWidth, 0.1, 1.5, 'Lebar Track Shoe', 'Track Shoe Width');
+
+                const values = {};
+                for (const key in inputs) {
+                    values[key] = parseFloat(inputs[key].value) || 0;
+                }
+                const g = 9.81; 
+
+                let qDemand, qAllowable, bendingStress, bendingAllowable, shearStress, shearAllowable;
+                let isSoilSafe, isBendingSafe, isShearSafe;
+                let formulas = '';
+                
+                const isUsingPlate = useSteelPlateCheckbox.checked;
+
+                const W_kN = values.rigWeight * g; 
+                qAllowable = values.soilCapacity / values.factorOfSafety;
+
+                if (isUsingPlate) {
+                    const L_plate = values.plateLength;
+                    const b_plate = values.plateWidth;
+                    const t_plate_m = values.plateThickness / 1000; 
+
+                    const contactAreaPlate = 2 * L_plate * b_plate;
+                    qDemand = (values.loadFactor * W_kN) / contactAreaPlate; 
+                    isSoilSafe = qDemand <= qAllowable;
+                    formulas += `\\(q_{\\text{demand}} = \\frac{${values.loadFactor} \\times ${values.rigWeight.toFixed(1)} \\times ${g.toFixed(2)}}{2 \\times ${L_plate.toFixed(2)} \\times ${b_plate.toFixed(2)}} = ${qDemand.toFixed(2)}\\text{ kPa}\\)<br>`;
+                    
+                    const cantileverLength = (b_plate - values.trackWidth) / 2;
+                    const c_calc = Math.max(0, cantileverLength);
+                    bendingStress = (3 * qDemand * Math.pow(c_calc, 2)) / Math.pow(t_plate_m, 2) / 1000; 
+                    bendingAllowable = 0.75 * values.steelYieldStrength; 
+                    isBendingSafe = bendingStress <= bendingAllowable;
+                    formulas += `\\(c = \\frac{${b_plate.toFixed(2)} - ${values.trackWidth.toFixed(2)}}{2} = ${cantileverLength.toFixed(2)}\\text{ m}\\)<br>`;
+                    formulas += `\\(\\sigma_{\\text{bending}} = \\frac{3 \\times ${qDemand.toFixed(2)} \\times ${c_calc.toFixed(2)}^2}{(${values.plateThickness}/1000)^2} = ${bendingStress.toFixed(2)}\\text{ MPa}\\)<br>`;
+                    
+                    const netPunchingForce = (values.loadFactor * W_kN / 2) - (qDemand * values.trackWidth * values.trackLength); 
+                    const shearPerimeter = 2 * (values.trackLength + values.trackWidth);
+                    shearStress = (netPunchingForce > 0) ? (netPunchingForce / (shearPerimeter * t_plate_m) / 1000) : 0; 
+                    shearAllowable = 0.40 * values.steelYieldStrength; 
+                    isShearSafe = shearStress <= shearAllowable;
+                    formulas += `\\(V_{\\text{net}} = (\\frac{${values.loadFactor} \\times ${W_kN.toFixed(1)}}{2}) - (${qDemand.toFixed(2)} \\times ${values.trackWidth.toFixed(2)} \\times ${values.trackLength.toFixed(2)}) = ${netPunchingForce.toFixed(2)}\\text{ kN}\\)<br>`;
+                    formulas += `\\(\\tau_{\\text{punch}} = \\frac{V_{\\text{net}}}{Perim \\times t_p} = ${shearStress.toFixed(2)}\\text{ MPa}\\)`;
+                } else {
+                    const contactAreaTrack = 2 * values.trackLength * values.trackWidth;
+                    qDemand = (values.loadFactor * W_kN) / (contactAreaTrack * values.loadDistribution); 
+                    isSoilSafe = qDemand <= qAllowable;
+                     formulas += `\\(q_{\\text{demand}} = \\frac{${values.loadFactor} \\times ${values.rigWeight.toFixed(1)} \\times ${g.toFixed(2)}}{2 \\times ${values.trackLength.toFixed(2)} \\times ${values.trackWidth.toFixed(2)} \\times ${values.loadDistribution.toFixed(1)}} = ${qDemand.toFixed(2)}\\text{ kPa}\\)`;
+                }
+
+                displayResults({
+                    qDemand, qAllowable, bendingStress, bendingAllowable, shearStress, shearAllowable,
+                    isSoilSafe, isBendingSafe, isShearSafe, isUsingPlate, formulas
+                });
+            }
+
+            function displayResults(data) {
+                resultDiv.classList.remove('hidden');
+                placeholderDiv.classList.add('hidden');
+
+                qDemandSpan.textContent = `${data.qDemand.toFixed(2)} kPa`;
+                qAllowableSpan.textContent = `${data.qAllowable.toFixed(2)} kPa`;
+                
+                statusDetailsUl.innerHTML = ''; 
+
+                function addStatusDetail(checkNameId, isSafe, value, allowable) {
+                    const li = document.createElement('li');
+                    const nameId = checkNameId;
+                    const statusClass = isSafe ? 'status-detail-safe' : 'status-detail-unsafe';
+                    const statusTextId = isSafe ? 'AMAN' : 'TIDAK AMAN';
+                    
+                    let displayValue = (value < 0.01 && value > 0) ? value.toExponential(2) : value.toFixed(2);
+                    let displayAllowable = (allowable < 0.01 && allowable > 0) ? allowable.toExponential(2) : allowable.toFixed(2);
+
+                    li.innerHTML = `
+                        <span>
+                            ${nameId}
+                        </span>
+                        <span class="${statusClass}">
+                             ${displayValue} &le; ${displayAllowable} (${statusTextId})
+                        </span>`;
+                    statusDetailsUl.appendChild(li);
+                }
+
+                addStatusDetail('Daya Dukung Tanah', data.isSoilSafe, data.qDemand, data.qAllowable);
+
+                if (data.isUsingPlate) {
+                    resultItems.bending.classList.remove('hidden');
+                    resultItems.bendingAllowable.classList.remove('hidden');
+                    resultItems.shear.classList.remove('hidden');
+                    resultItems.shearAllowable.classList.remove('hidden');
+
+                    bendingStressSpan.textContent = `${data.bendingStress.toFixed(2)} MPa`;
+                    bendingAllowableSpan.textContent = `${data.bendingAllowable.toFixed(2)} MPa`;
+                    shearStressSpan.textContent = `${data.shearStress.toFixed(2)} MPa`;
+                    shearAllowableSpan.textContent = `${data.shearAllowable.toFixed(2)} MPa`;
+                    
+                    addStatusDetail('Lentur Plate', data.isBendingSafe, data.bendingStress, data.bendingAllowable);
+                    addStatusDetail('Geser Pons Plate', data.isShearSafe, data.shearStress, data.shearAllowable);
+
+                } else {
+                    resultItems.bending.classList.add('hidden');
+                    resultItems.bendingAllowable.classList.add('hidden');
+                    resultItems.shear.classList.add('hidden');
+                    resultItems.shearAllowable.classList.add('hidden');
+                }
+
+                const isOverallSafe = data.isUsingPlate ? (data.isSoilSafe && data.isBendingSafe && data.isShearSafe) : data.isSoilSafe;
+
+                statusDiv.className = 'status'; 
+                if (isOverallSafe) {
+                    statusDiv.classList.add('status-safe');
+                    statusDiv.innerHTML = `AMAN`;
+                } else {
+                    statusDiv.classList.add('status-unsafe');
+                    statusDiv.innerHTML = `TIDAK AMAN`;
+                }
+                
+                formulaContainer.innerHTML = data.formulas;
+                safeTypeset([formulaContainer]);
+            }
+
+            // --- Kalkulasi Otomatis ---
+            // 1. Panggil kalkulasi untuk setiap perubahan input angka
+            Object.values(inputs).forEach(inputElement => {
+                inputElement.addEventListener('input', calculate);
+            });
+
+            const cbrValueInput = document.getElementById('cbrValue');
+            const cbrInfo = document.getElementById('cbrInfo');
+
+            // Listener 1: Jika input CBR diisi -> update soilCapacity (Metode IRC 37:2018)
+            cbrValueInput.addEventListener('input', () => {
+                const cbr = parseFloat(cbrValueInput.value);
+                let estimatedCapacity = 0;
+                
+                if (cbr > 0) {
+                    if (cbr <= 5) {
+                        // Formula IRC 37:2018 untuk CBR <= 5%
+                        estimatedCapacity = 10 * cbr;
+                        cbrInfo.textContent = `Estimasi IRC 37 (CBR ≤ 5%): 10 × ${cbr} = ${estimatedCapacity.toFixed(2)} kPa`;
+                    } else {
+                        // Formula IRC 37:2018 (Powell et al.) untuk CBR > 5%
+                        estimatedCapacity = 17.6 * Math.pow(cbr, 0.64);
+                        cbrInfo.textContent = `Estimasi IRC 37 (CBR > 5%): 17.6 × (${cbr}^0.64) = ${estimatedCapacity.toFixed(2)} kPa`;
+                    }
+                    
+                    inputs.soilCapacity.value = estimatedCapacity.toFixed(2);
+                    
+                    inputs.soilCapacity.dispatchEvent(new Event('input', { bubbles: true }));
+                } else {
+                    cbrInfo.textContent = 'Estimasi berdasarkan formula IRC 37:2018.';
+                }
+            });
+
+            // Listener 2: Jika soilCapacity diisi manual -> kosongkan CBR
+            inputs.soilCapacity.addEventListener('input', () => {
+                const cbr = parseFloat(cbrValueInput.value);
+                if (cbr > 0) {
+                    let estimatedCapacity;
+                    if (cbr <= 5) {
+                        estimatedCapacity = 10 * cbr;
+                    } else {
+                        estimatedCapacity = 17.6 * Math.pow(cbr, 0.64);
+                    }
+                    
+                    if (Math.abs(parseFloat(inputs.soilCapacity.value) - estimatedCapacity) > 0.01) {
+                        cbrValueInput.value = ''; 
+                        cbrInfo.textContent = 'Estimasi berdasarkan formula IRC 37:2018.';
+                    }
+                }
+            });
+
+            // 2. Panggil kalkulasi saat checkbox plate diganti
+            useSteelPlateCheckbox.addEventListener('change', () => {
+                updateFormVisibility();
+                calculate();
+            });
+
+            // 3. Panggil kalkulasi saat preset crane diganti
+            craneSelect.addEventListener('change', () => {
+                updateCraneData();
+                calculate();
+            });
+            
+            // Inisialisasi tampilan form
+            updateFormVisibility();
+            updateCraneData(); 
+            
+            // Panggil typeset sekali di awal untuk merender formula statis
+            safeTypeset();
+            
+            // Picu event input CBR saat load untuk mengisi soilCapacity
+            // Kita tunda 0ms (defer) agar tidak menyebabkan "forced reflow" pada render awal
+            setTimeout(() => {
+                cbrValueInput.dispatchEvent(new Event('input', { bubbles: true }));
+            }, 0);
+            
+        });
+    </script>
+</body>
+</html>
