@@ -1,0 +1,2360 @@
+<!DOCTYPE html>
+<html lang="id" class="h-full bg-gray-50">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Model Analisis Konsekuensi CCPS/TNO - Virsim</title>
+    <!-- Memuat Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Font Inter */
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+        /* Kontainer utama untuk sidebar + konten */
+        .main-container {
+            min-height: calc(100vh - 81px); /* Tinggi viewport dikurangi header */
+        }
+        
+        /* Sembunyikan panel input/output yang tidak aktif */
+        .scenario-input-panel, .scenario-output-panel {
+            display: none;
+        }
+        .scenario-input-panel.active, .scenario-output-panel.active {
+            display: block;
+        }
+        
+        /* Canvas Responsif */
+        canvas {
+            width: 100%;
+            height: auto;
+            aspect-ratio: 1 / 1;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            background-color: #fcfcfc;
+            border: 1px solid #eee;
+            border-radius: 8px;
+        }
+
+        /* Gaya Panel Kalkulasi */
+        .calculated-result-multi {
+            text-align: left;
+            padding: 15px;
+            line-height: 1.6;
+            background-color: #e6f7ff;
+            border: 1px solid #b3e0ff;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        .calculated-result-multi h3 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 16px;
+            font-weight: 600;
+            color: #0056b3;
+            border-bottom: 2px solid #b3e0ff;
+            padding-bottom: 5px;
+        }
+        .calculated-result-multi strong {
+            display: inline-block;
+            min-width: 170px; 
+            color: #003366;
+            font-size: 15px;
+        }
+        .calc-step-detail {
+            padding-left: 20px;
+            font-size: 14px;
+            color: #333;
+            border-left: 3px solid #b3e0ff;
+            margin-top: 5px;
+            margin-bottom: 10px;
+            padding-top: 5px;
+            padding-bottom: 5px;
+        }
+        .calc-step-final {
+            padding: 10px 15px;
+            font-size: 14px;
+            color: #155724;
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-left: 4px solid #28a745;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+        .calc-step-final strong {
+             color: #155724;
+             font-size: 14px;
+             min-width: 0px;
+        }
+         .calc-step-final .final-value {
+             font-size: 16px;
+             font-weight: 600;
+         }
+
+        /* Gaya Panel Hasil (Kanan) */
+        .results-text .zone-result {
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #eee;
+        }
+        .results-text .zone-result strong {
+            color: #111;
+            font-size: 15px;
+        }
+        .results-text .zone-detail {
+            padding-left: 10px;
+            color: #555;
+            font-size: 13px;
+        }
+
+        /* Gaya untuk optgroup di dropdown */
+        optgroup {
+            font-size: 0.9em;
+            font-style: italic;
+            font-weight: 600;
+            color: #0056b3;
+            background-color: #f0f9ff;
+            padding: 4px 0;
+        }
+        /* BARU: Gaya untuk TINGKAT 5 (QRA) */
+        optgroup[label="TINGKAT 5: ANALISIS RISIKO (QRA)"] {
+            color: #721c24; /* Merah tua */
+            background-color: #fceded;
+        }
+    </style>
+</head>
+<body class="h-full bg-gray-100">
+
+    <!-- Header Utama -->
+    <header class="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h1 class="text-2xl font-bold text-gray-900 py-5 text-center">
+                Model Analisis Konsekuensi CCPS/TNO - Virsim
+            </h1>
+        </div>
+    </header>
+
+    <!-- Kontainer Utama (Sidebar + Konten) -->
+    <div class="main-container max-w-7xl mx-auto flex flex-col md:flex-row">
+
+        <!-- ===== Sidebar (Panel Input) ===== -->
+        <aside class="w-full md:w-1/3 lg:w-2/5 bg-white p-6 shadow-lg overflow-y-auto" style="min-height: calc(100vh - 81px);">
+            
+            <!-- Navigasi Kalkulator (Tingkat 1-5) -->
+            <nav class="mb-6">
+                <label for="scenario-select" class="block text-lg font-semibold text-gray-800 mb-3">Pilih Kalkulator (Alur Kerja TNO/CCPS)</label>
+                <!-- DROPDOWN BARU SESUAI ALUR KERJA -->
+                <select id="scenario-select" class="w-full p-3 border border-gray-300 rounded-md shadow-sm text-base focus:ring-blue-500 focus:border-blue-500">
+                    <optgroup label="TINGKAT 1: MODEL SUMBER PELEPASAN">
+                        <option value="mdot_gas">1. Laju Alir (ṁ) - Gas (Choked Flow)</option>
+                        <option value="mdot_liquid">1. Laju Alir (ṁ) - Cairan (Bernoulli)</option>
+                    </optgroup>
+                    <optgroup label="TINGKAT 2: MODEL INTERAKSI">
+                        <option value="pool_spread">2. Genangan & Evaporasi (TNO)</option>
+                        <option value="mvap">2. Massa Flammable (m_vap) (TNO)</option>
+                    </optgroup>
+                    <optgroup label="TINGKAT 3: MODEL DAMPAK (KONSEKUENSI)">
+                        <option value="disp_flammable" selected>3. Dispersi & Flash Fire (Gaussian)</option>
+                        <option value="disp_toxic">3. Dispersi Toksik (Gaussian)</option>
+                        <option value="pool_fire">3. Pool Fire (Api Genangan) (CCPS)</option>
+                        <option value="jet_fire">3. Jet Fire (Api Semburan) (CCPS)</option>
+                        <option value="vce">3. VCE (Multi-Energi TNO)</option>
+                        <option value="bleve">3. BLEVE (Fireball) (CCPS/TNO)</option>
+                    </optgroup>
+                    <optgroup label="TINGKAT 4: MODEL EFEK (RISIKO)">
+                        <option value="probit">4. Analisis Probit (Dampak Fisiologis)</option>
+                    </optgroup>
+                    <!-- BARU: TINGKAT 5 QRA -->
+                    <optgroup label="TINGKAT 5: ANALISIS RISIKO (QRA)">
+                        <option value="ir">5. Kalkulator Risiko Individu (IR)</option>
+                    </optgroup>
+                </select>
+            </nav>
+
+            <hr class="my-6">
+
+            <!-- TINGKAT 0: PRASYARAT (Sekarang di bawah navigasi) -->
+            <div class="mb-6">
+                <!-- Judul H2 telah dihapus sesuai permintaan -->
+                
+                <!-- Input Global: Chemical -->
+                <div class="mb-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                    <label for="chemical-select" class="block text-base font-semibold text-gray-700 mb-2">1. Material Chemical</label>
+                    <select id="chemical-select" class="w-full p-2 border border-gray-300 rounded-md shadow-sm">
+                        <optgroup label="Flammable (Gas/Cair)">
+                            <option value="propane">Propana (LPG)</option>
+                            <option value="butane">Butana</option>
+                            <option value="methane">Metana (Gas Alam)</option>
+                            <option value="hydrogen">Hidrogen (H2)</option>
+                        </optgroup>
+                        <optgroup label="Flammable (Cairan Ambien)">
+                            <option value="gasoline">Bensin (Oktana)</option>
+                            <option value="methanol">Metanol</option>
+                        </optgroup>
+                        <optgroup label="Toxic (Gas/Cair)">
+                            <option value="ammonia">Amonia (NH3)</option>
+                            <option value="chlorine">Klorin (Cl2)</option>
+                            <option value="sulfur_dioxide">Sulfur Dioksida (SO2)</option>
+                        </optgroup>
+                    </select>
+                </div>
+                
+                <!-- BARU: Editor Properti (Tingkat 0) -->
+                <div class="mb-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                    <label for="props-editor" class="block text-base font-semibold text-gray-700 mb-2">1a. Editor Properti (JSON - Editable)</label>
+                    <textarea id="props-editor" rows="6" class="w-full p-2 border border-gray-300 rounded-md shadow-sm font-mono text-xs"></textarea>
+                    <button id="props-reset-btn" class="w-full mt-2 bg-gray-500 text-white p-2 rounded-md font-semibold hover:bg-gray-600 transition text-sm">Reset ke Default</button>
+                </div>
+
+                <!-- Input Global: Lingkungan -->
+                <div class="mb-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                    <h3 class="block text-base font-semibold text-gray-700 mb-3">2. Kondisi Lingkungan</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label for="env-wind-speed" class="block text-sm font-medium text-gray-600">Kecepatan Angin (m/s)</label>
+                            <input type="number" id="env-wind-speed" value="1.5" step="0.1" class="w-full p-2 border border-gray-300 rounded-md mt-1">
+                        </div>
+                        <div>
+                            <label for="env-temp" class="block text-sm font-medium text-gray-600">Suhu Ambien (°C)</label>
+                            <input type="number" id="env-temp" value="25" class="w-full p-2 border border-gray-300 rounded-md mt-1">
+                        </div>
+                        <div>
+                            <label for="env-humidity" class="block text-sm font-medium text-gray-600">Kelembapan (RH %)</label>
+                            <input type="number" id="env-humidity" value="70" step="1" class="w-full p-2 border border-gray-300 rounded-md mt-1">
+                        </div>
+                        <div>
+                            <label for="env-stability" class="block text-sm font-medium text-gray-600">Stabilitas (Pasquill)</label>
+                            <select id="env-stability" class="w-full p-2 border border-gray-300 rounded-md mt-1">
+                                <option value="A">A (Sangat Tidak Stabil)</option>
+                                <option value="B">B (Tidak Stabil)</option>
+                                <option value="C">C (Sedikit Tidak Stabil)</option>
+                                <option value="D" selected>D (Netral)</option>
+                                <option value="E">E (Sedikit Stabil)</option>
+                                <option value="F">F (Sangat Stabil)</option>
+                            </select>
+                        </div>
+                        <!-- BARU: Input untuk Kalkulator Genangan (Tingkat 2) -->
+                        <div>
+                            <label for="env-surface-type" class="block text-sm font-medium text-gray-600">Tipe Permukaan</label>
+                            <select id="env-surface-type" class="w-full p-2 border border-gray-300 rounded-md mt-1">
+                                <option value="concrete" selected>Beton (Concrete)</option>
+                                <option value="soil">Tanah (Soil)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <hr class="my-6">
+
+            <!-- Wrapper untuk Semua Panel Input Spesifik -->
+            <div>
+
+                <!-- TINGKAT 1: mdot_gas (Refaktor) -->
+                <div id="mdot_gas-input" class="scenario-input-panel">
+                    <h3 class="text-base font-semibold text-gray-700 mb-3">Input (1. Laju Alir Gas)</h3>
+                    <form id="mdot_gas-form" class="space-y-4">
+                        <p class="text-sm text-gray-600">Menghitung laju alir massa (ṁ) dari pelepasan gas/uap tercekik (choked flow).</p>
+                        <div>
+                            <label for="mdot_gas-pressure" class="block text-sm font-medium text-gray-600">Tekanan Bejana (bar)</label>
+                            <input type="number" id="mdot_gas-pressure" value="10" required class="w-full p-2 border border-gray-300 rounded-md mt-1">
+                        </div>
+                        <div>
+                            <label for="mdot_gas-temperature" class="block text-sm font-medium text-gray-600">Suhu Bejana (°C)</label>
+                            <input type="number" id="mdot_gas-temperature" value="25" required class="w-full p-2 border border-gray-300 rounded-md mt-1">
+                        </div>
+                        <div>
+                            <label for="mdot_gas-diameter" class="block text-sm font-medium text-gray-600">Diameter Lubang (mm)</label>
+                            <input type="number" id="mdot_gas-diameter" value="25" required class="w-full p-2 border border-gray-300 rounded-md mt-1">
+                        </div>
+                         <div>
+                            <label for="mdot_gas-cd" class="block text-sm font-medium text-gray-600">Koef. Pelepasan (C_d)</label>
+                            <input type="number" id="mdot_gas-cd" value="0.9" step="0.01" min="0" max="1" required class="w-full p-2 border border-gray-300 rounded-md mt-1">
+                        </div>
+                        <button type="submit" class="w-full bg-green-500 text-white p-3 rounded-md font-semibold hover:bg-green-600 transition">Hitung ṁ_gas</button>
+                        <div id="mdot_gas-calculated-result" class="calculated-result-multi" style="display:none;"></div>
+                    </form>
+                </div>
+
+                <!-- TINGKAT 1: mdot_liquid (BARU) -->
+                <div id="mdot_liquid-input" class="scenario-input-panel">
+                    <h3 class="text-base font-semibold text-gray-700 mb-3">Input (1. Laju Alir Cairan)</h3>
+                    <form id="mdot_liquid-form" class="space-y-4">
+                        <p class="text-sm text-gray-600">Menghitung laju alir massa (ṁ) dari pelepasan fase cairan (liquid) berdasarkan Persamaan Bernoulli.</p>
+                        <div>
+                            <label for="mdot_liquid-pressure" class="block text-sm font-medium text-gray-600">Tekanan Bejana (bar)</label>
+                            <input type="number" id="mdot_liquid-pressure" value="1.5" step="0.1" required class="w-full p-2 border border-gray-300 rounded-md mt-1">
+                            <small class="text-xs text-gray-500">Tekanan gas di atas cairan (Ganti ke 0 jika tangki atmosferik).</small>
+                        </div>
+                        <div>
+                            <label for="mdot_liquid-height" class="block text-sm font-medium text-gray-600">Ketinggian Cairan (h_liquid) (m)</label>
+                            <input type="number" id="mdot_liquid-height" value="5" step="0.1" required class="w-full p-2 border border-gray-300 rounded-md mt-1">
+                            <small class="text-xs text-gray-500">Ketinggian cairan di atas lubang kebocoran.</small>
+                        </div>
+                        <div>
+                            <label for="mdot_liquid-diameter" class="block text-sm font-medium text-gray-600">Diameter Lubang (mm)</label>
+                            <input type="number" id="mdot_liquid-diameter" value="25" required class="w-full p-2 border border-gray-300 rounded-md mt-1">
+                        </div>
+                         <div>
+                            <label for="mdot_liquid-cd" class="block text-sm font-medium text-gray-600">Koef. Pelepasan (C_d)</label>
+                            <input type="number" id="mdot_liquid-cd" value="0.62" step="0.01" min="0" max="1" required class="w-full p-2 border border-gray-300 rounded-md mt-1">
+                            <small class="text-xs text-gray-500">Gunakan ~0.62 untuk lubang tajam (sharp orifice).</small>
+                        </div>
+                        <button type="submit" class="w-full bg-green-500 text-white p-3 rounded-md font-semibold hover:bg-green-600 transition">Hitung ṁ_liquid</button>
+                        <div id="mdot_liquid-calculated-result" class="calculated-result-multi" style="display:none;"></div>
+                    </form>
+                </div>
+
+                <!-- TINGKAT 2: pool_spread (BARU) -->
+                <div id="pool_spread-input" class="scenario-input-panel">
+                    <h3 class="text-base font-semibold text-gray-700 mb-3">Input (2. Genangan & Evaporasi)</h3>
+                    <form id="pool_spread-form" class="space-y-4">
+                        <p class="text-sm text-gray-600">Menghitung laju evaporasi (ṁ_evap) dan diameter genangan ekuilibrium (D_pool) dari tumpahan cairan.</p>
+                        <div>
+                            <label for="pool_spread-mdot-liquid" class="block text-sm font-medium text-gray-600">Laju Alir Cairan (ṁ_liquid) (kg/s)</label>
+                            <input type="number" id="pool_spread-mdot-liquid" value="5.0" step="0.1" required class="w-full p-2 border border-gray-300 rounded-md mt-1">
+                            <small class="text-xs text-gray-500">Dapatkan dari Kalkulator 1 (Laju Alir Cairan).</small>
+                        </div>
+                        <div>
+                            <label for="pool_spread-duration" class="block text-sm font-medium text-gray-600">Durasi Tumpahan (detik)</label>
+                            <input type="number" id="pool_spread-duration" value="600" required class="w-full p-2 border border-gray-300 rounded-md mt-1">
+                        </div>
+                        <div>
+                            <label for="pool_spread-bund-type" class="block text-sm font-medium text-gray-600">Tipe Genangan</label>
+                            <select id="pool_spread-bund-type" class="w-full p-2 border border-gray-300 rounded-md mt-1">
+                                <option value="unconfined" selected>Menyebar Bebas (Unconfined)</option>
+                                <option value="confined">Tertampung (Confined/Bunded)</option>
+                            </select>
+                        </div>
+                        <div id="pool_spread-confined-inputs" style="display:none;" class="space-y-4 p-3 bg-gray-50 rounded-md border">
+                            <label for="pool_spread-bund-area" class="block text-sm font-medium text-gray-600">Area Tampungan (Bund Area) (m²)</label>
+                            <input type="number" id="pool_spread-bund-area" value="100" class="w-full p-2 border border-gray-300 rounded-md mt-1">
+                        </div>
+                        <button type="submit" class="w-full bg-blue-500 text-white p-3 rounded-md font-semibold hover:bg-blue-600 transition">Hitung Genangan & Evaporasi</button>
+                        <div id="pool_spread-calculated-result" class="calculated-result-multi" style="display:none;"></div>
+                    </form>
+                </div>
+
+                <!-- TINGKAT 2: mvap (Refaktor) -->
+                <div id="mvap-input" class="scenario-input-panel">
+                    <h3 class="text-base font-semibold text-gray-700 mb-3">Input (2. Massa Flammable)</h3>
+                    <form id="mvap-form" class="space-y-4">
+                        <p class="text-sm text-gray-600">Menghitung massa flammable (m_vap) yang berpartisipasi dalam ledakan (VCE) berdasarkan skenario pelepasan.</p>
+                        <div>
+                            <label for="mvap-source-type" class="block text-sm font-medium text-gray-600">Sumber Pelepasan</label>
+                            <select id="mvap-source-type" class="w-full p-2 border border-gray-300 rounded-md mt-1">
+                                <option value="gas" selected>1. Pelepasan Gas (dari Laju Alir Gas)</option>
+                                <option value="evaporation">2. Evaporasi (dari Laju Evaporasi)</option>
+                            </select>
+                        </div>
+                        
+                        <div class="space-y-4 p-3 bg-gray-50 rounded-md border">
+                            <div>
+                                <label for="mvap-mdot" class="block text-sm font-medium text-gray-600">Laju Alir Sumber (ṁ_source) (kg/s)</label>
+                                <input type="number" id="mvap-mdot" value="1.18" step="0.01" required class="w-full p-2 border border-gray-300 rounded-md mt-1">
+                                <small class="text-xs text-gray-500">Dapatkan dari Kalkulator 1 (ṁ_gas) atau 2 (ṁ_evap).</small>
+                            </div>
+                            <div>
+                                <label for="mvap-duration" class="block text-sm font-medium text-gray-600">Durasi Pelepasan/Evaporasi (detik)</label>
+                                <input type="number" id="mvap-duration" value="60" required class="w-full p-2 border border-gray-300 rounded-md mt-1">
+                            </div>
+                        </div>
+                        <button type="submit" class="w-full bg-blue-500 text-white p-3 rounded-md font-semibold hover:bg-blue-600 transition">Hitung m_vap</button>
+                        <div id="mvap-calculated-result" class="calculated-result-multi" style="display:none;"></div>
+                    </form>
+                </div>
+
+                <!-- TINGKAT 3: disp_flammable (Refaktor) -->
+                <div id="disp_flammable-input" class="scenario-input-panel active">
+                    <h3 class="text-base font-semibold text-gray-700 mb-3">Input (3. Dispersi Flammable)</h3>
+                    <form id="disp_flammable-form" class="space-y-4">
+                         <p class="text-sm text-gray-600">Menghitung jarak dispersi awan gas (model Gaussian) ke batas LFL (Lower Flammable Limit).</p>
+                        <div>
+                            <label for="disp_flammable-mdot" class="block text-sm font-medium text-gray-600">Laju Alir Sumber (ṁ_source) (kg/s)</label>
+                            <input type="number" id="disp_flammable-mdot" value="1.18" step="0.01" required class="w-full p-2 border border-gray-300 rounded-md mt-1">
+                            <small class="text-xs text-gray-500">Dapatkan dari Kalkulator 1 (ṁ_gas) atau 2 (ṁ_evap).</small>
+                        </div>
+                        <button type="submit" class="w-full bg-blue-500 text-white p-3 rounded-md font-semibold hover:bg-blue-600 transition">Hitung Jarak LFL</button>
+                        <div id="disp_flammable-calculated-result" class="calculated-result-multi" style="display:none;"></div>
+                    </form>
+                </div>
+
+                <!-- TINGKAT 3: disp_toxic (BARU) -->
+                <div id="disp_toxic-input" class="scenario-input-panel">
+                    <h3 class="text-base font-semibold text-gray-700 mb-3">Input (3. Dispersi Toksik)</h3>
+                    <form id="disp_toxic-form" class="space-y-4">
+                         <p class="text-sm text-gray-600">Menghitung jarak dispersi awan gas (model Gaussian) ke batas konsentrasi toksik (ERPG, IDLH).</p>
+                        <div>
+                            <label for="disp_toxic-mdot" class="block text-sm font-medium text-gray-600">Laju Alir Sumber (ṁ_source) (kg/s)</label>
+                            <input type="number" id="disp_toxic-mdot" value="1.0" step="0.01" required class="w-full p-2 border border-gray-300 rounded-md mt-1">
+                            <small class="text-xs text-gray-500">Dapatkan dari Kalkulator 1 (ṁ_gas) atau 2 (ṁ_evap).</small>
+                        </div>
+                        <div>
+                            <label for="disp_toxic-target" class="block text-sm font-medium text-gray-600">Target Konsentrasi Toksik</label>
+                            <select id="disp_toxic-target" class="w-full p-2 border border-gray-300 rounded-md mt-1">
+                                <option value="ERPG-3">ERPG-3 (Level Fatal)</option>
+                                <option value="ERPG-2" selected>ERPG-2 (Level Cedera Serius)</option>
+                                <option value="ERPG-1">ERPG-1 (Level Iritasi)</option>
+                                <option value="IDLH">IDLH</option>
+                                <option value="MANUAL">Manual (ppm)</option>
+                            </select>
+                        </div>
+                        <div id="disp_toxic-manual-inputs" style="display:none;" class="space-y-4 p-3 bg-gray-50 rounded-md border">
+                            <label for="disp_toxic-manual-ppm" class="block text-sm font-medium text-gray-600">Konsentrasi Manual (ppm)</label>
+                            <input type="number" id="disp_toxic-manual-ppm" value="100" class="w-full p-2 border border-gray-300 rounded-md mt-1">
+                        </div>
+                        <button type="submit" class="w-full bg-blue-500 text-white p-3 rounded-md font-semibold hover:bg-blue-600 transition">Hitung Jarak Toksik</button>
+                        <div id="disp_toxic-calculated-result" class="calculated-result-multi" style="display:none;"></div>
+                    </form>
+                </div>
+
+                <!-- TINGKAT 3: pool_fire (Refaktor) -->
+                <div id="pool_fire-input" class="scenario-input-panel">
+                    <h3 class="text-base font-semibold text-gray-700 mb-3">Input (3. Pool Fire)</h3>
+                    <form id="pool_fire-form" class="space-y-4">
+                        <p class="text-sm text-gray-600">Menghitung zona radiasi termal dari api genangan (Pool Fire) menggunakan model titik sumber CCPS.</p>
+                        <div>
+                            <label for="pool-diameter" class="block text-sm font-medium text-gray-600">Diameter Genangan (D_pool) (m)</label>
+                            <input type="number" id="pool-diameter" value="10" required class="w-full p-2 border border-gray-300 rounded-md mt-1">
+                            <small class="text-xs text-gray-500">Dapatkan dari Kalkulator 2 (Genangan & Evap).</small>
+                        </div>
+                        <div>
+                            <label for="pool-frad" class="block text-sm font-medium text-gray-600">Fraksi Radiasi (F_rad)</label>
+                            <input type="number" id="pool-frad" value="0.35" step="0.01" min="0" max="1" required class="w-full p-2 border border-gray-300 rounded-md mt-1">
+                        </div>
+                        <button type="submit" class="w-full bg-blue-500 text-white p-3 rounded-md font-semibold hover:bg-blue-600 transition">Hitung & Visualisasi</button>
+                        <div id="pool-fire-calculated-result" class="calculated-result-multi" style="display:none;"></div>
+                    </form>
+                </div>
+                
+                <!-- TINGKAT 3: jet_fire (Refaktor) -->
+                <div id="jet_fire-input" class="scenario-input-panel">
+                    <h3 class="text-base font-semibold text-gray-700 mb-3">Input (3. Jet Fire)</h3>
+                    <form id="jet_fire-form" class="space-y-4">
+                        <p class="text-sm text-gray-600">Menghitung zona radiasi termal dari api semburan (Jet Fire) yang dipengaruhi angin (model CCPS/TNO).</p>
+                        
+                        <!-- PERUBAHAN: Input diubah agar bisa menghitung momentum jet -->
+                        <div class="space-y-4 p-3 bg-gray-50 rounded-md border">
+                            <div>
+                                <label for="jet_fire-pressure" class="block text-sm font-medium text-gray-600">Tekanan Bejana (bar)</label>
+                                <input type="number" id="jet_fire-pressure" value="10" required class="w-full p-2 border border-gray-300 rounded-md mt-1">
+                            </div>
+                            <div>
+                                <label for="jet_fire-temperature" class="block text-sm font-medium text-gray-600">Suhu Bejana (°C)</label>
+                                <input type="number" id="jet_fire-temperature" value="25" required class="w-full p-2 border border-gray-300 rounded-md mt-1">
+                            </div>
+                            <div>
+                                <label for="jet_fire-diameter" class="block text-sm font-medium text-gray-600">Diameter Lubang (mm)</label>
+                                <input type="number" id="jet_fire-diameter" value="25" required class="w-full p-2 border border-gray-300 rounded-md mt-1">
+                            </div>
+                             <div>
+                                <label for="jet_fire-cd" class="block text-sm font-medium text-gray-600">Koef. Pelepasan (C_d)</label>
+                                <input type="number" id="jet_fire-cd" value="0.9" step="0.01" min="0" max="1" required class="w-full p-2 border border-gray-300 rounded-md mt-1">
+                            </div>
+                        </div>
+                        <!-- Input mdot lama dihapus -->
+                        <div>
+                            <label for="jet-frad" class="block text-sm font-medium text-gray-600">Fraksi Radiasi (F_rad)</label>
+                            <input type="number" id="jet-frad" value="0.35" step="0.01" min="0" max="1" required class="w-full p-2 border border-gray-300 rounded-md mt-1">
+                        </div>
+                        <button type="submit" class="w-full bg-blue-500 text-white p-3 rounded-md font-semibold hover:bg-blue-600 transition">Hitung & Visualisasi</button>
+                        <div id="jet-fire-calculated-result" class="calculated-result-multi" style="display:none;"></div>
+                    </form>
+                </div>
+
+                <!-- TINGKAT 3: vce (Refaktor) -->
+                <div id="vce-input" class="scenario-input-panel">
+                    <h3 class="text-base font-semibold text-gray-700 mb-3">Input (3. VCE - TNO Multi-Energi)</h3>
+                    <form id="vce-form" class="space-y-4">
+                        <p class="text-sm text-gray-600">Menghitung zona *overpressure* dari ledakan awan uap (VCE) menggunakan metode Multi-Energi TNO.</p>
+                        <div>
+                            <label for="vce-manual-mass" class="block text-sm font-medium text-gray-600">Massa Flammable (m_vap) (kg)</label>
+                            <input type="number" id="vce-manual-mass" value="53.4" class="w-full p-2 border border-gray-300 rounded-md mt-1">
+                            <small class="text-xs text-gray-500">Dapatkan dari Kalkulator 2 (Massa Flammable).</small>
+                        </div>
+                        <div>
+                            <label for="vce-curve-number" class="block text-sm font-medium text-gray-600">Kurva Ledakan TNO (1-10)</label>
+                            <select id="vce-curve-number" class="w-full p-2 border border-gray-300 rounded-md mt-1">
+                                <option value="1">1 (Kongesti Sangat Rendah)</option>
+                                <option value="3">3 (Kongesti Rendah)</option>
+                                <option value="5">5 (Kongesti Sedang)</option>
+                                <option value="7" selected>7 (Kongesti Sedang-Tinggi)</option>
+                                <option value="10">10 (Kongesti Sangat Tinggi)</option>
+                            </select>
+                            <small class="text-xs text-gray-500 mt-1">Pilih 5-7 untuk rak pipa sedang.</small>
+                        </div>
+                        <button type="submit" class="w-full bg-blue-500 text-white p-3 rounded-md font-semibold hover:bg-blue-600 transition">Hitung & Visualisasi</button>
+                        <div id="vce-calculated-result" class="calculated-result-multi" style="display:none;"></div>
+                    </form>
+                </div>
+
+                <!-- TINGKAT 3: bleve (BARU) -->
+                <div id="bleve-input" class="scenario-input-panel">
+                    <h3 class="text-base font-semibold text-gray-700 mb-3">Input (3. BLEVE - Fireball)</h3>
+                    <form id="bleve-form" class="space-y-4">
+                        <p class="text-sm text-gray-600">Menghitung zona radiasi termal dari *fireball* akibat pelepasan katastrofik (BLEVE).</p>
+                        <div>
+                            <label for="bleve-mass" class="block text-sm font-medium text-gray-600">Massa Material (M) (kg)</label>
+                            <input type="number" id="bleve-mass" value="10000" required class="w-full p-2 border border-gray-300 rounded-md mt-1">
+                            <small class="text-xs text-gray-500">Total massa cairan dalam bejana.</small>
+                        </div>
+                        <div>
+                            <label for="bleve-frad" class="block text-sm font-medium text-gray-600">Fraksi Radiasi Fireball (F_rad)</label>
+                            <input type="number" id="bleve-frad" value="0.3" step="0.01" min="0" max="1" required class="w-full p-2 border border-gray-300 rounded-md mt-1">
+                            <small class="text-xs text-gray-500">Default 0.25 - 0.4 untuk hidrokarbon.</small>
+                        </div>
+                        <button type="submit" class="w-full bg-blue-500 text-white p-3 rounded-md font-semibold hover:bg-blue-600 transition">Hitung & Visualisasi</button>
+                        <div id="bleve-calculated-result" class="calculated-result-multi" style="display:none;"></div>
+                    </form>
+                </div>
+                
+                <!-- TINGKAT 4: probit (BARU) -->
+                <div id="probit-input" class="scenario-input-panel">
+                    <h3 class="text-base font-semibold text-gray-700 mb-3">Input (4. Analisis Probit)</h3>
+                    <form id="probit-form" class="space-y-4">
+                        <p class="text-sm text-gray-600">Menghitung probabilitas dampak fisiologis (cedera/fatalitas) berdasarkan "dosis" yang diterima.</p>
+                        <div>
+                            <label for="probit-type" class="block text-sm font-medium text-gray-600">Tipe Bahaya (Hazard)</label>
+                            <select id="probit-type" class="w-full p-2 border border-gray-300 rounded-md mt-1">
+                                <option value="thermal" selected>Radiasi Termal (Api)</option>
+                                <option value="overpressure">Overpressure (Ledakan)</option>
+                                <option value="toxic">Konsentrasi Toksik</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Input Probit Termal -->
+                        <div id="probit-thermal-inputs" class="space-y-4 p-3 bg-gray-50 rounded-md border">
+                            <div>
+                                <label for="probit-thermal-flux" class="block text-sm font-medium text-gray-600">Intensitas Radiasi (q) (kW/m²)</label>
+                                <input type="number" id="probit-thermal-flux" value="12.5" class="w-full p-2 border border-gray-300 rounded-md mt-1">
+                            </div>
+                            <div>
+                                <label for="probit-thermal-duration" class="block text-sm font-medium text-gray-600">Durasi Paparan (t) (detik)</label>
+                                <input type="number" id="probit-thermal-duration" value="20" class="w-full p-2 border border-gray-300 rounded-md mt-1">
+                            </div>
+                        </div>
+
+                        <!-- Input Probit Overpressure -->
+                        <div id="probit-overpressure-inputs" style="display:none;" class="space-y-4 p-3 bg-gray-50 rounded-md border">
+                            <div>
+                                <label for="probit-pressure-peak" class="block text-sm font-medium text-gray-600">Peak Overpressure (P_s) (bar)</label>
+                                <input type="number" id="probit-pressure-peak" value="0.5" step="0.01" class="w-full p-2 border border-gray-300 rounded-md mt-1">
+                            </div>
+                        </div>
+
+                        <!-- Input Probit Toksik -->
+                        <div id="probit-toxic-inputs" style="display:none;" class="space-y-4 p-3 bg-gray-50 rounded-md border">
+                             <div>
+                                <label for="probit-toxic-ppm" class="block text-sm font-medium text-gray-600">Konsentrasi (C) (ppm)</label>
+                                <input type="number" id="probit-toxic-ppm" value="150" class="w-full p-2 border border-gray-300 rounded-md mt-1">
+                            </div>
+                            <div>
+                                <label for="probit-toxic-duration" class="block text-sm font-medium text-gray-600">Durasi Paparan (t) (menit)</label>
+                                <input type="number" id="probit-toxic-duration" value="30" class="w-full p-2 border border-gray-300 rounded-md mt-1">
+                            </div>
+                        </div>
+
+                        <button type="submit" class="w-full bg-purple-600 text-white p-3 rounded-md font-semibold hover:bg-purple-700 transition">Hitung Probabilitas</button>
+                        <div id="probit-calculated-result" class="calculated-result-multi" style="display:none;"></div>
+                    </form>
+                </div>
+                
+                <!-- BARU: TINGKAT 5 IR (QRA) -->
+                <div id="ir-input" class="scenario-input-panel">
+                    <h3 class="text-base font-semibold text-gray-700 mb-3">Input (5. Risiko Individu - QRA)</h3>
+                    <form id="ir-form" class="space-y-4">
+                        <p class="text-sm text-gray-600">Menghitung Risiko Individu (IR) di satu titik untuk satu skenario, berdasarkan rumus QRA TNO/CCPS.</p>
+                        
+                        <div class="space-y-4 p-3 bg-gray-50 rounded-md border">
+                            <div>
+                                <label for="ir-p-scenario" class="block text-sm font-medium text-gray-600">Prob. Skenario (P_scenario) (per tahun)</label>
+                                <input type="number" id="ir-p-scenario" value="1.0e-4" step="1e-6" required class="w-full p-2 border border-gray-300 rounded-md mt-1">
+                                <small class="text-xs text-gray-500">Frekuensi kegagalan, misal: 1e-4 (1/10.000 tahun).</small>
+                            </div>
+                            <div>
+                                <label for="ir-p-weather" class="block text-sm font-medium text-gray-600">Prob. Cuaca (P_weather)</label>
+                                <input type="number" id="ir-p-weather" value="0.05" step="0.01" min="0" max="1" required class="w-full p-2 border border-gray-300 rounded-md mt-1">
+                                <small class="text-xs text-gray-500">Probabilitas kondisi angin/stabilitas ini, misal: 0.05 (5%).</small>
+                            </div>
+                            <div>
+                                <label for="ir-p-presence" class="block text-sm font-medium text-gray-600">Prob. Kehadiran (P_presence)</label>
+                                <input type="number" id="ir-p-presence" value="0.22" step="0.01" min="0" max="1" required class="w-full p-2 border border-gray-300 rounded-md mt-1">
+                                <small class="text-xs text-gray-500">Probabilitas orang ada di lokasi, misal: 0.22 (40 jam/168 jam).</small>
+                            </div>
+                             <div>
+                                <label for="ir-p-probit" class="block text-sm font-medium text-gray-600">Prob. Probit Fatalitas (P_fatal) (%)</label>
+                                <input type="number" id="ir-p-probit" value="98.5" step="0.1" min="0" max="100" required class="w-full p-2 border border-gray-300 rounded-md mt-1">
+                                <small class="text-xs text-gray-500">Dapatkan dari Kalkulator 4 (Analisis Probit).</small>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="w-full bg-red-600 text-white p-3 rounded-md font-semibold hover:bg-red-700 transition">Hitung Risiko Individu (IR)</button>
+                        <div id="ir-calculated-result" class="calculated-result-multi" style="display:none;"></div>
+                    </form>
+                </div>
+
+            </div>
+        </aside>
+
+        <!-- ===== Area Konten Utama (Panel Output) ===== -->
+        <main class="w-full md:w-2/3 lg:w-3/5 p-6 bg-gray-100 overflow-y-auto">
+            
+            <!-- TINGKAT 1: mdot_gas (Refaktor) -->
+            <div id="mdot_gas-output" class="scenario-output-panel">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4">Hasil: 1. Kalkulator Laju Alir Gas (ṁ_gas)</h2>
+                <div class="bg-white p-6 rounded-lg shadow-inner border border-gray-200">
+                    <p class="text-base text-gray-600 mb-4 text-center">Hasil perhitungan laju alir massa (ṁ) dari pelepasan gas/uap tercekik.</p>
+                    <div id="mdot_gas-result-display" class="text-center">
+                        <p class="text-lg text-gray-500">Masukkan data dan klik "Hitung" di panel kiri.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TINGKAT 1: mdot_liquid (BARU) -->
+            <div id="mdot_liquid-output" class="scenario-output-panel">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4">Hasil: 1. Kalkulator Laju Alir Cairan (ṁ_liquid)</h2>
+                <div class="bg-white p-6 rounded-lg shadow-inner border border-gray-200">
+                    <p class="text-base text-gray-600 mb-4 text-center">Hasil perhitungan laju alir massa (ṁ) dari pelepasan cairan.</p>
+                    <div id="mdot_liquid-result-display" class="text-center">
+                        <p class="text-lg text-gray-500">Masukkan data dan klik "Hitung" di panel kiri.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TINGKAT 2: pool_spread (BARU) -->
+            <div id="pool_spread-output" class="scenario-output-panel">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4">Hasil: 2. Kalkulator Genangan & Evaporasi</h2>
+                <div class="bg-white p-6 rounded-lg shadow-inner border border-gray-200">
+                    <p class="text-base text-gray-600 mb-4 text-center">Hasil perhitungan laju evaporasi (ṁ_evap) dan diameter genangan (D_pool).</p>
+                    <div id="pool_spread-result-display" class="text-center">
+                        <p class="text-lg text-gray-500">Masukkan data dan klik "Hitung" di panel kiri.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TINGKAT 2: mvap (Refaktor) -->
+            <div id="mvap-output" class="scenario-output-panel">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4">Hasil: 2. Kalkulator Massa Flammable (m_vap)</h2>
+                <div class="bg-white p-6 rounded-lg shadow-inner border border-gray-200">
+                    <p class="text-base text-gray-600 mb-4 text-center">Hasil perhitungan massa flammable (m_vap) yang berpartisipasi dalam ledakan.</p>
+                    <div id="mvap-result-display" class="text-center">
+                        <p class="text-lg text-gray-500">Masukkan data dan klik "Hitung" di panel kiri.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TINGKAT 3: disp_flammable (Refaktor) -->
+            <div id="disp_flammable-output" class="scenario-output-panel active">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4">Hasil: 3. Dispersi & Flash Fire (LFL)</h2>
+                <div class="bg-white p-4 rounded-lg shadow-inner border border-gray-200">
+                    <canvas id="disp_flammable-canvas"></canvas>
+                    <div id="disp_flammable-legend" class="w-full mt-4 px-4"></div>
+                    <div id="disp_flammable-results" class="w-full mt-4 px-4 results-text"></div>
+                </div>
+            </div>
+
+            <!-- TINGKAT 3: disp_toxic (BARU) -->
+            <div id="disp_toxic-output" class="scenario-output-panel">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4">Hasil: 3. Dispersi Toksik (ERPG/IDLH)</h2>
+                <div class="bg-white p-4 rounded-lg shadow-inner border border-gray-200">
+                    <canvas id="disp_toxic-canvas"></canvas>
+                    <div id="disp_toxic-legend" class="w-full mt-4 px-4"></div>
+                    <div id="disp_toxic-results" class="w-full mt-4 px-4 results-text"></div>
+                </div>
+            </div>
+
+            <!-- TINGKAT 3: pool_fire (Refaktor) -->
+            <div id="pool_fire-output" class="scenario-output-panel">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4">Hasil: 3. Pool Fire (Api Genangan)</h2>
+                <div class="bg-white p-4 rounded-lg shadow-inner border border-gray-200">
+                    <canvas id="pool_fire-canvas"></canvas>
+                    <div id="pool_fire-legend" class="w-full mt-4 px-4"></div>
+                    <div id="pool_fire-results" class="w-full mt-4 px-4 results-text"></div>
+                </div>
+            </div>
+
+            <!-- TINGKAT 3: jet_fire (Refaktor) -->
+            <div id="jet_fire-output" class="scenario-output-panel">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4">Hasil: 3. Jet Fire (Api Semburan)</h2>
+                <div class="bg-white p-4 rounded-lg shadow-inner border border-gray-200">
+                    <canvas id="jet_fire-canvas"></canvas>
+                    <div id="jet_fire-legend" class="w-full mt-4 px-4"></div>
+                    <div id="jet_fire-results" class="w-full mt-4 px-4 results-text"></div>
+                </div>
+            </div>
+
+            <!-- TINGKAT 3: vce (Refaktor) -->
+            <div id="vce-output" class="scenario-output-panel">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4">Hasil: 3. VCE (Ledakan Awan Uap)</h2>
+                <div class="bg-white p-4 rounded-lg shadow-inner border border-gray-200">
+                    <canvas id="vce-canvas"></canvas>
+                    <div id="vce-legend" class="w-full mt-4 px-4"></div>
+                    <div id="vce-results" class="w-full mt-4 px-4 results-text"></div>
+                </div>
+            </div>
+
+            <!-- TINGKAT 3: bleve (BARU) -->
+            <div id="bleve-output" class="scenario-output-panel">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4">Hasil: 3. BLEVE (Fireball)</h2>
+                <div class="bg-white p-4 rounded-lg shadow-inner border border-gray-200">
+                    <canvas id="bleve-canvas"></canvas>
+                    <div id="bleve-legend" class="w-full mt-4 px-4"></div>
+                    <div id="bleve-results" class="w-full mt-4 px-4 results-text"></div>
+                </div>
+            </div>
+
+            <!-- TINGKAT 4: probit (BARU) -->
+            <div id="probit-output" class="scenario-output-panel">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4">Hasil: 4. Analisis Probit</h2>
+                <div class="bg-white p-6 rounded-lg shadow-inner border border-gray-200">
+                    <p class="text-base text-gray-600 mb-4 text-center">Hasil perhitungan probabilitas dampak fisiologis.</p>
+                    <div id="probit-result-display" class="text-center">
+                        <p class="text-lg text-gray-500">Masukkan data dan klik "Hitung" di panel kiri.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BARU: TINGKAT 5 IR (QRA) -->
+            <div id="ir-output" class="scenario-output-panel">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4">Hasil: 5. Kalkulator Risiko Individu (IR)</h2>
+                <div class="bg-white p-6 rounded-lg shadow-inner border border-gray-200">
+                    <p class="text-base text-gray-600 mb-4 text-center">Hasil perhitungan risiko individu (per tahun) untuk satu skenario spesifik.</p>
+                    <div id="ir-result-display" class="text-center">
+                        <p class="text-lg text-gray-500">Masukkan data dan klik "Hitung" di panel kiri.</p>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div> <!-- akhir .main-container -->
+            
+    <!-- ===================================================================== -->
+    <!-- ======================= SCRIPT UTAMA APLIKASI ======================= -->
+    <!-- ===================================================================== -->
+    <script>
+        // --- TINGKAT 0: DATABASE PROPERTI MATERIAL (Sesuai material_properties.md) ---
+        const CHEMICAL_PROPERTIES = {
+            // Flammable (Gas/Cair)
+            'propane': {
+                name: 'Propana (LPG)',
+                M: 0.0441,    // kg/mol
+                gamma: 1.13,  // Gas @ 25C
+                H_c: 46.35e6, // J/kg (NIST)
+                H_v_boil: 4.25e5, // J/kg (NIST)
+                T_boil: 231.1,  // K
+                C_p_l: 2540,    // J/kg·K (NIST @ 231K)
+                rho_l: 581,     // kg/m³ (NIST @ 231K, liquid)
+                P_sat_func: "(T_k) => Math.exp(9.083 - 2132.0 / (T_k - 26.8))", // Antoine (bar)
+                LFL_frac: 0.021, // 2.1%
+                probit_thermal: { k1: -36.38, k2: 2.56, n: 1.0 }, // Probit Fatalitas (CCPS)
+                probit_overpressure: { k1: -77.1, k2: 6.91, n: 1.0 } // Probit Eardrum Rupture
+            },
+            'butane': {
+                name: 'Butana',
+                M: 0.05812,
+                gamma: 1.09,
+                H_c: 45.72e6,
+                H_v_boil: 3.84e5,
+                T_boil: 272.7,
+                C_p_l: 2350,
+                rho_l: 601, // @ 272K
+                P_sat_func: "(T_k) => Math.exp(9.058 - 2154.7 / (T_k - 34.4))", // Antoine (bar)
+                LFL_frac: 0.018,
+                probit_thermal: { k1: -36.38, k2: 2.56, n: 1.0 },
+                probit_overpressure: { k1: -77.1, k2: 6.91, n: 1.0 }
+            },
+            'methane': {
+                name: 'Metana (Gas Alam)',
+                M: 0.01604,
+                gamma: 1.31,
+                H_c: 50.01e6,
+                H_v_boil: 5.11e5,
+                T_boil: 111.7,
+                C_p_l: 3450,
+                rho_l: 422, // @ 111K
+                P_sat_func: "(T_k) => Math.exp(8.588 - 897.8 / (T_k - 7.1))", // Antoine (bar)
+                LFL_frac: 0.05,
+                probit_thermal: { k1: -36.38, k2: 2.56, n: 1.0 },
+                probit_overpressure: { k1: -77.1, k2: 6.91, n: 1.0 }
+            },
+            'hydrogen': {
+                name: 'Hidrogen (H2)',
+                M: 0.002016,
+                gamma: 1.41,
+                H_c: 120.97e6,
+                H_v_boil: 4.54e5,
+                T_boil: 20.27,
+                C_p_l: 9650,
+                rho_l: 71, // @ 20K
+                P_sat_func: "(T_k) => Math.exp(6.78 - 106.3 / (T_k + 5.6))", // Antoine (bar)
+                LFL_frac: 0.04,
+                probit_thermal: { k1: -36.38, k2: 2.56, n: 1.0 },
+                probit_overpressure: { k1: -77.1, k2: 6.91, n: 1.0 }
+            },
+            // Flammable (Cairan Ambien)
+            'gasoline': {
+                name: 'Bensin (Oktana)',
+                M: 0.1142,
+                gamma: 1.05,
+                H_c: 44.4e6,
+                H_v_boil: 3.07e5,
+                T_boil: 398.8,
+                C_p_l: 2300,
+                rho_l: 703, // @ 298K
+                P_sat_func: "(T_k) => Math.exp(9.205 - 2940.4 / (T_k - 49.0))", // Antoine (bar)
+                LFL_frac: 0.01,
+                probit_thermal: { k1: -36.38, k2: 2.56, n: 1.0 },
+                probit_overpressure: { k1: -77.1, k2: 6.91, n: 1.0 }
+            },
+            'methanol': {
+                name: 'Metanol',
+                M: 0.03204,
+                gamma: 1.20,
+                H_c: 19.93e6,
+                H_v_boil: 1.1e6,
+                T_boil: 337.8,
+                C_p_l: 2530,
+                rho_l: 792, // @ 298K
+                P_sat_func: "(T_k) => Math.exp(11.97 - 3643.3 / (T_k - 33.5))", // Antoine (bar)
+                LFL_frac: 0.06,
+                probit_thermal: { k1: -36.38, k2: 2.56, n: 1.0 },
+                probit_overpressure: { k1: -77.1, k2: 6.91, n: 1.0 }
+            },
+            // Toxic (Gas/Cair)
+            'ammonia': {
+                name: 'Amonia (NH3)',
+                M: 0.01703,
+                gamma: 1.32,
+                H_c: 18.6e6, // Juga flammable
+                H_v_boil: 1.37e6,
+                T_boil: 239.8,
+                C_p_l: 4700,
+                rho_l: 682, // @ 239K
+                P_sat_func: "(T_k) => Math.exp(10.0 - 2132.5 / (T_k - 32.9))", // Antoine (bar)
+                LFL_frac: 0.15,
+                probit_toxic: { k1: -35.9, k2: 1.0, n: 2.0 }, // TNO (Fatalitas)
+                ERPG_1_ppm: 25,
+                ERPG_2_ppm: 150,
+                ERPG_3_ppm: 750,
+                IDLH_ppm: 300,
+                probit_thermal: { k1: -36.38, k2: 2.56, n: 1.0 },
+                probit_overpressure: { k1: -77.1, k2: 6.91, n: 1.0 }
+            },
+            'chlorine': {
+                name: 'Klorin (Cl2)',
+                M: 0.0709,
+                gamma: 1.33,
+                H_c: 0, // Not flammable
+                H_v_boil: 2.88e5,
+                T_boil: 239.1,
+                C_p_l: 960,
+                rho_l: 1562, // @ 239K
+                P_sat_func: "(T_k) => Math.exp(9.04 - 2115.0 / (T_k - 30.6))", // Antoine (bar)
+                LFL_frac: null,
+                probit_toxic: { k1: -14.3, k2: 1.0, n: 2.0 }, // TNO (Fatalitas)
+                ERPG_1_ppm: 1,
+                ERPG_2_ppm: 3,
+                ERPG_3_ppm: 20,
+                IDLH_ppm: 10
+            },
+            'sulfur_dioxide': {
+                name: 'Sulfur Dioksida (SO2)',
+                M: 0.06406,
+                gamma: 1.29,
+                H_c: 0,
+                H_v_boil: 3.86e5,
+                T_boil: 263.1,
+                C_p_l: 1360,
+                rho_l: 1460, // @ 263K
+                P_sat_func: "(T_k) => Math.exp(10.16 - 2404.7 / (T_k - 34.0))", // Antoine (bar)
+                LFL_frac: null,
+                probit_toxic: { k1: -31.42, k2: 1.0, n: 2.5 }, // TNO (Fatalitas)
+                ERPG_1_ppm: 0.3,
+                ERPG_2_ppm: 3,
+                ERPG_3_ppm: 15,
+                IDLH_ppm: 100
+            }
+        };
+
+        // --- TINGKAT 0: PROPERTI LINGKUNGAN (BARU) ---
+        const SURFACE_PROPERTIES = {
+            'concrete': {
+                k_s: 1.1,   // W/m·K (Thermal Conductivity)
+                alpha_s: 0.5e-6, // m²/s (Thermal Diffusivity)
+                rho_s: 2300, // kg/m³
+                C_p_s: 880   // J/kg·K
+            },
+            'soil': {
+                k_s: 0.8,
+                alpha_s: 0.4e-6,
+                rho_s: 1900,
+                C_p_s: 1000
+            }
+        };
+
+        // --- Konstanta Global ---
+        const R_g = 8.314;       // J/mol·K (Konstanta Gas Universal)
+        const g = 9.81;         // m/s² (Gravitasi)
+        const P_0_Pa = 101325;  // Pa (Tekanan Atmosfer Standar)
+        const C_p_air = 1005;   // J/kg·K (Kapasitas Panas Udara)
+        const rho_air = 1.225;    // kg/m³ (Kepadatan Udara Rata-rata)
+        const E_TNT = 4.5e6;    // J/kg (Energi Ledakan TNT)
+
+        // --- Konstanta Kriteria Ancaman (BARU: Terpusat) ---
+        
+        // Kriteria Radiasi Termal (W/m²)
+        const THERMAL_TARGETS = [
+            { label: '> 37.5 kW/m²', value: 37500, color: '#d90429', name: 'Fatal (10s)' },
+            { label: '> 12.5 kW/m²', value: 12500, color: '#f77f00', name: 'Luka Bakar Serius (10s)' },
+            { label: '> 5.0 kW/m²', value: 5000, color: '#fcbf49', name: 'Ambang Batas Sakit (20s)' },
+            { label: '> 1.6 kW/m²', value: 1600, color: '#eae2b7', name: 'Aman Jangka Pendek' }
+        ];
+
+        // Kriteria Overpressure VCE (bar)
+        const VCE_TARGETS = [
+            { label: '> 0.5 bar', value: 0.5, color: '#d90429', name: 'Kerusakan Parah / Fatal' },
+            { label: '> 0.15 bar', value: 0.15, color: '#f77f00', name: 'Kerusakan Besar / Cedera Paru' },
+            { label: '> 0.03 bar', value: 0.03, color: '#fcbf49', name: 'Pecah Kaca' }
+        ];
+
+        // Koefisien TNO Multi-Energi
+        const TNO_CURVE_COEFFS = {
+            1: { A: 0.25, B: 0.95 }, 3: { A: 0.90, B: 1.17 }, 5: { A: 1.40, B: 1.23 },
+            7: { A: 2.00, B: 1.40 }, 10: { A: 2.75, B: 1.70 }
+        };
+
+        // Koefisien Briggs (Gaussian Plume)
+        const BRIGGS_COEFFS = {
+            'A': { sigma_y: {a: 0.22, b: 0.894}, sigma_z: {c: 0.20, d: 1.0} },
+            'B': { sigma_y: {a: 0.16, b: 0.894}, sigma_z: {c: 0.12, d: 1.0} },
+            'C': { sigma_y: {a: 0.11, b: 0.894}, sigma_z: {c: 0.08, d: 1.0} },
+            'D': { sigma_y: {a: 0.08, b: 0.894}, sigma_z: {c: 0.06, d: 1.0} },
+            'E': { sigma_y: {a: 0.06, b: 0.894}, sigma_z: {c: 0.03, d: 1.0} },
+            'F': { sigma_y: {a: 0.04, b: 0.894}, sigma_z: {c: 0.016, d: 1.0} }
+        };
+
+
+        // =====================================================================
+        // === FUNGSI VISUALISASI UTAMA (Sesuai visualisasi_strategi.md) ====
+        // =====================================================================
+        
+        /**
+         * Fungsi tunggal untuk menggambar semua plot konsekuensi.
+         * @param {string} canvasId - ID elemen canvas.
+         * @param {string} legendId - ID elemen div untuk legenda.
+         * @param {string} resultsId - ID elemen div untuk hasil teks.
+         * @param {object} plotConfig - Objek "Kontrak Data Visual".
+         */
+        function drawConsequencePlot(canvasId, legendId, resultsId, plotConfig) {
+            const canvas = document.getElementById(canvasId);
+            const legendEl = document.getElementById(legendId);
+            const resultsEl = document.getElementById(resultsId);
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+
+            // Set ukuran canvas responsif
+            const rect = canvas.getBoundingClientRect();
+            if (rect.width === 0 || rect.height === 0) return; // Jangan gambar jika tersembunyi
+            canvas.width = rect.width;
+            canvas.height = rect.height;
+
+            const width = canvas.width;
+            const height = canvas.height;
+            const centerX = width / 2;
+            const centerY = height / 2;
+            const padding = 60; // Padding untuk label sumbu
+            const plotSize = Math.min(width, height) - (padding * 2);
+            
+            ctx.clearRect(0, 0, width, height);
+
+            // 1. Tentukan Skala Plot (Sangat Penting)
+            // plotConfig.zones adalah array, misal: [{... distance: 150}, {... distance: 80}]
+            const maxDistance = Math.max(...plotConfig.zones.map(z => z.distance));
+            if (maxDistance === 0 || !isFinite(maxDistance)) {
+                // Tampilkan pesan "Tidak ada dampak"
+                ctx.fillStyle = "#888";
+                ctx.textAlign = "center";
+                ctx.font = "16px Inter";
+                ctx.fillText(plotConfig.title, centerX, centerY - 10);
+                ctx.font = "14px Inter";
+                ctx.fillText("Tidak ada dampak terdeteksi pada jarak ini.", centerX, centerY + 20);
+                resultsEl.innerHTML = `<p class="text-gray-500 text-center">Tidak ada dampak terdeteksi.</p>`;
+                legendEl.innerHTML = "";
+                return;
+            }
+
+            // Skala: piksel per meter (ppm)
+            // Kita ingin maxDistance muat di dalam plotSize
+            const scale = plotSize / (maxDistance * 2); // (maxDistance * 2 = diameter)
+            
+            // 2. Gambar Sumbu dan Grid
+            drawAxisAndGrid(ctx, centerX, centerY, plotSize, maxDistance, plotConfig.plotType);
+
+            // 3. Gambar Zona Bahaya (sesuai plotType)
+            // Balik urutan zona agar yang terbesar digambar lebih dulu
+            const sortedZones = [...plotConfig.zones].sort((a, b) => b.distance - a.distance);
+
+            for (const zone of sortedZones) {
+                if (zone.distance <= 0) continue;
+                
+                ctx.fillStyle = zone.color;
+                ctx.strokeStyle = zone.color;
+                ctx.globalAlpha = 0.3; // Transparansi area
+                
+                const pixelDistX = zone.distance * scale;
+                const pixelDistY = (zone.halfWidth ? zone.halfWidth : zone.distance) * scale;
+                const shiftX_px = (plotConfig.flameShiftX || 0) * scale;
+                const shiftY_px = (plotConfig.flameShiftY || 0) * scale;
+
+                switch (plotConfig.plotType) {
+                    case 'circular_zones':
+                    case 'bleve':
+                    case 'vce':
+                        ctx.beginPath();
+                        ctx.ellipse(centerX, centerY, pixelDistX, pixelDistX, 0, 0, 2 * Math.PI);
+                        ctx.fill();
+                        ctx.globalAlpha = 1.0;
+                        ctx.setLineDash([3, 3]);
+                        ctx.stroke();
+                        ctx.setLineDash([]);
+                        break;
+                    
+                    case 'pool_fire':
+                    case 'jet_flame':
+                        // Asumsi pergeseran api karena angin (jika ada)
+                        // PERUBAHAN: Sekarang menangani X dan Y shift
+                        ctx.beginPath();
+                        ctx.ellipse(centerX + shiftX_px, centerY + shiftY_px, pixelDistX, pixelDistY, 0, 0, 2 * Math.PI);
+                        ctx.fill();
+                        ctx.globalAlpha = 1.0;
+                        ctx.setLineDash([3, 3]);
+                        ctx.stroke();
+                        ctx.setLineDash([]);
+                        break;
+                    
+                    case 'plume_flammable':
+                    case 'plume_toxic':
+                        // Gambar bentuk plume (parabola sederhana)
+                        ctx.beginPath();
+                        ctx.moveTo(centerX, centerY - pixelDistY); // Titik atas
+                        // Kurva ke jarak LFL di centerline
+                        ctx.quadraticCurveTo(centerX + pixelDistX * 0.5, centerY, centerX + pixelDistX, centerY);
+                        ctx.quadraticCurveTo(centerX + pixelDistX * 0.5, centerY, centerX, centerY + pixelDistY); // Kurva kembali
+                        ctx.closePath();
+                        ctx.fill();
+                        ctx.globalAlpha = 1.0;
+                        ctx.setLineDash([3, 3]);
+                        ctx.stroke();
+                        ctx.setLineDash([]);
+                        break;
+                }
+            }
+            
+            // Reset transparansi
+            ctx.globalAlpha = 1.0;
+
+            // 4. Tampilkan Legenda dan Hasil Teks
+            drawLegend(legendEl, plotConfig.title, sortedZones, plotConfig.unit);
+            drawTextResults(resultsEl, plotConfig.title, sortedZones, plotConfig.unit);
+        }
+
+        /**
+         * Helper untuk menggambar sumbu dan grid
+         */
+        function drawAxisAndGrid(ctx, centerX, centerY, plotSize, maxDistance, plotType) {
+            ctx.strokeStyle = "#ccc";
+            ctx.fillStyle = "#333";
+            ctx.lineWidth = 1;
+            ctx.font = "11px Inter";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+
+            const isPlume = plotType.startsWith('plume');
+            
+            // Sumbu X (Downwind)
+            ctx.beginPath();
+            ctx.moveTo(centerX - (isPlume ? 0 : plotSize / 2), centerY);
+            ctx.lineTo(centerX + plotSize / 2, centerY);
+            ctx.stroke();
+            // Sumbu Y (Crosswind)
+            ctx.beginPath();
+            ctx.moveTo(centerX, centerY - plotSize / 2);
+            ctx.lineTo(centerX, centerY + plotSize / 2);
+            ctx.stroke();
+
+            // Label Sumbu
+            ctx.fillText("0", centerX - 10, centerY + 10);
+            if (isPlume) {
+                ctx.fillText("Sumber", centerX, centerY + 15);
+                ctx.fillText(`+X (Downwind)`, centerX + plotSize / 2, centerY + 15);
+            } else {
+                ctx.fillText(`+X`, centerX + plotSize / 2, centerY + 15);
+            }
+            ctx.fillText(`+Y (Crosswind)`, centerX, centerY - plotSize / 2 - 10);
+            
+            // Tanda Jarak (Grid)
+            const tickCount = 4;
+            const tickDistance = maxDistance / tickCount;
+            const tickPixel = (plotSize / 2) / tickCount;
+
+            ctx.strokeStyle = "#eee";
+            ctx.fillStyle = "#888";
+
+            for (let i = 1; i <= tickCount; i++) {
+                const currentPixel = tickPixel * i;
+                const currentDist = (tickDistance * i).toFixed(0);
+
+                // Grid lingkaran
+                if (!isPlume) {
+                    ctx.beginPath();
+                    ctx.ellipse(centerX, centerY, currentPixel, currentPixel, 0, 0, 2 * Math.PI);
+                    ctx.stroke();
+                }
+                
+                // Label X
+                ctx.fillText(`${currentDist} m`, centerX + currentPixel, centerY + 10);
+                if (!isPlume) {
+                    ctx.fillText(`-${currentDist} m`, centerX - currentPixel, centerY + 10);
+                }
+                // Label Y
+                ctx.fillText(`${currentDist} m`, centerX, centerY - currentPixel - 5);
+                ctx.fillText(`-${currentDist} m`, centerX, centerY + currentPixel + 10);
+            }
+        }
+
+        /**
+         * Helper untuk mengisi div legenda
+         */
+        function drawLegend(legendEl, title, sortedZones, unit) {
+            let html = `<h3 class="text-base font-semibold text-gray-700 mb-3">${title} - Legenda</h3><div class="space-y-2">`;
+            for (const zone of sortedZones) {
+                html += `
+                    <div class="flex items-center">
+                        <div class="w-4 h-4 rounded-full mr-2" style="background-color: ${zone.color}; opacity: 0.6;"></div>
+                        <span class="text-sm text-gray-800"><strong>${zone.label}</strong> (${zone.name})</span>
+                    </div>
+                `;
+            }
+            html += `</div>`;
+            legendEl.innerHTML = html;
+        }
+
+        /**
+         * Helper untuk mengisi div hasil teks
+         */
+        function drawTextResults(resultsEl, title, sortedZones, unit) {
+            let html = `<h3 class="text-base font-semibold text-gray-700 mb-3">${title} - Hasil Jarak</h3>`;
+            if (sortedZones.length === 0 || sortedZones[0].distance === 0) {
+                 html += `<p class="text-gray-500">Tidak ada dampak terdeteksi untuk kriteria ini.</p>`;
+                 resultsEl.innerHTML = html;
+                 return;
+            }
+
+            for (const zone of sortedZones) {
+                html += `
+                    <div class="zone-result">
+                        <strong style="color: ${zone.color};">${zone.label}</strong>
+                        <div class="zone-detail">
+                            <span>Jarak Maks: <strong>${formatNumber(zone.distance)} ${unit}</strong></span>
+                            ${zone.halfWidth ? `<span> | Lebar Setengah: <strong>${formatNumber(zone.halfWidth)} ${unit}</strong></span>` : ''}
+                        </div>
+                    </div>
+                `;
+            }
+            resultsEl.innerHTML = html;
+        }
+
+
+        // =====================================================================
+        // === FUNGSI KALKULASI (HELPER "OTAK") (Sesuai Rencana) ===
+        // =====================================================================
+
+        /**
+         * Mengonversi Celsius ke Kelvin
+         */
+        function C_to_K(T_c) {
+            return T_c + 273.15;
+        }
+        
+        /**
+         * Format angka
+         */
+        function formatNumber(num) {
+            if (num === 0) return '0';
+            if (Math.abs(num) < 0.01) return num.toExponential(2);
+            if (Math.abs(num) > 10000) return num.toExponential(2);
+            return num.toFixed(2);
+        }
+
+        /**
+         * Menghitung Tekanan Saturasi (bar) dari fungsi Antoine
+         */
+        function calculateSaturationPressure(props, T_k) {
+            if (!props.P_sat_func) {
+                console.warn(`P_sat_func missing for ${props.name}`);
+                return P_0_Pa / 1e5; // return 1 atm
+            }
+            // Fungsi eval() aman di sini karena kita mengontrol string (props.P_sat_func)
+            try {
+                // Konversi string "(T_k) => ..." menjadi fungsi
+                const func = eval(props.P_sat_func);
+                return func(T_k);
+            } catch(e) {
+                console.error("Error evaluating P_sat_func:", e);
+                // Fallback jika T_k di luar domain fungsi antoine
+                if (T_k < props.T_boil) return 0;
+                return P_0_Pa / 1e5; // 1 atm
+            }
+        }
+
+        /**
+         * Menghitung Transmisivitas Atmosfer (TNO/CCPS)
+         */
+        function calculateTransmissivity(distance_m, T_c, RH_percent) {
+            // Placeholder sederhana, model TNO/CCPS asli (C-5) sangat kompleks
+            // tau = 1.0 - 0.14 * log(P_w * L)
+            // Di sini kita gunakan model empiris yang lebih sederhana:
+            const T_k = C_to_K(T_c);
+            const P_sat_w_Pa = 610.94 * Math.exp(17.625 * T_c / (T_c + 243.04));
+            const P_w_Pa = (RH_percent / 100) * P_sat_w_Pa;
+            
+            // Model CCPS (Persamaan 2.50)
+            const tau = 2.02 * Math.pow( (P_w_Pa * distance_m), -0.09);
+            return Math.min(1.0, Math.max(0.1, tau)); // Batasi antara 0.1 dan 1.0
+        }
+
+        /**
+         * TINGKAT 1: Menghitung Laju Alir Gas Tercekik (Choked Flow)
+         */
+        function calculateChokedFlow(P_bar, T_c, d_mm, C_d, gamma, M) {
+            const P_v = P_bar * 1e5; // Pa
+            const T_v = C_to_K(T_c); // K
+            const A = Math.PI * Math.pow(d_mm / 2000, 2); // m²
+
+            // Tekanan kritis (P_choked)
+            const P_choked = P_v * Math.pow(2 / (gamma + 1), gamma / (gamma - 1));
+
+            if (P_choked < P_0_Pa) {
+                // Aliran *tidak* tercekik (subsonic) - Rumus TNO 2.15
+                // Ini lebih kompleks, untuk saat ini kita asumsikan tercekik (simplifikasi umum)
+                console.warn("Aliran tidak tercekik (subsonic), hasil mungkin tidak akurat.");
+            }
+            
+            // Aliran tercekik (choked/sonic) - Rumus TNO 2.14
+            const m_dot = C_d * A * P_v * Math.sqrt( (gamma * M / (R_g * T_v)) * Math.pow(2 / (gamma + 1), (gamma + 1) / (gamma - 1)) );
+            
+            return m_dot; // kg/s
+        }
+
+        /**
+         * TINGKAT 1: Menghitung Laju Alir Cairan (Bernoulli)
+         */
+        function calculateLiquidDischarge(P_bar, h_liquid, d_mm, C_d, rho_l) {
+            const P_head_Pa = (P_bar * 1e5) - P_0_Pa;
+            const h_head = P_head_Pa / (rho_l * g); // Ketinggian ekuivalen dari tekanan gas
+            const H_total = h_head + h_liquid; // Total head
+            
+            if (H_total < 0) {
+                console.error("Total head negatif. Tekanan bejana < atmosfer.");
+                return 0;
+            }
+
+            const v_liquid = C_d * Math.sqrt(2 * g * H_total); // Kecepatan (m/s)
+            const A = Math.PI * Math.pow(d_mm / 2000, 2); // m²
+            const m_dot_liquid = rho_l * A * v_liquid; // kg/s
+            
+            return m_dot_liquid;
+        }
+
+        /**
+         * TINGKAT 2: Menghitung Genangan & Evaporasi (TNO)
+         */
+        function calculatePoolSpreadAndEvap(props, m_dot_liquid, duration_s, T_amb_C, u_w, surfaceProps, bunded, bund_area_m2) {
+            const T_amb_K = C_to_K(T_amb_C);
+            
+            // 1. Cek Fase (Mendidih vs Menguap)
+            const isBoiling = props.T_boil < T_amb_K;
+            
+            let m_dot_evap_rate_per_area, D_pool, Area_pool;
+            let calc_method = "";
+
+            if (isBoiling) {
+                // Skenario A: Genangan Mendidih (Boiling Pool) - (TNO 2.4.2)
+                calc_method = "Genangan Mendidih (Boiling) - Panas dari tanah (TNO 2.4.2)";
+                const t_s = duration_s; // Waktu tumpahan
+                const { k_s, alpha_s } = surfaceProps;
+                // Laju evaporasi per unit area (q_m_boil)
+                m_dot_evap_rate_per_area = (k_s * (T_amb_K - props.T_boil)) / (props.H_v_boil * Math.sqrt(Math.PI * alpha_s * t_s));
+                
+            } else {
+                // Skenario B: Genangan Menguap (Evaporating Pool) - (TNO 2.4.3)
+                calc_method = "Genangan Menguap (Evaporating) - Panas dari udara (CCPS/TNO 2.4.3)";
+                // Panas dari radiasi matahari dan konveksi udara
+                const P_sat_bar = calculateSaturationPressure(props, T_amb_K);
+                const P_sat_Pa = P_sat_bar * 1e5;
+                const U = u_w; // Kecepatan angin
+                
+                // Laju evaporasi per unit area (q_m_evap) - Rumus TNO 2.65 (disesuaikan)
+                const D_placeholder = 10; // Asumsi diameter 10m untuk konstanta perpindahan massa
+                const k_m = 0.0047 * Math.pow(U, 0.78) * Math.pow(D_placeholder, -0.11); // Konstanta perpindahan massa
+                m_dot_evap_rate_per_area = k_m * (props.M * P_sat_Pa) / (R_g * T_amb_K);
+            }
+
+            // 2. Hitung Batas Area
+            const A_eq = m_dot_liquid / m_dot_evap_rate_per_area; // Area ekuilibrium
+            const V_total = m_dot_liquid * duration_s / props.rho_l;
+            const h_min = 0.01; // Asumsi tebal min 1 cm
+            const A_vol = V_total / h_min; // Area maks dari volume
+
+            let limitation = "Ekuilibrium (ṁ_in = ṁ_out)";
+            Area_pool = A_eq;
+
+            if (A_vol < Area_pool && A_vol > 0) {
+                Area_pool = A_vol;
+                limitation = "Volume Tumpahan Terbatas";
+            }
+            
+            if (bunded && bund_area_m2 > 0) {
+                if (bund_area_m2 < Area_pool) {
+                    Area_pool = bund_area_m2;
+                    limitation = "Dinding Penahan (Bund)";
+                }
+            }
+            
+            D_pool = Math.sqrt(4 * Area_pool / Math.PI);
+            const m_dot_evap = m_dot_evap_rate_per_area * Area_pool;
+
+            return { m_dot_evap, D_pool, Area_pool, isBoiling, calc_method, limitation };
+        }
+
+        /**
+         * TINGKAT 2: Faktor Partisipasi (untuk m_vap)
+         */
+        function getParticipationFactor(stabilityClass) {
+            // Nilai TNO standar
+            switch (stabilityClass) {
+                case 'A': case 'B': return 1.0;  // Sangat tidak stabil, pencampuran sempurna
+                case 'C': case 'D': return 0.75; // Netral
+                case 'E': case 'F': return 0.35; // Sangat stabil, pencampuran buruk
+                default: return 0.75;
+            }
+        }
+        
+        /**
+         * TINGKAT 3: Menghitung Data BLEVE (Fireball) (TNO/CCPS)
+         */
+        function calculateBLEVE(props, M_kg, F_rad, T_amb_C, RH) {
+            // Langkah 1: Diameter Maks
+            const D_max = 5.8 * Math.pow(M_kg, 1/3);
+            // Langkah 2: Durasi
+            const t_duration = 0.45 * Math.pow(M_kg, 1/3);
+            // Langkah 3: SEP
+            const SEP = (F_rad * M_kg * props.H_c) / (Math.PI * D_max**2 * t_duration);
+            // Langkah 4: Ketinggian Pusat Api
+            const H_f = 0.75 * D_max; // Asumsi TNO/CCPS, pusat api naik
+
+            // Kalkulasi Jarak untuk setiap target
+            let zones = [];
+            for (const target of THERMAL_TARGETS) {
+                const q_target = target.value; // W/m²
+                
+                // Kita harus membalik rumus: q = SEP * F_view * tau
+                // q = SEP * (D_max² / (4 * (x² + H_f²))) * tau(L)
+                // Ini non-linear karena tau(L) = f(x). Kita perlu iterasi.
+                
+                let x_m = 0; // Jarak di tanah
+                // Iterasi untuk menemukan x (jarak)
+                for (x_m = 1; x_m < 5000; x_m += 0.5) { 
+                    const L = Math.sqrt(x_m**2 + H_f**2); // Jarak miring ke pusat api
+                    const tau = calculateTransmissivity(L, T_amb_C, RH);
+                    const F_view = D_max**2 / (4 * L**2);
+                    const q_calc = SEP * F_view * tau;
+
+                    if (q_calc < q_target) {
+                        break; // Kita telah menemukan jaraknya
+                    }
+                }
+
+                zones.push({ 
+                    ...target,
+                    distance: x_m,
+                    halfWidth: x_m, // Simetris
+                    unit: 'm' 
+                });
+            }
+            
+            const calcSteps = {
+                D_max: D_max,
+                t_duration: t_duration,
+                H_f: H_f,
+                SEP: SEP
+            };
+            
+            return { zones, calcSteps };
+        }
+        
+        /**
+         * TINGKAT 3: Menghitung Data VCE (TNO Multi-Energi)
+         */
+        function calculateVCE_TNO(props, m_vap, curveNumber) {
+            const E_vce_J = m_vap * props.H_c;
+            const E_s = E_vce_J / P_0_Pa; // Energi ekuivalen (m³)
+            const { A, B } = TNO_CURVE_COEFFS[curveNumber];
+
+            let zones = [];
+            for (const target of VCE_TARGETS) {
+                const P_s_bar = target.value;
+                
+                // Balik rumus TNO: log10(R_s) = (A - log10(P_s_bar)) / B
+                const log10_Rs = (A - Math.log10(P_s_bar)) / B;
+                const R_s = Math.pow(10, log10_Rs); // Jarak Skala
+                
+                // Jarak Aktual (m)
+                const R_m = R_s * Math.pow(E_s, 1/3);
+                
+                zones.push({
+                    ...target,
+                    distance: R_m,
+                    halfWidth: R_m,
+                    unit: 'm'
+                });
+            }
+            
+            const calcSteps = { E_vce_J, E_s, curveNumber };
+            return { zones, calcSteps };
+        }
+
+        /**
+         * TINGKAT 3: Menghitung Data Pool Fire (CCPS Point Source)
+         * PERUBAHAN: Sekarang menyertakan u_w untuk Flame Tilt (TNO 4.3.4)
+         */
+        function calculatePoolFire(props, D_pool, F_rad, T_amb_C, RH, u_w) {
+            const T_amb_K = C_to_K(T_amb_C);
+            
+            // 1. Laju Pembakaran (Burning Rate) - TNO 4.23 (lebih akurat)
+            const H_v_eff_burn = props.H_v_boil + (props.C_p_l ? props.C_p_l * (props.T_boil - T_amb_K) : 0);
+            const m_dot_burn_rate = 0.001 * props.H_c / (H_v_eff_burn || props.H_v_boil); // (kg/m²/s)
+            
+            // 2. Tinggi Api (Flame Height) & Tilt (Model Thomas / TNO 4.3.4)
+            // Parameter Angin (U*)
+            const U_star = u_w / Math.pow( (g * m_dot_burn_rate * D_pool) / rho_air, 1/3 );
+            
+            let L_f, cos_theta, sin_theta;
+            
+            if (U_star < 0.1 || !isFinite(U_star) || m_dot_burn_rate === 0) { // Angin tenang
+                cos_theta = 1; // Vertikal
+                sin_theta = 0;
+                if (m_dot_burn_rate > 0) {
+                    // Rumus TNO 4.27 (Angin Tenang)
+                    L_f = 42 * D_pool * Math.pow(m_dot_burn_rate / (rho_air * Math.sqrt(g * D_pool)), 0.61);
+                } else {
+                    L_f = D_pool; // Asumsi
+                }
+            } else {
+                // Rumus TNO 4.29 (Berangin)
+                cos_theta = (U_star > 1) ? 1 / Math.sqrt(U_star) : 1;
+                sin_theta = Math.sqrt(1 - cos_theta**2);
+                L_f = D_pool * 55 * Math.pow(m_dot_burn_rate / (rho_air * Math.sqrt(g * D_pool)), 0.67) * Math.pow(U_star, -0.21);
+            }
+            
+            // 3. Energi Total
+            const Q_f = m_dot_burn_rate * (Math.PI * D_pool**2 / 4) * props.H_c;
+            
+            // 4. Ketinggian & Pergeseran Titik Sumber (Tilted Point Source)
+            // Asumsi titik sumber ada di tengah lidah api (L_f / 2)
+            const H_f = (L_f / 2) * cos_theta; // Ketinggian
+            const x_shift = (L_f / 2) * sin_theta; // Pergeseran (downwind)
+            
+            let zones = [];
+            for (const target of THERMAL_TARGETS) {
+                const q_target = target.value; // W/m²
+                
+                // 5. Hitung Jarak (x)
+                // Rumus Point Source: q = (F_rad * Q_f * tau) / (4 * pi * L²)
+                // L² = (x - x_shift)² + H_f² (Untuk target di downwind)
+                
+                let x_m = 0;
+                for (x_m = x_shift + 0.1; x_m < 5000; x_m += 0.5) { // Mulai dari x_shift
+                    // Jarak dari target (x_m, 0) ke sumber (x_shift, H_f)
+                    const L = Math.sqrt(Math.pow(x_m - x_shift, 2) + H_f**2);
+                    if (L <= 0) continue;
+                    
+                    const tau = calculateTransmissivity(L, T_amb_C, RH);
+                    const q_calc = (F_rad * Q_f * tau) / (4 * Math.PI * L**2);
+                    
+                    if (q_calc < q_target) {
+                        break;
+                    }
+                }
+
+                // Radius zona adalah jarak dari pusat api (x_shift) ke x_m
+                const radius = x_m - x_shift;
+
+                zones.push({
+                    ...target,
+                    distance: radius, // Jarak radius dari pusat api
+                    halfWidth: radius,
+                    unit: 'm',
+                });
+            }
+            
+            const calcSteps = { L_f, Q_f, H_f, x_shift, U_star, theta_deg: Math.acos(cos_theta) * 180 / Math.PI };
+            return { zones, calcSteps, flameShiftX: x_shift };
+        }
+        
+        /**
+         * TINGKAT 3: Menghitung Data Jet Fire (CCPS)
+         * PERUBAHAN: Sekarang menyertakan u_w, v_jet untuk Flame Drag (Crosswind)
+         */
+        function calculateJetFire(props, m_dot_gas, F_rad, T_amb_C, RH, u_w, v_jet) {
+            // Model CCPS
+            // 1. Panjang Api (Flame Length)
+            const L_f = 0.0053 * Math.pow(m_dot_gas * props.H_c, 0.478);
+            
+            // 2. Energi Total
+            const Q_f = m_dot_gas * props.H_c;
+            
+            // 3. PERUBAHAN: Hitung Pergeseran Crosswind (Flame Drag)
+            // Asumsi jet horizontal di sumbu X, angin (u_w) di sumbu Y
+            // Waktu residen gas di dalam api
+            const t_residence = (v_jet > 0) ? L_f / v_jet : 0; 
+            // Pergeseran di sumbu Y (crosswind)
+            const y_shift = u_w * t_residence; 
+            
+            // 4. Ketinggian Titik Sumber (H_f) - Asumsi horizontal
+            const H_f = 0; 
+            // Pergeseran sumbu X (pusat api)
+            const x_shift = L_f / 2;
+            
+            let zones = [];
+            for (const target of THERMAL_TARGETS) {
+                const q_target = target.value; // W/m²
+                
+                // 5. Hitung Jarak (L) dari pusat api (x_shift, y_shift, H_f)
+                // q = (F_rad * Q_f * tau) / (4 * pi * L²)
+                let L_m = 0;
+                for (L_m = 1; L_m < 5000; L_m += 0.5) {
+                    const tau = calculateTransmissivity(L_m, T_amb_C, RH);
+                    const q_calc = (F_rad * Q_f * tau) / (4 * Math.PI * L_m**2);
+                    if (q_calc < q_target) break;
+                }
+
+                // L_m adalah radius bahaya dari *pusat api*.
+                zones.push({
+                    ...target,
+                    distance: L_m, // Ini adalah radius dari pusat api
+                    halfWidth: L_m, // Simetris (lingkaran) dari pusat api
+                    unit: 'm'
+                });
+            }
+            
+            const calcSteps = { L_f, Q_f, v_jet, t_residence, y_shift };
+            return { zones, calcSteps, flameShiftX: x_shift, flameShiftY: y_shift };
+        }
+
+        /**
+         * TINGKAT 3: Menghitung Data Dispersi Gaussian
+         */
+        function calculateGaussianPlume(props, m_dot, u_w, stabilityClass, target_kg_m3, targetLabel, targetName) {
+            const coeffs = BRIGGS_COEFFS[stabilityClass];
+            if (!coeffs) return { zones: [], calcSteps: {} };
+
+            // Rumus Gaussian Plume (Centerline, Ground Level):
+            // C(x, 0, 0) = m_dot / (pi * sigma_y * sigma_z * u_w)
+            
+            // Kita balik untuk mencari x
+            let x_m = 0;
+            let max_half_width = 0;
+            
+            for (x_m = 1; x_m < 20000; x_m += 1) { // Iterasi jarak downwind
+                const sigma_y = coeffs.sigma_y.a * Math.pow(x_m, coeffs.sigma_y.b);
+                const sigma_z = coeffs.sigma_z.c * Math.pow(x_m, coeffs.sigma_z.d);
+                
+                const C_centerline_kg_m3 = m_dot / (Math.PI * sigma_y * sigma_z * u_w);
+                
+                if (C_centerline_kg_m3 < target_kg_m3) {
+                    break; // Kita telah menemukan jarak maks (x_m)
+                }
+            }
+            
+            // Hitung lebar setengah maksimum (terjadi sebelum x_m maks)
+            if (x_m > 1) {
+                let x_peak_width = 0;
+                // Temukan x di mana C_centerline > target_kg_m3 DAN y > max_half_width
+                for (let x_scan = 1; x_scan < x_m; x_scan += 1) {
+                    const sigma_y_scan = coeffs.sigma_y.a * Math.pow(x_scan, coeffs.sigma_y.b);
+                    const sigma_z_scan = coeffs.sigma_z.c * Math.pow(x_scan, coeffs.sigma_z.d);
+                    const C_center_scan = m_dot / (Math.PI * sigma_y_scan * sigma_z_scan * u_w);
+                    
+                    if (C_center_scan > target_kg_m3) {
+                        const half_width_scan = sigma_y_scan * Math.sqrt(-2 * Math.log(target_kg_m3 / C_center_scan));
+                        if (half_width_scan > max_half_width) {
+                            max_half_width = half_width_scan;
+                        }
+                    }
+                }
+            }
+
+            const zones = [{
+                label: targetLabel,
+                value: target_kg_m3,
+                color: '#f77f00',
+                name: targetName,
+                distance: x_m,
+                halfWidth: max_half_width,
+                unit: 'm'
+            }];
+            
+            const calcSteps = { m_dot, u_w, stabilityClass, target_kg_m3 };
+            return { zones, calcSteps };
+        }
+        
+        /**
+         * TINGKAT 4: Menghitung Analisis Probit (TNO/CCPS)
+         */
+        function calculateProbit(props, probitType, inputs) {
+            let k1, k2, n, D, Pr;
+            let fatalProb = 0;
+            let injuryProb = 0;
+            let doseString = "";
+
+            switch (probitType) {
+                case 'thermal':
+                    // Dosis (D) = t * q^(4/3)
+                    const q_W_m2 = inputs.flux_kW_m2 * 1000;
+                    const t_s = inputs.duration_s;
+                    D = t_s * Math.pow(q_W_m2, 4/3);
+                    doseString = `Dosis (t*q⁴/³): ${formatNumber(D)}`;
+                    
+                    // Probit Fatalitas (CCPS / Eisenberg)
+                    k1 = props.probit_thermal.k1;
+                    k2 = props.probit_thermal.k2;
+                    Pr = k1 + k2 * Math.log(D);
+                    fatalProb = probitToPercent(Pr);
+                    
+                    // Probit Luka Bakar Derajat 2 (CCPS)
+                    const Pr_injury = -39.83 + 3.0186 * Math.log(D);
+                    injuryProb = probitToPercent(Pr_injury);
+                    break;
+                
+                case 'overpressure':
+                    // Probit Eardrum Rupture (CCPS)
+                    const P_s_Pa = inputs.pressure_bar * 1e5;
+                    k1 = props.probit_overpressure.k1;
+                    k2 = props.probit_overpressure.k2;
+                    const Pr_injury_eardrum = k1 + k2 * Math.log(P_s_Pa);
+                    injuryProb = probitToPercent(Pr_injury_eardrum);
+                    
+                    // Probit Fatalitas (TNO) - Cedera Paru
+                    Pr = -77.1 + 6.91 * Math.log(P_s_Pa);
+                    fatalProb = probitToPercent(Pr);
+                    doseString = `Peak Overpressure: ${inputs.pressure_bar} bar`;
+                    break;
+                
+                case 'toxic':
+                    if (!props.probit_toxic) {
+                        return { error: "Data Probit Toksik tidak tersedia untuk material ini." };
+                    }
+                    const C_ppm = inputs.ppm;
+                    const t_min = inputs.duration_min;
+                    k1 = props.probit_toxic.k1;
+                    k2 = props.probit_toxic.k2;
+                    n = props.probit_toxic.n;
+                    
+                    // Dosis (D) = C^n * t
+                    D = Math.pow(C_ppm, n) * t_min;
+                    Pr = k1 + k2 * Math.log(D);
+                    fatalProb = probitToPercent(Pr);
+                    injuryProb = fatalProb; // Simplifikasi, asumsikan probit fatalitas
+                    doseString = `Dosis (Cⁿ*t): ${formatNumber(D)} (C=${C_ppm}ppm, n=${n}, t=${t_min}min)`;
+                    break;
+            }
+            
+            return { fatalProb, injuryProb, Pr, doseString };
+        }
+        
+        /**
+         * BARU: TINGKAT 5: Menghitung Risiko Individu (IR)
+         */
+        function calculateIR(p_scenario, p_weather, p_presence, p_probit_fatal) {
+            // IR (per tahun) = P_scenario * P_weather * P_presence * P_probit_fatal
+            const IR = p_scenario * p_weather * p_presence * p_probit_fatal;
+            return { IR };
+        }
+        
+        /**
+         * Mengubah nilai Probit (Pr) menjadi Persentase (%)
+         * Menggunakan fungsi Error (erf)
+         */
+        function probitToPercent(pr) {
+            // Pr = 5 + (1 / sqrt(2)) * erf( (x - mu) / sigma ) -> Disederhanakan
+            // z = (pr - 5)
+            // P = 0.5 * (1 + erf( z / sqrt(2) ))
+            const z = pr - 5;
+            const P = 0.5 * (1 + erf(z / Math.sqrt(2)));
+            return P * 100; // Kembalikan sebagai persentase
+        }
+
+        // Fungsi Error (erf) - Aproksimasi (Abramowitz & Stegun 7.1.26)
+        function erf(x) {
+            const a1 =  0.254829592;
+            const a2 = -0.284496736;
+            const a3 =  1.421413741;
+            const a4 = -1.453152027;
+            const a5 =  1.061405429;
+            const p  =  0.3275911;
+
+            const sign = (x >= 0) ? 1 : -1;
+            x = Math.abs(x);
+            
+            const t = 1.0 / (1.0 + p * x);
+            const y = 1.0 - (((((a5 * t + a4) * t) + a3) * t + a2) * t + a1) * t * Math.exp(-x * x);
+            
+            return sign * y; // Kembalikan hasil dengan tanda yang benar
+        }
+
+
+        // =====================================================================
+        // === FUNGSI UTAMA (EVENT LISTENERS & HANDLERS) ===
+        // =====================================================================
+
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // --- Cache Elemen ---
+            const scenarioSelect = document.getElementById('scenario-select');
+            const chemicalSelect = document.getElementById('chemical-select');
+            const propsEditor = document.getElementById('props-editor');
+            const propsResetBtn = document.getElementById('props-reset-btn');
+            
+            const inputPanels = document.querySelectorAll('.scenario-input-panel');
+            const outputPanels = document.querySelectorAll('.scenario-output-panel');
+
+            // --- Inisialisasi ---
+            updatePropsEditor(); // Muat Properti Propana saat awal
+            updateInputDefaults(); // Set nilai default di semua form
+
+            // --- Event Listeners Global ---
+            
+            // 1. Ganti Skenario (Dropdown Utama)
+            scenarioSelect.addEventListener('change', () => {
+                const targetId = scenarioSelect.value;
+                switchPanel(targetId);
+            });
+
+            // 2. Ganti Bahan Kimia
+            chemicalSelect.addEventListener('change', () => {
+                updatePropsEditor();
+                updateInputDefaults();
+            });
+            
+            // 3. Reset Properti
+            propsResetBtn.addEventListener('click', updatePropsEditor);
+            
+            // 4. Input Toggling (Sub-menu)
+            document.getElementById('pool_spread-bund-type').addEventListener('change', (e) => {
+                document.getElementById('pool_spread-confined-inputs').style.display = (e.target.value === 'confined') ? 'block' : 'none';
+            });
+            document.getElementById('disp_toxic-target').addEventListener('change', (e) => {
+                document.getElementById('disp_toxic-manual-inputs').style.display = (e.target.value === 'MANUAL') ? 'block' : 'none';
+            });
+            document.getElementById('probit-type').addEventListener('change', (e) => {
+                document.getElementById('probit-thermal-inputs').style.display = 'none';
+                document.getElementById('probit-overpressure-inputs').style.display = 'none';
+                document.getElementById('probit-toxic-inputs').style.display = 'none';
+                document.getElementById(`probit-${e.target.value}-inputs`).style.display = 'block';
+            });
+            document.getElementById('mvap-source-type').addEventListener('change', (e) => {
+                const label = document.querySelector('label[for="mvap-mdot"]');
+                if (e.target.value === 'gas') {
+                    label.textContent = "Laju Alir Gas (ṁ_gas) (kg/s)";
+                } else {
+                    label.textContent = "Laju Evaporasi (ṁ_evap) (kg/s)";
+                }
+            });
+
+            // 5. Pasang Event Listener ke SEMUA Form
+            document.getElementById('mdot_gas-form').addEventListener('submit', handleMdotGas);
+            document.getElementById('mdot_liquid-form').addEventListener('submit', handleMdotLiquid);
+            document.getElementById('pool_spread-form').addEventListener('submit', handlePoolSpread);
+            document.getElementById('mvap-form').addEventListener('submit', handleMvap);
+            document.getElementById('disp_flammable-form').addEventListener('submit', handleDispFlammable);
+            document.getElementById('disp_toxic-form').addEventListener('submit', handleDispToxic);
+            document.getElementById('pool_fire-form').addEventListener('submit', handlePoolFire);
+            document.getElementById('jet_fire-form').addEventListener('submit', handleJetFire);
+            document.getElementById('vce-form').addEventListener('submit', handleVCE);
+            document.getElementById('bleve-form').addEventListener('submit', handleBLEVE);
+            document.getElementById('probit-form').addEventListener('submit', handleProbit);
+            document.getElementById('ir-form').addEventListener('submit', handleIR); // BARU: TINGKAT 5
+            
+            // --- Fungsi Helper Internal ---
+            
+            /**
+             * Mengganti panel yang aktif
+             */
+            function switchPanel(targetId) {
+                inputPanels.forEach(panel => panel.classList.remove('active'));
+                outputPanels.forEach(panel => panel.classList.remove('active'));
+
+                const inputPanel = document.getElementById(`${targetId}-input`);
+                const outputPanel = document.getElementById(`${targetId}-output`);
+
+                if (inputPanel) inputPanel.classList.add('active');
+                if (outputPanel) outputPanel.classList.add('active');
+                
+                // Panggil visualisasi awal untuk panel yang baru aktif
+                const canvasId = `${targetId}-canvas`;
+                const canvas = document.getElementById(canvasId);
+                if (canvas) {
+                    const resultsContainer = document.getElementById(`${targetId}-results`);
+                    if (resultsContainer && resultsContainer.innerHTML.trim() === "") {
+                        const title = document.querySelector(`#${targetId}-output h2`).textContent.replace('Hasil: ', '');
+                        drawConsequencePlot(canvasId, `${targetId}-legend`, `${targetId}-results`, {
+                            title: title,
+                            zones: [{ distance: 0 }] // Config kosong
+                        });
+                    }
+                }
+            }
+
+            /**
+             * Memuat properti kimia ke editor
+             */
+            function updatePropsEditor() {
+                const chemicalId = chemicalSelect.value;
+                const props = CHEMICAL_PROPERTIES[chemicalId];
+                // Konversi fungsi ke string untuk ditampilkan
+                const propsWithStringFunc = { ...props };
+                if (props.P_sat_func) {
+                    // propsWithStringFunc.P_sat_func = props.P_sat_func.toString();
+                    // Ambil string mentah dari DB
+                    propsWithStringFunc.P_sat_func = CHEMICAL_PROPERTIES[chemicalId].P_sat_func;
+                }
+                propsEditor.value = JSON.stringify(propsWithStringFunc, null, 2);
+            }
+
+            /**
+             * Mengambil properti (dari DB atau Editor)
+             */
+            function getActiveProps() {
+                try {
+                    // Ambil dari editor
+                    const propsFromEditor = JSON.parse(propsEditor.value);
+                    // Konversi string fungsi kembali ke fungsi
+                    if (propsFromEditor.P_sat_func && typeof propsFromEditor.P_sat_func === 'string') {
+                        // Hati-hati dengan eval.
+                        // Di sini aman karena string berasal dari DB kita atau diedit oleh user
+                        // Ini akan mengambil string "(T_k) => Math.exp(...)"
+                        propsFromEditor.P_sat_func = eval(propsFromEditor.P_sat_func);
+                    }
+                    return propsFromEditor;
+                } catch (e) {
+                    console.error("JSON Properti tidak valid:", e);
+                    // Jika error, kembalikan dari DB
+                    const props = CHEMICAL_PROPERTIES[chemicalSelect.value];
+                    // Pastikan fungsi dikonversi dari string DB
+                    if (props.P_sat_func && typeof props.P_sat_func === 'string') {
+                         props.P_sat_func = eval(props.P_sat_func);
+                    }
+                    return props;
+                }
+            }
+            
+            /**
+             * Mengambil input lingkungan
+             */
+            function getEnvInputs() {
+                return {
+                    T_amb_C: parseFloat(document.getElementById('env-temp').value),
+                    T_amb_K: C_to_K(parseFloat(document.getElementById('env-temp').value)),
+                    u_w: parseFloat(document.getElementById('env-wind-speed').value),
+                    RH: parseFloat(document.getElementById('env-humidity').value),
+                    stability: document.getElementById('env-stability').value,
+                    surfaceProps: SURFACE_PROPERTIES[document.getElementById('env-surface-type').value]
+                };
+            }
+
+            /**
+             * Update nilai default di form berdasarkan chemical
+             */
+            function updateInputDefaults() {
+                const props = getActiveProps();
+                
+                // Update default F_rad
+                document.getElementById('pool-frad').value = 0.3; // Default
+                document.getElementById('jet-frad').value = 0.3; // Default
+                
+                // Update default target toksik
+                const targetSelect = document.getElementById('disp_toxic-target');
+                if (props['ERPG_2_ppm']) {
+                    targetSelect.value = "ERPG-2";
+                    // Update label
+                    Array.from(targetSelect.options).forEach(opt => {
+                        if (opt.value.startsWith("ERPG") && props[`${opt.value.replace('-','_')}_ppm`]) {
+                            opt.textContent = `${opt.value} (${props[`${opt.value.replace('-','_')}_ppm`]} ppm)`;
+                        } else if (opt.value === "IDLH" && props.IDLH_ppm) {
+                            opt.textContent = `IDLH (${props.IDLH_ppm} ppm)`;
+                        } else if (opt.value === "MANUAL") {
+                            opt.textContent = "Manual (ppm)";
+                        }
+                    });
+                } else {
+                    targetSelect.value = "MANUAL";
+                }
+                document.getElementById('disp_toxic-manual-inputs').style.display = (targetSelect.value === 'MANUAL') ? 'block' : 'none';
+            }
+
+            /**
+             * Menampilkan hasil kalkulasi di panel kiri (sidebar)
+             */
+            function displayCalculationSteps(resultEl, title, steps = [], finalResult = "") {
+                let html = `<h3>${title}</h3>`;
+                steps.forEach(step => {
+                    html += `<div class="calc-step-detail">${step}</div>`;
+                });
+                if (finalResult) {
+                    html += `<div class="calc-step-final">${finalResult}</div>`;
+                }
+                resultEl.innerHTML = html;
+                resultEl.style.display = 'block';
+            }
+
+            /**
+             * Menampilkan hasil kalkulasi di panel kanan (utama)
+             */
+            function displayCalculatorResult(resultElId, title, value, unit, style = "default") {
+                const resultElRight = document.getElementById(resultElId);
+                let bgColor = "#e6fffb";
+                let borderColor = "#b3ffed";
+                let titleColor = "#005c47";
+                let valueColor = "#007a5e";
+
+                if (style === "qra") {
+                    bgColor = "#fceded";
+                    borderColor = "#f5c6cb";
+                    titleColor = "#721c24";
+                    valueColor = "#721c24";
+                }
+
+                resultElRight.innerHTML = `
+                    <div class="calculated-result-multi" style="display:block; text-align:center; max-width: 400px; margin: 20px auto; background-color: ${bgColor}; border-color: ${borderColor};">
+                        <h3 style="font-size: 20px; margin-bottom: 10px; color: ${titleColor}; border-color: ${borderColor};">${title}</h3>
+                        <div style="font-size: 36px; font-weight: 700; color: ${valueColor}; margin-bottom: 15px;">
+                            ${ (typeof value === 'number' && value < 0.001) ? value.toExponential(3) : formatNumber(value) } <span style="font-size: 20px; font-weight: 500; color: #333;">${unit}</span>
+                        </div>
+                    </div>
+                `;
+            }
+
+            
+            // --- HANDLER UNTUK SETIAP FORM ---
+
+            // TINGKAT 1: Laju Alir Gas
+            function handleMdotGas(e) {
+                e.preventDefault();
+                const props = getActiveProps();
+                const P_bar = parseFloat(document.getElementById('mdot_gas-pressure').value);
+                const T_c = parseFloat(document.getElementById('mdot_gas-temperature').value);
+                const d_mm = parseFloat(document.getElementById('mdot_gas-diameter').value);
+                const C_d = parseFloat(document.getElementById('mdot_gas-cd').value);
+                
+                const m_dot_gas = calculateChokedFlow(P_bar, T_c, d_mm, C_d, props.gamma, props.M);
+                
+                const steps = [
+                    `<strong>Material:</strong> ${props.name}`,
+                    `<strong>Tekanan (P_v):</strong> ${P_bar} bar`,
+                    `<strong>Suhu (T_v):</strong> ${T_c} °C`,
+                    `<strong>Diameter:</strong> ${d_mm} mm`,
+                    `<strong>Gamma (γ):</strong> ${props.gamma}`
+                ];
+                const final = `Laju Alir Gas (ṁ_gas): <span class="final-value">${formatNumber(m_dot_gas)} kg/s</span>`;
+                displayCalculationSteps(document.getElementById('mdot_gas-calculated-result'), "Hasil Kalkulasi ṁ_gas", steps, final);
+                displayCalculatorResult('mdot_gas-result-display', 'Laju Alir Gas (ṁ_gas)', m_dot_gas, 'kg/s');
+            }
+            
+            // TINGKAT 1: Laju Alir Cairan
+            function handleMdotLiquid(e) {
+                e.preventDefault();
+                const props = getActiveProps();
+                const P_bar = parseFloat(document.getElementById('mdot_liquid-pressure').value);
+                const h_liquid = parseFloat(document.getElementById('mdot_liquid-height').value);
+                const d_mm = parseFloat(document.getElementById('mdot_liquid-diameter').value);
+                const C_d = parseFloat(document.getElementById('mdot_liquid-cd').value);
+                
+                const m_dot_liquid = calculateLiquidDischarge(P_bar, h_liquid, d_mm, C_d, props.rho_l);
+                
+                const steps = [
+                    `<strong>Material:</strong> ${props.name}`,
+                    `<strong>Kepadatan (ρ_l):</strong> ${props.rho_l} kg/m³`,
+                    `<strong>Tekanan (P_v):</strong> ${P_bar} bar`,
+                    `<strong>Tinggi (h_l):</strong> ${h_liquid} m`,
+                    `<strong>Diameter:</strong> ${d_mm} mm`
+                ];
+                const final = `Laju Alir Cairan (ṁ_liquid): <span class="final-value">${formatNumber(m_dot_liquid)} kg/s</span>`;
+                displayCalculationSteps(document.getElementById('mdot_liquid-calculated-result'), "Hasil Kalkulasi ṁ_liquid", steps, final);
+                displayCalculatorResult('mdot_liquid-result-display', 'Laju Alir Cairan (ṁ_liquid)', m_dot_liquid, 'kg/s');
+            }
+
+            // TINGKAT 2: Genangan & Evaporasi
+            function handlePoolSpread(e) {
+                e.preventDefault();
+                const props = getActiveProps();
+                const env = getEnvInputs();
+                const m_dot_liquid = parseFloat(document.getElementById('pool_spread-mdot-liquid').value);
+                const duration_s = parseFloat(document.getElementById('pool_spread-duration').value);
+                const bunded = document.getElementById('pool_spread-bund-type').value === 'confined';
+                const bund_area = parseFloat(document.getElementById('pool_spread-bund-area').value);
+                
+                const { m_dot_evap, D_pool, Area_pool, isBoiling, calc_method, limitation } = calculatePoolSpreadAndEvap(
+                    props, m_dot_liquid, duration_s, env.T_amb_C, env.u_w, env.surfaceProps, bunded, bund_area
+                );
+                
+                const steps = [
+                    `<strong>Metode:</strong> ${calc_method}`,
+                    `<strong>Batasan:</strong> ${limitation}`,
+                    `<strong>ṁ_liquid (input):</strong> ${formatNumber(m_dot_liquid)} kg/s`,
+                    `<strong>Area (A_pool):</strong> ${formatNumber(Area_pool)} m²`
+                ];
+                const final = `ṁ_evap: <span class="final-value">${formatNumber(m_dot_evap)} kg/s</span> | D_pool: <span class="final-value">${formatNumber(D_pool)} m</span>`;
+                displayCalculationSteps(document.getElementById('pool_spread-calculated-result'), "Hasil Genangan & Evaporasi", steps, final);
+                
+                const resultElRight = document.getElementById('pool_spread-result-display');
+                displayCalculatorResult('pool_spread-result-display', 'Laju Evaporasi (ṁ_evap)', m_dot_evap, 'kg/s');
+                resultElRight.innerHTML += `
+                    <div class="calculated-result-multi" style="display:block; text-align:center; max-width: 400px; margin: 20px auto; background-color: #e6f7ff; border-color: #b3e0ff;">
+                        <h3 style="font-size: 20px; margin-bottom: 10px; color: #0056b3; border-color: #b3e0ff;">Diameter Genangan (D_pool)</h3>
+                        <div style="font-size: 36px; font-weight: 700; color: #0056b3; margin-bottom: 15px;">
+                            ${formatNumber(D_pool)} <span style="font-size: 20px; font-weight: 500; color: #333;">m</span>
+                        </div>
+                    </div>`;
+            }
+            
+            // TINGKAT 2: Massa Flammable
+            function handleMvap(e) {
+                e.preventDefault();
+                const env = getEnvInputs();
+                const m_dot = parseFloat(document.getElementById('mvap-mdot').value);
+                const duration_s = parseFloat(document.getElementById('mvap-duration').value);
+                const participation_factor = getParticipationFactor(env.stability);
+                
+                const total_mass = m_dot * duration_s;
+                const m_vap = total_mass * participation_factor;
+                
+                const steps = [
+                    `<strong>ṁ_source:</strong> ${formatNumber(m_dot)} kg/s`,
+                    `<strong>Durasi:</strong> ${duration_s} s`,
+                    `<strong>Massa Total:</strong> ${formatNumber(total_mass)} kg`,
+                    `<strong>Faktor Partisipasi (Stabilitas ${env.stability}):</strong> ${participation_factor}`
+                ];
+                const final = `Massa Flammable (m_vap): <span class="final-value">${formatNumber(m_vap)} kg</span>`;
+                displayCalculationSteps(document.getElementById('mvap-calculated-result'), "Hasil Kalkulasi m_vap", steps, final);
+                displayCalculatorResult('mvap-result-display', 'Massa Flammable (m_vap)', m_vap, 'kg');
+            }
+            
+            // TINGKAT 3: Dispersi Flammable
+            function handleDispFlammable(e) {
+                e.preventDefault();
+                const props = getActiveProps();
+                const env = getEnvInputs();
+                const m_dot = parseFloat(document.getElementById('disp_flammable-mdot').value);
+
+                // Target LFL
+                const LFL_kg_m3 = props.LFL_frac * (props.M / (R_g * env.T_amb_K)) * P_0_Pa;
+                
+                const { zones, calcSteps } = calculateGaussianPlume(
+                    props, m_dot, env.u_w, env.stability, LFL_kg_m3, `LFL (${(props.LFL_frac * 100).toFixed(1)}%)`, `Awan LFL`
+                );
+
+                displayCalculationSteps(document.getElementById('disp_flammable-calculated-result'), "Hasil Kalkulasi LFL", [
+                    `<strong>Laju Alir (ṁ):</strong> ${formatNumber(m_dot)} kg/s`,
+                    `<strong>Stabilitas:</strong> ${env.stability}`,
+                    `<strong>Target LFL:</strong> ${formatNumber(LFL_kg_m3)} kg/m³`
+                ]);
+                
+                // Buat Kontrak Data Visual
+                const plotConfig = {
+                    title: "Dispersi Flammable (LFL)",
+                    plotType: "plume_flammable",
+                    unit: "m",
+                    zones: zones
+                };
+                drawConsequencePlot('disp_flammable-canvas', 'disp_flammable-legend', 'disp_flammable-results', plotConfig);
+            }
+            
+            // TINGKAT 3: Dispersi Toksik
+            function handleDispToxic(e) {
+                e.preventDefault();
+                const props = getActiveProps();
+                const env = getEnvInputs();
+                const m_dot = parseFloat(document.getElementById('disp_toxic-mdot').value);
+                const targetType = document.getElementById('disp_toxic-target').value;
+                
+                let target_ppm;
+                if (targetType === 'MANUAL') {
+                    target_ppm = parseFloat(document.getElementById('disp_toxic-manual-ppm').value);
+                } else {
+                    target_ppm = props[`${targetType.replace('-','_')}_ppm`] || props['IDLH_ppm']; // Fallback
+                }
+                
+                if (!target_ppm) {
+                    alert("Target konsentrasi tidak valid atau tidak ada di database.");
+                    return;
+                }
+
+                // Konversi ppm ke kg/m³
+                // ppm = (mol_gas / mol_total) * 1e6
+                // C (kg/m³) = (ppm / 1e6) * (M_gas / V_mol)
+                // V_mol = R_g * T / P
+                const V_mol = (R_g * env.T_amb_K) / P_0_Pa; // m³/mol
+                const target_kg_m3 = (target_ppm / 1e6) * (props.M / V_mol);
+                
+                const { zones, calcSteps } = calculateGaussianPlume(
+                    props, m_dot, env.u_w, env.stability, target_kg_m3, `${targetType} (${target_ppm} ppm)`, `Awan Toksik`
+                );
+
+                displayCalculationSteps(document.getElementById('disp_toxic-calculated-result'), `Hasil Dispersi Toksik`, [
+                    `<strong>Laju Alir (ṁ):</strong> ${formatNumber(m_dot)} kg/s`,
+                    `<strong>Stabilitas:</strong> ${env.stability}`,
+                    `<strong>Target:</strong> ${target_ppm} ppm (${formatNumber(target_kg_m3)} kg/m³)`
+                ]);
+                
+                const plotConfig = {
+                    title: `Dispersi Toksik (${targetType})`,
+                    plotType: "plume_toxic",
+                    unit: "m",
+                    zones: zones
+                };
+                drawConsequencePlot('disp_toxic-canvas', 'disp_toxic-legend', 'disp_toxic-results', plotConfig);
+            }
+            
+            // TINGKAT 3: Pool Fire
+            function handlePoolFire(e) {
+                e.preventDefault();
+                const props = getActiveProps();
+                const env = getEnvInputs();
+                const D_pool = parseFloat(document.getElementById('pool-diameter').value);
+                const F_rad = parseFloat(document.getElementById('pool-frad').value);
+                
+                // PERUBAHAN: Kirim u_w ke kalkulator
+                const { zones, calcSteps, flameShiftX } = calculatePoolFire(props, D_pool, F_rad, env.T_amb_C, env.RH, env.u_w);
+                
+                displayCalculationSteps(document.getElementById('pool-fire-calculated-result'), "Hasil Kalkulasi Pool Fire", [
+                    `<strong>Diameter (D_pool):</strong> ${formatNumber(D_pool)} m`,
+                    `<strong>Kecepatan Angin (u_w):</strong> ${formatNumber(env.u_w)} m/s`,
+                    `<strong>Parameter Angin (U*):</strong> ${formatNumber(calcSteps.U_star)}`,
+                    `<strong>Sudut Kemiringan (θ):</strong> ${formatNumber(calcSteps.theta_deg)}°`,
+                    `<strong>Tinggi Api (L_f):</strong> ${formatNumber(calcSteps.L_f)} m`,
+                    `<strong>Pergeseran Pusat Api (x_shift):</strong> ${formatNumber(calcSteps.x_shift)} m`,
+                    `<strong>Energi (Q_f):</strong> ${formatNumber(calcSteps.Q_f / 1e6)} MW`
+                ]);
+                
+                const plotConfig = {
+                    title: "Zona Radiasi Pool Fire (Tilted)",
+                    plotType: "pool_fire",
+                    unit: "m",
+                    zones: zones,
+                    flameShiftX: flameShiftX, // Kirim pergeseran ke visualisasi
+                    flameShiftY: 0
+                };
+                drawConsequencePlot('pool_fire-canvas', 'pool_fire-legend', 'pool_fire-results', plotConfig);
+            }
+
+            // TINGKAT 3: Jet Fire
+            function handleJetFire(e) {
+                e.preventDefault();
+                const props = getActiveProps();
+                const env = getEnvInputs();
+                
+                // PERUBAHAN: Ambil input baru
+                const P_bar = parseFloat(document.getElementById('jet_fire-pressure').value);
+                const T_c = parseFloat(document.getElementById('jet_fire-temperature').value);
+                const d_mm = parseFloat(document.getElementById('jet_fire-diameter').value);
+                const C_d = parseFloat(document.getElementById('jet_fire-cd').value);
+                const F_rad = parseFloat(document.getElementById('jet-frad').value);
+                
+                // Langkah A: Hitung m_dot (seperti di Tingkat 1)
+                const m_dot_gas = calculateChokedFlow(P_bar, T_c, d_mm, C_d, props.gamma, props.M);
+                
+                // Langkah B: Hitung properti jet (v_jet)
+                const A = Math.PI * Math.pow(d_mm / 2000, 2);
+                // Asumsi ekspansi ke P_0, T_amb (Simplifikasi TNO)
+                const rho_jet_exit = (props.M * P_0_Pa) / (R_g * env.T_amb_K); 
+                const v_jet = m_dot_gas / (rho_jet_exit * A);
+                
+                // Langkah C: Panggil kalkulator dengan parameter baru
+                const { zones, calcSteps, flameShiftX, flameShiftY } = calculateJetFire(
+                    props, m_dot_gas, F_rad, env.T_amb_C, env.RH, 
+                    env.u_w, // Kecepatan angin (Crosswind)
+                    v_jet      // Kecepatan jet (Downwind)
+                );
+                
+                displayCalculationSteps(document.getElementById('jet-fire-calculated-result'), "Hasil Kalkulasi Jet Fire", [
+                    `<strong>Laju Alir (ṁ):</strong> ${formatNumber(m_dot_gas)} kg/s`,
+                    `<strong>Kecepatan Jet (v_jet):</strong> ${formatNumber(v_jet)} m/s`,
+                    `<strong>Kecepatan Angin (u_w):</strong> ${formatNumber(env.u_w)} m/s`,
+                    `<strong>Panjang Api (L_f):</strong> ${formatNumber(calcSteps.L_f)} m`,
+                    `<strong>Pergeseran Crosswind (y_shift):</strong> ${formatNumber(calcSteps.y_shift)} m`,
+                    `<strong>Energi (Q_f):</strong> ${formatNumber(calcSteps.Q_f / 1e6)} MW`
+                ]);
+                
+                const plotConfig = {
+                    title: "Zona Radiasi Jet Fire (Dragged)",
+                    plotType: "jet_flame",
+                    unit: "m",
+                    zones: zones,
+                    flameShiftX: flameShiftX, // Kirim pergeseran X (pusat api)
+                    flameShiftY: flameShiftY  // Kirim pergeseran Y (drag angin)
+                };
+                drawConsequencePlot('jet_fire-canvas', 'jet_fire-legend', 'jet_fire-results', plotConfig);
+            }
+            
+            // TINGKAT 3: VCE
+            function handleVCE(e) {
+                e.preventDefault();
+                const props = getActiveProps();
+                const m_vap = parseFloat(document.getElementById('vce-manual-mass').value);
+                const curveNumber = parseInt(document.getElementById('vce-curve-number').value);
+                
+                const { zones, calcSteps } = calculateVCE_TNO(props, m_vap, curveNumber);
+                
+                displayCalculationSteps(document.getElementById('vce-calculated-result'), "Hasil Kalkulasi VCE", [
+                    `<strong>Massa (m_vap):</strong> ${formatNumber(m_vap)} kg`,
+                    `<strong>Energi (E_vce):</strong> ${formatNumber(calcSteps.E_vce_J / 1e6)} MJ`,
+                    `<strong>Kurva TNO:</strong> ${curveNumber}`
+                ]);
+                
+                const plotConfig = {
+                    title: "Zona Overpressure VCE (TNO)",
+                    plotType: "vce",
+                    unit: "m",
+                    zones: zones
+                };
+                drawConsequencePlot('vce-canvas', 'vce-legend', 'vce-results', plotConfig);
+            }
+
+            // TINGKAT 3: BLEVE
+            function handleBLEVE(e) {
+                e.preventDefault();
+                const props = getActiveProps();
+                const env = getEnvInputs();
+                const M_kg = parseFloat(document.getElementById('bleve-mass').value);
+                const F_rad = parseFloat(document.getElementById('bleve-frad').value);
+
+                const { zones, calcSteps } = calculateBLEVE(props, M_kg, F_rad, env.T_amb_C, env.RH);
+                
+                displayCalculationSteps(document.getElementById('bleve-calculated-result'), "Hasil Kalkulasi BLEVE", [
+                    `<strong>Massa (M):</strong> ${formatNumber(M_kg)} kg`,
+                    `<strong>Diameter (D_max):</strong> ${formatNumber(calcSteps.D_max)} m`,
+                    `<strong>Durasi (t):</strong> ${formatNumber(calcSteps.t_duration)} s`,
+                    `<strong>Tinggi (H_f):</strong> ${formatNumber(calcSteps.H_f)} m`,
+                    `<strong>SEP:</strong> ${formatNumber(calcSteps.SEP / 1000)} kW/m²`
+                ]);
+                
+                const plotConfig = {
+                    title: "Zona Radiasi BLEVE (Ground Level)",
+                    plotType: "bleve",
+                    unit: "m",
+                    zones: zones
+                };
+                drawConsequencePlot('bleve-canvas', 'bleve-legend', 'bleve-results', plotConfig);
+            }
+            
+            // TINGKAT 4: Probit
+            function handleProbit(e) {
+                e.preventDefault();
+                const props = getActiveProps();
+                const probitType = document.getElementById('probit-type').value;
+                
+                let inputs = {};
+                switch (probitType) {
+                    case 'thermal':
+                        inputs = {
+                            flux_kW_m2: parseFloat(document.getElementById('probit-thermal-flux').value),
+                            duration_s: parseFloat(document.getElementById('probit-thermal-duration').value)
+                        };
+                        break;
+                    case 'overpressure':
+                        inputs = {
+                            pressure_bar: parseFloat(document.getElementById('probit-pressure-peak').value)
+                        };
+                        break;
+                    case 'toxic':
+                        inputs = {
+                            ppm: parseFloat(document.getElementById('probit-toxic-ppm').value),
+                            duration_min: parseFloat(document.getElementById('probit-toxic-duration').value)
+                        };
+                        break;
+                }
+                
+                const { fatalProb, injuryProb, Pr, doseString, error } = calculateProbit(props, probitType, inputs);
+                
+                if (error) {
+                    displayCalculationSteps(document.getElementById('probit-calculated-result'), "Error", [error]);
+                    document.getElementById('probit-result-display').innerHTML = `<p class="text-red-600 text-center">${error}</p>`;
+                    return;
+                }
+
+                const steps = [
+                    `<strong>Tipe Bahaya:</strong> ${probitType}`,
+                    `<strong>Input Dosis:</strong> ${doseString}`,
+                    `<strong>Nilai Probit (Pr):</strong> ${formatNumber(Pr)}`
+                ];
+                const final = `Prob. Fatalitas: <span class="final-value">${formatNumber(fatalProb)}%</span> | Prob. Cedera: <span class="final-value">${formatNumber(injuryProb)}%</span>`;
+                displayCalculationSteps(document.getElementById('probit-calculated-result'), "Hasil Analisis Probit", steps, final);
+
+                // Tampilkan di panel kanan
+                const resultElRight = document.getElementById('probit-result-display');
+                resultElRight.innerHTML = `
+                    <div class="calculated-result-multi" style="display:block; text-align:center; max-width: 400px; margin: 20px auto; background-color: #fceded; border-color: #f5c6cb;">
+                        <h3 style="font-size: 20px; margin-bottom: 10px; color: #721c24; border-color: #f5c6cb;">Probabilitas Fatalitas</h3>
+                        <div style="font-size: 36px; font-weight: 700; color: #721c24; margin-bottom: 15px;">
+                            ${formatNumber(fatalProb)} <span style="font-size: 20px; font-weight: 500; color: #333;">%</span>
+                        </div>
+                    </div>
+                    <div class="calculated-result-multi" style="display:block; text-align:center; max-width: 400px; margin: 20px auto; background-color: #fff3cd; border-color: #ffeeba;">
+                        <h3 style="font-size: 20px; margin-bottom: 10px; color: #856404; border-color: #ffeeba;">Probabilitas Cedera Serius</h3>
+                        <div style="font-size: 36px; font-weight: 700; color: #856404; margin-bottom: 15px;">
+                            ${formatNumber(injuryProb)} <span style="font-size: 20px; font-weight: 500; color: #333;">%</span>
+                        </div>
+                    </div>
+                    <p class="text-center text-gray-600 mt-4 text-sm">${doseString}</p>
+                `;
+            }
+            
+            // BARU: TINGKAT 5
+            function handleIR(e) {
+                e.preventDefault();
+                
+                const p_scenario = parseFloat(document.getElementById('ir-p-scenario').value);
+                const p_weather = parseFloat(document.getElementById('ir-p-weather').value);
+                const p_presence = parseFloat(document.getElementById('ir-p-presence').value);
+                const p_probit_percent = parseFloat(document.getElementById('ir-p-probit').value);
+                
+                // Konversi probit % ke desimal
+                const p_probit_fatal = p_probit_percent / 100.0;
+                
+                const { IR } = calculateIR(p_scenario, p_weather, p_presence, p_probit_fatal);
+                
+                const steps = [
+                    `<strong>P Skenario (per tahun):</strong> ${p_scenario.toExponential(2)}`,
+                    `<strong>P Cuaca (fraksi):</strong> ${formatNumber(p_weather)}`,
+                    `<strong>P Kehadiran (fraksi):</strong> ${formatNumber(p_presence)}`,
+                    `<strong>P Fatalitas (fraksi):</strong> ${formatNumber(p_probit_fatal)}`
+                ];
+                const final = `Risiko Individu (IR): <span class="final-value">${IR.toExponential(3)} / tahun</span>`;
+                displayCalculationSteps(document.getElementById('ir-calculated-result'), "Hasil Kalkulasi QRA", steps, final);
+
+                // Tampilkan di panel kanan
+                displayCalculatorResult('ir-result-display', 'Risiko Individu (IR)', IR, '/ tahun', 'qra');
+                document.getElementById('ir-result-display').innerHTML += `
+                    <p class="text-center text-gray-600 mt-4 text-sm">
+                        Formula: P_skenario * P_cuaca * P_kehadiran * P_fatalitas<br>
+                        IR = ${p_scenario.toExponential(2)} * ${p_weather} * ${p_presence} * ${p_probit_fatal}
+                    </p>
+                `;
+            }
+
+        }); // Akhir DOMContentLoaded
+    </script>
+</body>
+</html>
