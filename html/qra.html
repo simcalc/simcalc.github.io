@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Model Analisis Konsekuensi CCPS/TNO - Virsim</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f7f7;
+        }
+        .sidebar-btn {
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+        }
+        .analysis-panel {
+            min-height: 70vh;
+        }
+        .shadow-custom {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex">
+
+    <!-- Sidebar / Navigasi Tingkat Analisis -->
+    <div class="w-64 bg-gray-800 text-white p-4 shadow-xl flex flex-col">
+        <h1 class="text-xl font-bold mb-6 text-indigo-400">Analisis Risiko (QRA)</h1>
+        <nav class="flex-grow space-y-2">
+            <!-- Tingkat 1 -->
+            <button data-level="level1" class="sidebar-btn w-full px-4 py-2 text-left rounded-lg bg-indigo-600 text-white" onclick="showLevel('level1')">
+                <span class="font-mono mr-3 text-lg">1</span> Tingkat Sumber
+            </button>
+            <!-- Tingkat 2 -->
+            <button data-level="level2" class="sidebar-btn w-full px-4 py-2 text-left rounded-lg text-indigo-200 hover:bg-indigo-700" onclick="showLevel('level2')">
+                <span class="font-mono mr-3 text-lg">2</span> Tingkat Interaksi
+            </button>
+            <!-- Tingkat 3 -->
+            <button data-level="level3" class="sidebar-btn w-full px-4 py-2 text-left rounded-lg text-indigo-200 hover:bg-indigo-700" onclick="showLevel('level3')">
+                <span class="font-mono mr-3 text-lg">3</span> Tingkat Dampak
+            </button>
+            <!-- Tingkat 4 -->
+            <button data-level="level4" class="sidebar-btn w-full px-4 py-2 text-left rounded-lg text-indigo-200 hover:bg-indigo-700" onclick="showLevel('level4')">
+                <span class="font-mono mr-3 text-lg">4</span> Tingkat Efek (Probit)
+            </button>
+            <!-- Tingkat 5: QRA - Risiko Individu (IR) -->
+            <button data-level="level5" class="sidebar-btn w-full px-4 py-2 text-left rounded-lg text-indigo-200 hover:bg-indigo-700" onclick="showLevel('level5')">
+                <span class="font-mono mr-3 text-lg">5</span> Kalkulator Risiko Individu (IR)
+            </button>
+        </nav>
+        <footer class="mt-6 text-xs text-gray-500 text-center">
+            Model CCPS/TNO Sederhana
+        </footer>
+    </div>
+
+    <!-- Konten Utama Analisis -->
+    <main class="flex-grow p-8 bg-gray-50 overflow-y-auto">
+
+        <!-- Tingkat 1: Tingkat Sumber -->
+        <div id="level1" class="analysis-panel bg-white p-6 rounded-xl shadow-custom">
+            <h2 class="text-3xl font-semibold text-gray-800 border-b pb-3 mb-5">Tingkat 1: Analisis Sumber (Source Term)</h2>
+            <p class="text-gray-600 mb-6">Mendefinisikan properti material, laju kebocoran, dan kondisi pelepasan.</p>
+
+            <div class="space-y-4">
+                <h3 class="text-xl font-medium text-indigo-700">Input Skenario Pelepasan</h3>
+                <!-- Contoh Input -->
+                <div class="flex flex-col">
+                    <label for="material" class="text-sm font-medium text-gray-700">Material Dilepaskan:</label>
+                    <input type="text" id="material" value="Gas Alam (Metana)" class="mt-1 p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
+                </div>
+                <div class="flex flex-col">
+                    <label for="flowrate" class="text-sm font-medium text-gray-700">Laju Kebocoran (ṁ_gas) [kg/s]:</label>
+                    <input type="number" id="flowrate" value="1.18" class="mt-1 p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
+                </div>
+                <!-- ... Tambahan input lainnya ... -->
+            </div>
+            
+            <div class="mt-8 pt-4 border-t">
+                <h3 class="text-xl font-medium text-green-700">Output Utama</h3>
+                <p class="mt-2 text-lg text-gray-800">Massa total dilepaskan, durasi pelepasan, fase.</p>
+                <div class="bg-green-50 p-3 rounded-lg mt-3">
+                    <p>Fase Dominan: <span class="font-semibold">Gas</span></p>
+                    <p>Energi Laju Pelepasan: <span class="font-semibold">25 MW (Contoh)</span></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tingkat 2: Tingkat Interaksi (Dispersion/Fire) -->
+        <div id="level2" class="analysis-panel hidden bg-white p-6 rounded-xl shadow-custom">
+            <h2 class="text-3xl font-semibold text-gray-800 border-b pb-3 mb-5">Tingkat 2: Analisis Interaksi (Dispersi atau Api)</h2>
+            <p class="text-gray-600 mb-6">Mengevaluasi bagaimana material berinteraksi dengan lingkungan (cuaca, penyebaran).</p>
+            
+            <h3 class="text-xl font-medium text-indigo-700 mb-3">Kondisi Cuaca yang Disimulasikan</h3>
+            <div class="bg-yellow-50 p-3 rounded-lg mb-6">
+                <p class="font-semibold">Kondisi Saat Ini:</p>
+                <p>Kecepatan Angin: <span class="font-medium">1.5 m/s</span></p>
+                <p>Kelas Stabilitas Atmosfer: <span class="font-medium">D (Netral)</span></p>
+            </div>
+
+            <div class="mt-8 pt-4 border-t">
+                <h3 class="text-xl font-medium text-green-700">Output Utama (Contoh Dispersi)</h3>
+                <p class="mt-2 text-lg text-gray-800">Jarak hingga ambang batas konsentrasi.</p>
+                <div class="bg-green-50 p-3 rounded-lg mt-3">
+                    <p>Jarak hingga LFL (Lower Flammability Limit): <span class="font-semibold">50 meter</span></p>
+                    <p>Jarak hingga Konsentrasi Toksik IDLH: <span class="font-semibold">150 meter</span></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tingkat 3: Tingkat Dampak (Dose) -->
+        <div id="level3" class="analysis-panel hidden bg-white p-6 rounded-xl shadow-custom">
+            <h2 class="text-3xl font-semibold text-gray-800 border-b pb-3 mb-5">Tingkat 3: Analisis Dampak (Dosis)</h2>
+            <p class="text-gray-600 mb-6">Menghitung dosis (dose) atau paparan (exposure) yang diterima target pada titik tertentu.</p>
+            
+            <div class="space-y-4">
+                <h3 class="text-xl font-medium text-indigo-700">Input Titik Target</h3>
+                <div class="flex flex-col">
+                    <label for="distance" class="text-sm font-medium text-gray-700">Jarak Titik Observasi [meter]:</label>
+                    <input type="number" id="distance" value="100" class="mt-1 p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
+                </div>
+                <!-- ... Input lainnya ... -->
+            </div>
+            
+            <div class="mt-8 pt-4 border-t">
+                <h3 class="text-xl font-medium text-green-700">Output Utama</h3>
+                <p class="mt-2 text-lg text-gray-800">Dosis radiasi termal atau paparan konsentrasi.</p>
+                <div class="bg-green-50 p-3 rounded-lg mt-3">
+                    <p>Paparan Radiasi Termal di 100m: <span class="font-semibold">3.5 kW/m²</span></p>
+                    <p>Dosis Toksik Kumulatif di 100m: <span class="font-semibold">500 ppm-menit (Contoh)</span></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tingkat 4: Tingkat Efek (Probit) -->
+        <div id="level4" class="analysis-panel hidden bg-white p-6 rounded-xl shadow-custom">
+            <h2 class="text-3xl font-semibold text-gray-800 border-b pb-3 mb-5">Tingkat 4: Analisis Efek (Probit/Probabilitas Fatalitas)</h2>
+            <p class="text-gray-600 mb-6">Mengubah Dampak (Dosis) menjadi Probabilitas Efek pada populasi target (misal: fatalitas).</p>
+            
+            <div class="space-y-4">
+                <h3 class="text-xl font-medium text-indigo-700">Input Dosis (dari Tingkat 3)</h3>
+                <div class="flex flex-col">
+                    <label for="probit_dose" class="text-sm font-medium text-gray-700">Dosis Input (misal: Radiasi $I$ [kW/m²]):</label>
+                    <input type="number" id="probit_dose" value="3.5" class="mt-1 p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
+                </div>
+                <!-- ... Input lainnya (misal: Koefisien Probit) ... -->
+            </div>
+
+            <div class="mt-8 pt-4 border-t">
+                <h3 class="text-xl font-medium text-green-700">Output Utama</h3>
+                <p class="mt-2 text-lg text-gray-800">Probabilitas Fatalitas (Probit Fatalitas) di titik tersebut.</p>
+                <div class="bg-green-50 p-3 rounded-lg mt-3">
+                    <p>Nilai Probit ($\text{Y}$): <span class="font-semibold">3.8</span></p>
+                    <p>Probabilitas Fatalitas ($\text{Prob}_{\text{Fatalitas}}$): <span class="font-semibold" id="probitResult">0.05</span> (Contoh: 5%)</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- TINGKAT 5: Kalkulator Risiko Individu (IR) - QRA -->
+        <div id="level5" class="analysis-panel hidden bg-white p-6 rounded-xl shadow-custom">
+            <h2 class="text-3xl font-semibold text-gray-800 border-b pb-3 mb-5">Tingkat 5: Kalkulator Risiko Individu (IR)</h2>
+            <p class="text-gray-600 mb-6">Menggabungkan probabilitas untuk menghitung Risiko Individu (Individual Risk) per tahun di satu titik observasi.</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- INPUTS -->
+                <div class="space-y-4">
+                    <h3 class="text-xl font-medium text-indigo-700 border-b pb-2">Probabilitas Input (Peristiwa)</h3>
+
+                    <!-- 1. Probabilitas Skenario (Event Probability) -->
+                    <div class="flex flex-col">
+                        <label for="prob_scenario" class="text-sm font-medium text-gray-700">1. Probabilitas Skenario (Per Tahun):</label>
+                        <input type="text" id="prob_scenario" value="1.0e-4" class="mt-1 p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500" placeholder="Misal: 1.0e-4">
+                        <p class="text-xs text-gray-500 mt-1">Seberapa sering skenario kebocoran terjadi per tahun.</p>
+                    </div>
+
+                    <!-- 2. Probabilitas Cuaca (Weather Probability) -->
+                    <div class="flex flex-col">
+                        <label for="prob_weather" class="text-sm font-medium text-gray-700">2. Probabilitas Cuaca (Terkait Kondisi Ini):</label>
+                        <input type="number" id="prob_weather" value="0.05" class="mt-1 p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500" placeholder="Misal: 0.05 (5%)">
+                        <p class="text-xs text-gray-500 mt-1">Probabilitas tahunan kondisi Angin/Stabilitas yang disimulasikan.</p>
+                    </div>
+
+                    <!-- 3. Probabilitas Kehadiran (Presence Probability) -->
+                    <div class="flex flex-col">
+                        <label for="prob_presence" class="text-sm font-medium text-gray-700">3. Probabilitas Kehadiran (Presence Probability):</label>
+                        <input type="number" id="prob_presence" value="0.22" class="mt-1 p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500" placeholder="Misal: 0.22">
+                        <p class="text-xs text-gray-500 mt-1">Apakah orang berada di titik ini 24/7 (1.0) atau hanya jam kerja (0.22).</p>
+                    </div>
+                    
+                    <!-- 4. Probabilitas Fatalitas (Probit Result) -->
+                    <div class="flex flex-col">
+                        <label for="prob_probit" class="text-sm font-medium text-gray-700">4. Probabilitas Probit Fatalitas (Dari Tingkat 4):</label>
+                        <input type="number" id="prob_probit" value="0.05" class="mt-1 p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500" placeholder="Misal: 0.05">
+                        <p class="text-xs text-gray-500 mt-1">Probabilitas Fatalitas di titik observasi ini ($\text{Prob}_{\text{Fatalitas}}$).</p>
+                    </div>
+                </div>
+
+                <!-- OUTPUT -->
+                <div class="space-y-4 bg-indigo-50 p-4 rounded-lg flex flex-col justify-between">
+                    <div>
+                        <h3 class="text-xl font-medium text-indigo-700 border-b pb-2">Perhitungan Risiko</h3>
+                        <p class="text-gray-700 text-sm mt-3 mb-4">
+                            $\text{IR} = \text{Prob}_{\text{Skenario}} \times \text{Prob}_{\text{Cuaca}} \times \text{Prob}_{\text{Kehadiran}} \times \text{Prob}_{\text{Fatalitas}}$
+                        </p>
+
+                        <button onclick="calculateIR()" class="w-full bg-indigo-600 text-white p-3 rounded-lg font-semibold hover:bg-indigo-700 transition duration-150 shadow-md">
+                            HITUNG RISIKO INDIVIDU (IR)
+                        </button>
+                    </div>
+
+                    <div class="mt-6 p-4 bg-white rounded-lg border-2 border-indigo-400">
+                        <h4 class="text-lg font-bold text-indigo-800">RISIKO INDIVIDU (IR) PER TAHUN:</h4>
+                        <p id="irResult" class="text-4xl font-extrabold text-indigo-600 mt-2">
+                            0.0
+                        </p>
+                        <p class="text-sm text-gray-500">Nilai target dibandingkan dengan kriteria risiko (misal: $1.0\times 10^{-6} / \text{tahun}$)</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-8 p-4 bg-red-100 border-l-4 border-red-500 text-red-700 rounded-lg">
+                <p class="font-bold">Catatan Penting QRA:</p>
+                <p class="text-sm">Perhitungan di atas adalah perhitungan **satu titik** dan **satu skenario cuaca tunggal**. QRA penuh memerlukan $\sum (\text{Prob}_{\text{Skenario}} \times \text{Prob}_{\text{Cuaca, n}} \times \text{Prob}_{\text{Probit Fatalitas, n}})$ di mana $\text{n}$ adalah semua kondisi cuaca/arah mata angin yang mungkin.</p>
+            </div>
+        </div>
+
+
+    </main>
+
+    <script>
+        // Fungsi untuk mengelola tampilan Tingkat Analisis (Panel).
+        // Fungsi ini menggantikan fungsi lama yang rusak.
+        function showLevel(levelId) {
+            // 1. Sembunyikan semua panel analisis
+            document.querySelectorAll('.analysis-panel').forEach(panel => {
+                panel.classList.add('hidden');
+            });
+
+            // 2. Tampilkan panel yang diminta
+            const targetPanel = document.getElementById(levelId);
+            if (targetPanel) {
+                targetPanel.classList.remove('hidden');
+            }
+
+            // 3. Perbarui status tombol aktif di sidebar
+            document.querySelectorAll('.sidebar-btn').forEach(btn => {
+                btn.classList.remove('bg-indigo-600', 'text-white');
+                btn.classList.add('text-indigo-200', 'hover:bg-indigo-700');
+            });
+            const activeBtn = document.querySelector(`.sidebar-btn[data-level='${levelId}']`);
+            if (activeBtn) {
+                activeBtn.classList.remove('text-indigo-200', 'hover:bg-indigo-700');
+                activeBtn.classList.add('bg-indigo-600', 'text-white');
+            }
+
+            // Atur kembali hasil IR saat berganti panel, agar terlihat bersih saat kembali ke Tingkat 5
+            if (levelId !== 'level5') {
+                 // Amankan dari kasus di mana elemen 'irResult' belum dimuat, meskipun seharusnya sudah
+                 const irResultElement = document.getElementById('irResult');
+                 if (irResultElement) {
+                     irResultElement.textContent = '0.0';
+                 }
+            }
+        }
+
+        // Fungsi Perhitungan Risiko Individu (IR) untuk Tingkat 5
+        function calculateIR() {
+            try {
+                // Ambil nilai input
+                const probScenarioStr = document.getElementById('prob_scenario').value;
+                const probWeather = parseFloat(document.getElementById('prob_weather').value);
+                const probPresence = parseFloat(document.getElementById('prob_presence').value);
+                const probProbit = parseFloat(document.getElementById('prob_probit').value);
+
+                // Mengatasi notasi ilmiah (misal: 1.0e-4) dengan parseFloat
+                let probScenario;
+                if (probScenarioStr.includes('e') || probScenarioStr.includes('E')) {
+                    probScenario = parseFloat(probScenarioStr);
+                } else {
+                    probScenario = parseFloat(probScenarioStr);
+                }
+
+                // Validasi input
+                if (isNaN(probScenario) || isNaN(probWeather) || isNaN(probPresence) || isNaN(probProbit)) {
+                    document.getElementById('irResult').textContent = 'Input Tidak Valid';
+                    return;
+                }
+                
+                // Rumus Perhitungan Risiko Individu (IR)
+                // IR = Prob_Skenario * Prob_Cuaca * Prob_Kehadiran * Prob_Fatalitas
+                const individualRisk = probScenario * probWeather * probPresence * probProbit;
+
+                // Tampilkan hasil dengan notasi ilmiah untuk keterbacaan risiko yang sangat kecil
+                // Tampilkan 2 angka di belakang koma untuk notasi ilmiah
+                document.getElementById('irResult').textContent = individualRisk.toExponential(2);
+
+            } catch (error) {
+                console.error("Kesalahan saat menghitung IR:", error);
+                document.getElementById('irResult').textContent = 'Kesalahan Perhitungan';
+            }
+        }
+
+        // Inisialisasi: Tampilkan Tingkat 1 saat halaman dimuat
+        document.addEventListener('DOMContentLoaded', () => {
+            showLevel('level1');
+        });
+    </script>
+</body>
+</html>
