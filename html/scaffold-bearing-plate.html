@@ -1,113 +1,735 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kalkulasi Beban Scaffolding</title>
-<style>
+  <meta charset="UTF-8" />
+  <title>Scaffolding Soil Bearing Check (CBR Based)</title>
+  <!-- Meta tag viewport ini memastikan dukungan responsif di semua perangkat mobile -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --card: #ffffff;
+      --accent: #2563eb;
+      --accent-soft: #dbeafe;
+      --danger: #dc2626;
+      --danger-soft: #fee2e2;
+      --success: #16a34a;
+      --success-soft: #dcfce7;
+      --text: #111827;
+      --muted: #6b7280;
+      --border: #e5e7eb;
+      --radius: 12px;
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
+    }
+
     body {
-        font-family: Arial, sans-serif;
-        margin: 20px;
-        background: #f4f4f4;
+      margin: 0;
+      padding: 0;
+      background: radial-gradient(circle at top left, #e0f2fe, #eef2ff);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
-    .container {
-        max-width: 500px;
-        margin: auto;
-        background: #fff;
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+
+    .wrapper {
+      max-width: 1100px;
+      margin: 24px auto;
+      padding: 0 16px 32px;
+      flex: 1;
+      width: 100%;
     }
-    h2 {
-        text-align: center;
-        color: #333;
+
+    /* Style khusus untuk Header Image agar responsif */
+    .header-banner {
+      display: block;
+      width: 100%;
+      height: 200px; /* Tinggi default desktop */
+      object-fit: cover; /* Memastikan gambar tidak gepeng */
+      object-position: center;
+      border-radius: var(--radius);
+      margin-bottom: 24px;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      background-color: #cbd5e1; /* Placeholder loading color */
     }
+
+    h1 {
+      font-size: 1.7rem;
+      margin-bottom: 4px;
+      color: #1e293b;
+    }
+
+    .subtitle {
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin-bottom: 16px;
+      line-height: 1.5;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 3fr) minmax(0, 2.5fr);
+      gap: 16px;
+      align-items: flex-start;
+    }
+
+    /* Responsive Breakpoint: Layout berubah vertikal di layar < 880px */
+    @media (max-width: 880px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+      
+      .header-banner {
+        height: 140px; /* Tinggi disesuaikan untuk tablet/mobile */
+        margin-bottom: 20px;
+      }
+    }
+
+    /* Responsive Breakpoint: Penyesuaian font dan padding di layar ponsel */
+    @media (max-width: 480px) {
+      h1 { font-size: 1.4rem; }
+      .header-banner { height: 120px; }
+      .wrapper { padding: 0 12px 24px; margin-top: 16px; }
+      .card { padding: 16px; } /* Mengurangi padding kartu agar lebih luas */
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      padding: 20px;
+      border: 1px solid rgba(148, 163, 184, 0.15);
+      margin-bottom: 16px;
+    }
+
+    .card h2 {
+      font-size: 1.1rem;
+      margin-top: 0;
+      margin-bottom: 8px;
+      color: #1e293b;
+    }
+    
+    .card h3 {
+        font-size: 0.95rem;
+        margin: 16px 0 8px;
+        color: #334155;
+    }
+
+    .section-caption {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-bottom: 16px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 16px;
+    }
+
     label {
-        display: block;
-        margin-top: 10px;
-        font-weight: bold;
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: #374151;
     }
-    input {
-        width: 100%;
-        padding: 8px;
-        margin-top: 5px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
+
+    .field {
+      margin-bottom: 0; /* Controlled by grid gap */
     }
+
+    input[type="number"],
+    select {
+      width: 100%;
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      font-size: 0.9rem;
+      background: #f9fafb;
+      transition: all 0.2s;
+    }
+
+    input[type="number"]:focus,
+    select:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+      background: #ffffff;
+    }
+
+    /* Utility class untuk input berdampingan agar responsif */
+    .input-group-row {
+        display: flex;
+        gap: 8px;
+    }
+    /* Pada layar sangat kecil, input berdampingan jadi vertikal */
+    @media (max-width: 360px) {
+        .input-group-row {
+            flex-direction: column;
+        }
+    }
+
+    .unit {
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    .section-divider {
+      margin: 20px 0 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px dashed var(--border);
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #1e293b;
+    }
+
+    .btn-row {
+      margin-top: 24px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
     button {
-        margin-top: 15px;
-        width: 100%;
-        padding: 10px;
-        background: #007bff;
-        color: #fff;
-        border: none;
+      border-radius: 8px;
+      border: none;
+      padding: 10px 20px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #ffffff;
+      box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2);
+    }
+
+    .btn-primary:hover {
+      background: #1d4ed8;
+      transform: translateY(-1px);
+    }
+
+    .btn-primary:active {
+      transform: translateY(0);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid transparent;
+    }
+
+    .btn-ghost:hover {
+      background: #f3f4f6;
+      color: #374151;
+    }
+
+    .chips-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 20px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+    }
+
+    .chip {
+      font-size: 0.7rem;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: #f1f5f9;
+      color: #64748b;
+      font-family: monospace;
+    }
+
+    .results-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 8px;
+      margin-bottom: 16px;
+      flex-wrap: wrap; /* Agar header tidak berantakan di layar kecil */
+    }
+
+    .status-badge {
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .status-safe {
+      background: var(--success-soft);
+      color: var(--success);
+      border: 1px solid rgba(22, 163, 74, 0.2);
+    }
+
+    .status-unsafe {
+      background: var(--danger-soft);
+      color: var(--danger);
+      border: 1px solid rgba(220, 38, 38, 0.2);
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: currentColor;
+    }
+
+    .result-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .result-box {
+      padding: 12px 14px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: #f8fafc;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .result-label {
+      font-size: 0.75rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .result-value {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #1e293b;
+      word-break: break-word; /* Mencegah teks panjang merusak layout */
+    }
+
+    .result-subvalue {
+      font-size: 0.8rem;
+      color: #64748b;
+      margin-top: 2px;
+    }
+
+    .explanation {
+      font-size: 0.85rem;
+      color: #475569;
+      margin-top: 16px;
+      line-height: 1.6;
+      background: #eff6ff;
+      padding: 12px;
+      border-radius: 8px;
+      border-left: 4px solid var(--accent);
+    }
+
+    .tagline {
+      font-size: 0.75rem;
+      color: #94a3b8;
+      margin-top: 16px;
+      font-style: italic;
+    }
+
+    /* Reference section styles */
+    .ref-content {
+        font-size: 0.8rem;
+        color: #475569;
+        line-height: 1.6;
+    }
+    .ref-content ul {
+        padding-left: 20px;
+        margin: 8px 0;
+    }
+    .ref-content li {
+        margin-bottom: 6px;
+    }
+    .formula {
+        font-family: "Courier New", monospace;
+        background: #f1f5f9;
+        padding: 2px 6px;
         border-radius: 4px;
-        font-size: 16px;
-        cursor: pointer;
+        color: #0f172a;
+        display: inline-block; /* Agar formula panjang bisa wrap jika perlu */
     }
-    button:hover {
-        background: #0056b3;
-    }
-    .result {
-        margin-top: 20px;
-        padding: 15px;
-        border-radius: 6px;
-        font-weight: bold;
+
+    footer {
+        margin-top: auto;
         text-align: center;
+        padding: 20px 0;
+        font-size: 0.85rem;
+        color: var(--muted);
+        border-top: 1px solid #e2e8f0;
+        background-color: #f8fafc;
     }
-    .safe {
-        background: #d4edda;
-        color: #155724;
-    }
-    .unsafe {
-        background: #f8d7da;
-        color: #721c24;
-    }
-</style>
+  </style>
 </head>
 <body>
-<div class="container">
-    <h2>Kalkulasi Beban Scaffolding</h2>
-    <label>Beban Total (Ton):</label>
-    <input type="number" id="beban" value="2.5" step="0.1">
-    
-    <label>Ukuran Base Plate (cm):</label>
-    <input type="number" id="panjang" value="15" step="0.1">
-    <input type="number" id="lebar" value="15" step="0.1">
-    
-    <label>Jumlah Base Plate:</label>
-    <input type="number" id="jumlah" value="4">
-    
-    <label>Daya Dukung Tanah (kN/m²):</label>
-    <input type="number" id="dayaDukung" value="2000">
-    
-    <button onclick="hitung()">Hitung</button>
-    
-    <div id="hasil" class="result"></div>
-</div>
+  <div class="wrapper">
+    <!-- HEADER IMAGE -->
+    <img 
+      src="https://simcalc.github.io/img/header-scaffold-soleplate.webp" 
+      alt="Scaffolding Sole Plate Illustration" 
+      class="header-banner"
+      onerror="this.style.display='none'"
+    />
 
-<script>
-function hitung() {
-    const bebanTon = parseFloat(document.getElementById('beban').value);
-    const panjang = parseFloat(document.getElementById('panjang').value) / 100; // cm ke m
-    const lebar = parseFloat(document.getElementById('lebar').value) / 100; // cm ke m
-    const jumlah = parseInt(document.getElementById('jumlah').value);
-    const dayaDukung = parseFloat(document.getElementById('dayaDukung').value);
+    <h1>Scaffolding &amp; CBR Check</h1>
+    <p class="subtitle">
+      Kalkulator teknis untuk mengevaluasi keamanan beban scaffolding terhadap daya dukung tanah berdasarkan nilai California Bearing Ratio (CBR).
+    </p>
 
-    const bebanKN = bebanTon * 9.81; // konversi ton ke kN
-    const bebanPerPlate = bebanKN / jumlah;
-    const luasPlate = panjang * lebar;
-    const tekanan = bebanPerPlate / luasPlate; // kN/m²
+    <div class="layout">
+      <!-- LEFT COLUMN WRAPPER -->
+      <div>
+          <!-- INPUT CARD -->
+          <div class="card">
+            <h2>Input Data</h2>
+            <p class="section-caption">
+              Sesuaikan parameter di bawah sesuai kondisi lapangan. Satuan: SI (kg, mm, %).
+            </p>
 
-    let status = '';
-    if (tekanan <= dayaDukung) {
-        status = `<div class="safe">Aman ✅<br>Tekanan: ${tekanan.toFixed(2)} kN/m² (di bawah ${dayaDukung} kN/m²)</div>`;
-    } else {
-        status = `<div class="unsafe">Tidak Aman ❌<br>Tekanan: ${tekanan.toFixed(2)} kN/m² (melebihi ${dayaDukung} kN/m²)</div>`;
+            <!-- DATA SCAFFOLDING -->
+            <div class="section-divider">A. Konfigurasi Scaffolding</div>
+
+            <div class="form-grid">
+              <div class="field">
+                <label for="scaffWeight">Berat Struktur Scaffolding</label>
+                <input type="number" id="scaffWeight" value="810" min="0" step="1" />
+                <div class="unit">kg (total material)</div>
+              </div>
+              <div class="field">
+                <label for="numWorkers">Jumlah Pekerja</label>
+                <input type="number" id="numWorkers" value="3" min="0" step="1" />
+                <div class="unit">orang</div>
+              </div>
+              <div class="field">
+                <label for="workerWeight">Berat per Pekerja</label>
+                <input type="number" id="workerWeight" value="80" min="0" step="1" />
+                <div class="unit">kg/orang</div>
+              </div>
+              <div class="field">
+                <label for="dynFactor">Faktor Dinamis</label>
+                <input type="number" id="dynFactor" value="1.3" min="1.0" step="0.05" />
+                <div class="unit">Koefisien kejut (1.2–1.4)</div>
+              </div>
+              <div class="field">
+                <label for="numBases">Jumlah Base Plate</label>
+                <input type="number" id="numBases" value="4" min="1" step="1" />
+                <div class="unit">Titik tumpuan</div>
+              </div>
+              <div class="field">
+                <label for="baseLength">Dimensi Base Plate (P x L)</label>
+                <!-- Menggunakan class agar responsif -->
+                <div class="input-group-row">
+                    <input type="number" id="baseLength" value="150" min="1" step="1" placeholder="P" aria-label="Panjang Base Plate" />
+                    <input type="number" id="baseWidth" value="150" min="1" step="1" placeholder="L" aria-label="Lebar Base Plate" />
+                </div>
+                <div class="unit">milimeter (mm)</div>
+              </div>
+            </div>
+
+            <div class="section-divider">B. Parameter Tanah (CBR)</div>
+
+            <div class="form-grid">
+              <div class="field">
+                <label for="soilType">Kategori Tanah / CBR</label>
+                <select id="soilType">
+                  <option value="1.5">Sangat buruk (CBR ≈ 1,5%)</option>
+                  <option value="5">Buruk–sedang (CBR ≈ 5%)</option>
+                  <option value="13.5" selected>Sedang (CBR ≈ 13,5%)</option>
+                  <option value="35">Baik (CBR ≈ 35%)</option>
+                  <option value="70">Sangat baik (CBR ≈ 70%)</option>
+                  <option value="manual">Input Manual...</option>
+                </select>
+                <div class="unit">Pilih preset atau manual</div>
+              </div>
+              <div class="field">
+                <label for="cbrValue">Nilai CBR</label>
+                <input type="number" id="cbrValue" value="13.5" min="0.1" step="0.1" />
+                <div class="unit">Persentase (%)</div>
+              </div>
+              <div class="field">
+                <label for="fsTanah">Safety Factor (FS)</label>
+                <input type="number" id="fsTanah" value="3.0" min="1.1" step="0.1" />
+                <div class="unit">Umumnya 2.0–3.0</div>
+              </div>
+            </div>
+
+            <div class="btn-row">
+              <button class="btn-primary" id="btnHitung">
+                <span>🔍</span> Analisis Keamanan
+              </button>
+              <button class="btn-ghost" type="button" id="btnReset">
+                Reset Default
+              </button>
+            </div>
+          </div>
+
+          <!-- RESULTS CARD (Moved Here) -->
+          <div class="card" id="resultsCard">
+            <div class="results-header">
+              <div>
+                <h2>Hasil Analisis</h2>
+                <p class="section-caption" id="soilSummary" style="margin-bottom: 0;">
+                  Menunggu perhitungan...
+                </p>
+              </div>
+              <div id="statusBadge" class="status-badge status-unsafe" style="visibility:hidden;">
+                <span class="status-dot"></span>
+                <span id="statusText">STATUS</span>
+              </div>
+            </div>
+    
+            <div class="result-grid">
+              <div class="result-box">
+                <div class="result-label">Tekanan Kontak (Scaffolding)</div>
+                <div class="result-value" id="qScaffKPa">-</div>
+                <div class="result-subvalue" id="qScaffOther">Beban Aktual</div>
+              </div>
+              
+              <div class="result-box">
+                <div class="result-label">Kapasitas Ijin Tanah (Q_allow)</div>
+                <div class="result-value" id="qAllowKPa">-</div>
+                <div class="result-subvalue" id="qAllowOther">Batas Aman</div>
+              </div>
+              
+              <div class="result-box" style="flex-direction: row; justify-content: space-between; align-items: center;">
+                <div>
+                    <div class="result-label">Margin Keamanan</div>
+                    <div class="result-value" id="margin">-</div>
+                </div>
+                <div id="marginIcon" style="font-size: 1.5rem;">⚖️</div>
+              </div>
+    
+              <div class="result-box">
+                 <div class="result-label">Detail Beban</div>
+                 <div style="font-size: 0.9rem; color: #334155; margin-top: 4px;" id="weights">-</div>
+              </div>
+            </div>
+    
+            <div class="explanation" id="explanation" style="display: none;">
+              &nbsp;
+            </div>
+            
+            <p class="tagline">
+              Disclaimer: Kalkulator ini adalah alat bantu estimasi awal. Analisis geoteknik profesional dan pengujian lapangan (seperti Plate Load Test) tetap direkomendasikan untuk keputusan kritikal.
+            </p>
+          </div>
+      </div>
+
+      <!-- RIGHT COLUMN (Literature Only) -->
+      <div>
+          <!-- LITERATURE / REFERENCES CARD -->
+          <div class="card">
+            <h2>Landasan Teori & Referensi</h2>
+            <div class="ref-content">
+                <p>Perhitungan dalam kalkulator ini didasarkan pada prinsip-prinsip berikut:</p>
+                
+                <h3>1. Beban & Tekanan Kontak (Contact Pressure)</h3>
+                <p>Menggunakan prinsip mekanika teknik dasar dimana tekanan adalah gaya dibagi luas penampang:</p>
+                <ul>
+                    <li><strong>Rumus:</strong> <span class="formula">q = P / A</span></li>
+                    <li><strong>Beban (P):</strong> Berat mati (scaffold) + Berat hidup (pekerja). Faktor dinamis ditambahkan pada berat hidup untuk mengakomodasi gerakan pekerja (standar umum 1.2 - 1.4).</li>
+                    <li><strong>Luas (A):</strong> Luas efektif base plate yang menyentuh tanah.</li>
+                </ul>
+
+                <h3>2. Korelasi CBR ke Daya Dukung (Bearing Capacity)</h3>
+                <p>Karena data geoteknik seringkali terbatas pada nilai CBR (California Bearing Ratio) lapangan, digunakan korelasi empiris untuk mengestimasi daya dukung batas (Ultimate Bearing Capacity, qu):</p>
+                <ul>
+                    <li><strong>Model Empiris:</strong> <span class="formula">qu (kPa) ≈ 26.22 × CBR^0.664</span></li>
+                    <li><strong>Penjelasan:</strong> Ini adalah pendekatan konservatif yang sering digunakan dalam teknik sipil praktis untuk mengkonversi nilai kekuatan subgrade (CBR) menjadi kapasitas dukung ultimit. Nilai ini menyerupai korelasi yang dikembangkan oleh <em>Transport Research Laboratory (TRL)</em> dan referensi US Army Corps of Engineers yang menghubungkan CBR dengan Undrained Shear Strength (Su) dan Bearing Capacity.</li>
+                    <li><strong>Alternatif Sederhana:</strong> Seringkali <span class="formula">qu ≈ 30 × CBR</span> (dalam kPa) digunakan sebagai aturan praktis (rule of thumb) untuk tanah kohesif.</li>
+                </ul>
+
+                <h3>3. Faktor Keamanan (Safety Factor)</h3>
+                <p>Daya dukung ijin (Allowable Bearing Capacity) dihitung dengan membagi daya dukung ultimit dengan faktor keamanan:</p>
+                <ul>
+                    <li><strong>Rumus:</strong> <span class="formula">Q_allow = qu / FS</span></li>
+                    <li><strong>Referensi:</strong> Prinsip Geoteknik Terzaghi menyarankan FS antara 2.0 hingga 3.0 untuk fondasi dangkal permanen, namun untuk struktur sementara seperti scaffolding, nilai FS minimal 2.0 - 3.0 tetap disarankan tergantung pada ketidakpastian tanah.</li>
+                </ul>
+            </div>
+          </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+      Created calculation by Taufik tahun 2025
+  </footer>
+
+  <script>
+    // --- Helper functions ---
+    function quFromCBR(cbr) {
+      // Ultimate bearing capacity correlation (kPa)
+      return 26.22 * Math.pow(cbr, 0.664);
     }
 
-    document.getElementById('hasil').innerHTML = status;
-}
-</script>
+    function qAllowFromCBR(cbr, fs) {
+      return quFromCBR(cbr) / fs; // kPa
+    }
+
+    function format(num, digits = 2) {
+      if (!isFinite(num)) return "-";
+      return num.toLocaleString('id-ID', { maximumFractionDigits: digits, minimumFractionDigits: digits });
+    }
+
+    // --- Main calculation ---
+    function hitung() {
+      const scaffWeight = parseFloat(document.getElementById("scaffWeight").value) || 0;
+      const numWorkers = parseFloat(document.getElementById("numWorkers").value) || 0;
+      const workerWeight = parseFloat(document.getElementById("workerWeight").value) || 0;
+      const dynFactor = parseFloat(document.getElementById("dynFactor").value) || 1;
+      const numBases = parseFloat(document.getElementById("numBases").value) || 1;
+      const baseLength = parseFloat(document.getElementById("baseLength").value) || 1; // mm
+      const baseWidth = parseFloat(document.getElementById("baseWidth").value) || 1;    // mm
+
+      const soilTypeSel = document.getElementById("soilType").value;
+      let cbr = parseFloat(document.getElementById("cbrValue").value) || 0.1;
+      const fsTanah = parseFloat(document.getElementById("fsTanah").value) || 1.5;
+
+      // Jika soilType bukan manual, override CBR dengan nilai preset
+      if (soilTypeSel !== "manual") {
+        cbr = parseFloat(soilTypeSel);
+        document.getElementById("cbrValue").value = cbr;
+      }
+
+      // 1) Beban scaffolding & pekerja (dinamis)
+      const workersStatic = numWorkers * workerWeight; // kg
+      const workersDynamic = workersStatic * dynFactor; // kg
+      const totalWeight = scaffWeight + workersDynamic; // kg
+
+      // 2) Luas base plate
+      const baseAreaEach = (baseLength / 1000) * (baseWidth / 1000); // m2
+      const totalBaseArea = baseAreaEach * numBases; // m2
+
+      // 3) Tekanan ke tanah dari scaffolding (service load)
+      // P = W * g / A  --> kPa
+      const g = 9.81;
+      const qScaffKPa = (totalWeight * g) / totalBaseArea / 1000;
+      const qScaffTonPerM2 = (totalWeight / 1000) / totalBaseArea; // ton/m2
+      const qScaffKgPerCm2 = qScaffTonPerM2 * 0.1; // 1 t/m2 = 0.1 kg/cm2
+
+      // 4) Bearing capacity dari CBR
+      const qu = quFromCBR(cbr); // kPa
+      const qAllow = qAllowFromCBR(cbr, fsTanah); // kPa
+      const qAllowTonPerM2 = qAllow / 9.81; // t/m2
+
+      // 5) Safety check
+      const safe = qAllow >= qScaffKPa;
+      const margin = qAllow - qScaffKPa; // kPa
+      
+      // 6) Update UI
+      document.getElementById("qScaffKPa").textContent = `${format(qScaffKPa)} kPa`;
+      document.getElementById("qScaffOther").textContent = `${format(qScaffTonPerM2)} t/m² (Service Load)`;
+
+      document.getElementById("qAllowKPa").textContent = `${format(qAllow)} kPa`;
+      document.getElementById("qAllowOther").textContent = `qu = ${format(qu)} kPa (FS=${fsTanah})`;
+
+      const weightsText = 
+        `Total Beban: ${format(totalWeight, 0)} kg\n` +
+        `Beban per Kaki: ${format((totalWeight / numBases) || 0, 1)} kg`;
+      document.getElementById("weights").innerText = weightsText;
+
+      const marginText = `${margin >= 0 ? "+" : ""}${format(margin)} kPa`;
+      document.getElementById("margin").textContent = marginText;
+      document.getElementById("margin").style.color = safe ? "var(--success)" : "var(--danger)";
+      document.getElementById("marginIcon").textContent = safe ? "✅" : "⚠️";
+
+      // Status badge
+      const badge = document.getElementById("statusBadge");
+      const statusText = document.getElementById("statusText");
+      badge.style.visibility = "visible";
+      
+      if (safe) {
+        badge.className = "status-badge status-safe";
+        statusText.textContent = "AMAN";
+      } else {
+        badge.className = "status-badge status-unsafe";
+        statusText.textContent = "TIDAK AMAN";
+      }
+
+      // Soil summary text
+      const soilSummary = document.getElementById("soilSummary");
+      const soilTypeText = document.getElementById("soilType").selectedOptions[0].textContent;
+      soilSummary.textContent = `Tanah: CBR ${format(cbr, 1)}%`;
+
+      // Explanation text
+      const exp = document.getElementById("explanation");
+      exp.style.display = "block";
+      if (safe) {
+        exp.style.borderLeftColor = "var(--success)";
+        exp.style.background = "var(--success-soft)";
+        exp.innerHTML = 
+          `<strong>Kesimpulan:</strong> Konfigurasi scaffolding <strong>AMAN</strong>.<br>` +
+          `Tekanan kontak (${format(qScaffKPa)} kPa) lebih kecil dari kapasitas ijin tanah (${format(qAllow)} kPa). ` +
+          `Pastikan pemadatan tanah di lapangan sesuai dengan nilai CBR yang diasumsikan.`;
+      } else {
+        exp.style.borderLeftColor = "var(--danger)";
+        exp.style.background = "var(--danger-soft)";
+        exp.innerHTML = 
+          `<strong>Kesimpulan:</strong> Konfigurasi scaffolding <strong>BERISIKO</strong>.<br>` +
+          `Tekanan kontak melebihi kapasitas ijin tanah sebesar ${format(Math.abs(margin))} kPa. <br>` +
+          `<strong>Saran:</strong> Perbesar ukuran base plate (gunakan sole board / papan alas), kurangi jarak antar tiang, atau lakukan perbaikan tanah.`;
+      }
+    }
+
+    function resetToExample() {
+      document.getElementById("scaffWeight").value = 810;
+      document.getElementById("numWorkers").value = 3;
+      document.getElementById("workerWeight").value = 80;
+      document.getElementById("dynFactor").value = 1.3;
+      document.getElementById("numBases").value = 4;
+      document.getElementById("baseLength").value = 150;
+      document.getElementById("baseWidth").value = 150;
+      document.getElementById("soilType").value = "13.5";
+      document.getElementById("cbrValue").value = 13.5;
+      document.getElementById("fsTanah").value = 3.0;
+      
+      // Trigger calc logic without submitting form
+      setTimeout(hitung, 50);
+    }
+
+    // Event listeners
+    document.getElementById("btnHitung").addEventListener("click", function (e) {
+      e.preventDefault();
+      hitung();
+    });
+
+    document.getElementById("btnReset").addEventListener("click", function (e) {
+      e.preventDefault();
+      resetToExample();
+    });
+
+    document.getElementById("soilType").addEventListener("change", function () {
+      const value = this.value;
+      if (value !== "manual") {
+        document.getElementById("cbrValue").value = parseFloat(value);
+      }
+    });
+
+    // Hitung pertama kali
+    window.addEventListener("DOMContentLoaded", resetToExample);
+  </script>
 </body>
 </html>
