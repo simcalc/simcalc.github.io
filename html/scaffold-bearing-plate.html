@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kalkulasi Beban Scaffolding</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+        background: #f4f4f4;
+    }
+    .container {
+        max-width: 500px;
+        margin: auto;
+        background: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+        text-align: center;
+        color: #333;
+    }
+    label {
+        display: block;
+        margin-top: 10px;
+        font-weight: bold;
+    }
+    input {
+        width: 100%;
+        padding: 8px;
+        margin-top: 5px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+    button {
+        margin-top: 15px;
+        width: 100%;
+        padding: 10px;
+        background: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        font-size: 16px;
+        cursor: pointer;
+    }
+    button:hover {
+        background: #0056b3;
+    }
+    .result {
+        margin-top: 20px;
+        padding: 15px;
+        border-radius: 6px;
+        font-weight: bold;
+        text-align: center;
+    }
+    .safe {
+        background: #d4edda;
+        color: #155724;
+    }
+    .unsafe {
+        background: #f8d7da;
+        color: #721c24;
+    }
+</style>
+</head>
+<body>
+<div class="container">
+    <h2>Kalkulasi Beban Scaffolding</h2>
+    <label>Beban Total (Ton):</label>
+    <input type="number" id="beban" value="2.5" step="0.1">
+    
+    <label>Ukuran Base Plate (cm):</label>
+    <input type="number" id="panjang" value="15" step="0.1">
+    <input type="number" id="lebar" value="15" step="0.1">
+    
+    <label>Jumlah Base Plate:</label>
+    <input type="number" id="jumlah" value="4">
+    
+    <label>Daya Dukung Tanah (kN/m²):</label>
+    <input type="number" id="dayaDukung" value="2000">
+    
+    <button onclick="hitung()">Hitung</button>
+    
+    <div id="hasil" class="result"></div>
+</div>
+
+<script>
+function hitung() {
+    const bebanTon = parseFloat(document.getElementById('beban').value);
+    const panjang = parseFloat(document.getElementById('panjang').value) / 100; // cm ke m
+    const lebar = parseFloat(document.getElementById('lebar').value) / 100; // cm ke m
+    const jumlah = parseInt(document.getElementById('jumlah').value);
+    const dayaDukung = parseFloat(document.getElementById('dayaDukung').value);
+
+    const bebanKN = bebanTon * 9.81; // konversi ton ke kN
+    const bebanPerPlate = bebanKN / jumlah;
+    const luasPlate = panjang * lebar;
+    const tekanan = bebanPerPlate / luasPlate; // kN/m²
+
+    let status = '';
+    if (tekanan <= dayaDukung) {
+        status = `<div class="safe">Aman ✅<br>Tekanan: ${tekanan.toFixed(2)} kN/m² (di bawah ${dayaDukung} kN/m²)</div>`;
+    } else {
+        status = `<div class="unsafe">Tidak Aman ❌<br>Tekanan: ${tekanan.toFixed(2)} kN/m² (melebihi ${dayaDukung} kN/m²)</div>`;
+    }
+
+    document.getElementById('hasil').innerHTML = status;
+}
+</script>
+</body>
+</html>
