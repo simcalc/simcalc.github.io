@@ -1,0 +1,1377 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Sustainability Program Framework</title>
+    <style>
+        :root {
+            --bg: #0f172a;
+            --card-bg: #0b1220;
+            --primary: #38bdf8;
+            --secondary: #4ade80;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --accent: #fb923c;
+            --text: #e5e7eb;
+            --muted: #9ca3af;
+            --shadow: 0 18px 40px rgba(15, 23, 42, 0.65);
+            --radius-lg: 18px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background:
+                radial-gradient(circle at top left, #22c55e22, transparent 50%),
+                radial-gradient(circle at top right, #38bdf822, transparent 55%),
+                radial-gradient(circle at bottom, #a855f722, transparent 55%),
+                var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 20px;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+            font-size: 14px; /* Base font size for mobile */
+        }
+
+        /* Responsive Container */
+        .page {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            width: 100%;
+        }
+
+        /* Language Toggle Button - Responsive Position */
+        .lang-toggle {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: rgba(15, 23, 42, 0.9);
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            padding: 8px 14px;
+            border-radius: 99px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            z-index: 50;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            backdrop-filter: blur(4px);
+        }
+
+        .lang-toggle:hover, .lang-toggle:active {
+            background: var(--primary);
+            color: #0f172a;
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.5);
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 24px;
+            animation: fadeDown 0.7s ease-out;
+            padding-top: 40px; /* Extra padding for lang toggle on mobile */
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 12px;
+            background: rgba(56, 189, 248, 0.1);
+            color: var(--primary);
+            border: 1px solid rgba(56, 189, 248, 0.4);
+            margin-bottom: 8px;
+        }
+
+        .badge-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 999px;
+            background: radial-gradient(circle, #f97316, #22c55e);
+            box-shadow: 0 0 12px rgba(56, 189, 248, 0.8);
+        }
+
+        h1 {
+            font-size: 22px; /* Mobile friendly size */
+            font-weight: 700;
+            margin-bottom: 8px;
+            letter-spacing: 0.02em;
+            line-height: 1.3;
+        }
+
+        .subtitle {
+            font-size: 13px;
+            color: var(--muted);
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.5;
+            padding: 0 10px;
+        }
+
+        /* Concept map layout */
+        .concept-map {
+            position: relative;
+            margin-top: 24px;
+            padding: 20px 16px 24px;
+            background: radial-gradient(circle at top, #111827, #020617);
+            border-radius: 24px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            border: 1px solid rgba(148, 163, 184, 0.25);
+            backdrop-filter: blur(12px);
+        }
+
+        .concept-map::before {
+            content: "";
+            position: absolute;
+            inset: -40%;
+            background:
+                radial-gradient(circle at 20% 0%, rgba(56, 189, 248, 0.18), transparent 55%),
+                radial-gradient(circle at 80% 0%, rgba(74, 222, 128, 0.18), transparent 55%),
+                radial-gradient(circle at 50% 100%, rgba(244, 114, 182, 0.16), transparent 60%);
+            opacity: 0.85;
+            pointer-events: none;
+            z-index: -2;
+            animation: slowGlow 18s linear infinite alternate;
+        }
+
+        .main-node {
+            max-width: 100%;
+            margin: 0 auto 24px;
+            text-align: center;
+            padding: 16px;
+            border-radius: 16px; /* Slightly less rounded on mobile for text area */
+            background: linear-gradient(135deg, #38bdf8, #22c55e, #f97316);
+            color: #0b1120;
+            box-shadow: 0 18px 40px rgba(59, 130, 246, 0.65);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        @media (min-width: 640px) {
+            .main-node {
+                max-width: 420px;
+                border-radius: 999px;
+                padding: 16px 20px;
+            }
+            h1 { font-size: 26px; }
+            body { padding: 24px; }
+        }
+
+        .main-node::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 0 0, #ffffff55, transparent 60%);
+            opacity: 0.35;
+            pointer-events: none;
+        }
+
+        .main-node h2 {
+            font-size: 18px;
+            font-weight: 800;
+            margin-bottom: 4px;
+        }
+
+        .main-node p {
+            font-size: 13px;
+            opacity: 0.95;
+            font-weight: 500;
+        }
+
+        /* Responsive Grid System */
+        .map-grid {
+            display: grid;
+            grid-template-columns: 1fr; /* Default to 1 column (Mobile) */
+            gap: 16px;
+            margin-top: 8px;
+        }
+
+        @media (min-width: 768px) {
+            .map-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr)); /* 2 columns for Tablet/Desktop */
+                gap: 18px;
+            }
+        }
+
+        .node-card {
+            position: relative;
+            border-radius: var(--radius-lg);
+            padding: 18px;
+            cursor: default;
+            color: var(--text);
+            isolation: isolate;
+            overflow: hidden;
+            transform-origin: center top;
+            opacity: 0;
+            transform: translateY(16px) scale(0.98);
+            animation: fadeUp 0.7s ease-out forwards;
+            /* Prevent overflow on small screens */
+            width: 100%; 
+        }
+
+        /* Animation Delays */
+        .map-grid > .node-card:nth-child(1) { animation-delay: 0.08s; }
+        .map-grid > .node-card:nth-child(2) { animation-delay: 0.16s; }
+        .map-grid > .node-card:nth-child(3) { animation-delay: 0.24s; }
+        .map-grid > .node-card:nth-child(4) { animation-delay: 0.32s; }
+        .map-grid > .node-card:nth-child(5) { animation-delay: 0.40s; }
+        .map-grid > .node-card:nth-child(6) { animation-delay: 0.48s; }
+
+        .node-card::before {
+            content: "";
+            position: absolute;
+            inset: -1px;
+            background: linear-gradient(135deg, rgba(248, 250, 252, 0.08), rgba(15, 23, 42, 0.8));
+            z-index: -2;
+        }
+
+        .node-card::after {
+            content: "";
+            position: absolute;
+            inset: 1px;
+            border-radius: calc(var(--radius-lg) - 2px);
+            background: radial-gradient(circle at top left, rgba(148, 163, 184, 0.15), rgba(15, 23, 42, 0.95));
+            z-index: -1;
+            border: 1px solid rgba(148, 163, 184, 0.3);
+        }
+
+        /* Card Themes */
+        .node-card[data-theme="structure"]::before { background: linear-gradient(135deg, rgba(56, 189, 248, 0.8), rgba(59, 130, 246, 0.15)); }
+        .node-card[data-theme="mapping"]::before { background: linear-gradient(135deg, rgba(74, 222, 128, 0.85), rgba(15, 118, 110, 0.2)); }
+        .node-card[data-theme="calculation"]::before { background: linear-gradient(135deg, rgba(251, 146, 60, 0.9), rgba(217, 119, 6, 0.2)); }
+        .node-card[data-theme="scorecard"]::before { background: linear-gradient(135deg, rgba(244, 114, 182, 0.9), rgba(190, 24, 93, 0.25)); }
+        .node-card[data-theme="outline"]::before { background: linear-gradient(135deg, rgba(129, 140, 248, 0.95), rgba(76, 81, 191, 0.25)); }
+        .node-card[data-theme="biblio"]::before { background: linear-gradient(135deg, rgba(167, 139, 250, 0.9), rgba(124, 58, 237, 0.25)); }
+
+        .node-card:hover {
+            transform: translateY(-3px) scale(1.005);
+            box-shadow: 0 20px 45px rgba(15, 23, 42, 0.9);
+            transition: all 0.3s ease;
+        }
+
+        .node-header {
+            display: flex;
+            flex-wrap: wrap; /* Allow wrapping on very small screens */
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .node-title {
+            font-size: 15px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .node-index {
+            min-width: 20px; /* Ensure circle doesn't squish */
+            width: 20px;
+            height: 20px;
+            border-radius: 999px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 700;
+            color: #020617;
+            background: radial-gradient(circle at 30% 0, #ffffff, #facc15);
+            box-shadow: 0 0 12px rgba(250, 204, 21, 0.65);
+        }
+
+        .node-chip {
+            font-size: 10px;
+            padding: 2px 8px;
+            border-radius: 999px;
+            background: rgba(15, 23, 42, 0.7);
+            color: var(--muted);
+            border: 1px solid rgba(148, 163, 184, 0.4);
+            white-space: nowrap;
+        }
+
+        .node-summary {
+            margin-top: 6px;
+            font-size: 13px;
+            color: var(--muted);
+            line-height: 1.4;
+        }
+
+        .node-body {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px dashed rgba(148, 163, 184, 0.3);
+            font-size: 13px;
+        }
+
+        .node-body h4 {
+            font-size: 13px;
+            margin-top: 12px;
+            margin-bottom: 6px;
+            color: var(--primary);
+        }
+
+        .node-body ul {
+            padding-left: 18px;
+            margin-bottom: 8px;
+            color: #cbd5e1;
+        }
+
+        .node-body li {
+            margin-bottom: 4px;
+        }
+
+        .pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            padding: 4px 12px;
+            border-radius: 999px;
+            background: rgba(15, 23, 42, 0.85);
+            color: var(--primary);
+            border: 1px solid rgba(56, 189, 248, 0.5);
+            margin-bottom: 10px;
+            box-shadow: 0 0 12px rgba(56, 189, 248, 0.2);
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* Table Responsiveness */
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            border: 1px solid rgba(71, 85, 105, 0.3);
+        }
+
+        .mini-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 400px; /* Ensure table doesn't squish too much */
+        }
+
+        .mini-table th,
+        .mini-table td {
+            border: 1px solid rgba(71, 85, 105, 0.5);
+            padding: 8px 10px; /* Larger tap targets for tables */
+            font-size: 12px;
+            vertical-align: top;
+        }
+
+        .mini-table th {
+            background: rgba(30, 41, 59, 0.8);
+            text-align: left;
+            color: #93c5fd;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .mini-table tbody tr:nth-child(odd) { background-color: rgba(15, 23, 42, 0.4); }
+        .mini-table tbody tr:nth-child(even) { background-color: rgba(30, 41, 59, 0.4); }
+
+        /* Calculator Section Responsive */
+        .calc-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        @media (min-width: 640px) {
+            .calc-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        .calc-card {
+            border-radius: 12px;
+            padding: 14px;
+            background: radial-gradient(circle at top left, rgba(15, 23, 42, 0.9), rgba(3, 7, 18, 0.98));
+            border: 1px solid rgba(148, 163, 184, 0.3);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+            transition: border-color 0.3s ease;
+        }
+
+        .calc-card:hover {
+            border-color: var(--accent);
+        }
+
+        .calc-card h5 {
+            font-size: 13px;
+            margin-bottom: 8px;
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        .calc-label {
+            font-size: 11px;
+            color: var(--muted);
+            margin-bottom: 4px;
+        }
+
+        .calc-input {
+            width: 100%;
+            padding: 8px 10px; /* Larger touch area */
+            border-radius: 6px;
+            border: 1px solid rgba(148, 163, 184, 0.3);
+            font-size: 16px; /* Prevents zoom on iOS */
+            background-color: rgba(15, 23, 42, 0.8);
+            color: var(--text);
+            margin-bottom: 10px;
+            transition: border-color 0.2s;
+        }
+
+        .calc-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2);
+        }
+
+        .calc-output {
+            margin-top: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 6px;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+
+        .calc-output span {
+            font-family: monospace;
+            font-size: 13px;
+        }
+
+        /* Status & Solution Boxes */
+        .status-box {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 12px; /* Improved readability */
+            display: none; 
+            animation: fadeDown 0.3s ease-out;
+        }
+
+        .status-success {
+            background: rgba(34, 197, 94, 0.15);
+            border: 1px solid rgba(34, 197, 94, 0.4);
+            color: #86efac;
+        }
+
+        .status-fail {
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            color: #fca5a5;
+        }
+
+        .status-header {
+            font-weight: 700;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .status-citation {
+            margin-top: 6px;
+            font-size: 11px;
+            opacity: 0.8;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 4px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
+
+        .status-citation a {
+            color: inherit;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        .solution-box {
+            margin-top: 8px;
+            padding-top: 6px;
+            border-top: 1px dashed rgba(255,255,255,0.2);
+            font-style: italic;
+            color: #cbd5e1;
+        }
+
+        .calc-note {
+            font-size: 11px;
+            color: var(--muted);
+            margin-top: 8px;
+            font-style: italic;
+        }
+
+        /* Button & Demo Section Styles */
+        .btn-demo {
+            background: linear-gradient(135deg, #dc2626, #ef4444);
+            color: white;
+            border: none;
+            padding: 10px 14px; /* Easier to tap */
+            border-radius: 8px;
+            font-size: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: transform 0.1s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 12px;
+            width: 100%;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(220, 38, 38, 0.3);
+        }
+        
+        .btn-demo:hover, .btn-demo:active {
+            transform: scale(0.98);
+            background: linear-gradient(135deg, #b91c1c, #dc2626);
+        }
+
+        .demo-explanation {
+            margin-top: 16px;
+            background: rgba(30, 41, 59, 0.6);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            border-radius: 8px;
+            padding: 14px;
+            font-size: 13px;
+            color: #cbd5e1;
+            display: none; 
+            animation: fadeUp 0.5s ease-out;
+        }
+
+        .demo-explanation h5 {
+            color: var(--primary);
+            margin-bottom: 8px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        
+        .demo-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        @media (min-width: 640px) {
+            .demo-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        .demo-item {
+            background: rgba(15, 23, 42, 0.4);
+            padding: 10px;
+            border-radius: 6px;
+            border-left: 3px solid var(--secondary);
+        }
+        
+        .demo-key {
+            font-weight: bold;
+            color: #93c5fd;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        /* Bibliography List Style */
+        .biblio-list {
+            list-style: none;
+            padding: 0;
+            font-size: 12px;
+        }
+        .biblio-list li {
+            margin-bottom: 12px;
+            padding-left: 24px;
+            position: relative;
+            color: #94a3b8;
+            transition: color 0.3s;
+        }
+        .biblio-list li:target {
+            color: var(--secondary);
+            animation: highlightRef 2s ease;
+        }
+        .biblio-list li::before {
+            content: attr(data-ref);
+            position: absolute;
+            left: 0;
+            top: 0;
+            font-weight: bold;
+            color: var(--primary);
+        }
+        .biblio-list strong {
+            color: #e2e8f0;
+        }
+
+        /* Animations */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(16px) scale(0.96); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        @keyframes fadeDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes highlightRef {
+            0% { background-color: rgba(74, 222, 128, 0.2); }
+            100% { background-color: transparent; }
+        }
+
+        @keyframes slowGlow {
+            0% { transform: translate3d(0, 0, 0) scale(1); }
+            50% { transform: translate3d(0, -10px, 0) scale(1.05); }
+            100% { transform: translate3d(0, 10px, 0) scale(1.02); }
+        }
+    </style>
+</head>
+<body>
+<div class="page">
+    <button class="lang-toggle" onclick="toggleLanguage()">
+        <span>🇮🇩 ID</span> | <span>🇬🇧 EN</span>
+    </button>
+
+    <header class="page-header">
+        <div class="badge" data-i18n="badge">
+            Program Sustainability • Framework Umum
+        </div>
+        <h1 data-i18n="title">Peta Konsep Program Sustainability</h1>
+        <p class="subtitle" data-i18n="subtitle">
+            Kerangka umum: struktur program, pemetaan aktivitas → dampak → indikator, konsep perhitungan,
+            scorecard internal, dan outline dokumen.
+        </p>
+    </header>
+
+    <section class="concept-map">
+        <div class="main-node">
+            <h2 data-i18n="mainNodeTitle">Program Sustainability Framework</h2>
+            <p data-i18n="mainNodeDesc">Hubungan antara aktivitas perusahaan, dampak, indikator, perhitungan kinerja, dan pelaporan.</p>
+        </div>
+
+        <div class="map-grid">
+            <!-- A. Struktur Program -->
+            <article class="node-card" data-theme="structure">
+                <div class="node-header">
+                    <div class="node-title">
+                        <span class="node-index">1</span>
+                        <span data-i18n="node1Title">Struktur Program (High Level)</span>
+                    </div>
+                    <div class="node-chip" data-i18n="node1Chip">Tujuan & Scope</div>
+                </div>
+                <p class="node-summary" data-i18n="node1Summary">
+                    Definisi tujuan, ruang lingkup, dan prinsip acuan (GRI / GHG Protocol / GHI).
+                </p>
+                <div class="node-body">
+                    <div class="pill"><span data-i18n="node1Pill">◎ Tujuan & Ruang Lingkup</span></div>
+                    <h4 data-i18n="node1H4_1">1. Tujuan Program</h4>
+                    <ul data-i18n="node1List1">
+                        <li>Mengelola dampak lingkungan, sosial, dan ekonomi secara terstruktur.</li>
+                        <li>Menetapkan target kinerja (emisi, energi, K3, limbah, dsb.).</li>
+                        <li>Menyediakan informasi yang transparan untuk investor & pemangku kepentingan.</li>
+                    </ul>
+
+                    <h4 data-i18n="node1H4_2">2. Ruang Lingkup</h4>
+                    <ul data-i18n="node1List2">
+                        <li>Fasilitas: pabrik, kantor, proyek konstruksi, rumah sakit, dll.</li>
+                        <li>Aktivitas: operasi harian, proyek khusus, rantai pasok kritis.</li>
+                        <li>Jenis dampak: ekonomi, lingkungan, sosial, tata kelola (ESG).</li>
+                    </ul>
+
+                    <h4 data-i18n="node1H4_3">3. Prinsip & Referensi</h4>
+                    <ul data-i18n="node1List3">
+                        <li>GRI Standards sebagai acuan pelaporan keberlanjutan.</li>
+                        <li>GHG Protocol untuk perhitungan emisi GHG Scope 1–3.</li>
+                        <li>GHI / Green Healthcare Initiative untuk konteks rumah sakit.</li>
+                        <li>Regulasi nasional dan standar internal perusahaan.</li>
+                    </ul>
+                </div>
+            </article>
+
+            <!-- B. Pemetaan Aktivitas → Dampak → Indikator -->
+            <article class="node-card" data-theme="mapping">
+                <div class="node-header">
+                    <div class="node-title">
+                        <span class="node-index">2</span>
+                        <span data-i18n="node2Title">Pemetaan Aktivitas → Dampak → Indikator</span>
+                    </div>
+                    <div class="node-chip" data-i18n="node2Chip">Materiality</div>
+                </div>
+                <p class="node-summary" data-i18n="node2Summary">
+                    Menentukan aktivitas kunci, dampak utama, dan indikator kuantitatif yang akan dipantau.
+                </p>
+                <div class="node-body">
+                    <div class="pill"><span data-i18n="node2Pill">⇄ Materiality Sederhana</span></div>
+                    <p style="font-size:12px; color:#94a3b8; margin-bottom:8px;" data-i18n="node2Desc">Contoh pemetaan aktivitas ke dampak dan KPI:</p>
+                    <div class="table-wrapper">
+                        <table class="mini-table">
+                            <thead>
+                            <tr>
+                                <th data-i18n="tableActivity">Aktivitas</th>
+                                <th data-i18n="tableImpact">Dampak</th>
+                                <th data-i18n="tableIndicator">Indikator (KPI)</th>
+                            </tr>
+                            </thead>
+                            <tbody data-i18n="tableBody2">
+                            <tr>
+                                <td>Konsumsi listrik pabrik</td>
+                                <td>Emisi GHG Scope 2</td>
+                                <td>Emisi CO₂e dari listrik (tCO₂e)</td>
+                            </tr>
+                            <tr>
+                                <td>Bahan bakar (genset/kendaraan)</td>
+                                <td>Emisi GHG Scope 1</td>
+                                <td>Emisi CO₂e bahan bakar (tCO₂e)</td>
+                            </tr>
+                            <tr>
+                                <td>Penggunaan air proses</td>
+                                <td>Deplesi sumber air</td>
+                                <td>Total konsumsi air (m³)</td>
+                            </tr>
+                            <tr>
+                                <td>Limbah padat & B3</td>
+                                <td>Risiko pencemaran</td>
+                                <td>Ton limbah / % didaur ulang</td>
+                            </tr>
+                            <tr>
+                                <td>Jam kerja karyawan</td>
+                                <td>Risiko kecelakaan</td>
+                                <td>LTIFR (kasus / 1jt jam)</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </article>
+
+            <!-- C. Konsep Perhitungan -->
+            <article class="node-card" data-theme="calculation">
+                <div class="node-header">
+                    <div class="node-title">
+                        <span class="node-index">3</span>
+                        <span data-i18n="node3Title">Konsep Perhitungan KPI Utama</span>
+                    </div>
+                    <div class="node-chip" data-i18n="node3Chip">Rumus & Simulasi</div>
+                </div>
+                <p class="node-summary" data-i18n="node3Summary">
+                    Rumus dasar dan kalkulator simulasi. Klik tombol di bawah untuk melihat contoh kasus Pertamina.
+                </p>
+                <div class="node-body">
+                    <div class="pill"><span data-i18n="node3Pill">∑ Kalkulator Simulasi</span></div>
+                    
+                    <button id="btn-load-pertamina" class="btn-demo" data-i18n="btnPertamina">
+                        📝 Muat Contoh Kasus Pertamina (Refinery Unit IV)
+                    </button>
+
+                    <div class="calc-grid" id="calc-root">
+                        <!-- Mini calculators will be injected here -->
+                    </div>
+
+                    <!-- Penjelasan Konteks Data (Hidden by default) -->
+                    <div id="pertamina-explanation" class="demo-explanation">
+                        <h5><span class="badge-dot"></span> <span data-i18n="explainTitle">Penjelasan Data (Simulasi Kilang/Hulu)</span></h5>
+                        <p style="margin-bottom:8px;" data-i18n="explainDesc">Data di atas adalah simulasi sederhana untuk fasilitas operasi migas harian:</p>
+                        <div class="demo-grid">
+                            <div class="demo-item" data-i18n="explainItem1">
+                                <span class="demo-key">1. Emisi Genset/Boiler (Scope 1)</span>
+                                Konsumsi 5.000 Liter Solar per hari. Faktor emisi solar ≈ 0.00268 tCO₂e/Liter.
+                            </div>
+                            <div class="demo-item" data-i18n="explainItem2">
+                                <span class="demo-key">2. Intensitas Kilang</span>
+                                Emisi total harian (13.4 tCO₂e) dibagi output produk BBM harian (misal 500 Ton).
+                            </div>
+                            <div class="demo-item" data-i18n="explainItem3">
+                                <span class="demo-key">3. K3 (Safety)</span>
+                                Simulasi 1 kejadian LTI (Lost Time Injury) dalam 1.000.000 jam kerja aman akumulatif.
+                            </div>
+                            <div class="demo-item" data-i18n="explainItem4">
+                                <span class="demo-key">4. Limbah B3 (Sludge)</span>
+                                Dari 10 ton sludge/limbah minyak yang dihasilkan, 6 ton berhasil di-recovery atau dikirim ke pengolah berizin.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <!-- D. Scorecard Internal -->
+            <article class="node-card" data-theme="scorecard">
+                <div class="node-header">
+                    <div class="node-title">
+                        <span class="node-index">4</span>
+                        <span data-i18n="node4Title">Scorecard Internal (Mini GHI/GRI)</span>
+                    </div>
+                    <div class="node-chip" data-i18n="node4Chip">Penilaian 0–2</div>
+                </div>
+                <p class="node-summary" data-i18n="node4Summary">
+                    Sistem penilaian 0–2 per elemen untuk topik energi, air, limbah, K3, dan tata kelola.
+                </p>
+                <div class="node-body">
+                    <div class="pill"><span data-i18n="node4Pill">★ Penilaian 0–2</span></div>
+                    <p style="font-size:12px; color:#94a3b8; margin-bottom:8px;" data-i18n="node4Desc">Contoh struktur scorecard sederhana:</p>
+                    <div class="table-wrapper">
+                        <table class="mini-table">
+                            <thead>
+                            <tr>
+                                <th width="25%" data-i18n="tableTopic">Topik</th>
+                                <th data-i18n="tableElement">Elemen Penilaian</th>
+                                <th width="35%" data-i18n="tableScale">Skala</th>
+                            </tr>
+                            </thead>
+                            <tbody data-i18n="tableBody4">
+                            <tr>
+                                <td rowspan="2">Energi & Emisi</td>
+                                <td>Kebijakan tertulis</td>
+                                <td>0=Nihil, 1=Umum, 2=Spesifik</td>
+                            </tr>
+                            <tr>
+                                <td>Target reduksi</td>
+                                <td>0=Nihil, 1=Ada, 2=Dimonitor</td>
+                            </tr>
+                            <tr>
+                                <td rowspan="2">Air & Limbah</td>
+                                <td>Pengelolaan air</td>
+                                <td>0–2 (Sda)</td>
+                            </tr>
+                            <tr>
+                                <td>Daur ulang limbah</td>
+                                <td>0–2</td>
+                            </tr>
+                            <tr>
+                                <td>K3</td>
+                                <td>Pelacakan LTIFR</td>
+                                <td>0–2</td>
+                            </tr>
+                            <tr>
+                                <td>Tata Kelola</td>
+                                <td>Pelaporan ESG</td>
+                                <td>0–2</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="calc-note" data-i18n="node4Note">
+                        Total skor dapat dinormalisasi (0–100) untuk grafik kinerja.
+                    </p>
+                </div>
+            </article>
+
+            <!-- E. Outline Dokumen Program Sustainability -->
+            <article class="node-card" data-theme="outline">
+                <div class="node-header">
+                    <div class="node-title">
+                        <span class="node-index">5</span>
+                        <span data-i18n="node5Title">Outline Dokumen “Program Sustainability”</span>
+                    </div>
+                    <div class="node-chip" data-i18n="node5Chip">Struktur Bab</div>
+                </div>
+                <p class="node-summary" data-i18n="node5Summary">
+                    Struktur bab dokumen: dari pendahuluan, kerangka acuan, metodologi, sampai pelaporan.
+                </p>
+                <div class="node-body">
+                    <div class="pill"><span data-i18n="node5Pill">▤ Struktur Dokumen</span></div>
+                    <ol style="padding-left: 18px; font-size: 13px; color:#cbd5e1;" data-i18n="node5List">
+                        <li><strong>Pendahuluan:</strong> Latar belakang, tujuan, risiko iklim.</li>
+                        <li><strong>Kerangka Acuan:</strong> GRI, GHG Protocol, Regulasi.</li>
+                        <li><strong>Materiality:</strong> Peta aktivitas & dampak prioritas.</li>
+                        <li><strong>Metodologi:</strong> Rumus perhitungan & sumber data.</li>
+                        <li><strong>Target & Scorecard:</strong> KPI jangka pendek/panjang.</li>
+                        <li><strong>Implementasi:</strong> PIC, timeline, anggaran.</li>
+                        <li><strong>Pelaporan:</strong> Format laporan & frekuensi review.</li>
+                    </ol>
+                </div>
+            </article>
+
+            <!-- F. Daftar Pustaka & Referensi -->
+            <article class="node-card" data-theme="biblio">
+                <div class="node-header">
+                    <div class="node-title">
+                        <span class="node-index">6</span>
+                        <span data-i18n="node6Title">Daftar Pustaka & Referensi</span>
+                    </div>
+                    <div class="node-chip" data-i18n="node6Chip">Sumber Ilmiah</div>
+                </div>
+                <p class="node-summary" data-i18n="node6Summary">
+                    Rujukan standar dan regulasi yang digunakan sebagai dasar penentuan threshold/batas aman pada kalkulator di atas.
+                </p>
+                <div class="node-body">
+                    <div class="pill"><span data-i18n="node6Pill">📖 Referensi</span></div>
+                    <ul class="biblio-list">
+                        <li data-ref="[1]" id="ref-ghg">
+                            <strong>WRI/WBCSD.</strong> (2004). <em>The Greenhouse Gas Protocol: A Corporate Accounting and Reporting Standard</em>. Washington, DC: World Resources Institute. (Scope 1 & 2 Accounting).
+                        </li>
+                        <li data-ref="[2]" id="ref-iogp">
+                            <strong>IOGP (International Association of Oil & Gas Producers).</strong> (2022). <em>Environmental Performance Indicators – 2021 Data</em> (Report 2021e). London: IOGP. (Intensitas Emisi Hulu Migas).
+                        </li>
+                        <li data-ref="[3]" id="ref-osha">
+                            <strong>OSHA / API RP 754.</strong> (2016). <em>Process Safety Performance Indicators for the Refining and Petrochemical Industries</em>. American Petroleum Institute. (Standard LTIFR & TRIR).
+                        </li>
+                        <li data-ref="[4]" id="ref-lhk">
+                            <strong>Kementerian LHK RI.</strong> (2021). <em>Peraturan Menteri LHK No. 6 Tahun 2021 tentang Tata Cara dan Persyaratan Pengelolaan Limbah Bahan Berbahaya dan Beracun</em>. Jakarta. (Target Daur Ulang & 3R).
+                        </li>
+                        <li data-ref="[5]" id="ref-gri">
+                            <strong>GRI (Global Reporting Initiative).</strong> (2021). <em>GRI Standards: Consolidated Set 2021</em>. Amsterdam: GRI. (GRI 305: Emissions, GRI 306: Waste).
+                        </li>
+                    </ul>
+                </div>
+            </article>
+        </div>
+    </section>
+</div>
+
+<script>
+    // --- Translation Logic ---
+    let currentLang = 'id';
+    const translations = {
+        id: {
+            badge: "Program Sustainability • Framework Umum",
+            title: "Peta Konsep Program Sustainability",
+            subtitle: "Kerangka umum: struktur program, pemetaan aktivitas → dampak → indikator, konsep perhitungan, scorecard internal, dan outline dokumen.",
+            mainNodeTitle: "Program Sustainability Framework",
+            mainNodeDesc: "Hubungan antara aktivitas perusahaan, dampak, indikator, perhitungan kinerja, dan pelaporan.",
+            node1Title: "Struktur Program (High Level)",
+            node1Chip: "Tujuan & Scope",
+            node1Summary: "Definisi tujuan, ruang lingkup, dan prinsip acuan (GRI / GHG Protocol / GHI).",
+            node1Pill: "◎ Tujuan & Ruang Lingkup",
+            node1H4_1: "1. Tujuan Program",
+            node1H4_2: "2. Ruang Lingkup",
+            node1H4_3: "3. Prinsip & Referensi",
+            node1List1: "<li>Mengelola dampak lingkungan, sosial, dan ekonomi secara terstruktur.</li><li>Menetapkan target kinerja (emisi, energi, K3, limbah, dsb.).</li><li>Menyediakan informasi yang transparan untuk investor & pemangku kepentingan.</li>",
+            node1List2: "<li>Fasilitas: pabrik, kantor, proyek konstruksi, rumah sakit, dll.</li><li>Aktivitas: operasi harian, proyek khusus, rantai pasok kritis.</li><li>Jenis dampak: ekonomi, lingkungan, sosial, tata kelola (ESG).</li>",
+            node1List3: "<li>GRI Standards sebagai acuan pelaporan keberlanjutan.</li><li>GHG Protocol untuk perhitungan emisi GHG Scope 1–3.</li><li>GHI / Green Healthcare Initiative untuk konteks rumah sakit.</li><li>Regulasi nasional dan standar internal perusahaan.</li>",
+            node2Title: "Pemetaan Aktivitas → Dampak → Indikator",
+            node2Chip: "Materiality",
+            node2Summary: "Menentukan aktivitas kunci, dampak utama, dan indikator kuantitatif yang akan dipantau.",
+            node2Pill: "⇄ Materiality Sederhana",
+            node2Desc: "Contoh pemetaan aktivitas ke dampak dan KPI:",
+            tableActivity: "Aktivitas",
+            tableImpact: "Dampak",
+            tableIndicator: "Indikator (KPI)",
+            tableBody2: "<tr><td>Konsumsi listrik pabrik</td><td>Emisi GHG Scope 2</td><td>Emisi CO₂e dari listrik (tCO₂e)</td></tr><tr><td>Bahan bakar (genset/kendaraan)</td><td>Emisi GHG Scope 1</td><td>Emisi CO₂e bahan bakar (tCO₂e)</td></tr><tr><td>Penggunaan air proses</td><td>Deplesi sumber air</td><td>Total konsumsi air (m³)</td></tr><tr><td>Limbah padat & B3</td><td>Risiko pencemaran</td><td>Ton limbah / % didaur ulang</td></tr><tr><td>Jam kerja karyawan</td><td>Risiko kecelakaan</td><td>LTIFR (kasus / 1jt jam)</td></tr>",
+            node3Title: "Konsep Perhitungan KPI Utama",
+            node3Chip: "Rumus & Simulasi",
+            node3Summary: "Rumus dasar dan kalkulator simulasi. Klik tombol di bawah untuk melihat contoh kasus Pertamina.",
+            node3Pill: "∑ Kalkulator Simulasi",
+            btnPertamina: "📝 Muat Contoh Kasus Pertamina (Refinery Unit IV)",
+            explainTitle: "Penjelasan Data (Simulasi Kilang/Hulu)",
+            explainDesc: "Data di atas adalah simulasi sederhana untuk fasilitas operasi migas harian:",
+            explainItem1: '<span class="demo-key">1. Emisi Genset/Boiler (Scope 1)</span>Konsumsi 5.000 Liter Solar per hari. Faktor emisi solar ≈ 0.00268 tCO₂e/Liter.',
+            explainItem2: '<span class="demo-key">2. Intensitas Kilang</span>Emisi total harian (13.4 tCO₂e) dibagi output produk BBM harian (misal 500 Ton).',
+            explainItem3: '<span class="demo-key">3. K3 (Safety)</span>Simulasi 1 kejadian LTI (Lost Time Injury) dalam 1.000.000 jam kerja aman akumulatif.',
+            explainItem4: '<span class="demo-key">4. Limbah B3 (Sludge)</span>Dari 10 ton sludge/limbah minyak yang dihasilkan, 6 ton berhasil di-recovery atau dikirim ke pengolah berizin.',
+            node4Title: "Scorecard Internal (Mini GHI/GRI)",
+            node4Chip: "Penilaian 0–2",
+            node4Summary: "Sistem penilaian 0–2 per elemen untuk topik energi, air, limbah, K3, dan tata kelola.",
+            node4Pill: "★ Penilaian 0–2",
+            node4Desc: "Contoh struktur scorecard sederhana:",
+            tableTopic: "Topik",
+            tableElement: "Elemen Penilaian",
+            tableScale: "Skala",
+            tableBody4: "<tr><td rowspan='2'>Energi & Emisi</td><td>Kebijakan tertulis</td><td>0=Nihil, 1=Umum, 2=Spesifik</td></tr><tr><td>Target reduksi</td><td>0=Nihil, 1=Ada, 2=Dimonitor</td></tr><tr><td rowspan='2'>Air & Limbah</td><td>Pengelolaan air</td><td>0–2 (Sda)</td></tr><tr><td>Daur ulang limbah</td><td>0–2</td></tr><tr><td>K3</td><td>Pelacakan LTIFR</td><td>0–2</td></tr><tr><td>Tata Kelola</td><td>Pelaporan ESG</td><td>0–2</td></tr>",
+            node4Note: "Total skor dapat dinormalisasi (0–100) untuk grafik kinerja. (Geser tabel ke samping jika terpotong)",
+            node5Title: "Outline Dokumen “Program Sustainability”",
+            node5Chip: "Struktur Bab",
+            node5Summary: "Struktur bab dokumen: dari pendahuluan, kerangka acuan, metodologi, sampai pelaporan.",
+            node5Pill: "▤ Struktur Dokumen",
+            node5List: "<li><strong>Pendahuluan:</strong> Latar belakang, tujuan, risiko iklim.</li><li><strong>Kerangka Acuan:</strong> GRI, GHG Protocol, Regulasi.</li><li><strong>Materiality:</strong> Peta aktivitas & dampak prioritas.</li><li><strong>Metodologi:</strong> Rumus perhitungan & sumber data.</li><li><strong>Target & Scorecard:</strong> KPI jangka pendek/panjang.</li><li><strong>Implementasi:</strong> PIC, timeline, anggaran.</li><li><strong>Pelaporan:</strong> Format laporan & frekuensi review.</li>",
+            node6Title: "Daftar Pustaka & Referensi",
+            node6Chip: "Sumber Ilmiah",
+            node6Summary: "Rujukan standar dan regulasi yang digunakan sebagai dasar penentuan threshold/batas aman pada kalkulator di atas.",
+            node6Pill: "📖 Referensi",
+            // Calc Labels
+            cl_emission: "Kalkulator Emisi (Scope 1)",
+            cl_act: "Aktivitas (Liter Solar/BBM)",
+            cl_fact: "Faktor Emisi (tCO₂e/Liter)",
+            cl_res: "Hasil:",
+            cl_intensity: "Intensitas Emisi Kilang",
+            cl_tot_em: "Total Emisi (tCO₂e)",
+            cl_out: "Output Produksi (Ton Produk)",
+            cl_ltifr: "LTIFR (Safety Migas)",
+            cl_cases: "Jml Kasus Cedera (LTI)",
+            cl_hours: "Jam Kerja Total (Manhours)",
+            cl_recycle: "% Daur Ulang Limbah",
+            cl_rec_ton: "Limbah Daur Ulang (Ton)",
+            cl_tot_waste: "Total Limbah (Ton)",
+            cl_rate: "Rate:",
+            msg_pass: "✅ Memenuhi Persyaratan",
+            msg_fail: "❌ Tidak Memenuhi Syarat",
+            detail_pass: "Angka berada di area aman",
+            detail_fail: "Angka melewati batas aman"
+        },
+        en: {
+            badge: "Sustainability Program • General Framework",
+            title: "Sustainability Program Conceptual Map",
+            subtitle: "General framework: program structure, activity mapping → impact → indicators, calculation concepts, internal scorecard, and document outline.",
+            mainNodeTitle: "Sustainability Program Framework",
+            mainNodeDesc: "Relationship between corporate activities, impacts, indicators, performance calculation, and reporting.",
+            node1Title: "Program Structure (High Level)",
+            node1Chip: "Objectives & Scope",
+            node1Summary: "Defining objectives, scope, and guiding principles (GRI / GHG Protocol / GHI).",
+            node1Pill: "◎ Objectives & Scope",
+            node1H4_1: "1. Program Objectives",
+            node1H4_2: "2. Scope",
+            node1H4_3: "3. Principles & References",
+            node1List1: "<li>Manage environmental, social, and economic impacts structurally.</li><li>Set performance targets (emissions, energy, OHS, waste, etc.).</li><li>Provide transparent information for investors & stakeholders.</li>",
+            node1List2: "<li>Facilities: factories, offices, construction projects, hospitals, etc.</li><li>Activities: daily operations, special projects, critical supply chain.</li><li>Impact types: economic, environmental, social, governance (ESG).</li>",
+            node1List3: "<li>GRI Standards as sustainability reporting reference.</li><li>GHG Protocol for Scope 1–3 emission calculations.</li><li>GHI / Green Healthcare Initiative for hospital contexts.</li><li>National regulations and internal corporate standards.</li>",
+            node2Title: "Activity → Impact → Indicator Mapping",
+            node2Chip: "Materiality",
+            node2Summary: "Determining key activities, major impacts, and quantitative indicators to monitor.",
+            node2Pill: "⇄ Simple Materiality",
+            node2Desc: "Example mapping of activities to impacts and KPIs:",
+            tableActivity: "Activity",
+            tableImpact: "Impact",
+            tableIndicator: "Indicator (KPI)",
+            tableBody2: "<tr><td>Factory electricity consumption</td><td>GHG Scope 2 Emissions</td><td>Electricity CO₂e Emissions (tCO₂e)</td></tr><tr><td>Fuel (generator/vehicles)</td><td>GHG Scope 1 Emissions</td><td>Fuel CO₂e Emissions (tCO₂e)</td></tr><tr><td>Process water usage</td><td>Water source depletion</td><td>Total water consumption (m³)</td></tr><tr><td>Solid & Haz. Waste</td><td>Pollution risk</td><td>Tons of waste / % recycled</td></tr><tr><td>Employee working hours</td><td>Accident risk</td><td>LTIFR (cases / 1M hours)</td></tr>",
+            node3Title: "Key Performance Indicator (KPI) Calculation Concepts",
+            node3Chip: "Formulas & Simulation",
+            node3Summary: "Basic formulas and simulation calculator. Click the button below to view the Pertamina case study.",
+            node3Pill: "∑ Simulation Calculator",
+            btnPertamina: "📝 Load Pertamina Case Study (Refinery Unit IV)",
+            explainTitle: "Data Explanation (Refinery/Upstream Simulation)",
+            explainDesc: "The data above is a simple simulation for daily oil & gas operations:",
+            explainItem1: '<span class="demo-key">1. Generator/Boiler Emission (Scope 1)</span>Consumption of 5,000 Liters of Diesel per day. Diesel emission factor ≈ 0.00268 tCO₂e/Liter.',
+            explainItem2: '<span class="demo-key">2. Refinery Intensity</span>Total daily emissions (13.4 tCO₂e) divided by daily fuel product output (e.g., 500 Tons).',
+            explainItem3: '<span class="demo-key">3. OHS (Safety)</span>Simulation of 1 LTI (Lost Time Injury) event within 1,000,000 accumulative safe working hours.',
+            explainItem4: '<span class="demo-key">4. Haz. Waste (Sludge)</span>Out of 10 tons of sludge/oil waste produced, 6 tons were successfully recovered or sent to licensed processors.',
+            node4Title: "Internal Scorecard (Mini GHI/GRI)",
+            node4Chip: "Rating 0–2",
+            node4Summary: "0–2 rating system per element for energy, water, waste, OHS, and governance topics.",
+            node4Pill: "★ Rating 0–2",
+            node4Desc: "Example of simple scorecard structure:",
+            tableTopic: "Topic",
+            tableElement: "Assessment Element",
+            tableScale: "Scale",
+            tableBody4: "<tr><td rowspan='2'>Energy & Emissions</td><td>Written policy</td><td>0=Nil, 1=General, 2=Specific</td></tr><tr><td>Reduction target</td><td>0=Nil, 1=Exists, 2=Monitored</td></tr><tr><td rowspan='2'>Water & Waste</td><td>Water management</td><td>0–2 (Same)</td></tr><tr><td>Waste recycling</td><td>0–2</td></tr><tr><td>OHS</td><td>LTIFR tracking</td><td>0–2</td></tr><tr><td>Governance</td><td>ESG Reporting</td><td>0–2</td></tr>",
+            node4Note: "Total score can be normalized (0–100) for performance charts. (Scroll table sideways if cut off)",
+            node5Title: "Sustainability Program Document Outline",
+            node5Chip: "Chapter Structure",
+            node5Summary: "Document chapter structure: from introduction, reference framework, methodology, to reporting.",
+            node5Pill: "▤ Document Structure",
+            node5List: "<li><strong>Introduction:</strong> Background, objectives, climate risks.</li><li><strong>Reference Framework:</strong> GRI, GHG Protocol, Regulations.</li><li><strong>Materiality:</strong> Priority activity & impact mapping.</li><li><strong>Methodology:</strong> Calculation formulas & data sources.</li><li><strong>Targets & Scorecard:</strong> Short/long-term KPIs.</li><li><strong>Implementation:</strong> PIC, timeline, budget.</li><li><strong>Reporting:</strong> Report format & review frequency.</li>",
+            node6Title: "Bibliography & References",
+            node6Chip: "Scientific Sources",
+            node6Summary: "Standard references and regulations used as the basis for determining safety thresholds in the calculator above.",
+            node6Pill: "📖 References",
+             // Calc Labels
+            cl_emission: "Emission Calculator (Scope 1)",
+            cl_act: "Activity (Liter Diesel/Fuel)",
+            cl_fact: "Emission Factor (tCO₂e/Liter)",
+            cl_res: "Result:",
+            cl_intensity: "Refinery Emission Intensity",
+            cl_tot_em: "Total Emission (tCO₂e)",
+            cl_out: "Product Output (Tons)",
+            cl_ltifr: "LTIFR (Oil & Gas Safety)",
+            cl_cases: "No. of Injuries (LTI)",
+            cl_hours: "Total Manhours",
+            cl_recycle: "Waste Recycling %",
+            cl_rec_ton: "Recycled Waste (Tons)",
+            cl_tot_waste: "Total Waste (Tons)",
+            cl_rate: "Rate:",
+            msg_pass: "✅ Meets Requirements",
+            msg_fail: "❌ Does Not Meet Requirements",
+            detail_pass: "Figure is within safe limits",
+            detail_fail: "Figure exceeds safe limits"
+        }
+    };
+
+    function toggleLanguage() {
+        currentLang = currentLang === 'id' ? 'en' : 'id';
+        
+        // Update static text
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            const key = el.getAttribute('data-i18n');
+            if (translations[currentLang][key]) {
+                el.innerHTML = translations[currentLang][key];
+            }
+        });
+
+        // Update Calculator Labels via Re-render (easiest way to refresh placeholders)
+        renderCalculators();
+        
+        // Re-calculate to update status messages
+        document.querySelectorAll(".calc-card").forEach(card => calculateCard(card));
+    }
+
+    // --- Calculator Logic ---
+    const calcRoot = document.getElementById("calc-root");
+    
+    const THRESHOLDS = {
+        emission: { 
+            limit: 14, type: 'max', unit: 'tCO₂e', 
+            citation: "GHG Protocol Corp. Standard",
+            refId: "ref-ghg"
+        },
+        intensity: { 
+            limit: 0.03, type: 'max', unit: 'tCO₂e/ton', 
+            citation: "IOGP Environmental Indicators",
+            refId: "ref-iogp"
+        },
+        ltifr: { 
+            limit: 1.0, type: 'max', unit: '', 
+            citation: "API RP 754 / OSHA Std",
+            refId: "ref-osha"
+        },
+        recycle: { 
+            limit: 50, type: 'min', unit: '%', 
+            citation: "Permen LHK No. 6/2021",
+            refId: "ref-lhk"
+        }
+    };
+
+    const SOLUTIONS = {
+        emission: {
+            id: "⚠️ Solusi: Lakukan efisiensi boiler, pertimbangkan *fuel switching* ke gas, atau pasang teknologi penangkap karbon.",
+            en: "⚠️ Solution: Perform boiler efficiency measures, consider fuel switching to gas, or install carbon capture technology."
+        },
+        intensity: {
+            id: "⚠️ Solusi: Optimalkan throughput kilang, kurangi flaring, dan lakukan peremajaan alat yang boros energi.",
+            en: "⚠️ Solution: Optimize refinery throughput, reduce flaring, and revitalize energy-intensive equipment."
+        },
+        ltifr: {
+            id: "⚠️ Solusi: Investigasi akar masalah insiden, perketat *Safety Talk*, MCU rutin, dan audit kepatuhan APD.",
+            en: "⚠️ Solution: Investigate incident root causes, tighten Safety Talks, routine MCUs, and PPE compliance audits."
+        },
+        recycle: {
+            id: "⚠️ Solusi: Cari vendor pengolah limbah B3 berizin (3rd party) tambahan atau perbaiki sistem pemilahan sampah di sumber.",
+            en: "⚠️ Solution: Find additional licensed hazardous waste 3rd party processors or improve source waste segregation."
+        }
+    };
+    
+    const renderCalculators = () => {
+        if (calcRoot) {
+            const t = translations[currentLang];
+            // Preserve values if re-rendering
+            const values = {};
+            calcRoot.querySelectorAll('input').forEach(input => {
+                values[input.getAttribute('data-field') + '_' + input.closest('.calc-card').getAttribute('data-calc')] = input.value;
+            });
+
+            calcRoot.innerHTML = `
+                <div class="calc-card" data-calc="emission">
+                    <h5>${t.cl_emission}</h5>
+                    <div class="calc-label">${t.cl_act}</div>
+                    <input type="number" class="calc-input" placeholder="0" data-field="activity" />
+                    <div class="calc-label">${t.cl_fact}</div>
+                    <input type="number" class="calc-input" placeholder="e.g. 0.00268" step="0.00001" data-field="factor" />
+                    <div class="calc-output">
+                        <span>${t.cl_res}</span>
+                        <span data-field="result" style="color:var(--secondary)">0 tCO₂e</span>
+                    </div>
+                    <div class="status-box" data-field="status"></div>
+                </div>
+
+                <div class="calc-card" data-calc="intensity">
+                    <h5>${t.cl_intensity}</h5>
+                    <div class="calc-label">${t.cl_tot_em}</div>
+                    <input type="number" class="calc-input" placeholder="0" data-field="emission" />
+                    <div class="calc-label">${t.cl_out}</div>
+                    <input type="number" class="calc-input" placeholder="0" data-field="output" />
+                    <div class="calc-output">
+                        <span>${t.cl_res}</span>
+                        <span data-field="result" style="color:var(--secondary)">0 tCO₂e/ton</span>
+                    </div>
+                    <div class="status-box" data-field="status"></div>
+                </div>
+
+                <div class="calc-card" data-calc="ltifr">
+                    <h5>${t.cl_ltifr}</h5>
+                    <div class="calc-label">${t.cl_cases}</div>
+                    <input type="number" class="calc-input" placeholder="0" data-field="cases" />
+                    <div class="calc-label">${t.cl_hours}</div>
+                    <input type="number" class="calc-input" placeholder="0" data-field="hours" />
+                    <div class="calc-output">
+                        <span>${t.cl_res}</span>
+                        <span data-field="result" style="color:var(--secondary)">0 / 1jt jam</span>
+                    </div>
+                    <div class="status-box" data-field="status"></div>
+                </div>
+
+                <div class="calc-card" data-calc="recycle">
+                    <h5>${t.cl_recycle}</h5>
+                    <div class="calc-label">${t.cl_rec_ton}</div>
+                    <input type="number" class="calc-input" placeholder="0" data-field="recycle" />
+                    <div class="calc-label">${t.cl_tot_waste}</div>
+                    <input type="number" class="calc-input" placeholder="0" data-field="total" />
+                    <div class="calc-output">
+                        <span>${t.cl_rate}</span>
+                        <span data-field="result" style="color:var(--secondary)">0 %</span>
+                    </div>
+                    <div class="status-box" data-field="status"></div>
+                </div>
+            `;
+
+            // Restore values
+            calcRoot.querySelectorAll('input').forEach(input => {
+                const key = input.getAttribute('data-field') + '_' + input.closest('.calc-card').getAttribute('data-calc');
+                if (values[key]) input.value = values[key];
+            });
+
+            attachListeners();
+        }
+    };
+
+    const attachListeners = () => {
+        calcRoot.querySelectorAll(".calc-card").forEach(card => {
+            card.addEventListener("input", () => calculateCard(card));
+        });
+    };
+
+    const checkThreshold = (type, val) => {
+        const cfg = THRESHOLDS[type];
+        const t = translations[currentLang];
+        if (!cfg) return null;
+
+        let passed = false;
+        if (cfg.type === 'max') passed = val <= cfg.limit;
+        if (cfg.type === 'min') passed = val >= cfg.limit;
+
+        return {
+            passed: passed,
+            limit: cfg.limit,
+            unit: cfg.unit,
+            msg: passed ? t.msg_pass : t.msg_fail,
+            detail: passed 
+                ? `${t.detail_pass} (${cfg.type === 'max' ? '≤' : '≥'} ${cfg.limit} ${cfg.unit})` 
+                : `${t.detail_fail} (${cfg.type === 'max' ? '>' : '<'} ${cfg.limit} ${cfg.unit})`,
+            citation: cfg.citation,
+            refId: cfg.refId
+        };
+    };
+
+    const calculateCard = (card) => {
+        const type = card.dataset.calc;
+        const get = (name) => {
+            const el = card.querySelector(`[data-field="${name}"]`);
+            return el && el.value !== "" ? parseFloat(el.value) : 0;
+        };
+        const setResult = (val) => {
+            const out = card.querySelector('[data-field="result"]');
+            const statusBox = card.querySelector('[data-field="status"]');
+            
+            let displayVal = "-";
+            if (isFinite(val)) {
+                displayVal = val.toLocaleString(currentLang === 'id' ? 'id-ID' : 'en-US', { maximumFractionDigits: 5 });
+                if (type === 'recycle') displayVal += " %";
+                else if (type === 'intensity') displayVal += " tCO₂e/ton";
+                else if (type === 'emission') displayVal += " tCO₂e";
+                else displayVal += (currentLang === 'id' ? " / 1jt jam" : " / 1M hours");
+            }
+            
+            if (out) out.textContent = displayVal;
+
+            // Threshold Logic
+            if (isFinite(val) && val > 0) {
+                const check = checkThreshold(type, val);
+                if (check) {
+                    statusBox.style.display = "block";
+                    statusBox.className = "status-box " + (check.passed ? "status-success" : "status-fail");
+                    
+                    let html = `
+                        <div class="status-header">${check.msg}</div>
+                        <div>${check.detail}</div>
+                        <div class="status-citation">
+                            <span>Ref: </span>
+                            <a href="#${check.refId}">${check.citation} ↗</a>
+                        </div>
+                    `;
+                    
+                    if (!check.passed) {
+                        html += `<div class="solution-box">${SOLUTIONS[type][currentLang]}</div>`;
+                    }
+                    
+                    statusBox.innerHTML = html;
+                    
+                    // Change border color
+                    card.style.borderColor = check.passed ? "var(--secondary)" : "var(--danger)";
+                    out.style.color = check.passed ? "var(--secondary)" : "var(--danger)";
+                }
+            } else {
+                statusBox.style.display = "none";
+                card.style.borderColor = "rgba(148, 163, 184, 0.3)";
+                out.style.color = "var(--secondary)";
+            }
+        };
+
+        if (type === "emission") {
+            setResult(get("activity") * get("factor"));
+        } else if (type === "intensity") {
+            const output = get("output");
+            setResult(output > 0 ? get("emission") / output : 0);
+        } else if (type === "ltifr") {
+            const hours = get("hours");
+            setResult(hours > 0 ? (get("cases") * 1000000) / hours : 0);
+        } else if (type === "recycle") {
+            const total = get("total");
+            setResult(total > 0 ? (get("recycle") / total) * 100 : 0);
+        }
+    };
+
+    // Initialize
+    renderCalculators();
+
+    // Pertamina Case Study Logic
+    const btnLoadPertamina = document.getElementById("btn-load-pertamina");
+    const explanationDiv = document.getElementById("pertamina-explanation");
+
+    if (btnLoadPertamina) {
+        btnLoadPertamina.addEventListener("click", () => {
+            explanationDiv.style.display = "block";
+            
+            // Fill inputs (Same values)
+            fillInput("emission", "activity", 5000);
+            fillInput("emission", "factor", 0.00268);
+            fillInput("intensity", "emission", 13.4);
+            fillInput("intensity", "output", 500);
+            fillInput("ltifr", "cases", 1);
+            fillInput("ltifr", "hours", 1000000);
+            fillInput("recycle", "recycle", 6);
+            fillInput("recycle", "total", 10);
+
+            // Trigger updates
+            document.querySelectorAll(".calc-card").forEach(card => calculateCard(card));
+            explanationDiv.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        });
+    }
+
+    function fillInput(cardType, fieldName, value) {
+        const card = document.querySelector(`.calc-card[data-calc="${cardType}"]`);
+        if (card) {
+            const input = card.querySelector(`[data-field="${fieldName}"]`);
+            if (input) input.value = value;
+        }
+    }
+</script>
+</body>
+</html>
