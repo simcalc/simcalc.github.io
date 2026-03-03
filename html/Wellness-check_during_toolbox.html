@@ -2,7 +2,8 @@
 <html lang="id">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <!-- viewport-fit=cover untuk iPhone notch/safe-area -->
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <title>Wellness & PPE Readiness Check</title>
 
   <style>
@@ -17,45 +18,76 @@
       --danger:#D92D20;
       --shadow: 0 10px 25px rgba(16,24,40,.08);
       --radius: 14px;
+
+      /* spacing system (mobile-first) */
+      --pad: clamp(10px, 3.2vw, 18px);
+      --gap: clamp(10px, 2.6vw, 14px);
     }
 
-    *{box-sizing:border-box}
+    *{ box-sizing:border-box; }
+    html, body{ width:100%; }
     body{
       margin:0;
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
       background: var(--bg);
       color: var(--text);
       line-height: 1.35;
-      padding: 18px;
+
+      /* Safe-area friendly padding (iOS) */
+      padding:
+        calc(var(--pad) + env(safe-area-inset-top))
+        calc(var(--pad) + env(safe-area-inset-right))
+        calc(var(--pad) + env(safe-area-inset-bottom))
+        calc(var(--pad) + env(safe-area-inset-left));
     }
 
-    .wrap{max-width: 920px; margin: 0 auto;}
+    /* Wrapper selalu 100% di mobile */
+    .wrap{
+      width: 100%;
+      max-width: 920px;
+      margin: 0 auto;
+    }
 
     header{
       display:flex;
-      align-items:flex-start;
-      justify-content:space-between;
-      gap: 12px;
-      margin-bottom: 14px;
+      flex-direction:column;        /* mobile-first: column */
+      gap: var(--gap);
+      margin-bottom: var(--gap);
+      width:100%;
     }
 
     .titlebox{
+      width:100%;
       background: var(--card);
       border: 1px solid var(--border);
       box-shadow: var(--shadow);
       border-radius: var(--radius);
-      padding: 16px 16px 12px;
-      flex: 1;
+      padding: 14px 14px 12px;
     }
 
-    h1{margin:0 0 6px 0; font-size: 20px; letter-spacing:.2px;}
-    .subtitle{margin:0; color: var(--muted); font-size: 13px;}
+    h1{
+      margin: 0 0 6px 0;
+      font-size: 18px;
+      letter-spacing: .2px;
+    }
+    .subtitle{
+      margin:0;
+      color: var(--muted);
+      font-size: 12px;
+    }
 
+    /* Tombol action: grid responsive agar melebar memenuhi layar */
     .actionsTop{
-      display:flex;
-      flex-direction:column;
-      gap: 8px;
-      min-width: 220px;
+      width:100%;
+      display:grid;
+      grid-template-columns: 1fr 1fr;   /* 2 kolom di mobile */
+      gap: 10px;
+      align-items:stretch;
+    }
+
+    /* di layar sempit sekali -> 1 kolom */
+    @media (max-width: 340px){
+      .actionsTop{ grid-template-columns: 1fr; }
     }
 
     .btn{
@@ -63,7 +95,7 @@
       border: 1px solid var(--border);
       background: var(--card);
       border-radius: 12px;
-      padding: 10px 12px;
+      padding: 12px 12px;              /* touch target lebih enak */
       cursor:pointer;
       font-weight: 800;
       font-size: 13px;
@@ -73,6 +105,8 @@
       justify-content:center;
       gap: 8px;
       user-select:none;
+      width:100%;
+      min-height: 44px;                /* standar touch */
     }
     .btn.primary{background: var(--accent); border-color: var(--accent); color:#fff;}
     .btn.good{background: var(--accent2); border-color: var(--accent2); color:#fff;}
@@ -81,26 +115,48 @@
     .btn[disabled]{opacity:.6; cursor:not-allowed}
 
     form{
+      width:100%;
       background: var(--card);
       border: 1px solid var(--border);
       box-shadow: var(--shadow);
       border-radius: var(--radius);
-      padding: 16px;
+      padding: 14px;
     }
 
+    /* Grid field: mobile-first 1 kolom */
     .grid{
       display:grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1fr;
       gap: 12px;
       margin-bottom: 14px;
+      width:100%;
+    }
+    /* Tablet/desktop: 2 kolom */
+    @media (min-width: 700px){
+      header{
+        flex-direction:row;
+        align-items:flex-start;
+        justify-content:space-between;
+      }
+      .titlebox{ flex:1; }
+      .actionsTop{
+        width:auto;
+        grid-template-columns: 1fr;
+        min-width: 240px;
+      }
+      .grid{
+        grid-template-columns: 1fr 1fr;
+      }
     }
 
-    .field{display:flex; flex-direction:column; gap: 6px;}
+    .field{display:flex; flex-direction:column; gap: 6px; width:100%;}
     label{font-size: 12px; color: var(--muted); font-weight: 900;}
+
     input[type="text"], input[type="datetime-local"], select, textarea{
+      width:100%;
       border: 1px solid var(--border);
       border-radius: 12px;
-      padding: 10px 12px;
+      padding: 11px 12px;
       font-size: 14px;
       outline:none;
       background:#fff;
@@ -120,6 +176,7 @@
     .hint{margin: -4px 0 10px; color: var(--muted); font-size: 12px;}
 
     .checklist{
+      width:100%;
       display:flex;
       flex-direction:column;
       gap: 10px;
@@ -129,13 +186,14 @@
       background: #FCFCFD;
     }
 
-    /* Custom checkbox (kebal CSS global) */
+    /* Custom checkbox - kebal CSS global */
     .cbox{
       display:flex;
       gap:10px;
       align-items:flex-start;
       cursor:pointer;
       user-select:none;
+      width:100%;
     }
     .cbox input[type="checkbox"]{
       position:absolute !important;
@@ -150,10 +208,8 @@
       padding:0 !important;
       margin:0 !important;
     }
-
     .cbox .box{
-      width:18px;
-      height:18px;
+      width:18px; height:18px;
       border:2px solid var(--border);
       border-radius:4px;
       margin-top:2px;
@@ -163,11 +219,7 @@
       box-shadow: 0 1px 0 rgba(16,24,40,.04);
     }
     .cbox .text{font-size: 14px;}
-    .cbox .sub{
-      font-size: 12px;
-      color: var(--muted);
-      margin-top: 3px;
-    }
+    .cbox .sub{font-size: 12px; color: var(--muted); margin-top: 3px;}
     .cbox input:checked + .box{
       border-color: var(--accent);
       background: var(--accent);
@@ -178,10 +230,15 @@
       outline-offset: 2px;
     }
 
+    /* Notes/Action: mobile 1 kolom, desktop 2 kolom */
     .twoCols{
       display:grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1fr;
       gap: 12px;
+      width:100%;
+    }
+    @media (min-width: 700px){
+      .twoCols{ grid-template-columns: 1fr 1fr; }
     }
 
     .req{color: var(--danger); font-weight: 1000; margin-left: 4px;}
@@ -211,6 +268,7 @@
     .ok.show{display:block}
 
     .sigWrap{
+      width:100%;
       border: 1px solid var(--border);
       border-radius: 12px;
       overflow:hidden;
@@ -239,6 +297,7 @@
       border-radius: 10px;
       font-size: 12px;
       font-weight: 900;
+      min-height: 38px;
     }
 
     footer{
@@ -248,10 +307,14 @@
       flex-wrap: wrap;
       justify-content:flex-end;
     }
+    /* footer button full width di mobile biar enak */
+    @media (max-width: 500px){
+      footer .btn{ flex: 1 1 100%; }
+    }
 
     @media print{
       body{background:#fff; padding:0}
-      header, .actionsTop, footer, .hint, .sigTools, .alert, .ok {display:none !important;}
+      header, footer, .hint, .sigTools, .alert, .ok {display:none !important;}
       .titlebox{box-shadow:none; border:none; padding:0; margin:0 0 10px 0;}
       form{box-shadow:none; border:none; padding:0}
       .checklist{background:#fff}
@@ -260,13 +323,6 @@
       canvas{border:1px solid #000}
       .cbox .box{border-color:#000; box-shadow:none}
       .cbox input:checked + .box{background:#000; border-color:#000; box-shadow: inset 0 0 0 3px #fff;}
-    }
-
-    @media (max-width: 800px){
-      header{flex-direction:column}
-      .actionsTop{flex-direction:row; flex-wrap:wrap; min-width:unset}
-      .grid{grid-template-columns:1fr}
-      .twoCols{grid-template-columns:1fr}
     }
   </style>
 </head>
@@ -283,14 +339,14 @@
       <button type="button" class="btn good" id="btnImport">📥 Import JSON</button>
       <button type="button" class="btn" id="btnDownload">⬇️ Download JSON</button>
       <button type="button" class="btn" id="btnPrint">🖨️ Print</button>
+      <!-- spacer agar grid rapi jika jumlah tombol ganjil -->
+      <span style="display:none"></span>
     </div>
 
-    <!-- hidden file input for import -->
     <input id="fileInput" type="file" accept="application/json,.json" style="display:none" />
   </header>
 
   <form id="ppeForm" novalidate>
-    <!-- Context -->
     <div class="grid" role="group" aria-label="Context information">
       <div class="field">
         <label for="site">Site / Project</label>
@@ -315,7 +371,6 @@
       </div>
     </div>
 
-    <!-- Wellness Check -->
     <div class="section">
       <h2>Wellness Check</h2>
       <p class="hint">Centang checklist yang sudah dilakukan.</p>
@@ -344,7 +399,6 @@
       </div>
     </div>
 
-    <!-- PPE Walk-the-Line Check -->
     <div class="section">
       <h2>PPE Walk-the-Line Check</h2>
       <p class="hint">Pastikan PPE dicek dan diperbaiki sebelum kerja dimulai.</p>
@@ -370,12 +424,9 @@
       </div>
     </div>
 
-    <!-- Notes / Action -->
     <div class="section">
       <h2>Notes / Issues Found <span class="req" id="issuesReq" style="display:none">*</span></h2>
-      <p class="hint">
-        Jika ada item checklist yang <strong>tidak dicentang</strong>, kolom Notes dan Action menjadi <strong>wajib</strong>.
-      </p>
+      <p class="hint">Jika ada item checklist yang <strong>tidak dicentang</strong>, Notes dan Action menjadi <strong>wajib</strong>.</p>
 
       <div class="twoCols">
         <div class="field">
@@ -392,7 +443,6 @@
       <div class="ok" id="okBox" role="status"></div>
     </div>
 
-    <!-- Supervisor -->
     <div class="section">
       <h2>Supervisor</h2>
 
@@ -434,330 +484,297 @@
 </div>
 
 <script>
-/* ========= Utilities ========= */
-const $ = (sel) => document.querySelector(sel);
+  const $ = (sel) => document.querySelector(sel);
 
-function nowLocalDatetimeValue(){
-  const d = new Date();
-  const pad = (n) => String(n).padStart(2, "0");
-  return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
-}
+  function nowLocalDatetimeValue(){
+    const d = new Date();
+    const pad = (n) => String(n).padStart(2, "0");
+    return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  }
+  function safeFileNamePart(s){
+    return String(s || "").trim().replace(/[^\w\-]+/g, "_").slice(0, 60);
+  }
 
-function safeFileNamePart(s){
-  return String(s || "").trim().replace(/[^\w\-]+/g, "_").slice(0, 60);
-}
+  const CHECK_IDS = ["#w1","#w2","#w3","#p1","#p2","#p3"];
 
-/* ========= Conditional requirement ========= */
-const CHECK_IDS = ["#w1","#w2","#w3","#p1","#p2","#p3"];
+  function anyChecklistUnchecked(){
+    return CHECK_IDS.map(id => $(id)).some(ch => !ch.checked);
+  }
+  function updateIssueRequirementsUI(){
+    const needsIssues = anyChecklistUnchecked();
+    const notes = $("#notes");
+    const action = $("#action");
+    $("#issuesReq").style.display = needsIssues ? "inline" : "none";
+    notes.required = needsIssues;
+    action.required = needsIssues;
+    notes.style.borderColor = needsIssues ? "rgba(217,45,32,.45)" : "";
+    action.style.borderColor = needsIssues ? "rgba(217,45,32,.45)" : "";
+  }
 
-function anyChecklistUnchecked(){
-  return CHECK_IDS.map(id => $(id)).some(ch => !ch.checked);
-}
+  function showAlert(msg){
+    const box = $("#alertBox");
+    box.textContent = msg;
+    box.classList.add("show");
+    $("#okBox").classList.remove("show");
+  }
+  function showOK(msg){
+    const box = $("#okBox");
+    box.textContent = msg;
+    box.classList.add("show");
+    $("#alertBox").classList.remove("show");
+  }
+  function hideMessages(){
+    $("#alertBox").classList.remove("show");
+    $("#okBox").classList.remove("show");
+  }
 
-function updateIssueRequirementsUI(){
-  const needsIssues = anyChecklistUnchecked();
-  const notes = $("#notes");
-  const action = $("#action");
+  // Signature pad
+  const canvas = $("#sigCanvas");
+  const ctx = canvas.getContext("2d");
+  let drawing = false;
+  let strokes = [];
+  let currentStroke = [];
+  let hasRenderedSignature = false;
 
-  $("#issuesReq").style.display = needsIssues ? "inline" : "none";
-  notes.required = needsIssues;
-  action.required = needsIssues;
+  function setupCanvas(){
+    const ratio = Math.max(window.devicePixelRatio || 1, 1);
+    const rect = canvas.getBoundingClientRect();
+    const cssW = rect.width;
+    const cssH = 160;
 
-  notes.style.borderColor = needsIssues ? "rgba(217,45,32,.45)" : "";
-  action.style.borderColor = needsIssues ? "rgba(217,45,32,.45)" : "";
-}
+    const prev = canvas.toDataURL();
 
-/* ========= Messages ========= */
-function showAlert(msg){
-  const box = $("#alertBox");
-  box.textContent = msg;
-  box.classList.add("show");
-  $("#okBox").classList.remove("show");
-}
-function showOK(msg){
-  const box = $("#okBox");
-  box.textContent = msg;
-  box.classList.add("show");
-  $("#alertBox").classList.remove("show");
-}
-function hideMessages(){
-  $("#alertBox").classList.remove("show");
-  $("#okBox").classList.remove("show");
-}
+    canvas.width = Math.floor(cssW * ratio);
+    canvas.height = Math.floor(cssH * ratio);
+    canvas.style.height = cssH + "px";
 
-/* ========= Signature pad ========= */
-const canvas = $("#sigCanvas");
-const ctx = canvas.getContext("2d");
+    ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+    ctx.lineWidth = 2.2;
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+    ctx.strokeStyle = "#101828";
 
-let drawing = false;
-let strokes = [];
-let currentStroke = [];
-let hasRenderedSignature = false; // for imported signature image
+    const img = new Image();
+    img.onload = () => ctx.drawImage(img, 0, 0, cssW, cssH);
+    img.src = prev;
+  }
 
-function setupCanvas(){
-  const ratio = Math.max(window.devicePixelRatio || 1, 1);
-  const rect = canvas.getBoundingClientRect();
-  const cssW = rect.width;
-  const cssH = 160;
+  function getPoint(evt){
+    const rect = canvas.getBoundingClientRect();
+    return { x: (evt.clientX - rect.left), y: (evt.clientY - rect.top) };
+  }
+  function startDraw(evt){
+    drawing = true;
+    currentStroke = [getPoint(evt)];
+    hasRenderedSignature = true;
+  }
+  function draw(evt){
+    if (!drawing) return;
+    const p = getPoint(evt);
+    const last = currentStroke[currentStroke.length - 1];
+    currentStroke.push(p);
+    ctx.beginPath();
+    ctx.moveTo(last.x, last.y);
+    ctx.lineTo(p.x, p.y);
+    ctx.stroke();
+  }
+  function endDraw(){
+    if (!drawing) return;
+    drawing = false;
+    if (currentStroke.length) strokes.push(currentStroke);
+    currentStroke = [];
+  }
+  function clearSignature(){
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    strokes = [];
+    hasRenderedSignature = false;
+  }
+  function redrawSignature(){
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    strokes.forEach(stroke => {
+      for (let i=1;i<stroke.length;i++){
+        const a = stroke[i-1], b = stroke[i];
+        ctx.beginPath();
+        ctx.moveTo(a.x, a.y);
+        ctx.lineTo(b.x, b.y);
+        ctx.stroke();
+      }
+    });
+  }
+  function undoSignature(){
+    strokes.pop();
+    redrawSignature();
+    if (strokes.length === 0) hasRenderedSignature = false;
+  }
+  function signatureDataURL(){
+    if (strokes.length === 0 && !hasRenderedSignature) return "";
+    return canvas.toDataURL("image/png");
+  }
 
-  const prev = canvas.toDataURL();
+  canvas.addEventListener("pointerdown", (e) => { canvas.setPointerCapture(e.pointerId); startDraw(e); });
+  canvas.addEventListener("pointermove", draw);
+  canvas.addEventListener("pointerup", endDraw);
+  canvas.addEventListener("pointercancel", endDraw);
 
-  canvas.width = Math.floor(cssW * ratio);
-  canvas.height = Math.floor(cssH * ratio);
-  canvas.style.height = cssH + "px";
+  $("#btnSigClear").addEventListener("click", clearSignature);
+  $("#btnSigUndo").addEventListener("click", undoSignature);
+  window.addEventListener("resize", () => setupCanvas());
 
-  ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
-  ctx.lineWidth = 2.2;
-  ctx.lineCap = "round";
-  ctx.lineJoin = "round";
-  ctx.strokeStyle = "#101828";
+  function getFormData(){
+    return {
+      meta: { version: 4, generatedAt: new Date().toISOString() },
+      context: {
+        site: $("#site").value.trim(),
+        area: $("#area").value.trim(),
+        shift: $("#shift").value,
+        dateTime: $("#dateTime").value
+      },
+      wellnessCheck: {
+        askedHowAreYou: $("#w1").checked,
+        confirmedNoUnreported: $("#w2").checked,
+        reminderGiven: $("#w3").checked
+      },
+      ppeWalkTheLine: {
+        walkedAndCheckedAll: $("#p1").checked,
+        ppeWornGoodCondition: $("#p2").checked,
+        defectiveCorrected: $("#p3").checked
+      },
+      issues: {
+        requiredBecauseUnchecked: anyChecklistUnchecked(),
+        notes: $("#notes").value.trim(),
+        actionTaken: $("#action").value.trim()
+      },
+      supervisor: {
+        name: $("#supervisorName").value.trim(),
+        attestation: $("#attest").value,
+        signaturePngDataUrl: signatureDataURL()
+      }
+    };
+  }
 
-  const img = new Image();
-  img.onload = () => ctx.drawImage(img, 0, 0, cssW, cssH);
-  img.src = prev;
-}
+  function setFormData(data){
+    $("#site").value = data?.context?.site ?? "";
+    $("#area").value = data?.context?.area ?? "";
+    $("#shift").value = data?.context?.shift ?? "";
+    $("#dateTime").value = data?.context?.dateTime ?? nowLocalDatetimeValue();
 
-function getPoint(evt){
-  const rect = canvas.getBoundingClientRect();
-  return { x: (evt.clientX - rect.left), y: (evt.clientY - rect.top) };
-}
+    $("#w1").checked = !!data?.wellnessCheck?.askedHowAreYou;
+    $("#w2").checked = !!data?.wellnessCheck?.confirmedNoUnreported;
+    $("#w3").checked = !!data?.wellnessCheck?.reminderGiven;
 
-function startDraw(evt){
-  drawing = true;
-  currentStroke = [getPoint(evt)];
-  hasRenderedSignature = true;
-}
-function draw(evt){
-  if (!drawing) return;
-  const p = getPoint(evt);
-  const last = currentStroke[currentStroke.length - 1];
-  currentStroke.push(p);
+    $("#p1").checked = !!data?.ppeWalkTheLine?.walkedAndCheckedAll;
+    $("#p2").checked = !!data?.ppeWalkTheLine?.ppeWornGoodCondition;
+    $("#p3").checked = !!data?.ppeWalkTheLine?.defectiveCorrected;
 
-  ctx.beginPath();
-  ctx.moveTo(last.x, last.y);
-  ctx.lineTo(p.x, p.y);
-  ctx.stroke();
-}
-function endDraw(){
-  if (!drawing) return;
-  drawing = false;
-  if (currentStroke.length) strokes.push(currentStroke);
-  currentStroke = [];
-}
+    $("#notes").value = data?.issues?.notes ?? "";
+    $("#action").value = data?.issues?.actionTaken ?? "";
 
-function clearSignature(){
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  strokes = [];
-  hasRenderedSignature = false;
-}
-function redrawSignature(){
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  strokes.forEach(stroke => {
-    for (let i=1;i<stroke.length;i++){
-      const a = stroke[i-1], b = stroke[i];
-      ctx.beginPath();
-      ctx.moveTo(a.x, a.y);
-      ctx.lineTo(b.x, b.y);
-      ctx.stroke();
+    $("#supervisorName").value = data?.supervisor?.name ?? "";
+    $("#attest").value = data?.supervisor?.attestation ?? "";
+
+    clearSignature();
+    const sig = data?.supervisor?.signaturePngDataUrl;
+    if (sig){
+      const img = new Image();
+      img.onload = () => {
+        const rect = canvas.getBoundingClientRect();
+        ctx.drawImage(img, 0, 0, rect.width, 160);
+        hasRenderedSignature = true;
+      };
+      img.src = sig;
+    }
+    updateIssueRequirementsUI();
+  }
+
+  function downloadJSON(data){
+    const dt = (data.context.dateTime || "").replace(/[:]/g,"-") || new Date().toISOString().slice(0,16).replace(/[:]/g,"-");
+    const site = safeFileNamePart(data.context.site);
+    const area = safeFileNamePart(data.context.area);
+    const sup  = safeFileNamePart(data.supervisor.name);
+    const name = `wellness-ppe-check_${dt}${site?("_"+site):""}${area?("_"+area):""}${sup?("_"+sup):""}.json`;
+
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type:"application/json" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = name;
+    a.click();
+    URL.revokeObjectURL(a.href);
+  }
+
+  $("#btnImport").addEventListener("click", () => {
+    $("#fileInput").value = "";
+    $("#fileInput").click();
+  });
+
+  $("#fileInput").addEventListener("change", async (e) => {
+    hideMessages();
+    const file = e.target.files?.[0];
+    if (!file) return;
+    try{
+      const text = await file.text();
+      const data = JSON.parse(text);
+      if (!data || typeof data !== "object" || !data.context || !data.supervisor){
+        showAlert("File JSON tidak sesuai format form ini.");
+        return;
+      }
+      setFormData(data);
+      showOK("Import berhasil. Form sudah terisi dari JSON.");
+    }catch{
+      showAlert("Gagal import. Pastikan file adalah JSON yang valid.");
     }
   });
-}
-function undoSignature(){
-  strokes.pop();
-  redrawSignature();
-  if (strokes.length === 0) hasRenderedSignature = false;
-}
-function signatureDataURL(){
-  if (strokes.length === 0 && !hasRenderedSignature) return "";
-  return canvas.toDataURL("image/png");
-}
 
-canvas.addEventListener("pointerdown", (e) => { canvas.setPointerCapture(e.pointerId); startDraw(e); });
-canvas.addEventListener("pointermove", draw);
-canvas.addEventListener("pointerup", endDraw);
-canvas.addEventListener("pointercancel", endDraw);
+  $("#btnDownload").addEventListener("click", () => {
+    const data = getFormData();
+    downloadJSON(data);
+    showOK("JSON berhasil diunduh.");
+  });
 
-$("#btnSigClear").addEventListener("click", clearSignature);
-$("#btnSigUndo").addEventListener("click", undoSignature);
-window.addEventListener("resize", () => setupCanvas());
+  $("#btnPrint").addEventListener("click", () => window.print());
 
-/* ========= Data (export/import) ========= */
-function getFormData(){
-  return {
-    meta: { version: 3, generatedAt: new Date().toISOString() },
-    context: {
-      site: $("#site").value.trim(),
-      area: $("#area").value.trim(),
-      shift: $("#shift").value,
-      dateTime: $("#dateTime").value
-    },
-    wellnessCheck: {
-      askedHowAreYou: $("#w1").checked,
-      confirmedNoUnreported: $("#w2").checked,
-      reminderGiven: $("#w3").checked
-    },
-    ppeWalkTheLine: {
-      walkedAndCheckedAll: $("#p1").checked,
-      ppeWornGoodCondition: $("#p2").checked,
-      defectiveCorrected: $("#p3").checked
-    },
-    issues: {
-      requiredBecauseUnchecked: anyChecklistUnchecked(),
-      notes: $("#notes").value.trim(),
-      actionTaken: $("#action").value.trim()
-    },
-    supervisor: {
-      name: $("#supervisorName").value.trim(),
-      attestation: $("#attest").value,
-      signaturePngDataUrl: signatureDataURL()
+  $("#btnClearAll").addEventListener("click", () => {
+    if (!confirm("Clear semua isian form?")) return;
+    $("#ppeForm").reset();
+    $("#dateTime").value = nowLocalDatetimeValue();
+    clearSignature();
+    updateIssueRequirementsUI();
+    hideMessages();
+  });
+
+  function validateBeforeSubmit(){
+    hideMessages();
+    const nameOk = $("#supervisorName").value.trim().length > 0;
+    const attestOk = $("#attest").value === "yes";
+    if (!nameOk) return { ok:false, msg:"Supervisor Name wajib diisi." };
+    if (!attestOk) return { ok:false, msg:"Attestation wajib dipilih." };
+
+    const needsIssues = anyChecklistUnchecked();
+    if (needsIssues){
+      const notesOk = $("#notes").value.trim().length > 0;
+      const actionOk = $("#action").value.trim().length > 0;
+      if (!notesOk || !actionOk){
+        return { ok:false, msg:"Ada checklist yang tidak dicentang. Notes dan Action wajib diisi." };
+      }
     }
-  };
-}
-
-function setFormData(data){
-  // Support older versions (v1/v2) as long as shape is similar
-  $("#site").value = data?.context?.site ?? "";
-  $("#area").value = data?.context?.area ?? "";
-  $("#shift").value = data?.context?.shift ?? "";
-  $("#dateTime").value = data?.context?.dateTime ?? nowLocalDatetimeValue();
-
-  // v1 compatibility
-  const w = data?.wellnessCheck ?? {};
-  $("#w1").checked = !!(w.askedHowAreYou ?? data?.wellnessCheck?.askedHowAreYou);
-  $("#w2").checked = !!(w.confirmedNoUnreported ?? data?.wellnessCheck?.confirmedNoUnreported);
-  $("#w3").checked = !!(w.reminderGiven ?? data?.wellnessCheck?.reminderGiven);
-
-  const p = data?.ppeWalkTheLine ?? {};
-  $("#p1").checked = !!(p.walkedAndCheckedAll ?? data?.ppeWalkTheLine?.walkedAndCheckedAll);
-  $("#p2").checked = !!(p.ppeWornGoodCondition ?? data?.ppeWalkTheLine?.ppeWornGoodCondition);
-  $("#p3").checked = !!(p.defectiveCorrected ?? data?.ppeWalkTheLine?.defectiveCorrected);
-
-  $("#notes").value = data?.issues?.notes ?? "";
-  $("#action").value = data?.issues?.actionTaken ?? "";
-
-  $("#supervisorName").value = data?.supervisor?.name ?? "";
-  $("#attest").value = data?.supervisor?.attestation ?? "";
-
-  // restore signature image if exist
-  clearSignature();
-  const sig = data?.supervisor?.signaturePngDataUrl;
-  if (sig){
-    const img = new Image();
-    img.onload = () => {
-      const rect = canvas.getBoundingClientRect();
-      ctx.drawImage(img, 0, 0, rect.width, 160);
-      hasRenderedSignature = true;
-    };
-    img.src = sig;
+    return { ok:true };
   }
 
-  updateIssueRequirementsUI();
-}
+  $("#ppeForm").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const result = validateBeforeSubmit();
+    if (!result.ok){ showAlert(result.msg); return; }
+    const data = getFormData();
+    downloadJSON(data);
+    showOK("Submit berhasil. File JSON sudah diunduh (paperless).");
+  });
 
-/* ========= Download JSON ========= */
-function downloadJSON(data){
-  const dt = (data.context.dateTime || "").replace(/[:]/g,"-") || new Date().toISOString().slice(0,16).replace(/[:]/g,"-");
-  const site = safeFileNamePart(data.context.site);
-  const area = safeFileNamePart(data.context.area);
-  const sup  = safeFileNamePart(data.supervisor.name);
-  const name = `wellness-ppe-check_${dt}${site?("_"+site):""}${area?("_"+area):""}${sup?("_"+sup):""}.json`;
+  CHECK_IDS.forEach(id => $(id).addEventListener("change", updateIssueRequirementsUI));
 
-  const blob = new Blob([JSON.stringify(data, null, 2)], { type:"application/json" });
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = name;
-  a.click();
-  URL.revokeObjectURL(a.href);
-}
-
-/* ========= Import JSON ========= */
-$("#btnImport").addEventListener("click", () => {
-  $("#fileInput").value = "";
-  $("#fileInput").click();
-});
-
-$("#fileInput").addEventListener("change", async (e) => {
-  hideMessages();
-  const file = e.target.files?.[0];
-  if (!file) return;
-
-  try{
-    const text = await file.text();
-    const data = JSON.parse(text);
-
-    // basic sanity check
-    if (!data || typeof data !== "object" || !data.context || !data.supervisor){
-      showAlert("File JSON tidak sesuai format form ini.");
-      return;
-    }
-
-    setFormData(data);
-    showOK("Import berhasil. Form sudah terisi dari JSON.");
-  }catch(err){
-    showAlert("Gagal import. Pastikan file adalah JSON yang valid.");
-  }
-});
-
-/* ========= Buttons ========= */
-$("#btnDownload").addEventListener("click", () => {
-  const data = getFormData();
-  downloadJSON(data);
-  showOK("JSON berhasil diunduh.");
-});
-
-$("#btnPrint").addEventListener("click", () => window.print());
-
-$("#btnClearAll").addEventListener("click", () => {
-  if (!confirm("Clear semua isian form?")) return;
-  $("#ppeForm").reset();
-  $("#dateTime").value = nowLocalDatetimeValue();
-  clearSignature();
-  updateIssueRequirementsUI();
-  hideMessages();
-});
-
-/* ========= Validation & submit ========= */
-function validateBeforeSubmit(){
-  hideMessages();
-
-  const nameOk = $("#supervisorName").value.trim().length > 0;
-  const attestOk = $("#attest").value === "yes";
-  if (!nameOk) return { ok:false, msg:"Supervisor Name wajib diisi." };
-  if (!attestOk) return { ok:false, msg:"Attestation wajib dipilih." };
-
-  const needsIssues = anyChecklistUnchecked();
-  if (needsIssues){
-    const notesOk = $("#notes").value.trim().length > 0;
-    const actionOk = $("#action").value.trim().length > 0;
-    if (!notesOk || !actionOk){
-      return { ok:false, msg:"Ada checklist yang tidak dicentang. Notes dan Action wajib diisi." };
-    }
-  }
-
-  // Jika tanda tangan mau diwajibkan, aktifkan:
-  // if (!signatureDataURL()) return { ok:false, msg:"Signature wajib diisi." };
-
-  return { ok:true };
-}
-
-$("#ppeForm").addEventListener("submit", (e) => {
-  e.preventDefault();
-  const result = validateBeforeSubmit();
-  if (!result.ok){ showAlert(result.msg); return; }
-
-  const data = getFormData();
-  downloadJSON(data);
-  showOK("Submit berhasil. File JSON sudah diunduh (paperless).");
-});
-
-/* ========= Hooks & init ========= */
-CHECK_IDS.forEach(id => $(id).addEventListener("change", updateIssueRequirementsUI));
-
-(function init(){
-  $("#dateTime").value = nowLocalDatetimeValue();
-  requestAnimationFrame(() => setupCanvas());
-  updateIssueRequirementsUI();
-})();
+  (function init(){
+    $("#dateTime").value = nowLocalDatetimeValue();
+    requestAnimationFrame(() => setupCanvas());
+    updateIssueRequirementsUI();
+  })();
 </script>
 </body>
 </html>
