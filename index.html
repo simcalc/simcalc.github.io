@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ProjectFlow Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <div class="brand-mark">PF</div>
+          <div>
+            <strong>ProjectFlow</strong>
+            <small>PM Suite</small>
+          </div>
+        </div>
+
+        <nav class="nav" aria-label="main navigation">
+          <a class="nav-item active" href="#">
+            <span class="nav-icon">◫</span>
+            Dashboard
+          </a>
+          <a class="nav-item" href="#">
+            <span class="nav-icon">▣</span>
+            Projects
+          </a>
+          <a class="nav-item" href="#">
+            <span class="nav-icon">◌</span>
+            Schedule
+          </a>
+          <a class="nav-item" href="#">
+            <span class="nav-icon">◔</span>
+            Tasks
+          </a>
+          <a class="nav-item" href="#">
+            <span class="nav-icon">◎</span>
+            Reports
+          </a>
+          <a class="nav-item" href="#">
+            <span class="nav-icon">◍</span>
+            Team
+          </a>
+        </nav>
+
+        <div class="sidebar-card">
+          <p>Quarter target</p>
+          <div class="progress-ring">
+            <span>78%</span>
+          </div>
+          <small>On track</small>
+        </div>
+      </aside>
+
+      <main class="main-content">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">Overview</p>
+            <h1>Project Management Dashboard</h1>
+          </div>
+
+          <div class="topbar-actions">
+            <label class="search-box" aria-label="Search tasks">
+              <span>⌕</span>
+              <input type="text" value="Search tasks" aria-label="Search" />
+            </label>
+            <button class="primary-btn">+ Add task</button>
+            <div class="avatar-group">
+              <div class="avatar avatar-1">AR</div>
+              <div class="avatar avatar-2">JS</div>
+            </div>
+          </div>
+        </header>
+
+        <section class="stats-grid">
+          <article class="stat-card blue">
+            <div class="stat-top">
+              <span>Active Projects</span>
+              <span class="badge positive">+12%</span>
+            </div>
+            <strong>12</strong>
+            <small>3 new this week</small>
+          </article>
+
+          <article class="stat-card green">
+            <div class="stat-top">
+              <span>Completion</span>
+              <span class="badge positive">+8%</span>
+            </div>
+            <strong>78%</strong>
+            <small>Across all milestones</small>
+          </article>
+
+          <article class="stat-card purple">
+            <div class="stat-top">
+              <span>Schedule Risk</span>
+              <span class="badge warning">Low</span>
+            </div>
+            <strong>4 Tasks</strong>
+            <small>Need review today</small>
+          </article>
+
+          <article class="stat-card orange">
+            <div class="stat-top">
+              <span>Team Load</span>
+              <span class="badge neutral">74%</span>
+            </div>
+            <strong>18 Hrs</strong>
+            <small>Utilization this week</small>
+          </article>
+        </section>
+
+        <section class="content-grid">
+          <div class="panel panel-large">
+            <div class="panel-header">
+              <div>
+                <p class="eyebrow">Schedule</p>
+                <h2>Weekly timeline</h2>
+              </div>
+              <button class="ghost-btn">Export</button>
+            </div>
+            <div id="timeline" class="timeline" aria-live="polite"></div>
+          </div>
+
+          <div class="panel panel-side">
+            <div class="panel-header">
+              <div>
+                <p class="eyebrow">Agenda</p>
+                <h2>Upcoming tasks</h2>
+              </div>
+              <a href="#">View all</a>
+            </div>
+            <ul id="taskList" class="task-list" aria-live="polite"></ul>
+          </div>
+        </section>
+
+        <section class="bottom-grid">
+          <div class="panel">
+            <div class="panel-header">
+              <div>
+                <p class="eyebrow">Planning</p>
+                <h2>Project milestones</h2>
+              </div>
+            </div>
+            <div id="milestoneList" class="milestone-list"></div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-header">
+              <div>
+                <p class="eyebrow">Capacity</p>
+                <h2>Team workload</h2>
+              </div>
+            </div>
+            <div id="teamList" class="team-list"></div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
